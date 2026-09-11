@@ -68,8 +68,10 @@
     const PROFILE_STORAGE_KEY =
         "dorkari_admin_profile";
 
+
     const LOGIN_PAGE =
         "./index.html";
+
 
     const ALLOWED_ROLES = [
         "super_admin",
@@ -83,9 +85,12 @@
     // =====================================================
 
     let currentSession = null;
+
     let currentProfile = null;
 
     let isRedirecting = false;
+
+    let authInitialized = false;
 
 
     // =====================================================
@@ -93,7 +98,9 @@
     // =====================================================
 
     function getElement(id) {
+
         return document.getElementById(id);
+
     }
 
 
@@ -107,20 +114,28 @@
             return;
         }
 
+
         isRedirecting = true;
 
+
         try {
+
             sessionStorage.removeItem(
                 PROFILE_STORAGE_KEY
             );
+
         } catch (error) {
+
             console.warn(
                 "Could not clear admin profile cache.",
                 error
             );
         }
 
-        window.location.replace(LOGIN_PAGE);
+
+        window.location.replace(
+            LOGIN_PAGE
+        );
     }
 
 
@@ -131,12 +146,23 @@
     function formatRole(role) {
 
         const roles = {
-            super_admin: "Super Admin",
-            admin: "Admin",
-            editor: "Editor"
+
+            super_admin:
+                "Super Admin",
+
+            admin:
+                "Admin",
+
+            editor:
+                "Editor"
+
         };
 
-        return roles[role] || "Admin";
+
+        return (
+            roles[role] ||
+            "Admin"
+        );
     }
 
 
@@ -146,14 +172,21 @@
 
     function getInitial(name) {
 
-        if (!name || typeof name !== "string") {
+        if (
+            !name ||
+            typeof name !== "string"
+        ) {
+
             return "A";
         }
 
-        return name
-            .trim()
-            .charAt(0)
-            .toUpperCase() || "A";
+
+        return (
+            name
+                .trim()
+                .charAt(0)
+                .toUpperCase()
+        ) || "A";
     }
 
 
@@ -163,20 +196,40 @@
 
     function saveProfile(profile) {
 
+        if (!profile) {
+            return;
+        }
+
+
         try {
 
             const safeProfile = {
-                id: profile.id,
-                user_id: profile.user_id,
-                name: profile.name,
-                role: profile.role,
-                is_active: profile.is_active
+
+                id:
+                    profile.id,
+
+                user_id:
+                    profile.user_id,
+
+                name:
+                    profile.name,
+
+                role:
+                    profile.role,
+
+                is_active:
+                    profile.is_active
+
             };
+
 
             sessionStorage.setItem(
                 PROFILE_STORAGE_KEY,
-                JSON.stringify(safeProfile)
+                JSON.stringify(
+                    safeProfile
+                )
             );
+
 
         } catch (error) {
 
@@ -192,23 +245,33 @@
     // VERIFY ADMIN PROFILE
     // =====================================================
 
-    async function verifyAdminProfile(userId) {
+    async function verifyAdminProfile(
+        userId
+    ) {
 
         if (!userId) {
             return null;
         }
 
+
         const {
             data,
             error
-        } = await supabaseClient
-            .from("admin_profiles")
-            .select(
-                "id,user_id,name,role,is_active"
-            )
-            .eq("user_id", userId)
-            .eq("is_active", true)
-            .maybeSingle();
+        } =
+            await supabaseClient
+                .from("admin_profiles")
+                .select(
+                    "id,user_id,name,role,is_active"
+                )
+                .eq(
+                    "user_id",
+                    userId
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .maybeSingle();
 
 
         if (error) {
@@ -227,7 +290,17 @@
         }
 
 
-        if (!ALLOWED_ROLES.includes(data.role)) {
+        if (
+            !ALLOWED_ROLES.includes(
+                data.role
+            )
+        ) {
+
+            console.warn(
+                "Invalid admin role:",
+                data.role
+            );
+
             return null;
         }
 
@@ -240,98 +313,150 @@
     // UPDATE ADMIN UI
     // =====================================================
 
-    function updateAdminUI(profile) {
+    function updateAdminUI(
+        profile
+    ) {
 
         if (!profile) {
             return;
         }
 
+
         const name =
-            profile.name || "Admin";
+            profile.name ||
+            "Admin";
+
 
         const role =
-            formatRole(profile.role);
+            formatRole(
+                profile.role
+            );
+
 
         const initial =
-            getInitial(name);
+            getInitial(
+                name
+            );
 
 
-        // -----------------------------------------------
-        // Sidebar
-        // -----------------------------------------------
+        // =================================================
+        // SIDEBAR
+        // =================================================
 
         const sidebarName =
-            getElement("sidebarAdminName");
+            getElement(
+                "sidebarAdminName"
+            );
+
 
         const sidebarRole =
-            getElement("sidebarAdminRole");
+            getElement(
+                "sidebarAdminRole"
+            );
+
 
         const sidebarAvatar =
-            getElement("adminAvatar");
+            getElement(
+                "adminAvatar"
+            );
 
 
         if (sidebarName) {
-            sidebarName.textContent = name;
+
+            sidebarName.textContent =
+                name;
         }
+
 
         if (sidebarRole) {
-            sidebarRole.textContent = role;
+
+            sidebarRole.textContent =
+                role;
         }
+
 
         if (sidebarAvatar) {
-            sidebarAvatar.textContent = initial;
+
+            sidebarAvatar.textContent =
+                initial;
         }
 
 
-        // -----------------------------------------------
-        // Topbar
-        // -----------------------------------------------
+        // =================================================
+        // TOPBAR
+        // =================================================
 
         const topbarName =
-            getElement("topbarAdminName");
+            getElement(
+                "topbarAdminName"
+            );
+
 
         const topbarRole =
-            getElement("topbarAdminRole");
+            getElement(
+                "topbarAdminRole"
+            );
+
 
         const topbarAvatar =
-            getElement("topbarAvatar");
+            getElement(
+                "topbarAvatar"
+            );
 
 
         if (topbarName) {
-            topbarName.textContent = name;
+
+            topbarName.textContent =
+                name;
         }
+
 
         if (topbarRole) {
-            topbarRole.textContent = role;
+
+            topbarRole.textContent =
+                role;
         }
+
 
         if (topbarAvatar) {
-            topbarAvatar.textContent = initial;
+
+            topbarAvatar.textContent =
+                initial;
         }
 
 
-        // -----------------------------------------------
-        // Welcome
-        // -----------------------------------------------
+        // =================================================
+        // WELCOME
+        // =================================================
 
         const welcomeName =
-            getElement("welcomeAdminName");
+            getElement(
+                "welcomeAdminName"
+            );
+
 
         if (welcomeName) {
-            welcomeName.textContent = name;
+
+            welcomeName.textContent =
+                name;
         }
 
 
-        // -----------------------------------------------
-        // Role Badge
-        // -----------------------------------------------
+        // =================================================
+        // ROLE BADGE
+        // =================================================
 
         const roleBadge =
-            getElement("roleBadge");
+            getElement(
+                "roleBadge"
+            );
+
 
         if (roleBadge) {
 
-            roleBadge.textContent = role;
+            roleBadge.textContent =
+                role;
+
 
             roleBadge.dataset.role =
                 profile.role;
@@ -343,16 +468,27 @@
     // SHOW TOAST
     // =====================================================
 
-    function showToast(message) {
+    function showToast(
+        message
+    ) {
 
         const toast =
-            getElement("adminToast");
+            getElement(
+                "adminToast"
+            );
+
 
         const toastMessage =
-            getElement("adminToastMessage");
+            getElement(
+                "adminToastMessage"
+            );
 
 
-        if (!toast || !toastMessage) {
+        if (
+            !toast ||
+            !toastMessage
+        ) {
+
             return;
         }
 
@@ -361,7 +497,9 @@
             message;
 
 
-        toast.classList.add("show");
+        toast.classList.add(
+            "show"
+        );
 
 
         clearTimeout(
@@ -370,11 +508,16 @@
 
 
         showToast.timeout =
-            setTimeout(function () {
+            setTimeout(
+                function () {
 
-                toast.classList.remove("show");
+                    toast.classList.remove(
+                        "show"
+                    );
 
-            }, 2500);
+                },
+                2500
+            );
     }
 
 
@@ -382,11 +525,15 @@
     // MODULE ACCESS
     // =====================================================
 
-    function canManageContent(role) {
+    function canManageContent(
+        role
+    ) {
 
         return (
-            role === "super_admin" ||
-            role === "admin"
+            role ===
+                "super_admin" ||
+            role ===
+                "admin"
         );
     }
 
@@ -395,11 +542,14 @@
     // APPLY ROLE UI
     // =====================================================
 
-    function applyRolePermissions(profile) {
+    function applyRolePermissions(
+        profile
+    ) {
 
         if (!profile) {
             return;
         }
+
 
         const role =
             profile.role;
@@ -409,20 +559,41 @@
          * IMPORTANT:
          *
          * This only controls the UI.
-         * Real database security is still handled
+         *
+         * Real database security is handled
          * by Supabase RLS.
          */
 
 
-        // -----------------------------------------------
-        // Editor
-        // -----------------------------------------------
+        // =================================================
+        // CLEAR OLD ROLE CLASSES
+        // =================================================
 
-        if (role === "editor") {
+        document.body.classList.remove(
+            "role-editor",
+            "role-admin",
+            "role-super-admin",
+            "content-read-only"
+        );
+
+
+        // =================================================
+        // EDITOR
+        // =================================================
+
+        if (
+            role === "editor"
+        ) {
 
             document.body.classList.add(
                 "role-editor"
             );
+
+
+            document.body.classList.add(
+                "content-read-only"
+            );
+
 
             showToast(
                 "Editor mode: Read-only access"
@@ -430,11 +601,13 @@
         }
 
 
-        // -----------------------------------------------
-        // Admin
-        // -----------------------------------------------
+        // =================================================
+        // ADMIN
+        // =================================================
 
-        if (role === "admin") {
+        if (
+            role === "admin"
+        ) {
 
             document.body.classList.add(
                 "role-admin"
@@ -442,11 +615,13 @@
         }
 
 
-        // -----------------------------------------------
-        // Super Admin
-        // -----------------------------------------------
+        // =================================================
+        // SUPER ADMIN
+        // =================================================
 
-        if (role === "super_admin") {
+        if (
+            role === "super_admin"
+        ) {
 
             document.body.classList.add(
                 "role-super-admin"
@@ -454,11 +629,15 @@
         }
 
 
-        // -----------------------------------------------
-        // Content permission
-        // -----------------------------------------------
+        // =================================================
+        // CONTENT PERMISSION
+        // =================================================
 
-        if (!canManageContent(role)) {
+        if (
+            !canManageContent(
+                role
+            )
+        ) {
 
             document.body.classList.add(
                 "content-read-only"
@@ -496,12 +675,12 @@
                 );
 
                 /*
-                 * Even if server sign-out returns
-                 * an error, remove local profile cache
-                 * and send user to login.
+                 * Even if Supabase returns an error,
+                 * we still clear the local cache and
+                 * return the user to login.
                  */
-
             }
+
 
         } catch (error) {
 
@@ -510,7 +689,15 @@
                 error
             );
 
+
         } finally {
+
+            currentSession =
+                null;
+
+            currentProfile =
+                null;
+
 
             try {
 
@@ -519,7 +706,11 @@
                 );
 
             } catch (error) {
-                console.warn(error);
+
+                console.warn(
+                    "Could not clear profile cache.",
+                    error
+                );
             }
 
 
@@ -537,10 +728,15 @@
     function setupLogoutButtons() {
 
         const sidebarLogout =
-            getElement("sidebarLogout");
+            getElement(
+                "sidebarLogout"
+            );
+
 
         const topbarLogout =
-            getElement("topbarLogout");
+            getElement(
+                "topbarLogout"
+            );
 
 
         if (sidebarLogout) {
@@ -569,27 +765,46 @@
     function setupSidebar() {
 
         const sidebar =
-            getElement("adminSidebar");
+            getElement(
+                "adminSidebar"
+            );
+
 
         const toggle =
-            getElement("sidebarToggle");
+            getElement(
+                "sidebarToggle"
+            );
+
 
         const close =
-            getElement("sidebarClose");
+            getElement(
+                "sidebarClose"
+            );
+
 
         const overlay =
-            getElement("sidebarOverlay");
+            getElement(
+                "sidebarOverlay"
+            );
 
 
         function openSidebar() {
 
             if (sidebar) {
-                sidebar.classList.add("open");
+
+                sidebar.classList.add(
+                    "open"
+                );
             }
 
+
             if (overlay) {
-                overlay.classList.add("show");
+
+                overlay.classList.add(
+                    "show"
+                );
             }
+
 
             document.body.style.overflow =
                 "hidden";
@@ -599,12 +814,20 @@
         function closeSidebar() {
 
             if (sidebar) {
-                sidebar.classList.remove("open");
+
+                sidebar.classList.remove(
+                    "open"
+                );
             }
 
+
             if (overlay) {
-                overlay.classList.remove("show");
+
+                overlay.classList.remove(
+                    "show"
+                );
             }
+
 
             document.body.style.overflow =
                 "";
@@ -612,6 +835,7 @@
 
 
         if (toggle) {
+
             toggle.addEventListener(
                 "click",
                 openSidebar
@@ -620,6 +844,7 @@
 
 
         if (close) {
+
             close.addEventListener(
                 "click",
                 closeSidebar
@@ -628,6 +853,7 @@
 
 
         if (overlay) {
+
             overlay.addEventListener(
                 "click",
                 closeSidebar
@@ -635,25 +861,34 @@
         }
 
 
-        // Close sidebar after clicking navigation
+        // =================================================
+        // CLOSE SIDEBAR AFTER NAVIGATION
+        // =================================================
+
         document
-            .querySelectorAll(".admin-nav-item")
-            .forEach(function (item) {
+            .querySelectorAll(
+                ".admin-nav-item"
+            )
+            .forEach(
+                function (item) {
 
-                item.addEventListener(
-                    "click",
-                    function () {
+                    item.addEventListener(
+                        "click",
+                        function () {
 
-                        if (
-                            window.innerWidth <= 800
-                        ) {
-                            closeSidebar();
+                            if (
+                                window.innerWidth <=
+                                800
+                            ) {
+
+                                closeSidebar();
+                            }
+
                         }
+                    );
 
-                    }
-                );
-
-            });
+                }
+            );
     }
 
 
@@ -664,43 +899,70 @@
     function setupModuleButtons() {
 
         document
-            .querySelectorAll(".module-item")
-            .forEach(function (button) {
+            .querySelectorAll(
+                ".module-item"
+            )
+            .forEach(
+                function (button) {
 
-                button.addEventListener(
-                    "click",
-                    function () {
+                    button.addEventListener(
+                        "click",
+                        function () {
 
-                        const module =
-                            button.dataset.module ||
-                            "module";
-
-                        const moduleNames = {
-                            emergency: "Emergency",
-                            hospitals: "Hospitals",
-                            doctors: "Doctors",
-                            tests: "Tests & Fees",
-                            ambulance: "Ambulance",
-                            police: "Police",
-                            government: "Government",
-                            "blood-banks": "Blood Banks",
-                            pharmacies: "Pharmacies"
-                        };
-
-                        const moduleName =
-                            moduleNames[module] ||
-                            "Module";
+                            const module =
+                                button.dataset.module ||
+                                "module";
 
 
-                        showToast(
-                            moduleName +
-                            " module পরবর্তী ধাপে আসছে।"
-                        );
+                            const moduleNames = {
 
-                    }
-                );
+                                emergency:
+                                    "Emergency",
 
-            });
+                                hospitals:
+                                    "Hospitals",
+
+                                doctors:
+                                    "Doctors",
+
+                                tests:
+                                    "Tests & Fees",
+
+                                ambulance:
+                                    "Ambulance",
+
+                                police:
+                                    "Police",
+
+                                government:
+                                    "Government",
+
+                                "blood-banks":
+                                    "Blood Banks",
+
+                                pharmacies:
+                                    "Pharmacies"
+
+                            };
+
+
+                            const moduleName =
+                                moduleNames[
+                                    module
+                                ] ||
+                                "Module";
+
+
+                            showToast(
+                                moduleName +
+                                " module পরবর্তী ধাপে আসছে।"
+                            );
+
+                        }
+                    );
+
+                }
+            );
     }
 
 
@@ -713,11 +975,25 @@
         supabaseClient
             .auth
             .onAuthStateChange(
-                function (event, session) {
+                async function (
+                    event,
+                    session
+                ) {
+
+                    // =========================================
+                    // SIGNED OUT
+                    // =========================================
 
                     if (
-                        event === "SIGNED_OUT"
+                        event ===
+                        "SIGNED_OUT"
                     ) {
+
+                        currentSession =
+                            null;
+
+                        currentProfile =
+                            null;
 
                         redirectToLogin();
 
@@ -725,13 +1001,111 @@
                     }
 
 
+                    // =========================================
+                    // TOKEN REFRESHED
+                    // =========================================
+
                     if (
-                        event === "TOKEN_REFRESHED"
+                        event ===
+                        "TOKEN_REFRESHED"
                     ) {
+
+                        if (!session) {
+
+                            redirectToLogin();
+
+                            return;
+                        }
+
 
                         currentSession =
                             session;
 
+                        return;
+                    }
+
+
+                    // =========================================
+                    // USER SIGNED IN
+                    // =========================================
+
+                    if (
+                        event ===
+                        "SIGNED_IN"
+                    ) {
+
+                        if (!session) {
+
+                            redirectToLogin();
+
+                            return;
+                        }
+
+
+                        currentSession =
+                            session;
+
+
+                        /*
+                         * Only verify profile again
+                         * after the initial guard has already
+                         * been initialized.
+                         *
+                         * This prevents unnecessary duplicate
+                         * queries during page load.
+                         */
+
+                        if (
+                            authInitialized
+                        ) {
+
+                            const profile =
+                                await verifyAdminProfile(
+                                    session.user.id
+                                );
+
+
+                            if (!profile) {
+
+                                try {
+
+                                    await supabaseClient
+                                        .auth
+                                        .signOut();
+
+                                } catch (error) {
+
+                                    console.warn(
+                                        "Could not sign out invalid admin.",
+                                        error
+                                    );
+                                }
+
+
+                                redirectToLogin();
+
+                                return;
+                            }
+
+
+                            currentProfile =
+                                profile;
+
+
+                            saveProfile(
+                                profile
+                            );
+
+
+                            updateAdminUI(
+                                profile
+                            );
+
+
+                            applyRolePermissions(
+                                profile
+                            );
+                        }
                     }
 
                 }
@@ -747,9 +1121,9 @@
 
         try {
 
-            // ---------------------------------------------
-            // Get Supabase session
-            // ---------------------------------------------
+            // =============================================
+            // GET SUPABASE SESSION
+            // =============================================
 
             const {
                 data,
@@ -777,9 +1151,9 @@
                 data?.session;
 
 
-            // ---------------------------------------------
-            // No session
-            // ---------------------------------------------
+            // =============================================
+            // NO SESSION
+            // =============================================
 
             if (!session) {
 
@@ -793,15 +1167,19 @@
                 session;
 
 
-            // ---------------------------------------------
-            // Verify profile from database
-            // ---------------------------------------------
+            // =============================================
+            // VERIFY ADMIN PROFILE
+            // =============================================
 
             const profile =
                 await verifyAdminProfile(
                     session.user.id
                 );
 
+
+            // =============================================
+            // INVALID / NON-ADMIN USER
+            // =============================================
 
             if (!profile) {
 
@@ -831,9 +1209,9 @@
             }
 
 
-            // ---------------------------------------------
-            // Store verified profile
-            // ---------------------------------------------
+            // =============================================
+            // STORE VERIFIED PROFILE
+            // =============================================
 
             currentProfile =
                 profile;
@@ -844,9 +1222,9 @@
             );
 
 
-            // ---------------------------------------------
-            // Update UI
-            // ---------------------------------------------
+            // =============================================
+            // UPDATE UI
+            // =============================================
 
             updateAdminUI(
                 profile
@@ -858,9 +1236,9 @@
             );
 
 
-            // ---------------------------------------------
-            // Setup interactions
-            // ---------------------------------------------
+            // =============================================
+            // SETUP INTERACTIONS
+            // =============================================
 
             setupLogoutButtons();
 
@@ -871,9 +1249,17 @@
             setupAuthListener();
 
 
-            // ---------------------------------------------
-            // Dashboard ready
-            // ---------------------------------------------
+            // =============================================
+            // AUTH INITIALIZED
+            // =============================================
+
+            authInitialized =
+                true;
+
+
+            // =============================================
+            // DASHBOARD READY
+            // =============================================
 
             document.body.classList.add(
                 "admin-authenticated"
@@ -915,52 +1301,86 @@
     } else {
 
         initializeAdminGuard();
+
     }
 
 
     // =====================================================
-    // OPTIONAL GLOBAL ACCESS
+    // GLOBAL ADMIN ACCESS
     // =====================================================
-    //
-    // Future admin modules can use:
-    //
-    // window.DorkariAdmin.getProfile()
-    //
-    // without trusting sessionStorage.
-    //
 
+    /*
+     * Future admin modules can safely use:
+     *
+     * window.DorkariAdmin.getProfile()
+     * window.DorkariAdmin.getSession()
+     * window.DorkariAdmin.getRole()
+     * window.DorkariAdmin.canManageContent()
+     * window.DorkariAdmin.showToast()
+     * window.DorkariAdmin.logout()
+     *
+     * IMPORTANT:
+     *
+     * sessionStorage is only used for UI convenience.
+     * It is NOT trusted for database security.
+     *
+     * Supabase Auth + admin_profiles + RLS
+     * remain the actual security layer.
+     */
 
     window.DorkariAdmin = {
 
-        getProfile: function () {
-            return currentProfile;
-        },
+        getProfile:
+            function () {
 
-        getSession: function () {
-            return currentSession;
-        },
+                return currentProfile;
 
-        getRole: function () {
-            return currentProfile
-                ? currentProfile.role
-                : null;
-        },
+            },
 
-        canManageContent: function () {
 
-            return (
-                currentProfile &&
-                (
-                    currentProfile.role ===
-                        "super_admin" ||
-                    currentProfile.role ===
-                        "admin"
-                )
-            );
-        },
+        getSession:
+            function () {
 
-        logout: logout
+                return currentSession;
+
+            },
+
+
+        getRole:
+            function () {
+
+                return currentProfile
+                    ? currentProfile.role
+                    : null;
+
+            },
+
+
+        canManageContent:
+            function () {
+
+                return (
+                    currentProfile &&
+                    (
+                        currentProfile.role ===
+                            "super_admin" ||
+
+                        currentProfile.role ===
+                            "admin"
+                    )
+                );
+
+            },
+
+
+        showToast:
+            showToast,
+
+
+        logout:
+            logout
 
     };
+
 
 })();
