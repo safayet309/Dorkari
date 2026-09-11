@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dorkari Admin Dashboard</title>
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Main Theme -->
+    <link rel="stylesheet" href="../css/variables.css">
+
+    <!-- Admin Dashboard CSS -->
+    <link rel="stylesheet" href="../css/admin-dashboard.css">
+</head>
+
+<body>
+
+    <!-- =========================================
+         ADMIN APP
+    ========================================== -->
+
+    <div class="admin-app">
+
+        <!-- =====================================
+             SIDEBAR
+        ====================================== -->
+
+        <aside class="admin-sidebar" id="adminSidebar">
+
+            <!-- Brand -->
+            <div class="admin-sidebar-brand">
+
+                <a href="./dashboard.html" class="admin-brand">
+                    <span class="admin-brand-main">
+                        Dorkari
+                    </span>
+
+                    <span class="admin-brand-bn">
+                        দরকারি
+                    </span>
+                </a>
+
+                <button
+                    type="button"
+                    class="sidebar-close"
+                    id="sidebarClose"
+                    aria-label="Close menu"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- Admin Profile -->
+            <div class="admin-profile-mini">
+
+                <div class="admin-avatar" id="adminAvatar">
+                    A
+                </div>
+
+                <div class="admin-profile-info">
+
+                    <strong id="sidebarAdminName">
+                        Admin
+                    </strong>
+
+                    <span id="sidebarAdminRole">
+                        Admin
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Navigation -->
+            <nav class="admin-nav">
+
+                <p class="admin-nav-label">
+                    MAIN
+                </p>
+
+                <a
+                    href="./dashboard.html"
+                    class="admin-nav-item active"
+                >
+                    <span class="nav-icon">⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <p class="admin-nav-label">
+                    MANAGEMENT
+                </p>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="emergency"
+                >
+                    <span class="nav-icon">🚨</span>
+                    <span>Emergency</span>
+                    <small>Soon</small>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="hospitals"
+                >
+                    <span class="nav-icon">🏥</span>
+                    <span>Hospitals</span>
+                    <small>Soon</small>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="doctors"
+                >
+                    <span class="nav-icon">👨‍⚕️</span>
+                    <span>Doctors</span>
+                    <small>Soon</small>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="tests"
+                >
+                    <span class="nav-icon">🧪</span>
+                    <span>Tests & Fees</span>
+                    <small>Soon</small>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="ambulance"
+                >
+                    <span class="nav-icon">🚑</span>
+                    <span>Ambulance</span>
+                    <small>Soon</small>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="police"
+                >
+                    <span class="nav-icon">👮</span>
+                    <span>Police</span>
+                    <small>Soon</small>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="government"
+                >
+                    <span class="nav-icon">🏛️</span>
+                    <span>Government</span>
+                    <small>Soon</small>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="blood-banks"
+                >
+                    <span class="nav-icon">🩸</span>
+                    <span>Blood Banks</span>
+                    <small>Soon</small>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="pharmacies"
+                >
+                    <span class="nav-icon">💊</span>
+                    <span>Pharmacies</span>
+                    <small>Soon</small>
+                </button>
+
+            </nav>
+
+
+            <!-- Sidebar Bottom -->
+            <div class="admin-sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="sidebar-public-link"
+                >
+                    <span>↗</span>
+                    Public Website
+                </a>
+
+                <button
+                    type="button"
+                    class="sidebar-logout"
+                    id="sidebarLogout"
+                >
+                    <span>↪</span>
+                    Logout
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =====================================
+             SIDEBAR OVERLAY
+        ====================================== -->
+
+        <div
+            class="sidebar-overlay"
+            id="sidebarOverlay"
+        ></div>
+
+
+        <!-- =====================================
+             MAIN CONTENT
+        ====================================== -->
+
+        <main class="admin-main">
+
+            <!-- Topbar -->
+            <header class="admin-topbar">
+
+                <button
+                    type="button"
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Open menu"
+                >
+                    ☰
+                </button>
+
+                <div class="topbar-title">
+
+                    <span>Admin Panel</span>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                </div>
+
+
+                <div class="topbar-actions">
+
+                    <div class="topbar-admin">
+
+                        <div
+                            class="topbar-avatar"
+                            id="topbarAvatar"
+                        >
+                            A
+                        </div>
+
+                        <div class="topbar-admin-info">
+
+                            <strong id="topbarAdminName">
+                                Admin
+                            </strong>
+
+                            <span id="topbarAdminRole">
+                                Admin
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="topbar-logout"
+                        id="topbarLogout"
+                    >
+                        Logout
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- Dashboard Content -->
+            <section class="admin-content">
+
+                <!-- Welcome -->
+                <div class="dashboard-welcome">
+
+                    <div>
+                        <span class="welcome-label">
+                            DORKARI ADMIN
+                        </span>
+
+                        <h2>
+                            স্বাগতম,
+                            <span id="welcomeAdminName">
+                                Admin
+                            </span>
+                            👋
+                        </h2>
+
+                        <p>
+                            দরকারি প্ল্যাটফর্মের তথ্য ও সেবা
+                            এখান থেকে পরিচালনা করুন।
+                        </p>
+                    </div>
+
+                    <div class="role-badge" id="roleBadge">
+                        Admin
+                    </div>
+
+                </div>
+
+
+                <!-- Stats -->
+                <div class="dashboard-stats">
+
+                    <div class="dashboard-stat-card">
+
+                        <div class="stat-card-icon">
+                            📊
+                        </div>
+
+                        <div>
+                            <span>
+                                Total Records
+                            </span>
+
+                            <strong>
+                                —
+                            </strong>
+
+                            <small>
+                                Coming soon
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-stat-card">
+
+                        <div class="stat-card-icon">
+                            🏥
+                        </div>
+
+                        <div>
+                            <span>
+                                Hospitals
+                            </span>
+
+                            <strong>
+                                —
+                            </strong>
+
+                            <small>
+                                Coming soon
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-stat-card">
+
+                        <div class="stat-card-icon">
+                            👨‍⚕️
+                        </div>
+
+                        <div>
+                            <span>
+                                Doctors
+                            </span>
+
+                            <strong>
+                                —
+                            </strong>
+
+                            <small>
+                                Coming soon
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="dashboard-stat-card">
+
+                        <div class="stat-card-icon">
+                            🚨
+                        </div>
+
+                        <div>
+                            <span>
+                                Emergency
+                            </span>
+
+                            <strong>
+                                —
+                            </strong>
+
+                            <small>
+                                Coming soon
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Management Modules -->
+                <div class="section-heading">
+
+                    <div>
+                        <span>
+                            MANAGEMENT
+                        </span>
+
+                        <h2>
+                            Information Management
+                        </h2>
+                    </div>
+
+                    <p>
+                        প্রতিটি তথ্য আলাদা module থেকে পরিচালনা করা হবে।
+                    </p>
+
+                </div>
+
+
+                <div class="management-grid">
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="emergency"
+                    >
+                        <span class="management-icon">🚨</span>
+
+                        <span class="management-content">
+                            <strong>Emergency</strong>
+                            <small>জরুরি যোগাযোগ ও হেল্পলাইন</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="hospitals"
+                    >
+                        <span class="management-icon">🏥</span>
+
+                        <span class="management-content">
+                            <strong>Hospitals</strong>
+                            <small>হাসপাতাল ও স্বাস্থ্যসেবা</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="doctors"
+                    >
+                        <span class="management-icon">👨‍⚕️</span>
+
+                        <span class="management-content">
+                            <strong>Doctors</strong>
+                            <small>ডাক্তার ও বিশেষজ্ঞ তথ্য</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="tests"
+                    >
+                        <span class="management-icon">🧪</span>
+
+                        <span class="management-content">
+                            <strong>Tests & Fees</strong>
+                            <small>টেস্ট ও পরীক্ষার ফি</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="ambulance"
+                    >
+                        <span class="management-icon">🚑</span>
+
+                        <span class="management-content">
+                            <strong>Ambulance</strong>
+                            <small>অ্যাম্বুলেন্স সেবা</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="police"
+                    >
+                        <span class="management-icon">👮</span>
+
+                        <span class="management-content">
+                            <strong>Police</strong>
+                            <small>পুলিশ ও থানার তথ্য</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="government"
+                    >
+                        <span class="management-icon">🏛️</span>
+
+                        <span class="management-content">
+                            <strong>Government</strong>
+                            <small>সরকারি অফিস ও সেবা</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="blood-banks"
+                    >
+                        <span class="management-icon">🩸</span>
+
+                        <span class="management-content">
+                            <strong>Blood Banks</strong>
+                            <small>রক্ত ব্যাংক ও যোগাযোগ</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="management-card module-item"
+                        data-module="pharmacies"
+                    >
+                        <span class="management-icon">💊</span>
+
+                        <span class="management-content">
+                            <strong>Pharmacies</strong>
+                            <small>ফার্মেসি ও ওষুধ সেবা</small>
+                        </span>
+
+                        <span class="management-arrow">
+                            →
+                        </span>
+                    </button>
+
+                </div>
+
+
+                <!-- Security Notice -->
+                <div class="security-notice">
+
+                    <div class="security-icon">
+                        🔐
+                    </div>
+
+                    <div>
+                        <strong>
+                            Protected Admin Area
+                        </strong>
+
+                        <p>
+                            এই dashboard Supabase Authentication এবং
+                            Row Level Security দ্বারা সুরক্ষিত।
+                            Database পরিবর্তনের permission server-side
+                            RLS দ্বারা নিয়ন্ত্রিত হবে।
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================
+         TOAST
+    ========================================== -->
+
+    <div
+        class="admin-toast"
+        id="adminToast"
+        role="status"
+        aria-live="polite"
+    >
+        <span id="adminToastMessage"></span>
+    </div>
+
+
+    <!-- =========================================
+         SUPABASE
+    ========================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Config -->
+    <script src="../js/config.js"></script>
+
+    <!-- Auth Guard -->
+    <script src="../js/admin-guard.js"></script>
+
+</body>
+</html>
