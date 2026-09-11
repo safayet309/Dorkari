@@ -1,1 +1,90 @@
+:root {
 
+    /* =================================
+       BRAND COLORS
+    ================================= */
+
+    --primary: #176b4d;
+    --primary-dark: #10523b;
+    --primary-light: #eaf6f0;
+
+    --accent: #e34b4b;
+    --accent-light: #fff1f1;
+
+
+    /* =================================
+       TEXT COLORS
+    ================================= */
+
+    --text: #17211c;
+    --text-soft: #53605a;
+    --text-muted: #7a857f;
+
+
+    /* =================================
+       BACKGROUND
+    ================================= */
+
+    --background: #ffffff;
+    --surface: #ffffff;
+    --surface-soft: #f7f9f8;
+
+
+    /* =================================
+       BORDER
+    ================================= */
+
+    --border: #e5ebe7;
+    --border-strong: #d5ded9;
+
+
+    /* =================================
+       SHADOW
+    ================================= */
+
+    --shadow-sm:
+        0 2px 8px rgba(20, 40, 30, 0.05);
+
+    --shadow-md:
+        0 10px 30px rgba(20, 40, 30, 0.08);
+
+
+    /* =================================
+       RADIUS
+    ================================= */
+
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 22px;
+
+
+    /* =================================
+       LAYOUT
+    ================================= */
+
+    --container-width: 1160px;
+
+    --header-height: 72px;
+
+
+    /* =================================
+       TYPOGRAPHY
+    ================================= */
+
+    --font-main:
+        "Noto Sans Bengali",
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+
+    /* =================================
+       TRANSITION
+    ================================= */
+
+    --transition:
+        180ms ease;
+
+}
