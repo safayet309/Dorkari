@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Dorkari Admin Login"
+    >
+
+    <title>Admin Login — Dorkari</title>
+
+
+    <!-- ======================================
+         GOOGLE FONT
+    ======================================= -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- ======================================
+         MAIN VARIABLES
+    ======================================= -->
+
+    <link
+        rel="stylesheet"
+        href="../css/variables.css"
+    >
+
+
+    <!-- ======================================
+         ADMIN CSS
+    ======================================= -->
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css"
+    >
+
+</head>
+
+
+<body class="admin-login-page">
+
+
+    <!-- ======================================
+         LOGIN WRAPPER
+    ======================================= -->
+
+    <main class="admin-login-wrapper">
+
+
+        <!-- ==================================
+             LOGIN CARD
+        =================================== -->
+
+        <section class="admin-login-card">
+
+
+            <!-- =================================
+                 BRAND
+            ================================== -->
+
+            <div class="admin-login-brand">
+
+                <div class="admin-brand-icon">
+                    D
+                </div>
+
+
+                <div>
+
+                    <h1>
+                        Dorkari
+                    </h1>
+
+                    <span>
+                        দরকারি
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================
+                 HEADING
+            ================================== -->
+
+            <div class="admin-login-heading">
+
+                <p class="admin-login-eyebrow">
+                    ADMIN PANEL
+                </p>
+
+
+                <h2>
+                    স্বাগতম 👋
+                </h2>
+
+
+                <p>
+                    Admin panel-এ প্রবেশ করতে
+                    আপনার account দিয়ে login করুন।
+                </p>
+
+            </div>
+
+
+            <!-- =================================
+                 LOGIN FORM
+            ================================== -->
+
+            <form
+                id="adminLoginForm"
+                class="admin-login-form"
+                novalidate
+            >
+
+
+                <!-- EMAIL -->
+
+                <div class="admin-field">
+
+                    <label for="adminEmail">
+                        Email
+                    </label>
+
+
+                    <input
+                        type="email"
+                        id="adminEmail"
+                        name="email"
+                        placeholder="admin@example.com"
+                        autocomplete="username"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="admin-field">
+
+                    <label for="adminPassword">
+                        Password
+                    </label>
+
+
+                    <div class="admin-password-wrapper">
+
+                        <input
+                            type="password"
+                            id="adminPassword"
+                            name="password"
+                            placeholder="আপনার password লিখুন"
+                            autocomplete="current-password"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="password-toggle"
+                            aria-label="Password দেখান"
+                        >
+                            দেখুন
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ERROR -->
+
+                <div
+                    id="adminLoginError"
+                    class="admin-message admin-error"
+                    role="alert"
+                    hidden
+                ></div>
+
+
+                <!-- LOGIN BUTTON -->
+
+                <button
+                    type="submit"
+                    id="adminLoginButton"
+                    class="admin-login-button"
+                >
+
+                    <span id="adminLoginButtonText">
+                        Login
+                    </span>
+
+
+                    <span
+                        id="adminLoginSpinner"
+                        class="admin-spinner"
+                        hidden
+                    ></span>
+
+                </button>
+
+            </form>
+
+
+            <!-- =================================
+                 BACK TO WEBSITE
+            ================================== -->
+
+            <a
+                href="../index.html"
+                class="admin-back-link"
+            >
+                ← মূল ওয়েবসাইটে ফিরে যান
+            </a>
+
+
+        </section>
+
+    </main>
+
+
+    <!-- ======================================
+         SUPABASE JS
+    ======================================= -->
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+    ></script>
+
+
+    <!-- ======================================
+         CONFIG
+    ======================================= -->
+
+    <script src="../js/config.js"></script>
+
+
+    <!-- ======================================
+         ADMIN AUTH
+    ======================================= -->
+
+    <script src="../js/admin-auth.js"></script>
+
+</body>
+
+</html>
