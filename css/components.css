@@ -1,1 +1,331 @@
+/* =====================================
+   SERVICE GRID
+===================================== */
 
+.service-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+
+.service-card {
+    min-height: 145px;
+
+    padding: 20px;
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 15px;
+
+    position: relative;
+
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition);
+}
+
+
+.service-card:hover {
+    transform: translateY(-3px);
+
+    border-color: var(--border-strong);
+
+    box-shadow: var(--shadow-md);
+}
+
+
+.service-icon {
+    width: 45px;
+    height: 45px;
+
+    flex: 0 0 45px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--primary-light);
+
+    border-radius: 12px;
+
+    font-size: 21px;
+}
+
+
+.service-info {
+    padding-right: 20px;
+}
+
+
+.service-info h3 {
+    font-size: 16px;
+
+    line-height: 1.4;
+}
+
+
+.service-info p {
+    margin-top: 5px;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+.card-arrow {
+    position: absolute;
+
+    right: 17px;
+    bottom: 17px;
+
+    color: var(--text-muted);
+
+    font-size: 17px;
+}
+
+
+.emergency-card .service-icon {
+    background: var(--accent-light);
+}
+
+
+/* =====================================
+   EMERGENCY
+===================================== */
+
+.emergency-preview {
+    background: var(--surface-soft);
+}
+
+
+.emergency-label {
+    color: var(--accent);
+}
+
+
+.emergency-list {
+    display: grid;
+
+    gap: 12px;
+}
+
+
+.emergency-item {
+    padding: 18px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    background: #fff;
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius-md);
+
+    box-shadow: var(--shadow-sm);
+}
+
+
+.emergency-item-icon {
+    width: 48px;
+    height: 48px;
+
+    flex: 0 0 48px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--accent-light);
+
+    border-radius: 13px;
+
+    font-size: 22px;
+}
+
+
+.emergency-item-content {
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.emergency-item-content h3 {
+    font-size: 15px;
+}
+
+
+.emergency-item-content p {
+    margin-top: 2px;
+
+    color: var(--text-muted);
+
+    font-size: 12px;
+}
+
+
+.emergency-number {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--accent);
+
+    font-size: 21px;
+
+    letter-spacing: 0.5px;
+}
+
+
+.emergency-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+.call-btn,
+.copy-btn {
+    padding: 9px 13px;
+
+    border-radius: 9px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    transition: var(--transition);
+}
+
+
+.call-btn {
+    background: var(--primary);
+    color: #fff;
+}
+
+
+.call-btn:hover {
+    background: var(--primary-dark);
+}
+
+
+.copy-btn {
+    background: var(--surface-soft);
+
+    border: 1px solid var(--border);
+
+    color: var(--text-soft);
+}
+
+
+.copy-btn:hover {
+    background: var(--primary-light);
+
+    color: var(--primary);
+}
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width: 760px) {
+
+    .service-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+
+    .service-card {
+        min-height: 135px;
+
+        padding: 15px;
+
+        gap: 11px;
+
+        flex-direction: column;
+    }
+
+
+    .service-info {
+        padding-right: 0;
+    }
+
+
+    .service-info h3 {
+        font-size: 14px;
+    }
+
+
+    .service-info p {
+        font-size: 11px;
+    }
+
+
+    .card-arrow {
+        right: 12px;
+        bottom: 12px;
+    }
+
+
+    .emergency-item {
+        align-items: flex-start;
+
+        padding: 15px;
+
+        flex-wrap: wrap;
+    }
+
+
+    .emergency-item-content {
+        width: calc(100% - 63px);
+    }
+
+
+    .emergency-actions {
+        width: 100%;
+
+        margin-left: 63px;
+    }
+
+
+    .call-btn,
+    .copy-btn {
+        flex: 1;
+
+        text-align: center;
+    }
+
+}
+
+
+@media (max-width: 390px) {
+
+    .service-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
