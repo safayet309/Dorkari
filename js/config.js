@@ -1,18 +1,19 @@
-// =====================================
-// Dorkari - Configuration
-// =====================================
+// ============================================
+// DORKARI — Application Configuration
+// ============================================
 
 const DORKARI_CONFIG = {
 
     APP_NAME: "Dorkari",
-
     APP_NAME_BN: "দরকারি",
 
     SUPABASE: {
 
-        URL: "",
+        URL:
+            "https://jskfmuwnfbgbofufpqfa.supabase.co",
 
-        ANON_KEY: ""
+        PUBLISHABLE_KEY:
+            "sb_publishable_LS5D6OT2GuQqwY9DGTrrpQ_vochYafK"
 
     }
 
