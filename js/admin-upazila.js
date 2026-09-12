@@ -29,6 +29,64 @@
     const upazilaDistrict =
         document.getElementById("upazilaDistrict");
 
+    const upazilaName =
+        document.getElementById("upazilaName");
+
+    const upazilaSlug =
+        document.getElementById("upazilaSlug");
+
+
+    /* =====================================================
+       SLUG
+       ===================================================== */
+       
+    function cleanText(value) {
+
+        return String(value || "").trim();
+
+    }
+    
+    function slugify(value) {
+
+        return cleanText(value)
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "");
+
+    }
+    
+    function handleNameInput() {
+
+        if (
+            !upazilaName ||
+            !upazilaSlug
+        ) {
+            return;
+        }
+
+
+        const name =
+            cleanText(
+                upazilaName.value
+            );
+
+
+        if (!name) {
+
+            upazilaSlug.value = "";
+
+            return;
+
+        }
+
+
+        upazilaSlug.value =
+            slugify(name);
+
+    }
+
 
     /* =====================================================
        LOAD DISTRICTS
@@ -266,6 +324,20 @@
                 }
 
             }
+        );
+
+    }
+
+
+    /* =====================================================
+       AUTO SLUG
+       ===================================================== */
+       
+    if (upazilaName) {
+
+        upazilaName.addEventListener(
+            "input",
+            handleNameInput
         );
 
     }
