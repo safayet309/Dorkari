@@ -1,10 +1,18 @@
 /* =========================================================
    DORKARI — ADMIN UPAZILA MANAGEMENT
-   F-7.4 — UI FOUNDATION
+   F-7.4 — ADD UPAZILA
    ========================================================= */
 
 (function () {
+
     "use strict";
+
+
+    /* =====================================================
+       CONFIG
+       ===================================================== */
+
+    const TABLE_UPAZILAS = "upazilas";
 
 
     /* =====================================================
@@ -12,49 +20,237 @@
        ===================================================== */
 
     const sectionAddUpazilaButton =
-        document.getElementById("sectionAddUpazilaButton");
+        document.getElementById(
+            "sectionAddUpazilaButton"
+        );
 
     const upazilaFormPanel =
-        document.getElementById("upazilaFormPanel");
+        document.getElementById(
+            "upazilaFormPanel"
+        );
 
     const closeUpazilaForm =
-        document.getElementById("closeUpazilaForm");
+        document.getElementById(
+            "closeUpazilaForm"
+        );
 
     const cancelUpazilaButton =
-        document.getElementById("cancelUpazilaButton");
+        document.getElementById(
+            "cancelUpazilaButton"
+        );
 
     const upazilaForm =
-        document.getElementById("upazilaForm");
+        document.getElementById(
+            "upazilaForm"
+        );
 
     const upazilaDistrict =
-        document.getElementById("upazilaDistrict");
+        document.getElementById(
+            "upazilaDistrict"
+        );
 
     const upazilaName =
-        document.getElementById("upazilaName");
+        document.getElementById(
+            "upazilaName"
+        );
+
+    const upazilaNameBn =
+        document.getElementById(
+            "upazilaNameBn"
+        );
 
     const upazilaSlug =
-        document.getElementById("upazilaSlug");
+        document.getElementById(
+            "upazilaSlug"
+        );
+
+    const upazilaIsActive =
+        document.getElementById(
+            "upazilaIsActive"
+        );
+
+    const saveUpazilaButton =
+        document.getElementById(
+            "saveUpazilaButton"
+        );
+
+
+    /* =====================================================
+       SUPABASE
+       ===================================================== */
+
+    function getSupabaseClient() {
+
+        const admin =
+            window.DorkariAdmin;
+
+
+        if (
+            !admin ||
+            typeof admin.getSupabase !==
+            "function"
+        ) {
+
+            return null;
+
+        }
+
+
+        return admin.getSupabase();
+
+    }
+
+
+    /* =====================================================
+       PERMISSION
+       ===================================================== */
+
+    function canManageUpazila() {
+
+        const admin =
+            window.DorkariAdmin;
+
+
+        if (
+            !admin ||
+            typeof admin.canManageContent !==
+            "function"
+        ) {
+
+            return false;
+
+        }
+
+
+        return admin.canManageContent();
+
+    }
+
+
+    /* =====================================================
+       TOAST
+       ===================================================== */
+
+    function showToast(
+        message,
+        type
+    ) {
+
+        const toast =
+            document.getElementById(
+                "adminToast"
+            );
+
+        const toastMessage =
+            document.getElementById(
+                "adminToastMessage"
+            );
+
+
+        if (
+            !toast ||
+            !toastMessage
+        ) {
+
+            console.log(
+                message
+            );
+
+            return;
+
+        }
+
+
+        toastMessage.textContent =
+            message;
+
+
+        toast.classList.remove(
+            "success",
+            "error",
+            "show"
+        );
+
+
+        toast.classList.add(
+            type || "success"
+        );
+
+
+        /*
+         * Small delay ensures the
+         * CSS transition works.
+         */
+
+        window.setTimeout(
+            function () {
+
+                toast.classList.add(
+                    "show"
+                );
+
+            },
+            10
+        );
+
+
+        window.clearTimeout(
+            showToast.timer
+        );
+
+
+        showToast.timer =
+            window.setTimeout(
+                function () {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                },
+                3000
+            );
+
+    }
+
+
+    /* =====================================================
+       TEXT
+       ===================================================== */
+
+    function cleanText(value) {
+
+        return String(
+            value || ""
+        ).trim();
+
+    }
 
 
     /* =====================================================
        SLUG
        ===================================================== */
 
-    function cleanText(value) {
-
-        return String(value || "").trim();
-
-    }
-
-
     function slugify(value) {
 
         return cleanText(value)
             .toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, "")
-            .replace(/\s+/g, "-")
-            .replace(/-+/g, "-")
-            .replace(/^-|-$/g, "");
+            .replace(
+                /[^a-z0-9\s-]/g,
+                ""
+            )
+            .replace(
+                /\s+/g,
+                "-"
+            )
+            .replace(
+                /-+/g,
+                "-"
+            )
+            .replace(
+                /^-|-$/g,
+                ""
+            );
 
     }
 
@@ -65,7 +261,9 @@
             !upazilaName ||
             !upazilaSlug
         ) {
+
             return;
+
         }
 
 
@@ -77,7 +275,8 @@
 
         if (!name) {
 
-            upazilaSlug.value = "";
+            upazilaSlug.value =
+                "";
 
             return;
 
@@ -97,7 +296,9 @@
     function loadDistrictOptions() {
 
         if (!upazilaDistrict) {
+
             return;
+
         }
 
 
@@ -107,7 +308,8 @@
 
         if (
             !districtAPI ||
-            typeof districtAPI.getDistricts !== "function"
+            typeof districtAPI.getDistricts !==
+            "function"
         ) {
 
             window.setTimeout(
@@ -124,31 +326,36 @@
             districtAPI.getDistricts();
 
 
-        /*
-         * Only active Districts should be available
-         * for creating an Upazila.
-         */
-
         const activeDistricts =
             (districts || []).filter(
                 function (district) {
 
-                    return district.is_active === true;
+                    return (
+                        district.is_active ===
+                        true
+                    );
 
                 }
             );
 
 
-        upazilaDistrict.innerHTML = "";
+        upazilaDistrict.innerHTML =
+            "";
 
 
         const defaultOption =
-            document.createElement("option");
+            document.createElement(
+                "option"
+            );
 
-        defaultOption.value = "";
+
+        defaultOption.value =
+            "";
+
 
         defaultOption.textContent =
             "District নির্বাচন করুন";
+
 
         upazilaDistrict.appendChild(
             defaultOption
@@ -159,7 +366,9 @@
             function (district) {
 
                 const option =
-                    document.createElement("option");
+                    document.createElement(
+                        "option"
+                    );
 
 
                 option.value =
@@ -182,16 +391,21 @@
 
 
     /* =====================================================
-       FORM VALIDATION
+       FORM ERROR
        ===================================================== */
 
     function clearFormErrors() {
 
         const errors = [
+
             "upazilaDistrictError",
+
             "upazilaNameError",
+
             "upazilaNameBnError",
+
             "upazilaSlugError"
+
         ];
 
 
@@ -199,12 +413,15 @@
             function (id) {
 
                 const element =
-                    document.getElementById(id);
+                    document.getElementById(
+                        id
+                    );
 
 
                 if (element) {
 
-                    element.textContent = "";
+                    element.textContent =
+                        "";
 
                     element.classList.remove(
                         "show"
@@ -217,10 +434,15 @@
 
 
         const fields = [
+
             "upazilaDistrict",
+
             "upazilaName",
+
             "upazilaNameBn",
+
             "upazilaSlug"
+
         ];
 
 
@@ -228,7 +450,9 @@
             function (id) {
 
                 const element =
-                    document.getElementById(id);
+                    document.getElementById(
+                        id
+                    );
 
 
                 if (element) {
@@ -280,12 +504,17 @@
     }
 
 
+    /* =====================================================
+       VALIDATION
+       ===================================================== */
+
     function validateUpazilaForm() {
 
         clearFormErrors();
 
 
-        let isValid = true;
+        let isValid =
+            true;
 
 
         /* ---------------------------------------------
@@ -305,7 +534,8 @@
                 "District নির্বাচন করুন।"
             );
 
-            isValid = false;
+            isValid =
+                false;
 
         }
 
@@ -327,7 +557,8 @@
                 "Name (English) দিন।"
             );
 
-            isValid = false;
+            isValid =
+                false;
 
         }
 
@@ -335,12 +566,6 @@
         /* ---------------------------------------------
            Bangla Name
            --------------------------------------------- */
-
-        const upazilaNameBn =
-            document.getElementById(
-                "upazilaNameBn"
-            );
-
 
         if (
             !upazilaNameBn ||
@@ -355,7 +580,8 @@
                 "নাম (বাংলা) দিন।"
             );
 
-            isValid = false;
+            isValid =
+                false;
 
         }
 
@@ -377,12 +603,66 @@
                 "Slug তৈরি হয়নি। English Name পরীক্ষা করুন।"
             );
 
-            isValid = false;
+            isValid =
+                false;
 
         }
 
 
         return isValid;
+
+    }
+
+
+    /* =====================================================
+       SUPABASE ERROR MESSAGE
+       ===================================================== */
+
+    function getSupabaseErrorMessage(
+        error
+    ) {
+
+        if (!error) {
+
+            return "তথ্য সংরক্ষণ করতে সমস্যা হয়েছে।";
+
+        }
+
+
+        if (
+            error.code ===
+            "23505"
+        ) {
+
+            return "এই District-এর মধ্যে এই Slug ইতোমধ্যে আছে।";
+
+        }
+
+
+        if (
+            error.code ===
+            "23503"
+        ) {
+
+            return "নির্বাচিত District সঠিক নয়।";
+
+        }
+
+
+        if (
+            error.code ===
+            "42501"
+        ) {
+
+            return "আপনার এই কাজের অনুমতি নেই।";
+
+        }
+
+
+        return (
+            error.message ||
+            "তথ্য সংরক্ষণ করতে সমস্যা হয়েছে।"
+        );
 
     }
 
@@ -394,7 +674,9 @@
     function openUpazilaForm() {
 
         if (!upazilaFormPanel) {
+
             return;
+
         }
 
 
@@ -406,15 +688,9 @@
         );
 
 
-        const firstField =
-            document.getElementById(
-                "upazilaDistrict"
-            );
+        if (upazilaDistrict) {
 
-
-        if (firstField) {
-
-            firstField.focus();
+            upazilaDistrict.focus();
 
         }
 
@@ -428,7 +704,9 @@
     function closeUpazilaFormPanel() {
 
         if (!upazilaFormPanel) {
+
             return;
+
         }
 
 
@@ -446,27 +724,230 @@
     function resetUpazilaForm() {
 
         if (!upazilaForm) {
+
             return;
+
         }
 
 
         upazilaForm.reset();
 
 
-        const isActive =
-            document.getElementById(
-                "upazilaIsActive"
-            );
+        if (upazilaIsActive) {
 
-
-        if (isActive) {
-
-            isActive.checked = true;
+            upazilaIsActive.checked =
+                true;
 
         }
 
 
         clearFormErrors();
+
+    }
+
+
+    /* =====================================================
+       SAVE — INSERT UPAZILA
+       ===================================================== */
+
+    async function saveUpazila() {
+
+        const isValid =
+            validateUpazilaForm();
+
+
+        if (!isValid) {
+
+            return;
+
+        }
+
+
+        /* ---------------------------------------------
+           Permission
+           --------------------------------------------- */
+
+        if (!canManageUpazila()) {
+
+            showToast(
+                "আপনার এই কাজের অনুমতি নেই।",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        /* ---------------------------------------------
+           Supabase
+           --------------------------------------------- */
+
+        const supabase =
+            getSupabaseClient();
+
+
+        if (!supabase) {
+
+            showToast(
+                "Supabase সংযোগ পাওয়া যায়নি।",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        /* ---------------------------------------------
+           Values
+           --------------------------------------------- */
+
+        const districtId =
+            cleanText(
+                upazilaDistrict.value
+            );
+
+        const name =
+            cleanText(
+                upazilaName.value
+            );
+
+        const nameBn =
+            cleanText(
+                upazilaNameBn.value
+            );
+
+        const slug =
+            cleanText(
+                upazilaSlug.value
+            );
+
+
+        /* ---------------------------------------------
+           Button loading
+           --------------------------------------------- */
+
+        if (saveUpazilaButton) {
+
+            saveUpazilaButton.disabled =
+                true;
+
+            saveUpazilaButton.textContent =
+                "Saving...";
+
+        }
+
+
+        try {
+
+            /* -----------------------------------------
+               Payload
+               ----------------------------------------- */
+
+            const payload = {
+
+                district_id:
+                    districtId,
+
+                name:
+                    name,
+
+                name_bn:
+                    nameBn,
+
+                slug:
+                    slug,
+
+                is_active:
+                    upazilaIsActive
+                        ? upazilaIsActive.checked
+                        : true
+
+            };
+
+
+            /* -----------------------------------------
+               INSERT
+               ----------------------------------------- */
+
+            const {
+                error
+            } = await supabase
+                .from(
+                    TABLE_UPAZILAS
+                )
+                .insert(
+                    payload
+                );
+
+
+            if (error) {
+
+                throw error;
+
+            }
+
+
+            /* -----------------------------------------
+               SUCCESS
+               ----------------------------------------- */
+
+            showToast(
+                "Upazila সফলভাবে যোগ হয়েছে।",
+                "success"
+            );
+
+
+            resetUpazilaForm();
+
+            closeUpazilaFormPanel();
+
+
+            /*
+             * Refresh location summary if available.
+             */
+
+            if (
+                window.DorkariLocation &&
+                typeof window.DorkariLocation
+                    .refreshSummary ===
+                "function"
+            ) {
+
+                window.DorkariLocation
+                    .refreshSummary();
+
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Upazila save error:",
+                error
+            );
+
+
+            showToast(
+                getSupabaseErrorMessage(
+                    error
+                ),
+                "error"
+            );
+
+        } finally {
+
+            if (saveUpazilaButton) {
+
+                saveUpazilaButton.disabled =
+                    !canManageUpazila();
+
+                saveUpazilaButton.textContent =
+                    "Save Upazila";
+
+            }
+
+        }
 
     }
 
@@ -542,7 +1023,7 @@
 
 
     /* =====================================================
-       FORM SUBMIT — VALIDATION ONLY
+       FORM SUBMIT
        ===================================================== */
 
     if (upazilaForm) {
@@ -553,25 +1034,7 @@
 
                 event.preventDefault();
 
-
-                const isValid =
-                    validateUpazilaForm();
-
-
-                if (!isValid) {
-
-                    console.log(
-                        "Upazila form validation failed."
-                    );
-
-                    return;
-
-                }
-
-
-                console.log(
-                    "Upazila form validation passed. Supabase insert will be added next."
-                );
+                saveUpazila();
 
             }
         );
@@ -587,6 +1050,18 @@
 
 
     /* =====================================================
+       INITIAL PERMISSION UI
+       ===================================================== */
+
+    if (saveUpazilaButton) {
+
+        saveUpazilaButton.disabled =
+            !canManageUpazila();
+
+    }
+
+
+    /* =====================================================
        PUBLIC API
        ===================================================== */
 
@@ -596,7 +1071,7 @@
             openUpazilaForm,
 
         closeForm:
-            closeUpazilaForm,
+            closeUpazilaFormPanel,
 
         resetForm:
             resetUpazilaForm,
@@ -605,7 +1080,10 @@
             loadDistrictOptions,
 
         validateForm:
-            validateUpazilaForm
+            validateUpazilaForm,
+
+        save:
+            saveUpazila
 
     };
 
