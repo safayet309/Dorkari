@@ -1,1 +1,1187 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
 
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#176b4d"
+    >
+
+    <title>Location Management — Dorkari</title>
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- =====================================================
+         GLOBAL / ADMIN CSS
+         ===================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="../css/variables.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin-dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin-crud.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin-location.css"
+    >
+</head>
+
+<body>
+
+    <!-- =====================================================
+         ADMIN APP
+         ===================================================== -->
+
+    <div class="admin-app">
+
+        <!-- =================================================
+             SIDEBAR
+             ================================================= -->
+
+        <aside
+            class="admin-sidebar"
+            id="adminSidebar"
+        >
+
+            <!-- Brand -->
+            <div class="admin-sidebar-brand">
+
+                <a
+                    href="./dashboard.html"
+                    class="admin-brand"
+                    aria-label="Dorkari Dashboard"
+                >
+
+                    <span class="admin-brand-main">
+                        Dorkari
+                    </span>
+
+                    <span class="admin-brand-bn">
+                        দরকারি
+                    </span>
+
+                </a>
+
+                <button
+                    type="button"
+                    class="sidebar-close"
+                    id="sidebarClose"
+                    aria-label="Sidebar বন্ধ করুন"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- Admin Profile -->
+            <div class="admin-profile-mini">
+
+                <div
+                    class="admin-avatar"
+                    id="adminAvatar"
+                >
+                    A
+                </div>
+
+                <div class="admin-profile-info">
+
+                    <strong id="sidebarAdminName">
+                        Admin
+                    </strong>
+
+                    <span id="sidebarAdminRole">
+                        Administrator
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Navigation -->
+            <nav
+                class="admin-nav"
+                aria-label="Admin navigation"
+            >
+
+                <div class="admin-nav-label">
+                    MAIN
+                </div>
+
+
+                <!-- Dashboard -->
+                <a
+                    href="./dashboard.html"
+                    class="admin-nav-item"
+                >
+
+                    <span class="nav-icon">
+                        ⌂
+                    </span>
+
+                    <span>
+                        Dashboard
+                    </span>
+
+                </a>
+
+
+                <div class="admin-nav-label">
+                    MANAGEMENT
+                </div>
+
+
+                <!-- Location -->
+                <a
+                    href="./location.html"
+                    class="admin-nav-item active"
+                    aria-current="page"
+                >
+
+                    <span class="nav-icon">
+                        📍
+                    </span>
+
+                    <span>
+                        Location
+                    </span>
+
+                </a>
+
+
+                <!-- Emergency -->
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="emergency"
+                >
+
+                    <span class="nav-icon">
+                        🚨
+                    </span>
+
+                    <span>
+                        Emergency
+                    </span>
+
+                    <small>
+                        Soon
+                    </small>
+
+                </button>
+
+
+                <!-- Hospitals -->
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="hospitals"
+                >
+
+                    <span class="nav-icon">
+                        🏥
+                    </span>
+
+                    <span>
+                        Hospitals
+                    </span>
+
+                    <small>
+                        Soon
+                    </small>
+
+                </button>
+
+
+                <!-- Doctors -->
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="doctors"
+                >
+
+                    <span class="nav-icon">
+                        👨‍⚕️
+                    </span>
+
+                    <span>
+                        Doctors
+                    </span>
+
+                    <small>
+                        Soon
+                    </small>
+
+                </button>
+
+
+                <!-- Services -->
+                <button
+                    type="button"
+                    class="admin-nav-item module-item"
+                    data-module="services"
+                >
+
+                    <span class="nav-icon">
+                        🧰
+                    </span>
+
+                    <span>
+                        Services
+                    </span>
+
+                    <small>
+                        Soon
+                    </small>
+
+                </button>
+
+            </nav>
+
+
+            <!-- Sidebar Bottom -->
+            <div class="admin-sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="sidebar-public-link"
+                    target="_blank"
+                    rel="noopener"
+                >
+
+                    <span>
+                        ↗
+                    </span>
+
+                    Public Website
+
+                </a>
+
+
+                <button
+                    type="button"
+                    class="sidebar-logout"
+                    id="sidebarLogout"
+                >
+
+                    <span>
+                        ⇥
+                    </span>
+
+                    Logout
+
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- =================================================
+             SIDEBAR OVERLAY
+             ================================================= -->
+
+        <div
+            class="sidebar-overlay"
+            id="sidebarOverlay"
+        ></div>
+
+
+        <!-- =================================================
+             MAIN
+             ================================================= -->
+
+        <main class="admin-main">
+
+
+            <!-- =============================================
+                 TOPBAR
+                 ============================================= -->
+
+            <header class="admin-topbar">
+
+                <button
+                    type="button"
+                    class="sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Menu খুলুন"
+                    aria-expanded="false"
+                >
+                    ☰
+                </button>
+
+
+                <div class="topbar-title">
+
+                    <span>
+                        Location Management
+                    </span>
+
+                </div>
+
+
+                <div class="topbar-actions">
+
+                    <div class="topbar-admin">
+
+                        <div
+                            class="topbar-avatar"
+                            id="topbarAvatar"
+                        >
+                            A
+                        </div>
+
+                        <div class="topbar-admin-info">
+
+                            <strong id="topbarAdminName">
+                                Admin
+                            </strong>
+
+                            <span id="topbarAdminRole">
+                                Administrator
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="topbar-logout"
+                        id="topbarLogout"
+                    >
+                        Logout
+                    </button>
+
+                </div>
+
+            </header>
+
+
+            <!-- =============================================
+                 CONTENT
+                 ============================================= -->
+
+            <div class="admin-content location-page">
+
+
+                <!-- =========================================
+                     PAGE HEADER
+                     ========================================= -->
+
+                <section class="location-page-header">
+
+                    <div class="location-page-heading">
+
+                        <span class="section-eyebrow">
+                            LOCATION
+                        </span>
+
+                        <h1>
+                            Location Management
+                        </h1>
+
+                        <p>
+                            বাংলাদেশের বিভাগ, জেলা ও উপজেলা
+                            ব্যবস্থাপনা এখান থেকে নিয়ন্ত্রণ করুন।
+                        </p>
+
+                    </div>
+
+
+                    <div class="location-page-actions">
+
+                        <a
+                            href="./dashboard.html"
+                            class="crud-btn crud-btn-secondary"
+                        >
+                            ← Dashboard
+                        </a>
+
+                        <button
+                            type="button"
+                            class="crud-btn crud-btn-primary"
+                            id="addLocationButton"
+                        >
+                            + Add Division
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================================
+                     PERMISSION NOTICE
+                     ========================================= -->
+
+                <div
+                    class="location-permission-notice"
+                    id="locationPermissionNotice"
+                >
+
+                    <div class="location-permission-icon">
+                        ⚠️
+                    </div>
+
+                    <div class="location-permission-content">
+
+                        <strong>
+                            View Only Access
+                        </strong>
+
+                        <p>
+                            আপনার বর্তমান role থেকে Location data
+                            পরিবর্তন করার অনুমতি নেই।
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     LOCATION TABS
+                     ========================================= -->
+
+                <div
+                    class="location-tabs"
+                    role="tablist"
+                    aria-label="Location levels"
+                >
+
+                    <button
+                        type="button"
+                        class="location-tab active"
+                        id="divisionTab"
+                        data-location-tab="division"
+                        role="tab"
+                        aria-selected="true"
+                    >
+                        Division
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="location-tab"
+                        id="districtTab"
+                        data-location-tab="district"
+                        role="tab"
+                        aria-selected="false"
+                    >
+                        District
+                    </button>
+
+
+                    <button
+                        type="button"
+                        class="location-tab"
+                        id="upazilaTab"
+                        data-location-tab="upazila"
+                        role="tab"
+                        aria-selected="false"
+                    >
+                        Upazila
+                    </button>
+
+                </div>
+
+
+                <!-- =========================================
+                     LOCATION SUMMARY
+                     ========================================= -->
+
+                <div class="location-summary">
+
+                    <!-- Divisions -->
+                    <div class="location-summary-card">
+
+                        <div class="location-summary-icon">
+                            🗺️
+                        </div>
+
+                        <div class="location-summary-content">
+
+                            <span class="location-summary-label">
+                                Total Divisions
+                            </span>
+
+                            <strong
+                                class="location-summary-number"
+                                id="locationDivisionCount"
+                            >
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Districts -->
+                    <div class="location-summary-card">
+
+                        <div class="location-summary-icon">
+                            📍
+                        </div>
+
+                        <div class="location-summary-content">
+
+                            <span class="location-summary-label">
+                                Total Districts
+                            </span>
+
+                            <strong
+                                class="location-summary-number"
+                                id="locationDistrictCount"
+                            >
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Upazilas -->
+                    <div class="location-summary-card">
+
+                        <div class="location-summary-icon">
+                            🏘️
+                        </div>
+
+                        <div class="location-summary-content">
+
+                            <span class="location-summary-label">
+                                Total Upazilas
+                            </span>
+
+                            <strong
+                                class="location-summary-number"
+                                id="locationUpazilaCount"
+                            >
+                                —
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================================
+                     DIVISION MANAGEMENT
+                     ========================================= -->
+
+                <section
+                    class="location-section"
+                    id="divisionManagementSection"
+                    data-location-section="division"
+                >
+
+
+                    <!-- Section Header -->
+                    <div class="location-section-header">
+
+                        <div class="location-section-title">
+
+                            <h2>
+                                Division Management
+                            </h2>
+
+                            <p>
+                                বাংলাদেশের সক্রিয় বিভাগগুলো
+                                পরিচালনা করুন।
+                            </p>
+
+                        </div>
+
+
+                        <div class="location-section-tools">
+
+                            <button
+                                type="button"
+                                class="crud-btn crud-btn-primary"
+                                id="sectionAddDivisionButton"
+                            >
+                                + Add Division
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         DIVISION FORM
+                         ===================================== -->
+
+                    <div
+                        class="location-form-panel"
+                        id="divisionFormPanel"
+                    >
+
+                        <div class="location-form-header">
+
+                            <div class="location-form-heading">
+
+                                <h3 id="divisionFormTitle">
+                                    Add Division
+                                </h3>
+
+                                <p>
+                                    Division-এর প্রয়োজনীয় তথ্য দিন।
+                                </p>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                class="location-form-close"
+                                id="closeDivisionForm"
+                                aria-label="Form বন্ধ করুন"
+                            >
+                                ×
+                            </button>
+
+                        </div>
+
+
+                        <form
+                            id="divisionForm"
+                            class="location-form-grid"
+                            novalidate
+                        >
+
+                            <!-- Division Name -->
+                            <div class="location-form-group">
+
+                                <label
+                                    for="divisionName"
+                                    class="location-form-label"
+                                >
+                                    Name (English)
+                                    <span class="location-required">
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="divisionName"
+                                    name="name"
+                                    class="location-form-input"
+                                    placeholder="e.g. Dhaka"
+                                    autocomplete="off"
+                                >
+
+                                <span
+                                    class="location-field-error"
+                                    id="divisionNameError"
+                                ></span>
+
+                            </div>
+
+
+                            <!-- Division Name Bangla -->
+                            <div class="location-form-group">
+
+                                <label
+                                    for="divisionNameBn"
+                                    class="location-form-label"
+                                >
+                                    নাম (বাংলা)
+                                    <span class="location-required">
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="divisionNameBn"
+                                    name="name_bn"
+                                    class="location-form-input"
+                                    placeholder="যেমন: ঢাকা"
+                                    autocomplete="off"
+                                >
+
+                                <span
+                                    class="location-field-error"
+                                    id="divisionNameBnError"
+                                ></span>
+
+                            </div>
+
+
+                            <!-- Slug -->
+                            <div class="location-form-group">
+
+                                <label
+                                    for="divisionSlug"
+                                    class="location-form-label"
+                                >
+                                    Slug
+                                    <span class="location-required">
+                                        *
+                                    </span>
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="divisionSlug"
+                                    name="slug"
+                                    class="location-form-input"
+                                    placeholder="e.g. dhaka"
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                >
+
+                                <span
+                                    class="location-field-error"
+                                    id="divisionSlugError"
+                                ></span>
+
+                            </div>
+
+
+                            <!-- Active Status -->
+                            <div class="location-form-group">
+
+                                <label class="location-form-label">
+                                    Status
+                                </label>
+
+                                <div class="location-checkbox-group">
+
+                                    <input
+                                        type="checkbox"
+                                        id="divisionIsActive"
+                                        name="is_active"
+                                        class="location-checkbox"
+                                        checked
+                                    >
+
+                                    <label
+                                        for="divisionIsActive"
+                                        class="location-checkbox-label"
+                                    >
+                                        Active Division
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Form Actions -->
+                            <div class="location-form-actions">
+
+                                <button
+                                    type="button"
+                                    class="crud-btn crud-btn-secondary"
+                                    id="cancelDivisionButton"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    class="crud-btn crud-btn-primary"
+                                    id="saveDivisionButton"
+                                >
+                                    Save Division
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         SEARCH / FILTER
+                         ===================================== -->
+
+                    <div class="location-toolbar">
+
+                        <div class="location-search-wrap">
+
+                            <span
+                                class="location-search-icon"
+                                aria-hidden="true"
+                            >
+                                🔍
+                            </span>
+
+                            <input
+                                type="search"
+                                id="divisionSearch"
+                                class="location-search"
+                                placeholder="Division খুঁজুন..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <div class="location-filter-group">
+
+                            <select
+                                id="divisionStatusFilter"
+                                class="location-form-select"
+                                aria-label="Division status"
+                            >
+
+                                <option value="active">
+                                    Active
+                                </option>
+
+                                <option value="all">
+                                    All
+                                </option>
+
+                                <option value="inactive">
+                                    Inactive
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         DIVISION TABLE
+                         ===================================== -->
+
+                    <div
+                        class="location-table-wrapper"
+                        id="divisionTableWrapper"
+                    >
+
+                        <!-- Loading State -->
+                        <div
+                            class="location-state"
+                            id="divisionLoadingState"
+                        >
+
+                            <div class="location-state-icon">
+                                ⏳
+                            </div>
+
+                            <h3>
+                                Division data লোড হচ্ছে...
+                            </h3>
+
+                            <p>
+                                অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন।
+                            </p>
+
+                        </div>
+
+
+                        <!-- Empty State -->
+                        <div
+                            class="location-state"
+                            id="divisionEmptyState"
+                            hidden
+                        >
+
+                            <div class="location-state-icon">
+                                🗺️
+                            </div>
+
+                            <h3>
+                                কোনো Division পাওয়া যায়নি
+                            </h3>
+
+                            <p>
+                                নতুন Division যোগ করলে এখানে
+                                দেখা যাবে।
+                            </p>
+
+                        </div>
+
+
+                        <!-- Error State -->
+                        <div
+                            class="location-state error"
+                            id="divisionErrorState"
+                            hidden
+                        >
+
+                            <div class="location-state-icon">
+                                ⚠️
+                            </div>
+
+                            <h3>
+                                তথ্য লোড করা যায়নি
+                            </h3>
+
+                            <p id="divisionErrorMessage">
+                                Division data আনতে সমস্যা হয়েছে।
+                            </p>
+
+                        </div>
+
+
+                        <!-- Table -->
+                        <table
+                            class="location-table"
+                            id="divisionTable"
+                            hidden
+                        >
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Division
+                                    </th>
+
+                                    <th>
+                                        Slug
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Created
+                                    </th>
+
+                                    <th>
+                                        Actions
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="divisionTableBody">
+
+                                <!-- JS will render rows -->
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- =====================================
+                         PAGINATION
+                         ===================================== -->
+
+                    <div
+                        class="location-pagination"
+                        id="divisionPagination"
+                        hidden
+                    >
+
+                        <div
+                            class="location-pagination-info"
+                            id="divisionPaginationInfo"
+                        >
+                            Showing 0 divisions
+                        </div>
+
+
+                        <div
+                            class="location-pagination-controls"
+                            id="divisionPaginationControls"
+                        >
+
+                            <!-- JS will render pagination -->
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================================
+                     DISTRICT SECTION — FOUNDATION
+                     ========================================= -->
+
+                <section
+                    class="location-section"
+                    id="districtManagementSection"
+                    data-location-section="district"
+                    hidden
+                >
+
+                    <div class="location-section-header">
+
+                        <div class="location-section-title">
+
+                            <h2>
+                                District Management
+                            </h2>
+
+                            <p>
+                                Division অনুযায়ী জেলা পরিচালনা করুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="location-state">
+
+                        <div class="location-state-icon">
+                            📍
+                        </div>
+
+                        <h3>
+                            District Management
+                        </h3>
+
+                        <p>
+                            District CRUD পরবর্তী ধাপে যুক্ত করা হবে।
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =========================================
+                     UPAZILA SECTION — FOUNDATION
+                     ========================================= -->
+
+                <section
+                    class="location-section"
+                    id="upazilaManagementSection"
+                    data-location-section="upazila"
+                    hidden
+                >
+
+                    <div class="location-section-header">
+
+                        <div class="location-section-title">
+
+                            <h2>
+                                Upazila Management
+                            </h2>
+
+                            <p>
+                                District অনুযায়ী উপজেলা পরিচালনা করুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="location-state">
+
+                        <div class="location-state-icon">
+                            🏘️
+                        </div>
+
+                        <h3>
+                            Upazila Management
+                        </h3>
+
+                        <p>
+                            Upazila CRUD পরবর্তী ধাপে যুক্ত করা হবে।
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- =====================================================
+         ADMIN TOAST
+         ===================================================== -->
+
+    <div
+        class="admin-toast"
+        id="adminToast"
+        role="status"
+        aria-live="polite"
+    >
+
+        <span
+            class="admin-toast-message"
+            id="adminToastMessage"
+        ></span>
+
+    </div>
+
+
+    <!-- =====================================================
+         SCRIPTS
+         ===================================================== -->
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Project Config -->
+    <script src="../js/config.js"></script>
+
+    <!-- Admin Guard -->
+    <script src="../js/admin-guard.js"></script>
+
+    <!-- CRUD Foundation -->
+    <script src="../js/admin-crud.js"></script>
+
+</body>
+</html>
