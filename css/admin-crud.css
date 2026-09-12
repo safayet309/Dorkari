@@ -1,0 +1,705 @@
+/* =========================================================
+   DORKARI — ADMIN CRUD FOUNDATION
+   File: css/admin-crud.css
+
+   Shared styles for future:
+   - Tables
+   - Forms
+   - Buttons
+   - Modals
+   - CRUD states
+
+   This file is intentionally modular.
+   ========================================================= */
+
+
+/* =========================================================
+   CRUD LOADING
+   ========================================================= */
+
+.crud-loading {
+
+    position: relative;
+
+    opacity: .65;
+
+    cursor: wait !important;
+
+}
+
+
+/* =========================================================
+   CRUD BUTTON BASE
+   ========================================================= */
+
+.crud-btn {
+
+    min-height: 36px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    padding: 7px 12px;
+
+    border: 1px solid transparent;
+
+    border-radius: 9px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.crud-btn:hover {
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+.crud-btn:disabled {
+
+    opacity: .55;
+
+    cursor: not-allowed;
+
+    transform: none;
+
+}
+
+
+/* =========================================================
+   PRIMARY
+   ========================================================= */
+
+.crud-btn-primary {
+
+    background:
+        var(--admin-primary);
+
+    border-color:
+        var(--admin-primary);
+
+    color:
+        #ffffff;
+
+}
+
+
+.crud-btn-primary:hover {
+
+    background:
+        var(--admin-primary-dark);
+
+    border-color:
+        var(--admin-primary-dark);
+
+}
+
+
+/* =========================================================
+   SECONDARY
+   ========================================================= */
+
+.crud-btn-secondary {
+
+    background:
+        #ffffff;
+
+    border-color:
+        var(--admin-border);
+
+    color:
+        var(--admin-text);
+
+}
+
+
+.crud-btn-secondary:hover {
+
+    border-color:
+        var(--admin-primary);
+
+    background:
+        var(--admin-primary-light);
+
+    color:
+        var(--admin-primary);
+
+}
+
+
+/* =========================================================
+   DANGER
+   ========================================================= */
+
+.crud-btn-danger {
+
+    background:
+        var(--admin-danger-light);
+
+    border-color:
+        #f0d8d8;
+
+    color:
+        var(--admin-danger);
+
+}
+
+
+.crud-btn-danger:hover {
+
+    background:
+        var(--admin-danger);
+
+    border-color:
+        var(--admin-danger);
+
+    color:
+        #ffffff;
+
+}
+
+
+/* =========================================================
+   SUCCESS
+   ========================================================= */
+
+.crud-btn-success {
+
+    background:
+        var(--admin-primary-light);
+
+    border-color:
+        rgba(23, 107, 77, .14);
+
+    color:
+        var(--admin-primary);
+
+}
+
+
+/* =========================================================
+   CRUD TABLE WRAPPER
+   ========================================================= */
+
+.crud-table-wrapper {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+    border:
+        1px solid var(--admin-border);
+
+    border-radius:
+        var(--admin-radius);
+
+    background:
+        #ffffff;
+
+    box-shadow:
+        var(--admin-shadow);
+
+    -webkit-overflow-scrolling:
+        touch;
+
+}
+
+
+/* =========================================================
+   CRUD TABLE
+   ========================================================= */
+
+.crud-table {
+
+    width: 100%;
+
+    min-width: 680px;
+
+    border-collapse: collapse;
+
+}
+
+
+.crud-table th {
+
+    padding:
+        12px 14px;
+
+    background:
+        #f8faf9;
+
+    border-bottom:
+        1px solid var(--admin-border);
+
+    color:
+        var(--admin-muted);
+
+    font-size:
+        10px;
+
+    font-weight:
+        800;
+
+    text-align:
+        left;
+
+    white-space:
+        nowrap;
+
+}
+
+
+.crud-table td {
+
+    padding:
+        13px 14px;
+
+    border-bottom:
+        1px solid #edf1ef;
+
+    color:
+        var(--admin-text);
+
+    font-size:
+        11px;
+
+    vertical-align:
+        middle;
+
+}
+
+
+.crud-table tbody tr:last-child td {
+
+    border-bottom:
+        0;
+
+}
+
+
+.crud-table tbody tr {
+
+    transition:
+        background .18s ease;
+
+}
+
+
+.crud-table tbody tr:hover {
+
+    background:
+        #fbfdfc;
+
+}
+
+
+/* =========================================================
+   CRUD ACTIONS
+   ========================================================= */
+
+.crud-actions {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        6px;
+
+    white-space:
+        nowrap;
+
+}
+
+
+/* =========================================================
+   STATUS BADGE
+   ========================================================= */
+
+.crud-status {
+
+    display:
+        inline-flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        center;
+
+    min-width:
+        52px;
+
+    padding:
+        4px 7px;
+
+    border-radius:
+        7px;
+
+    font-size:
+        9px;
+
+    font-weight:
+        800;
+
+}
+
+
+.crud-status-active {
+
+    background:
+        var(--admin-primary-light);
+
+    color:
+        var(--admin-primary);
+
+}
+
+
+.crud-status-inactive {
+
+    background:
+        #f1f3f2;
+
+    color:
+        var(--admin-muted);
+
+}
+
+
+.crud-status-verified {
+
+    background:
+        var(--admin-primary-light);
+
+    color:
+        var(--admin-primary);
+
+}
+
+
+/* =========================================================
+   CRUD EMPTY STATE
+   ========================================================= */
+
+.crud-empty {
+
+    width:
+        100%;
+
+    padding:
+        45px 20px;
+
+    border:
+        1px dashed var(--admin-border);
+
+    border-radius:
+        13px;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--admin-muted);
+
+    font-size:
+        11px;
+
+    text-align:
+        center;
+
+}
+
+
+/* =========================================================
+   CRUD ERROR STATE
+   ========================================================= */
+
+.crud-error {
+
+    width:
+        100%;
+
+    padding:
+        16px;
+
+    border:
+        1px solid #f0cccc;
+
+    border-radius:
+        11px;
+
+    background:
+        var(--admin-danger-light);
+
+    color:
+        var(--admin-danger);
+
+    font-size:
+        10px;
+
+}
+
+
+/* =========================================================
+   CRUD FORM
+   ========================================================= */
+
+.crud-form {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        15px;
+
+}
+
+
+.crud-form-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap:
+        14px;
+
+}
+
+
+.crud-form-group {
+
+    min-width:
+        0;
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+
+    gap:
+        5px;
+
+}
+
+
+.crud-form-group.full-width {
+
+    grid-column:
+        1 / -1;
+
+}
+
+
+.crud-form-label {
+
+    color:
+        var(--admin-text);
+
+    font-size:
+        10px;
+
+    font-weight:
+        800;
+
+}
+
+
+.crud-form-label span {
+
+    color:
+        var(--admin-danger);
+
+}
+
+
+.crud-form-input,
+.crud-form-select,
+.crud-form-textarea {
+
+    width:
+        100%;
+
+    min-height:
+        39px;
+
+    padding:
+        8px 10px;
+
+    border:
+        1px solid var(--admin-border);
+
+    border-radius:
+        9px;
+
+    outline:
+        none;
+
+    background:
+        #ffffff;
+
+    color:
+        var(--admin-text);
+
+    font-size:
+        11px;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease;
+
+}
+
+
+.crud-form-textarea {
+
+    min-height:
+        90px;
+
+    resize:
+        vertical;
+
+}
+
+
+.crud-form-input:focus,
+.crud-form-select:focus,
+.crud-form-textarea:focus {
+
+    border-color:
+        var(--admin-primary);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(23, 107, 77, .08);
+
+}
+
+
+.crud-form-input::placeholder,
+.crud-form-textarea::placeholder {
+
+    color:
+        #a0aaa5;
+
+}
+
+
+/* =========================================================
+   FORM ACTIONS
+   ========================================================= */
+
+.crud-form-actions {
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    justify-content:
+        flex-end;
+
+    gap:
+        8px;
+
+    padding-top:
+        5px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .crud-form-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .crud-form-group.full-width {
+
+        grid-column:
+            auto;
+
+    }
+
+
+    .crud-form-actions {
+
+        display:
+            grid;
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+    }
+
+
+    .crud-btn {
+
+        width:
+            100%;
+
+    }
+
+}
+
+
+@media (max-width: 450px) {
+
+    .crud-table {
+
+        min-width:
+            600px;
+
+    }
+
+
+    .crud-form-actions {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
