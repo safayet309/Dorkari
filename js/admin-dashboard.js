@@ -1137,15 +1137,227 @@
     }
 
 
-    // =====================================================
-    // F-5.2 — UPAZILA OVERVIEW
-    // =====================================================
+// =====================================================
+// F-5.2 — UPAZILA OVERVIEW
+// =====================================================
 
-    async function loadUpazilaOverview() {
+async function loadUpazilaOverview() {
 
-        // এখানে তোমার দেওয়া পুরো F-5.2 code
+    const container =
+        getElement(
+            "upazilaOverview"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    // =================================================
+    // LOADING STATE
+    // =================================================
+
+    container.innerHTML = `
+        <div class="category-loading">
+            উপজেলাভিত্তিক তথ্য লোড হচ্ছে...
+        </div>
+    `;
+
+
+    try {
+
+        // =============================================
+        // LOAD ACTIVE UPAZILAS
+        // =============================================
+
+        const {
+            data: upazilas,
+            error: upazilaError
+        } =
+            await supabaseClient
+                .from(
+                    TABLES.upazilas
+                )
+                .select(
+                    "id,name,name_bn,district_id"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order(
+                    "name_bn",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (upazilaError) {
+            throw upazilaError;
+        }
+
+
+        // =============================================
+        // LOAD ACTIVE HOSPITALS
+        // =============================================
+
+        const {
+            data: hospitals,
+            error: hospitalError
+        } =
+            await supabaseClient
+                .from(
+                    TABLES.hospitals
+                )
+                .select(
+                    "id,upazila_id"
+                )
+                .eq(
+                    "is_active",
+                    true
+                );
+
+
+        if (hospitalError) {
+            throw hospitalError;
+        }
+
+
+        // =============================================
+        // COUNT HOSPITALS BY UPAZILA
+        // =============================================
+
+        const hospitalCounts = {};
+
+
+        (hospitals || []).forEach(
+            function (hospital) {
+
+                if (!hospital.upazila_id) {
+                    return;
+                }
+
+
+                if (
+                    hospitalCounts[
+                        hospital.upazila_id
+                    ] === undefined
+                ) {
+
+                    hospitalCounts[
+                        hospital.upazila_id
+                    ] = 0;
+
+                }
+
+
+                hospitalCounts[
+                    hospital.upazila_id
+                ]++;
+
+            }
+        );
+
+
+        // =============================================
+        // EMPTY STATE
+        // =============================================
+
+        if (
+            !upazilas ||
+            upazilas.length === 0
+        ) {
+
+            container.innerHTML = `
+                <div class="category-empty">
+                    কোনো সক্রিয় upazila পাওয়া যায়নি।
+                </div>
+            `;
+
+            return;
+        }
+
+
+        // =============================================
+        // RENDER UPAZILA CARDS
+        // =============================================
+
+        container.innerHTML =
+            upazilas
+                .map(
+                    function (upazila) {
+
+                        const count =
+                            hospitalCounts[
+                                upazila.id
+                            ] || 0;
+
+
+                        return `
+                            <div class="overview-card upazila-overview-card">
+
+                                <div class="overview-card-top">
+
+                                    <div class="overview-icon">
+                                        📍
+                                    </div>
+
+                                    <span>
+                                        Upazila
+                                    </span>
+
+                                </div>
+
+
+                                <strong
+                                    class="overview-number"
+                                >
+                                    ${formatNumber(
+                                        count
+                                    )}
+                                </strong>
+
+
+                                <div class="overview-title">
+                                    ${escapeHTML(
+                                        upazila.name_bn ||
+                                        upazila.name ||
+                                        "Upazila"
+                                    )}
+                                </div>
+
+
+                                <small>
+                                    Active hospitals
+                                </small>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "Upazila Overview Error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <div class="category-error">
+                উপজেলা ভিত্তিক তথ্য লোড করা যায়নি।
+            </div>
+        `;
 
     }
+
+}
 
 
     // =====================================================
