@@ -1417,13 +1417,24 @@
                 </td>
 
 
-                <td>
+                    <td>
 
-                    <span class="crud-muted">
-                        —
-                    </span>
+                        <div class="crud-table-actions">
 
-                </td>
+                            <button
+                              type="button"
+                                 class="crud-action-button"
+                                 data-upazila-action="edit"
+                                  data-upazila-id="${escapeHTML(
+                                  upazila.id
+                               )}"
+                               >
+                               Edit
+                             </button>
+
+                         </div>
+
+                     </td>
 
             </tr>
         `;
