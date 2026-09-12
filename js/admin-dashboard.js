@@ -922,24 +922,8 @@
 
 
     // =====================================================
-    // LOAD DIVISION-WISE HOSPITAL OVERVIEW
+    // F-4.2 — DISTRICT OVERVIEW
     // =====================================================
-
-    async function loadDivisionOverview() {
-
-        const container =
-            getElement(
-                "divisionOverview"
-            );
-
-
-        if (!container) {
-            return;
-        }
-
-        // =====================================================
-// F-4.2 — DISTRICT OVERVIEW
-// =====================================================
 
 async function loadDistrictOverview() {
 
@@ -1097,6 +1081,22 @@ async function loadDistrictOverview() {
 
 }
 
+
+    // =====================================================
+    // LOAD DIVISION-WISE HOSPITAL OVERVIEW
+    // =====================================================
+
+    async function loadDivisionOverview() {
+
+        const container =
+            getElement(
+                "divisionOverview"
+            );
+
+
+        if (!container) {
+            return;
+        }
 
         // =================================================
         // LOADING STATE
@@ -1371,12 +1371,12 @@ async function loadDistrictOverview() {
             await loadLocationCounts();
 
 
-                await Promise.all([
-                        loadServiceCounts(),
-                        loadCategoryOverview(),
-                        loadDivisionOverview(),
-                        loadDistrictOverview()
-                ]);
+            await Promise.all([
+                loadServiceCounts(),
+                loadCategoryOverview(),
+                loadDivisionOverview(),
+                loadDistrictOverview()
+            ]);
 
 
             renderStatistics();
