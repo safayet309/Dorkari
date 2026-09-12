@@ -1426,8 +1426,8 @@
                                  class="crud-action-button"
                                  data-upazila-action="edit"
                                   data-upazila-id="${escapeHTML(
-                                  upazila.id
-                               )}"
+                upazila.id
+            )}"
                                >
                                Edit
                              </button>
@@ -2235,6 +2235,27 @@
                     handlePagination
                 );
 
+        }
+
+        /* Edit action */
+        if (upazilaTableBody) {
+            upazilaTableBody.addEventListener("click", function (event) {
+
+                const button = event.target.closest(
+                    '[data-upazila-action="edit"]'
+                );
+
+                if (!button) return;
+
+                const upazilaId = button.getAttribute(
+                    "data-upazila-id"
+                );
+
+                console.log(
+                    "Edit Upazila:",
+                    upazilaId
+                );
+            });
         }
 
         if (upazilaDivisionFilter) {
