@@ -1106,13 +1106,25 @@
         }
 
         const districts = [];
+        const selectedDivisionId =
+            upazilaDivisionFilter
+                ? upazilaDivisionFilter.value
+                : "";
 
         allUpazilas.forEach(function (upazila) {
 
             const district =
                 upazila.districts || {};
+            const division =
+                district.divisions || {};
 
             if (!district.id) {
+                return;
+            }
+            if (
+                selectedDivisionId &&
+                division.id !== selectedDivisionId
+            ) {
                 return;
             }
 
@@ -2219,7 +2231,17 @@
             upazilaDivisionFilter
                 .addEventListener(
                     "change",
-                    applyUpazilaFilters
+                    function () {
+
+                        loadDistrictFilterOptions();
+
+                        if (upazilaDistrictFilter) {
+                            upazilaDistrictFilter.value = "";
+                        }
+
+                        applyUpazilaFilters();
+
+                    }
                 );
 
         }
