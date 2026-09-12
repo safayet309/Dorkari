@@ -2768,7 +2768,464 @@ a:focus-visible {
     margin-top: 18px;
 }
 
+/* =====================================================
+   F-5.3 — UPAZILA OVERVIEW
+   Compatible with current admin-dashboard.css
+   ===================================================== */
 
+.upazila-overview-section {
+    margin-top: 34px;
+}
+
+
+/* =====================================================
+   UPAZILA GRID
+   ===================================================== */
+
+.upazila-overview-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 18px;
+}
+
+
+/* =====================================================
+   UPAZILA CARD
+   ===================================================== */
+
+.upazila-overview-card {
+    position: relative;
+
+    min-height: 175px;
+
+    padding: 22px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ffffff 0%,
+            #f8fbf9 100%
+        );
+
+    border:
+        1px solid var(--admin-border);
+
+    border-radius:
+        var(--admin-radius);
+
+    box-shadow:
+        var(--admin-shadow);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+/* =====================================================
+   DECORATIVE CIRCLE
+   ===================================================== */
+
+.upazila-overview-card::after {
+    content: "";
+
+    position: absolute;
+
+    width: 105px;
+    height: 105px;
+
+    right: -42px;
+    bottom: -48px;
+
+    border-radius: 50%;
+
+    background:
+        var(--admin-primary-light);
+
+    opacity: 0.75;
+
+    pointer-events: none;
+}
+
+
+/* =====================================================
+   HOVER
+   ===================================================== */
+
+.upazila-overview-card:hover {
+    transform:
+        translateY(-3px);
+
+    border-color:
+        rgba(23, 107, 77, 0.22);
+
+    box-shadow:
+        var(--admin-shadow-hover);
+}
+
+
+/* =====================================================
+   CARD TOP
+   ===================================================== */
+
+.upazila-overview-card
+.overview-card-top {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 18px;
+}
+
+
+/* =====================================================
+   UPAZILA LABEL
+   ===================================================== */
+
+.upazila-overview-card
+.overview-card-top > span {
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.05em;
+
+    text-transform: uppercase;
+
+    color:
+        var(--admin-muted);
+}
+
+
+/* =====================================================
+   LOCATION ICON
+   ===================================================== */
+
+.upazila-overview-card
+.overview-icon {
+
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background:
+        var(--admin-primary-light);
+
+    color:
+        var(--admin-primary);
+
+    font-size: 20px;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* =====================================================
+   ICON HOVER
+   ===================================================== */
+
+.upazila-overview-card:hover
+.overview-icon {
+
+    transform:
+        scale(1.05);
+
+    background:
+        var(--admin-primary);
+
+    color:
+        #ffffff;
+}
+
+
+/* =====================================================
+   HOSPITAL COUNT
+   ===================================================== */
+
+.upazila-overview-card
+.overview-number {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color:
+        var(--admin-primary);
+
+    font-size: 30px;
+
+    line-height: 1.15;
+
+    font-weight: 800;
+}
+
+
+/* =====================================================
+   UPAZILA NAME
+   ===================================================== */
+
+.upazila-overview-card
+.overview-title {
+
+    position: relative;
+
+    z-index: 1;
+
+    margin-top: 3px;
+
+    color:
+        var(--admin-text);
+
+    font-size: 16px;
+
+    line-height: 1.45;
+
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   CARD SUBTITLE
+   ===================================================== */
+
+.upazila-overview-card > small {
+
+    position: relative;
+
+    z-index: 1;
+
+    display: block;
+
+    margin-top: 5px;
+
+    color:
+        var(--admin-muted);
+
+    font-size: 12px;
+
+    line-height: 1.5;
+}
+
+
+/* =====================================================
+   LOADING / ERROR
+   ===================================================== */
+
+.upazila-overview-grid
+.category-loading,
+.upazila-overview-grid
+.category-error {
+
+    grid-column:
+        1 / -1;
+
+    width: 100%;
+}
+
+
+/* =====================================================
+   RESPONSIVE — LARGE TABLET
+   ===================================================== */
+
+@media (max-width: 1200px) {
+
+    .upazila-overview-grid {
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+    }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE — TABLET
+   ===================================================== */
+
+@media (max-width: 950px) {
+
+    .upazila-overview-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 16px;
+
+    }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE — MOBILE
+   ===================================================== */
+
+@media (max-width: 700px) {
+
+    .upazila-overview-section {
+
+        margin-top: 28px;
+
+    }
+
+
+    .upazila-overview-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 14px;
+
+    }
+
+
+    .upazila-overview-card {
+
+        min-height: 165px;
+
+        padding: 18px;
+
+    }
+
+
+    .upazila-overview-card
+    .overview-number {
+
+        font-size: 27px;
+
+    }
+
+
+    .upazila-overview-card
+    .overview-title {
+
+        font-size: 15px;
+
+    }
+
+
+    .upazila-overview-card
+    .overview-icon {
+
+        width: 39px;
+        height: 39px;
+
+        flex-basis: 39px;
+
+        font-size: 18px;
+
+    }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE — SMALL MOBILE
+   ===================================================== */
+
+@media (max-width: 450px) {
+
+    .upazila-overview-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .upazila-overview-card {
+
+        min-height: 155px;
+
+    }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE — VERY SMALL MOBILE
+   ===================================================== */
+
+@media (max-width: 360px) {
+
+    .upazila-overview-card {
+
+        padding: 16px;
+
+    }
+
+
+    .upazila-overview-card
+    .overview-icon {
+
+        width: 38px;
+        height: 38px;
+
+        flex-basis: 38px;
+
+        font-size: 17px;
+
+    }
+
+
+    .upazila-overview-card
+    .overview-number {
+
+        font-size: 25px;
+
+    }
+
+
+    .upazila-overview-card
+    .overview-title {
+
+        font-size: 14px;
+
+    }
+
+
+    .upazila-overview-card
+    > small {
+
+        font-size: 10px;
+
+    }
+
+}
 /* -----------------------------------------------------
    District Card
 ----------------------------------------------------- */
