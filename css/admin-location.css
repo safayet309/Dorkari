@@ -1139,3 +1139,11 @@
         transition: none;
     }
 }
+
+/* =====================================================
+   HIDDEN STATE FIX
+   ===================================================== */
+
+.location-table-wrapper [hidden] {
+    display: none !important;
+}
