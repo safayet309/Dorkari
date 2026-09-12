@@ -12,7 +12,8 @@
        CONFIG
        ===================================================== */
 
-    const TABLE_UPAZILAS = "upazilas";
+    const TABLE_UPAZILAS =
+        "upazilas";
 
 
     /* =====================================================
@@ -76,13 +77,24 @@
 
 
     /* =====================================================
+       ADMIN
+       ===================================================== */
+
+    function getAdmin() {
+
+        return window.DorkariAdmin || null;
+
+    }
+
+
+    /* =====================================================
        SUPABASE
        ===================================================== */
 
     function getSupabaseClient() {
 
         const admin =
-            window.DorkariAdmin;
+            getAdmin();
 
 
         if (
@@ -108,7 +120,7 @@
     function canManageUpazila() {
 
         const admin =
-            window.DorkariAdmin;
+            getAdmin();
 
 
         if (
@@ -127,6 +139,30 @@
     }
 
 
+    function updatePermissionUI() {
+
+        const allowed =
+            canManageUpazila();
+
+
+        if (sectionAddUpazilaButton) {
+
+            sectionAddUpazilaButton.hidden =
+                !allowed;
+
+        }
+
+
+        if (saveUpazilaButton) {
+
+            saveUpazilaButton.disabled =
+                !allowed;
+
+        }
+
+    }
+
+
     /* =====================================================
        TOAST
        ===================================================== */
@@ -135,6 +171,34 @@
         message,
         type
     ) {
+
+        const admin =
+            getAdmin();
+
+
+        /*
+         * Prefer the existing Admin toast system.
+         */
+
+        if (
+            admin &&
+            typeof admin.showToast ===
+            "function"
+        ) {
+
+            admin.showToast(
+                message,
+                type || "success"
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Fallback for safety.
+         */
 
         const toast =
             document.getElementById(
@@ -168,6 +232,7 @@
         toast.classList.remove(
             "success",
             "error",
+            "warning",
             "show"
         );
 
@@ -176,11 +241,6 @@
             type || "success"
         );
 
-
-        /*
-         * Small delay ensures the
-         * CSS transition works.
-         */
 
         window.setTimeout(
             function () {
@@ -629,6 +689,10 @@
         }
 
 
+        /*
+         * Unique constraint
+         */
+
         if (
             error.code ===
             "23505"
@@ -639,6 +703,10 @@
         }
 
 
+        /*
+         * Foreign key
+         */
+
         if (
             error.code ===
             "23503"
@@ -648,6 +716,10 @@
 
         }
 
+
+        /*
+         * Permission / RLS
+         */
 
         if (
             error.code ===
@@ -752,6 +824,10 @@
 
     async function saveUpazila() {
 
+        /* ---------------------------------------------
+           Validation
+           --------------------------------------------- */
+
         const isValid =
             validateUpazilaForm();
 
@@ -771,7 +847,7 @@
 
             showToast(
                 "আপনার এই কাজের অনুমতি নেই।",
-                "error"
+                "warning"
             );
 
             return;
@@ -790,7 +866,7 @@
         if (!supabase) {
 
             showToast(
-                "Supabase সংযোগ পাওয়া যায়নি।",
+                "Supabase connection পাওয়া যায়নি।",
                 "error"
             );
 
@@ -808,24 +884,75 @@
                 upazilaDistrict.value
             );
 
+
         const name =
             cleanText(
                 upazilaName.value
             );
+
 
         const nameBn =
             cleanText(
                 upazilaNameBn.value
             );
 
+
         const slug =
             cleanText(
                 upazilaSlug.value
-            );
+            ).toLowerCase();
 
 
         /* ---------------------------------------------
-           Button loading
+           Verify District
+           --------------------------------------------- */
+
+        const districtAPI =
+            window.DorkariDistrict;
+
+
+        if (
+            districtAPI &&
+            typeof districtAPI.getDistricts ===
+            "function"
+        ) {
+
+            const districts =
+                districtAPI.getDistricts();
+
+
+            const districtExists =
+                (districts || []).some(
+                    function (district) {
+
+                        return (
+                            district.id ===
+                            districtId &&
+                            district.is_active ===
+                            true
+                        );
+
+                    }
+                );
+
+
+            if (!districtExists) {
+
+                setFieldError(
+                    upazilaDistrict,
+                    "upazilaDistrictError",
+                    "নির্বাচিত District সঠিক নয়।"
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        /* ---------------------------------------------
+           Loading state
            --------------------------------------------- */
 
         if (saveUpazilaButton) {
@@ -904,9 +1031,9 @@
             closeUpazilaFormPanel();
 
 
-            /*
-             * Refresh location summary if available.
-             */
+            /* -----------------------------------------
+               Refresh location data if available
+               ----------------------------------------- */
 
             if (
                 window.DorkariLocation &&
@@ -937,10 +1064,16 @@
 
         } finally {
 
-            if (saveUpazilaButton) {
+            /*
+             * IMPORTANT:
+             * Restore permission-based state,
+             * not simply disabled = false.
+             */
 
-                saveUpazilaButton.disabled =
-                    !canManageUpazila();
+            updatePermissionUI();
+
+
+            if (saveUpazilaButton) {
 
                 saveUpazilaButton.textContent =
                     "Save Upazila";
@@ -953,110 +1086,177 @@
 
 
     /* =====================================================
-       ADD BUTTON
+       EVENT SETUP
        ===================================================== */
 
-    if (sectionAddUpazilaButton) {
+    function setupEvents() {
 
-        sectionAddUpazilaButton.addEventListener(
-            "click",
-            function () {
+        /* ---------------------------------------------
+           Add
+           --------------------------------------------- */
 
-                resetUpazilaForm();
+        if (sectionAddUpazilaButton) {
 
-                openUpazilaForm();
+            sectionAddUpazilaButton.addEventListener(
+                "click",
+                function () {
+
+                    resetUpazilaForm();
+
+                    openUpazilaForm();
+
+                }
+            );
+
+        }
+
+
+        /* ---------------------------------------------
+           Close
+           --------------------------------------------- */
+
+        if (closeUpazilaForm) {
+
+            closeUpazilaForm.addEventListener(
+                "click",
+                function () {
+
+                    closeUpazilaFormPanel();
+
+                }
+            );
+
+        }
+
+
+        /* ---------------------------------------------
+           Cancel
+           --------------------------------------------- */
+
+        if (cancelUpazilaButton) {
+
+            cancelUpazilaButton.addEventListener(
+                "click",
+                function () {
+
+                    closeUpazilaFormPanel();
+
+                }
+            );
+
+        }
+
+
+        /* ---------------------------------------------
+           Auto Slug
+           --------------------------------------------- */
+
+        if (upazilaName) {
+
+            upazilaName.addEventListener(
+                "input",
+                handleNameInput
+            );
+
+        }
+
+
+        /* ---------------------------------------------
+           Submit
+           --------------------------------------------- */
+
+        if (upazilaForm) {
+
+            upazilaForm.addEventListener(
+                "submit",
+                function (event) {
+
+                    event.preventDefault();
+
+                    saveUpazila();
+
+                }
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       INITIALIZE
+       ===================================================== */
+
+    function initializeUpazila() {
+
+        if (!upazilaFormPanel) {
+
+            return;
+
+        }
+
+
+        updatePermissionUI();
+
+        setupEvents();
+
+        loadDistrictOptions();
+
+    }
+
+
+    /* =====================================================
+       WAIT FOR ADMIN GUARD
+       ===================================================== */
+
+    function waitForAdmin() {
+
+        const admin =
+            window.DorkariAdmin;
+
+
+        if (
+            admin &&
+            typeof admin.getSupabase ===
+            "function" &&
+            typeof admin.getProfile ===
+            "function" &&
+            typeof admin.canManageContent ===
+            "function"
+        ) {
+
+            const profile =
+                admin.getProfile();
+
+
+            /*
+             * Admin profile is loaded asynchronously.
+             * Wait until it is available.
+             */
+
+            if (!profile) {
+
+                window.setTimeout(
+                    waitForAdmin,
+                    100
+                );
+
+                return;
 
             }
+
+
+            initializeUpazila();
+
+            return;
+
+        }
+
+
+        window.setTimeout(
+            waitForAdmin,
+            100
         );
-
-    }
-
-
-    /* =====================================================
-       CLOSE BUTTON
-       ===================================================== */
-
-    if (closeUpazilaForm) {
-
-        closeUpazilaForm.addEventListener(
-            "click",
-            function () {
-
-                closeUpazilaFormPanel();
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       CANCEL BUTTON
-       ===================================================== */
-
-    if (cancelUpazilaButton) {
-
-        cancelUpazilaButton.addEventListener(
-            "click",
-            function () {
-
-                closeUpazilaFormPanel();
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       AUTO SLUG
-       ===================================================== */
-
-    if (upazilaName) {
-
-        upazilaName.addEventListener(
-            "input",
-            handleNameInput
-        );
-
-    }
-
-
-    /* =====================================================
-       FORM SUBMIT
-       ===================================================== */
-
-    if (upazilaForm) {
-
-        upazilaForm.addEventListener(
-            "submit",
-            function (event) {
-
-                event.preventDefault();
-
-                saveUpazila();
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       INITIAL DISTRICT LOAD
-       ===================================================== */
-
-    loadDistrictOptions();
-
-
-    /* =====================================================
-       INITIAL PERMISSION UI
-       ===================================================== */
-
-    if (saveUpazilaButton) {
-
-        saveUpazilaButton.disabled =
-            !canManageUpazila();
 
     }
 
@@ -1086,6 +1286,13 @@
             saveUpazila
 
     };
+
+
+    /* =====================================================
+       START
+       ===================================================== */
+
+    waitForAdmin();
 
 
 })();
