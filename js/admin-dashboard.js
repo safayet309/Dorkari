@@ -937,6 +937,166 @@
             return;
         }
 
+        // =====================================================
+// F-4.2 — DISTRICT OVERVIEW
+// =====================================================
+
+async function loadDistrictOverview() {
+
+    const container = document.getElementById("districtOverview");
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="category-loading">
+            জেলাভিত্তিক তথ্য লোড হচ্ছে...
+        </div>
+    `;
+
+    try {
+
+        // ---------------------------------------------
+        // Load active districts
+        // ---------------------------------------------
+
+        const { data: districts, error: districtError } =
+            await supabaseClient
+                .from(TABLES.districts)
+                .select("id, name, name_bn, division_id")
+                .eq("is_active", true)
+                .order("name_bn", {
+                    ascending: true
+                });
+
+
+        if (districtError) {
+            throw districtError;
+        }
+
+
+        // ---------------------------------------------
+        // Load active hospitals
+        // ---------------------------------------------
+
+        const { data: hospitals, error: hospitalError } =
+            await supabaseClient
+                .from(TABLES.hospitals)
+                .select("id, district_id")
+                .eq("is_active", true);
+
+
+        if (hospitalError) {
+            throw hospitalError;
+        }
+
+
+        // ---------------------------------------------
+        // Count hospitals by district
+        // ---------------------------------------------
+
+        const hospitalCountByDistrict = {};
+
+        (hospitals || []).forEach(function (hospital) {
+
+            if (!hospital.district_id) {
+                return;
+            }
+
+            if (!hospitalCountByDistrict[hospital.district_id]) {
+                hospitalCountByDistrict[hospital.district_id] = 0;
+            }
+
+            hospitalCountByDistrict[hospital.district_id]++;
+
+        });
+
+
+        // ---------------------------------------------
+        // No district data
+        // ---------------------------------------------
+
+        if (!districts || districts.length === 0) {
+
+            container.innerHTML = `
+                <div class="category-loading">
+                    কোনো active district পাওয়া যায়নি।
+                </div>
+            `;
+
+            return;
+        }
+
+
+        // ---------------------------------------------
+        // Render district cards
+        // ---------------------------------------------
+
+        container.innerHTML = districts.map(function (district) {
+
+            const hospitalCount =
+                hospitalCountByDistrict[district.id] || 0;
+
+
+            return `
+                <div class="overview-card district-overview-card">
+
+                    <div class="overview-card-top">
+
+                        <div class="overview-icon">
+                            📍
+                        </div>
+
+                        <span>
+                            District
+                        </span>
+
+                    </div>
+
+
+                    <strong class="overview-number">
+                        ${formatNumber(hospitalCount)}
+                    </strong>
+
+
+                    <div class="overview-title">
+                        ${escapeHTML(
+                            district.name_bn ||
+                            district.name ||
+                            "District"
+                        )}
+                    </div>
+
+
+                    <small>
+                        Active hospitals
+                    </small>
+
+                </div>
+            `;
+
+        }).join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "District Overview Error:",
+            error
+        );
+
+
+        container.innerHTML = `
+            <div class="category-error">
+                District data load করতে সমস্যা হয়েছে।
+            </div>
+        `;
+
+    }
+
+}
+
 
         // =================================================
         // LOADING STATE
@@ -1211,15 +1371,12 @@
             await loadLocationCounts();
 
 
-            await Promise.all([
-
-                loadServiceCounts(),
-
-                loadCategoryOverview(),
-
-                loadDivisionOverview()
-
-            ]);
+                await Promise.all([
+                        loadServiceCounts(),
+                        loadCategoryOverview(),
+                        loadDivisionOverview(),
+                        loadDistrictOverview()
+                ]);
 
 
             renderStatistics();
