@@ -423,7 +423,7 @@
     }
 
 
-    // =================================================
+     // =================================================
     // FORM
     // =================================================
 
@@ -440,12 +440,14 @@
 
         clearFormErrors();
 
+
         if (districtFormTitle) {
 
             districtFormTitle.textContent =
                 "Add District";
 
         }
+
 
         if (districtIsActive) {
 
@@ -454,10 +456,14 @@
 
         }
 
+
         if (saveDistrictButton) {
 
             saveDistrictButton.textContent =
                 "Save District";
+
+            saveDistrictButton.disabled =
+                !canManageDistrict();
 
         }
 
@@ -567,14 +573,13 @@
                 "is-open"
             );
 
-            // Extra safety
             districtFormPanel.hidden = false;
 
             districtFormPanel.removeAttribute(
                 "aria-hidden"
             );
 
-            // Scroll form into view
+
             window.setTimeout(function () {
 
                 districtFormPanel.scrollIntoView({
@@ -637,6 +642,7 @@
             return;
         }
 
+
         const {
             data,
             error
@@ -656,6 +662,7 @@
                 }
             );
 
+
         if (error) {
 
             console.error(
@@ -672,6 +679,7 @@
 
         }
 
+
         allDivisions =
             data || [];
 
@@ -686,8 +694,10 @@
             return;
         }
 
+
         const currentValue =
             districtDivision.value;
+
 
         districtDivision.innerHTML =
             `
@@ -696,31 +706,43 @@
             </option>
             `;
 
-        allDivisions.forEach(function (division) {
 
-            const option =
-                document.createElement(
-                    "option"
+        allDivisions.forEach(
+            function (division) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    division.id;
+
+
+                option.textContent =
+                    division.name_bn ||
+                    division.name;
+
+
+                districtDivision.appendChild(
+                    option
                 );
 
-            option.value =
-                division.id;
+            }
+        );
 
-            option.textContent =
-                division.name_bn ||
-                division.name;
-
-            districtDivision.appendChild(
-                option
-            );
-
-        });
 
         if (
             currentValue &&
             allDivisions.some(
                 function (item) {
-                    return item.id === currentValue;
+
+                    return (
+                        item.id ===
+                        currentValue
+                    );
+
                 }
             )
         ) {
@@ -739,8 +761,10 @@
             return;
         }
 
+
         const currentValue =
             districtDivisionFilter.value;
+
 
         districtDivisionFilter.innerHTML =
             `
@@ -749,31 +773,43 @@
             </option>
             `;
 
-        allDivisions.forEach(function (division) {
 
-            const option =
-                document.createElement(
-                    "option"
+        allDivisions.forEach(
+            function (division) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    division.id;
+
+
+                option.textContent =
+                    division.name_bn ||
+                    division.name;
+
+
+                districtDivisionFilter.appendChild(
+                    option
                 );
 
-            option.value =
-                division.id;
+            }
+        );
 
-            option.textContent =
-                division.name_bn ||
-                division.name;
-
-            districtDivisionFilter.appendChild(
-                option
-            );
-
-        });
 
         if (
             currentValue &&
             allDivisions.some(
                 function (item) {
-                    return item.id === currentValue;
+
+                    return (
+                        item.id ===
+                        currentValue
+                    );
+
                 }
             )
         ) {
@@ -784,7 +820,6 @@
         }
 
     }
-
 
     // =================================================
     // LOAD DISTRICTS
