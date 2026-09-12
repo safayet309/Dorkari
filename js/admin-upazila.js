@@ -34,6 +34,7 @@
 
     let currentPage =
         1;
+    let editingUpazilaId = null;
 
 
     /* =====================================================
@@ -1836,6 +1837,67 @@
     }
 
 
+    async function openUpazilaEditForm(upazilaId) {
+
+        if (!upazilaId) return;
+
+        const upazila = allUpazilas.find(function (item) {
+            return item.id === upazilaId;
+        });
+
+        if (!upazila) {
+            showToast(
+                "Upazila তথ্য পাওয়া যায়নি।",
+                "error"
+            );
+            return;
+        }
+
+        editingUpazilaId = upazilaId;
+
+        resetUpazilaForm();
+
+        editingUpazilaId = upazilaId;
+
+        if (upazilaFormTitle) {
+            upazilaFormTitle.textContent = "Edit Upazila";
+        }
+
+        await loadDistrictOptions();
+
+        if (upazilaDistrict) {
+            upazilaDistrict.value = upazila.district_id || "";
+        }
+
+        if (upazilaName) {
+            upazilaName.value = upazila.name || "";
+        }
+
+        if (upazilaNameBn) {
+            upazilaNameBn.value = upazila.name_bn || "";
+        }
+
+        if (upazilaSlug) {
+            upazilaSlug.value = upazila.slug || "";
+        }
+
+        if (upazilaIsActive) {
+            upazilaIsActive.checked =
+                upazila.is_active === true;
+        }
+
+        clearFormErrors();
+
+        if (upazilaFormPanel) {
+            upazilaFormPanel.classList.add("active");
+        }
+
+        if (upazilaName) {
+            upazilaName.focus();
+        }
+    }
+
+
     /* =====================================================
        OPEN FORM
        ===================================================== */
@@ -2251,10 +2313,7 @@
                     "data-upazila-id"
                 );
 
-                console.log(
-                    "Edit Upazila:",
-                    upazilaId
-                );
+                openUpazilaEditForm(upazilaId);
             });
         }
 
