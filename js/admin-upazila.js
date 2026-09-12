@@ -972,6 +972,7 @@
         allUpazilas =
             data || [];
        loadDivisionFilterOptions();
+       loadDistrictFilterOptions();
 
 
         filteredUpazilas =
@@ -1094,7 +1095,89 @@ function loadDivisionFilterOptions() {
     });
 
 }
+/* =====================================================
+   LOAD DISTRICT FILTER OPTIONS
+   ===================================================== */
 
+function loadDistrictFilterOptions() {
+
+    if (!upazilaDistrictFilter) {
+        return;
+    }
+
+    const districts = [];
+
+    allUpazilas.forEach(function (upazila) {
+
+        const district =
+            upazila.districts || {};
+
+        if (!district.id) {
+            return;
+        }
+
+        const alreadyExists =
+            districts.some(function (item) {
+                return item.id === district.id;
+            });
+
+        if (!alreadyExists) {
+
+            districts.push({
+                id: district.id,
+                name: district.name,
+                name_bn: district.name_bn,
+                division_id: district.division_id
+            });
+
+        }
+
+    });
+
+    districts.sort(function (a, b) {
+
+        const nameA =
+            a.name_bn ||
+            a.name ||
+            "";
+
+        const nameB =
+            b.name_bn ||
+            b.name ||
+            "";
+
+        return nameA.localeCompare(
+            nameB,
+            "bn"
+        );
+
+    });
+
+    upazilaDistrictFilter.innerHTML = `
+        <option value="">
+            সব District
+        </option>
+    `;
+
+    districts.forEach(function (district) {
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            district.id;
+
+        option.textContent =
+            district.name_bn ||
+            district.name;
+
+        upazilaDistrictFilter.appendChild(
+            option
+        );
+
+    });
+
+}
 
     /* =====================================================
        RENDER TABLE
