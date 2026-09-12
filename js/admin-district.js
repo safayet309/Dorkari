@@ -433,7 +433,47 @@
             return;
         }
 
-        districtForm.reset();
+        function resetDistrictForm() {
+
+    if (!districtForm) {
+        return;
+    }
+
+
+    districtForm.reset();
+
+    editingDistrictId = null;
+
+    clearFormErrors();
+
+
+    if (districtFormTitle) {
+
+        districtFormTitle.textContent =
+            "Add District";
+
+    }
+
+
+    if (districtIsActive) {
+
+        districtIsActive.checked =
+            true;
+
+    }
+
+
+    if (saveDistrictButton) {
+
+        saveDistrictButton.textContent =
+            "Save District";
+
+        saveDistrictButton.disabled =
+            !canManageDistrict();
+
+    }
+
+}
 
         editingDistrictId = null;
 
@@ -463,9 +503,144 @@
     }
 
 
-    function openDistrictForm(
-        district = null
-    ) {
+    function openDistrictForm(district = null) {
+
+    // =============================================
+    // Permission Check
+    // =============================================
+
+    if (!canManageDistrict()) {
+
+        showToast(
+            "আপনার এই কাজের অনুমতি নেই।",
+            "warning"
+        );
+
+        return;
+
+    }
+
+
+    // =============================================
+    // Reset Form
+    // =============================================
+
+    resetDistrictForm();
+
+
+    // =============================================
+    // EDIT MODE
+    // =============================================
+
+    if (district) {
+
+        editingDistrictId =
+            district.id;
+
+
+        if (districtFormTitle) {
+
+            districtFormTitle.textContent =
+                "Edit District";
+
+        }
+
+
+        if (districtDivision) {
+
+            districtDivision.value =
+                district.division_id || "";
+
+        }
+
+
+        if (districtName) {
+
+            districtName.value =
+                district.name || "";
+
+        }
+
+
+        if (districtNameBn) {
+
+            districtNameBn.value =
+                district.name_bn || "";
+
+        }
+
+
+        if (districtSlug) {
+
+            districtSlug.value =
+                district.slug || "";
+
+        }
+
+
+        if (districtIsActive) {
+
+            districtIsActive.checked =
+                district.is_active !== false;
+
+        }
+
+
+        if (saveDistrictButton) {
+
+            saveDistrictButton.textContent =
+                "Update District";
+
+        }
+
+    }
+
+
+    // =============================================
+    // OPEN FORM
+    // =============================================
+
+    if (districtFormPanel) {
+
+        districtFormPanel.classList.add(
+            "is-open"
+        );
+
+        // Extra safety
+        districtFormPanel.hidden = false;
+
+        districtFormPanel.removeAttribute(
+            "aria-hidden"
+        );
+
+        // Scroll form into view
+        window.setTimeout(function () {
+
+            districtFormPanel.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }, 50);
+
+    }
+
+
+    // =============================================
+    // Focus
+    // =============================================
+
+    if (districtName) {
+
+        window.setTimeout(function () {
+
+            districtName.focus();
+
+        }, 150);
+
+    }
+
+}
 
         if (!canManageDistrict()) {
 
@@ -557,7 +732,27 @@
     }
 
 
-    function closeDistrictFormPanel() {
+     function closeDistrictFormPanel() {
+
+    if (districtFormPanel) {
+
+        districtFormPanel.classList.remove(
+            "is-open"
+        );
+
+        districtFormPanel.hidden = true;
+
+        districtFormPanel.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+    }
+
+
+    resetDistrictForm();
+
+}
 
         if (districtFormPanel) {
 
