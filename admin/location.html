@@ -1594,14 +1594,30 @@
 <section
     class="location-section"
     id="upazilaManagementSection"
+
+    <!-- =========================================================
+     UPAZILA MANAGEMENT
+     ========================================================= -->
+
+<section
+    class="location-section"
+    id="upazilaManagementSection"
     data-location-section="upazila"
     hidden
 >
 
-    <!-- Section Header -->
+
+    <!-- =====================================================
+         SECTION HEADER
+         ===================================================== -->
+
     <div class="location-section-header">
 
         <div class="location-section-title">
+
+            <span class="section-eyebrow">
+                UPAZILA
+            </span>
 
             <h2>
                 Upazila Management
@@ -1629,7 +1645,266 @@
     </div>
 
 
-    <!-- Upazila Foundation State -->
+    <!-- =====================================================
+         UPAZILA FORM
+         ===================================================== -->
+
+    <div
+        class="location-form-panel"
+        id="upazilaFormPanel"
+    >
+
+        <div class="location-form-header">
+
+            <div class="location-form-heading">
+
+                <h3 id="upazilaFormTitle">
+                    Add Upazila
+                </h3>
+
+                <p>
+                    Upazila-এর প্রয়োজনীয় তথ্য দিন।
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="location-form-close"
+                id="closeUpazilaForm"
+                aria-label="Form বন্ধ করুন"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            id="upazilaForm"
+            class="location-form-grid"
+            novalidate
+        >
+
+
+            <!-- =================================================
+                 DISTRICT
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label
+                    for="upazilaDistrict"
+                    class="location-form-label"
+                >
+                    District
+
+                    <span class="location-required">
+                        *
+                    </span>
+                </label>
+
+
+                <select
+                    id="upazilaDistrict"
+                    name="district_id"
+                    class="location-form-select"
+                >
+
+                    <option value="">
+                        District নির্বাচন করুন
+                    </option>
+
+                </select>
+
+
+                <span
+                    class="location-field-error"
+                    id="upazilaDistrictError"
+                ></span>
+
+            </div>
+
+
+            <!-- =================================================
+                 ENGLISH NAME
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label
+                    for="upazilaName"
+                    class="location-form-label"
+                >
+                    Name (English)
+
+                    <span class="location-required">
+                        *
+                    </span>
+                </label>
+
+
+                <input
+                    type="text"
+                    id="upazilaName"
+                    name="name"
+                    class="location-form-input"
+                    placeholder="e.g. Savar"
+                    autocomplete="off"
+                >
+
+
+                <span
+                    class="location-field-error"
+                    id="upazilaNameError"
+                ></span>
+
+            </div>
+
+
+            <!-- =================================================
+                 BANGLA NAME
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label
+                    for="upazilaNameBn"
+                    class="location-form-label"
+                >
+                    নাম (বাংলা)
+
+                    <span class="location-required">
+                        *
+                    </span>
+                </label>
+
+
+                <input
+                    type="text"
+                    id="upazilaNameBn"
+                    name="name_bn"
+                    class="location-form-input"
+                    placeholder="যেমন: সাভার"
+                    autocomplete="off"
+                >
+
+
+                <span
+                    class="location-field-error"
+                    id="upazilaNameBnError"
+                ></span>
+
+            </div>
+
+
+            <!-- =================================================
+                 SLUG
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label
+                    for="upazilaSlug"
+                    class="location-form-label"
+                >
+                    Slug
+
+                    <span class="location-required">
+                        *
+                    </span>
+                </label>
+
+
+                <input
+                    type="text"
+                    id="upazilaSlug"
+                    name="slug"
+                    class="location-form-input"
+                    placeholder="e.g. savar"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+
+
+                <span
+                    class="location-field-error"
+                    id="upazilaSlugError"
+                ></span>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACTIVE STATUS
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label class="location-form-label">
+                    Status
+                </label>
+
+
+                <div class="location-checkbox-group">
+
+                    <input
+                        type="checkbox"
+                        id="upazilaIsActive"
+                        name="is_active"
+                        class="location-checkbox"
+                        checked
+                    >
+
+
+                    <label
+                        for="upazilaIsActive"
+                        class="location-checkbox-label"
+                    >
+                        Active Upazila
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORM ACTIONS
+                 ================================================= -->
+
+            <div class="location-form-actions">
+
+                <button
+                    type="button"
+                    class="crud-btn crud-btn-secondary"
+                    id="cancelUpazilaButton"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="crud-btn crud-btn-primary"
+                    id="saveUpazilaButton"
+                >
+                    Save Upazila
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         FOUNDATION STATE
+         ===================================================== -->
+
     <div class="location-state">
 
         <div class="location-state-icon">
@@ -1646,8 +1921,11 @@
 
     </div>
 
+
 </section>
 
+
+    
             </div>
 
         </main>
