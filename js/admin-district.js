@@ -433,51 +433,13 @@
             return;
         }
 
-        function resetDistrictForm() {
 
-    if (!districtForm) {
-        return;
-    }
-
-
-    districtForm.reset();
-
-    editingDistrictId = null;
-
-    clearFormErrors();
-
-
-    if (districtFormTitle) {
-
-        districtFormTitle.textContent =
-            "Add District";
-
-    }
-
-
-    if (districtIsActive) {
-
-        districtIsActive.checked =
-            true;
-
-    }
-
-
-    if (saveDistrictButton) {
-
-        saveDistrictButton.textContent =
-            "Save District";
-
-        saveDistrictButton.disabled =
-            !canManageDistrict();
-
-    }
-
-}
+        districtForm.reset();
 
         editingDistrictId = null;
 
         clearFormErrors();
+
 
         if (districtFormTitle) {
 
@@ -486,6 +448,7 @@
 
         }
 
+
         if (districtIsActive) {
 
             districtIsActive.checked =
@@ -493,10 +456,14 @@
 
         }
 
+
         if (saveDistrictButton) {
 
             saveDistrictButton.textContent =
                 "Save District";
+
+            saveDistrictButton.disabled =
+                !canManageDistrict();
 
         }
 
@@ -505,142 +472,9 @@
 
     function openDistrictForm(district = null) {
 
-    // =============================================
-    // Permission Check
-    // =============================================
-
-    if (!canManageDistrict()) {
-
-        showToast(
-            "আপনার এই কাজের অনুমতি নেই।",
-            "warning"
-        );
-
-        return;
-
-    }
-
-
-    // =============================================
-    // Reset Form
-    // =============================================
-
-    resetDistrictForm();
-
-
-    // =============================================
-    // EDIT MODE
-    // =============================================
-
-    if (district) {
-
-        editingDistrictId =
-            district.id;
-
-
-        if (districtFormTitle) {
-
-            districtFormTitle.textContent =
-                "Edit District";
-
-        }
-
-
-        if (districtDivision) {
-
-            districtDivision.value =
-                district.division_id || "";
-
-        }
-
-
-        if (districtName) {
-
-            districtName.value =
-                district.name || "";
-
-        }
-
-
-        if (districtNameBn) {
-
-            districtNameBn.value =
-                district.name_bn || "";
-
-        }
-
-
-        if (districtSlug) {
-
-            districtSlug.value =
-                district.slug || "";
-
-        }
-
-
-        if (districtIsActive) {
-
-            districtIsActive.checked =
-                district.is_active !== false;
-
-        }
-
-
-        if (saveDistrictButton) {
-
-            saveDistrictButton.textContent =
-                "Update District";
-
-        }
-
-    }
-
-
-    // =============================================
-    // OPEN FORM
-    // =============================================
-
-    if (districtFormPanel) {
-
-        districtFormPanel.classList.add(
-            "is-open"
-        );
-
-        // Extra safety
-        districtFormPanel.hidden = false;
-
-        districtFormPanel.removeAttribute(
-            "aria-hidden"
-        );
-
-        // Scroll form into view
-        window.setTimeout(function () {
-
-            districtFormPanel.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        }, 50);
-
-    }
-
-
-    // =============================================
-    // Focus
-    // =============================================
-
-    if (districtName) {
-
-        window.setTimeout(function () {
-
-            districtName.focus();
-
-        }, 150);
-
-    }
-
-}
+        // =============================================
+        // Permission Check
+        // =============================================
 
         if (!canManageDistrict()) {
 
@@ -653,12 +487,23 @@
 
         }
 
+
+        // =============================================
+        // Reset Form
+        // =============================================
+
         resetDistrictForm();
+
+
+        // =============================================
+        // EDIT MODE
+        // =============================================
 
         if (district) {
 
             editingDistrictId =
                 district.id;
+
 
             if (districtFormTitle) {
 
@@ -667,12 +512,14 @@
 
             }
 
+
             if (districtDivision) {
 
                 districtDivision.value =
                     district.division_id || "";
 
             }
+
 
             if (districtName) {
 
@@ -681,12 +528,14 @@
 
             }
 
+
             if (districtNameBn) {
 
                 districtNameBn.value =
                     district.name_bn || "";
 
             }
+
 
             if (districtSlug) {
 
@@ -695,12 +544,14 @@
 
             }
 
+
             if (districtIsActive) {
 
                 districtIsActive.checked =
                     district.is_active !== false;
 
             }
+
 
             if (saveDistrictButton) {
 
@@ -711,13 +562,40 @@
 
         }
 
+
+        // =============================================
+        // OPEN FORM
+        // =============================================
+
         if (districtFormPanel) {
 
             districtFormPanel.classList.add(
                 "is-open"
             );
 
+            // Extra safety
+            districtFormPanel.hidden = false;
+
+            districtFormPanel.removeAttribute(
+                "aria-hidden"
+            );
+
+            // Scroll form into view
+            window.setTimeout(function () {
+
+                districtFormPanel.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }, 50);
+
         }
+
+
+        // =============================================
+        // Focus
+        // =============================================
 
         if (districtName) {
 
@@ -725,34 +603,14 @@
 
                 districtName.focus();
 
-            }, 100);
+            }, 150);
 
         }
 
     }
 
 
-     function closeDistrictFormPanel() {
-
-    if (districtFormPanel) {
-
-        districtFormPanel.classList.remove(
-            "is-open"
-        );
-
-        districtFormPanel.hidden = true;
-
-        districtFormPanel.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-    }
-
-
-    resetDistrictForm();
-
-}
+    function closeDistrictFormPanel() {
 
         if (districtFormPanel) {
 
@@ -760,7 +618,15 @@
                 "is-open"
             );
 
+            districtFormPanel.hidden = true;
+
+            districtFormPanel.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
         }
+
 
         resetDistrictForm();
 
@@ -1042,13 +908,16 @@
                         .join(" ")
                         .toLowerCase();
 
+
                     if (
                         search &&
                         !searchable.includes(
                             search
                         )
                     ) {
+
                         return false;
+
                     }
 
 
@@ -1080,6 +949,7 @@
 
                     }
 
+
                     if (
                         status === "inactive" &&
                         district.is_active !== false
@@ -1088,6 +958,7 @@
                         return false;
 
                     }
+
 
                     return true;
 
@@ -1112,8 +983,10 @@
             return;
         }
 
+
         const total =
             filteredDistricts.length;
+
 
         if (total === 0) {
 
@@ -1133,8 +1006,10 @@
             (currentPage - 1) *
             PAGE_SIZE;
 
+
         const end =
             start + PAGE_SIZE;
+
 
         const pageItems =
             filteredDistricts.slice(
@@ -1346,8 +1221,10 @@
             return;
         }
 
+
         const total =
             filteredDistricts.length;
+
 
         const totalPages =
             Math.ceil(
@@ -1372,6 +1249,7 @@
         const start =
             ((currentPage - 1) *
             PAGE_SIZE) + 1;
+
 
         const end =
             Math.min(
@@ -1484,12 +1362,18 @@
                 PAGE_SIZE
             );
 
-        if (page < 1 || page > totalPages) {
+
+        if (
+            page < 1 ||
+            page > totalPages
+        ) {
             return;
         }
 
+
         currentPage =
             page;
+
 
         renderDistrictTable();
 
@@ -1503,18 +1387,26 @@
     function hideDistrictStates() {
 
         if (districtLoadingState) {
+
             districtLoadingState.hidden =
                 true;
+
         }
+
 
         if (districtEmptyState) {
+
             districtEmptyState.hidden =
                 true;
+
         }
 
+
         if (districtErrorState) {
+
             districtErrorState.hidden =
                 true;
+
         }
 
     }
@@ -1524,19 +1416,28 @@
 
         hideDistrictStates();
 
+
         if (districtTable) {
+
             districtTable.hidden =
                 true;
+
         }
+
 
         if (districtPagination) {
+
             districtPagination.hidden =
                 true;
+
         }
 
+
         if (districtLoadingState) {
+
             districtLoadingState.hidden =
                 false;
+
         }
 
     }
@@ -1546,19 +1447,28 @@
 
         hideDistrictStates();
 
+
         if (districtTable) {
+
             districtTable.hidden =
                 true;
+
         }
+
 
         if (districtPagination) {
+
             districtPagination.hidden =
                 true;
+
         }
 
+
         if (districtEmptyState) {
+
             districtEmptyState.hidden =
                 false;
+
         }
 
     }
@@ -1570,15 +1480,22 @@
 
         hideDistrictStates();
 
+
         if (districtTable) {
+
             districtTable.hidden =
                 true;
+
         }
 
+
         if (districtPagination) {
+
             districtPagination.hidden =
                 true;
+
         }
+
 
         if (districtErrorMessage) {
 
@@ -1586,6 +1503,7 @@
                 message;
 
         }
+
 
         if (districtErrorState) {
 
@@ -1684,6 +1602,7 @@
                     districtSlug.value
                 );
 
+
             if (
                 !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
                     slug
@@ -1719,15 +1638,18 @@
                 districtDivision.value
             );
 
+
         const name =
             cleanText(
                 districtName.value
             );
 
+
         const nameBn =
             cleanText(
                 districtNameBn.value
             );
+
 
         const slug =
             cleanText(
@@ -1836,15 +1758,18 @@
                 districtDivision.value
             );
 
+
         const name =
             cleanText(
                 districtName.value
             );
 
+
         const nameBn =
             cleanText(
                 districtNameBn.value
             );
+
 
         const slug =
             cleanText(
@@ -2032,6 +1957,7 @@
             closeDistrictFormPanel();
 
             await loadDistricts();
+
 
             if (
                 window.DorkariLocation &&
@@ -2291,6 +2217,7 @@
         const action =
             button.dataset
                 .districtAction;
+
 
         const id =
             button.dataset.id;
