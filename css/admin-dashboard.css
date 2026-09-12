@@ -3497,3 +3497,310 @@ a:focus-visible {
     }
 
 }
+/* =========================================================
+   F-5.4 — OVERVIEW CSS POLISH / SAFE FIX
+   JS / HTML untouched
+   ========================================================= */
+
+
+/* =========================================================
+   DISTRICT + UPAZILA SECTION
+   Make them visually consistent with Division Overview
+   ========================================================= */
+
+.district-overview-section,
+.upazila-overview-section {
+
+    padding: 22px;
+
+    background: #ffffff;
+
+    border: 1px solid var(--admin-border);
+
+    border-radius: var(--admin-radius);
+
+    box-shadow: var(--admin-shadow);
+
+}
+
+
+/* =========================================================
+   SECTION HEADING SPACING
+   ========================================================= */
+
+.district-overview-section .section-heading,
+.upazila-overview-section .section-heading {
+
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+}
+
+
+/* =========================================================
+   DISTRICT GRID
+   ========================================================= */
+
+.district-overview-grid {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 0;
+
+}
+
+
+/* =========================================================
+   UPAZILA GRID
+   ========================================================= */
+
+.upazila-overview-grid {
+
+    width: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+
+    margin-top: 0;
+
+}
+
+
+/* =========================================================
+   FIX DISTRICT SHADOW VARIABLES
+   ========================================================= */
+
+.district-overview-card {
+
+    box-shadow:
+        var(--admin-shadow);
+
+}
+
+
+.district-overview-card:hover {
+
+    box-shadow:
+        var(--admin-shadow-hover);
+
+}
+
+
+/* =========================================================
+   MAKE EMPTY / LOADING STATE FULL WIDTH
+   ========================================================= */
+
+.district-overview-grid
+.category-loading,
+.district-overview-grid
+.category-empty,
+.district-overview-grid
+.category-error,
+
+.upazila-overview-grid
+.category-loading,
+.upazila-overview-grid
+.category-empty,
+.upazila-overview-grid
+.category-error {
+
+    grid-column: 1 / -1;
+
+    width: 100%;
+
+    min-width: 0;
+
+}
+
+
+/* =========================================================
+   UPAZILA SECTION SPACING
+   ========================================================= */
+
+.upazila-overview-section {
+
+    margin-top: 28px;
+
+}
+
+
+/* =========================================================
+   DISTRICT SECTION SPACING
+   ========================================================= */
+
+.district-overview-section {
+
+    margin-top: 28px;
+
+}
+
+
+/* =========================================================
+   DESKTOP — CARD BALANCE
+   ========================================================= */
+
+@media (min-width: 1201px) {
+
+    .district-overview-card,
+    .upazila-overview-card {
+
+        min-height: 165px;
+
+        padding: 20px;
+
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .district-overview-grid,
+    .upazila-overview-grid {
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 950px) {
+
+    .district-overview-section,
+    .upazila-overview-section {
+
+        padding: 18px;
+
+    }
+
+
+    .district-overview-grid,
+    .upazila-overview-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 16px;
+
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .district-overview-section,
+    .upazila-overview-section {
+
+        margin-top: 24px;
+
+        padding: 16px 13px;
+
+        border-radius: 14px;
+
+    }
+
+
+    .district-overview-section .section-heading,
+    .upazila-overview-section .section-heading {
+
+        margin-bottom: 14px;
+
+    }
+
+
+    .district-overview-grid,
+    .upazila-overview-grid {
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 9px;
+
+    }
+
+
+    .district-overview-card,
+    .upazila-overview-card {
+
+        min-height: 145px;
+
+        padding: 14px;
+
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 450px) {
+
+    .district-overview-grid,
+    .upazila-overview-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .district-overview-card,
+    .upazila-overview-card {
+
+        min-height: 145px;
+
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .district-overview-section,
+    .upazila-overview-section {
+
+        padding: 14px 11px;
+
+    }
+
+
+    .district-overview-grid,
+    .upazila-overview-grid {
+
+        gap: 8px;
+
+    }
+
+}
