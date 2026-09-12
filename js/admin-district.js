@@ -470,22 +470,147 @@
     }
 
 
-    function openDistrictForm(district = null) {
+function openDistrictForm(district = null) {
 
-        // =============================================
-        // Permission Check
-        // =============================================
+    // =============================================
+    // Permission Check
+    // =============================================
 
-        if (!canManageDistrict()) {
+    if (!canManageDistrict()) {
 
-            showToast(
-                "আপনার এই কাজের অনুমতি নেই।",
-                "warning"
-            );
+        showToast(
+            "আপনার এই কাজের অনুমতি নেই।",
+            "warning"
+        );
 
-            return;
+        return;
+
+    }
+
+
+    // =============================================
+    // Reset Form
+    // =============================================
+
+    resetDistrictForm();
+
+
+    // =============================================
+    // EDIT MODE
+    // =============================================
+
+    if (district) {
+
+        editingDistrictId =
+            district.id;
+
+
+        if (districtFormTitle) {
+
+            districtFormTitle.textContent =
+                "Edit District";
 
         }
+
+
+        if (districtDivision) {
+
+            districtDivision.value =
+                district.division_id || "";
+
+        }
+
+
+        if (districtName) {
+
+            districtName.value =
+                district.name || "";
+
+        }
+
+
+        if (districtNameBn) {
+
+            districtNameBn.value =
+                district.name_bn || "";
+
+        }
+
+
+        if (districtSlug) {
+
+            districtSlug.value =
+                district.slug || "";
+
+        }
+
+
+        if (districtIsActive) {
+
+            districtIsActive.checked =
+                district.is_active !== false;
+
+        }
+
+
+        if (saveDistrictButton) {
+
+            saveDistrictButton.textContent =
+                "Update District";
+
+        }
+
+    }
+
+
+    // =============================================
+    // OPEN FORM
+    // =============================================
+
+    if (districtFormPanel) {
+
+        // IMPORTANT:
+        // CSS uses .location-form-panel.active
+        // তাই এখানে "active" class ব্যবহার করতে হবে।
+
+        districtFormPanel.classList.add(
+            "active"
+        );
+
+        districtFormPanel.hidden = false;
+
+        districtFormPanel.removeAttribute(
+            "aria-hidden"
+        );
+
+
+        window.setTimeout(function () {
+
+            districtFormPanel.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+
+        }, 50);
+
+    }
+
+
+    // =============================================
+    // Focus
+    // =============================================
+
+    if (districtName) {
+
+        window.setTimeout(function () {
+
+            districtName.focus();
+
+        }, 150);
+
+    }
+
+}
 
 
         // =============================================
@@ -570,7 +695,7 @@
         if (districtFormPanel) {
 
             districtFormPanel.classList.add(
-                "is-open"
+                "active"
             );
 
             districtFormPanel.hidden = false;
@@ -608,29 +733,31 @@
 
     }
 
+ function closeDistrictFormPanel() {
 
-    function closeDistrictFormPanel() {
+    if (districtFormPanel) {
 
-        if (districtFormPanel) {
+        // IMPORTANT:
+        // Form open করার সময় "active" class ব্যবহার করা হয়েছে,
+        // তাই close করার সময়ও "active" remove করতে হবে।
 
-            districtFormPanel.classList.remove(
-                "is-open"
-            );
+        districtFormPanel.classList.remove(
+            "active"
+        );
 
-            districtFormPanel.hidden = true;
+        districtFormPanel.hidden = true;
 
-            districtFormPanel.setAttribute(
-                "aria-hidden",
-                "true"
-            );
-
-        }
-
-
-        resetDistrictForm();
+        districtFormPanel.setAttribute(
+            "aria-hidden",
+            "true"
+        );
 
     }
 
+
+    resetDistrictForm();
+
+}
 
     // =================================================
     // LOAD DIVISIONS
