@@ -423,7 +423,7 @@
     }
 
 
-     // =================================================
+    // =================================================
     // FORM
     // =================================================
 
@@ -470,147 +470,26 @@
     }
 
 
-function openDistrictForm(district = null) {
-
-    // =============================================
-    // Permission Check
-    // =============================================
-
-    if (!canManageDistrict()) {
-
-        showToast(
-            "আপনার এই কাজের অনুমতি নেই।",
-            "warning"
-        );
-
-        return;
-
-    }
-
-
-    // =============================================
-    // Reset Form
-    // =============================================
-
-    resetDistrictForm();
-
-
-    // =============================================
-    // EDIT MODE
-    // =============================================
-
-    if (district) {
-
-        editingDistrictId =
-            district.id;
-
-
-        if (districtFormTitle) {
-
-            districtFormTitle.textContent =
-                "Edit District";
-
-        }
-
-
-        if (districtDivision) {
-
-            districtDivision.value =
-                district.division_id || "";
-
-        }
-
-
-        if (districtName) {
-
-            districtName.value =
-                district.name || "";
-
-        }
-
-
-        if (districtNameBn) {
-
-            districtNameBn.value =
-                district.name_bn || "";
-
-        }
-
-
-        if (districtSlug) {
-
-            districtSlug.value =
-                district.slug || "";
-
-        }
-
-
-        if (districtIsActive) {
-
-            districtIsActive.checked =
-                district.is_active !== false;
-
-        }
-
-
-        if (saveDistrictButton) {
-
-            saveDistrictButton.textContent =
-                "Update District";
-
-        }
-
-    }
-
-
-    // =============================================
+    // =================================================
     // OPEN FORM
-    // =============================================
+    // =================================================
 
-    if (districtFormPanel) {
+    function openDistrictForm(district = null) {
 
-        // IMPORTANT:
-        // CSS uses .location-form-panel.active
-        // তাই এখানে "active" class ব্যবহার করতে হবে।
+        // =============================================
+        // Permission Check
+        // =============================================
 
-        districtFormPanel.classList.add(
-            "active"
-        );
+        if (!canManageDistrict()) {
 
-        districtFormPanel.hidden = false;
+            showToast(
+                "আপনার এই কাজের অনুমতি নেই।",
+                "warning"
+            );
 
-        districtFormPanel.removeAttribute(
-            "aria-hidden"
-        );
+            return;
 
-
-        window.setTimeout(function () {
-
-            districtFormPanel.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-        }, 50);
-
-    }
-
-
-    // =============================================
-    // Focus
-    // =============================================
-
-    if (districtName) {
-
-        window.setTimeout(function () {
-
-            districtName.focus();
-
-        }, 150);
-
-    }
-
-}
+        }
 
 
         // =============================================
@@ -733,31 +612,33 @@ function openDistrictForm(district = null) {
 
     }
 
- function closeDistrictFormPanel() {
 
-    if (districtFormPanel) {
+    // =================================================
+    // CLOSE FORM
+    // =================================================
 
-        // IMPORTANT:
-        // Form open করার সময় "active" class ব্যবহার করা হয়েছে,
-        // তাই close করার সময়ও "active" remove করতে হবে।
+    function closeDistrictFormPanel() {
 
-        districtFormPanel.classList.remove(
-            "active"
-        );
+        if (districtFormPanel) {
 
-        districtFormPanel.hidden = true;
+            districtFormPanel.classList.remove(
+                "active"
+            );
 
-        districtFormPanel.setAttribute(
-            "aria-hidden",
-            "true"
-        );
+            districtFormPanel.hidden = true;
+
+            districtFormPanel.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+        }
+
+
+        resetDistrictForm();
 
     }
 
-
-    resetDistrictForm();
-
-}
 
     // =================================================
     // LOAD DIVISIONS
@@ -948,6 +829,7 @@ function openDistrictForm(district = null) {
 
     }
 
+
     // =================================================
     // LOAD DISTRICTS
     // =================================================
@@ -965,6 +847,7 @@ function openDistrictForm(district = null) {
             return;
 
         }
+
 
         const {
             data,
@@ -992,6 +875,7 @@ function openDistrictForm(district = null) {
                 }
             );
 
+
         if (error) {
 
             console.error(
@@ -1008,6 +892,7 @@ function openDistrictForm(district = null) {
             return;
 
         }
+
 
         allDistricts =
             data || [];
@@ -1064,13 +949,16 @@ function openDistrictForm(district = null) {
                         .join(" ")
                         .toLowerCase();
 
+
                     if (
                         search &&
                         !searchable.includes(
                             search
                         )
                     ) {
+
                         return false;
+
                     }
 
 
@@ -1102,6 +990,7 @@ function openDistrictForm(district = null) {
 
                     }
 
+
                     if (
                         status === "inactive" &&
                         district.is_active !== false
@@ -1110,6 +999,7 @@ function openDistrictForm(district = null) {
                         return false;
 
                     }
+
 
                     return true;
 
@@ -1134,8 +1024,10 @@ function openDistrictForm(district = null) {
             return;
         }
 
+
         const total =
             filteredDistricts.length;
+
 
         if (total === 0) {
 
@@ -1157,6 +1049,7 @@ function openDistrictForm(district = null) {
 
         const end =
             start + PAGE_SIZE;
+
 
         const pageItems =
             filteredDistricts.slice(
@@ -1368,8 +1261,10 @@ function openDistrictForm(district = null) {
             return;
         }
 
+
         const total =
             filteredDistricts.length;
+
 
         const totalPages =
             Math.ceil(
@@ -1394,6 +1289,7 @@ function openDistrictForm(district = null) {
         const start =
             ((currentPage - 1) *
             PAGE_SIZE) + 1;
+
 
         const end =
             Math.min(
@@ -1506,9 +1402,16 @@ function openDistrictForm(district = null) {
                 PAGE_SIZE
             );
 
-        if (page < 1 || page > totalPages) {
+
+        if (
+            page < 1 ||
+            page > totalPages
+        ) {
+
             return;
+
         }
+
 
         currentPage =
             page;
@@ -1525,18 +1428,26 @@ function openDistrictForm(district = null) {
     function hideDistrictStates() {
 
         if (districtLoadingState) {
+
             districtLoadingState.hidden =
                 true;
+
         }
+
 
         if (districtEmptyState) {
+
             districtEmptyState.hidden =
                 true;
+
         }
 
+
         if (districtErrorState) {
+
             districtErrorState.hidden =
                 true;
+
         }
 
     }
@@ -1546,19 +1457,28 @@ function openDistrictForm(district = null) {
 
         hideDistrictStates();
 
+
         if (districtTable) {
+
             districtTable.hidden =
                 true;
+
         }
+
 
         if (districtPagination) {
+
             districtPagination.hidden =
                 true;
+
         }
 
+
         if (districtLoadingState) {
+
             districtLoadingState.hidden =
                 false;
+
         }
 
     }
@@ -1568,19 +1488,28 @@ function openDistrictForm(district = null) {
 
         hideDistrictStates();
 
+
         if (districtTable) {
+
             districtTable.hidden =
                 true;
+
         }
+
 
         if (districtPagination) {
+
             districtPagination.hidden =
                 true;
+
         }
 
+
         if (districtEmptyState) {
+
             districtEmptyState.hidden =
                 false;
+
         }
 
     }
@@ -1592,15 +1521,22 @@ function openDistrictForm(district = null) {
 
         hideDistrictStates();
 
+
         if (districtTable) {
+
             districtTable.hidden =
                 true;
+
         }
 
+
         if (districtPagination) {
+
             districtPagination.hidden =
                 true;
+
         }
+
 
         if (districtErrorMessage) {
 
@@ -1608,6 +1544,7 @@ function openDistrictForm(district = null) {
                 message;
 
         }
+
 
         if (districtErrorState) {
 
@@ -1706,6 +1643,7 @@ function openDistrictForm(district = null) {
                     districtSlug.value
                 );
 
+
             if (
                 !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
                     slug
@@ -1741,15 +1679,18 @@ function openDistrictForm(district = null) {
                 districtDivision.value
             );
 
+
         const name =
             cleanText(
                 districtName.value
             );
 
+
         const nameBn =
             cleanText(
                 districtNameBn.value
             );
+
 
         const slug =
             cleanText(
@@ -1858,15 +1799,18 @@ function openDistrictForm(district = null) {
                 districtDivision.value
             );
 
+
         const name =
             cleanText(
                 districtName.value
             );
 
+
         const nameBn =
             cleanText(
                 districtNameBn.value
             );
+
 
         const slug =
             cleanText(
@@ -2021,6 +1965,7 @@ function openDistrictForm(district = null) {
 
             }
 
+
             // =========================================
             // INSERT
             // =========================================
@@ -2055,6 +2000,7 @@ function openDistrictForm(district = null) {
 
             await loadDistricts();
 
+
             if (
                 window.DorkariLocation &&
                 typeof window.DorkariLocation
@@ -2073,6 +2019,7 @@ function openDistrictForm(district = null) {
                 "District save error:",
                 error
             );
+
 
             showToast(
                 getSupabaseErrorMessage(
@@ -2212,6 +2159,7 @@ function openDistrictForm(district = null) {
                 error
             );
 
+
             showToast(
                 getSupabaseErrorMessage(
                     error
@@ -2270,7 +2218,9 @@ function openDistrictForm(district = null) {
             !districtSlug ||
             !districtName
         ) {
+
             return;
+
         }
 
 
@@ -2313,6 +2263,7 @@ function openDistrictForm(district = null) {
         const action =
             button.dataset
                 .districtAction;
+
 
         const id =
             button.dataset.id;
@@ -2703,12 +2654,16 @@ function openDistrictForm(district = null) {
 
         getDistricts:
             function () {
+
                 return allDistricts;
+
             },
 
         getDivisions:
             function () {
+
                 return allDivisions;
+
             }
 
     };
