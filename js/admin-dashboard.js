@@ -47,11 +47,7 @@
     // SUPABASE CLIENT
     // =====================================================
 
-    const supabaseClient =
-        window.supabase.createClient(
-            DORKARI_CONFIG.SUPABASE.URL,
-            DORKARI_CONFIG.SUPABASE.PUBLISHABLE_KEY
-        );
+     let supabaseClient = null;
 
 
     // =====================================================
@@ -305,7 +301,7 @@
 
         setText(
             "statTotalStatus",
-            "তথ্য লোড করা যায়নি"
+            "তথ্য লোড করা যায়নি"
         );
 
 
@@ -323,7 +319,7 @@
 
             window.DorkariAdmin.showToast(
                 message ||
-                "Dashboard data load করা যায়নি।"
+                "Dashboard data load করা যায়নি।"
             );
         }
     }
@@ -536,35 +532,34 @@
             "Active database records"
         );
 
-
         // ================================================
-        // SERVICES
-        // ================================================
+// SERVICES
+// ================================================
 
-        setNumber(
-            "statHospitals",
-            dashboardStats.hospitals
-        );
-
-
-        setNumber(
-            "statDoctors",
-            dashboardStats.doctors
-        );
+setNumber(
+    "statHospitals",
+    dashboardStats.hospitals
+);
 
 
-        setNumber(
-            "statEmergency",
-            dashboardStats.emergency
-        );
+setNumber(
+    "statDoctors",
+    dashboardStats.doctors
+);
 
 
-        setNumber(
-            "statAmbulances",
-            dashboardStats.ambulances
-        );
+setNumber(
+    "statEmergency",
+    dashboardStats.emergency
+);
 
 
+setNumber(
+    "statAmbulances",
+    dashboardStats.ambulances
+);
+
+        
         // ================================================
         // LOCATION
         // ================================================
@@ -975,7 +970,7 @@
 
 
             showErrorState(
-                "Dashboard data load করতে সমস্যা হয়েছে।"
+                "Dashboard data load করতে সমস্যা হয়েছে।"
             );
 
 
@@ -1161,11 +1156,40 @@
             return;
         }
 
+// =====================================================
+// USE THE SAME SUPABASE CLIENT FROM ADMIN GUARD
+// =====================================================
+
+        if (
+            typeof window.DorkariAdmin.getSupabase !==
+                "function"
+        ) {
+
+            console.error(
+                "Dorkari Dashboard: Supabase client unavailable."
+            );
+
+            return;
+        }
+
+
+        supabaseClient =
+            window.DorkariAdmin.getSupabase();
+
+
+        if (!supabaseClient) {
+
+            console.error(
+                "Dorkari Dashboard: Supabase client is null."
+            );
+
+            return;
+        }
 
         setupRefreshButton();
 
-
         await loadDashboard();
+
     }
 
 
