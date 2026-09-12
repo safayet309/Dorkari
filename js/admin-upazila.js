@@ -39,13 +39,14 @@
     /* =====================================================
        SLUG
        ===================================================== */
-       
+
     function cleanText(value) {
 
         return String(value || "").trim();
 
     }
-    
+
+
     function slugify(value) {
 
         return cleanText(value)
@@ -56,7 +57,8 @@
             .replace(/^-|-$/g, "");
 
     }
-    
+
+
     function handleNameInput() {
 
         if (
@@ -114,6 +116,7 @@
             );
 
             return;
+
         }
 
 
@@ -179,6 +182,212 @@
 
 
     /* =====================================================
+       FORM VALIDATION
+       ===================================================== */
+
+    function clearFormErrors() {
+
+        const errors = [
+            "upazilaDistrictError",
+            "upazilaNameError",
+            "upazilaNameBnError",
+            "upazilaSlugError"
+        ];
+
+
+        errors.forEach(
+            function (id) {
+
+                const element =
+                    document.getElementById(id);
+
+
+                if (element) {
+
+                    element.textContent = "";
+
+                    element.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+
+        const fields = [
+            "upazilaDistrict",
+            "upazilaName",
+            "upazilaNameBn",
+            "upazilaSlug"
+        ];
+
+
+        fields.forEach(
+            function (id) {
+
+                const element =
+                    document.getElementById(id);
+
+
+                if (element) {
+
+                    element.classList.remove(
+                        "is-invalid"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+
+    function setFieldError(
+        field,
+        errorId,
+        message
+    ) {
+
+        if (field) {
+
+            field.classList.add(
+                "is-invalid"
+            );
+
+        }
+
+
+        const error =
+            document.getElementById(
+                errorId
+            );
+
+
+        if (error) {
+
+            error.textContent =
+                message;
+
+            error.classList.add(
+                "show"
+            );
+
+        }
+
+    }
+
+
+    function validateUpazilaForm() {
+
+        clearFormErrors();
+
+
+        let isValid = true;
+
+
+        /* ---------------------------------------------
+           District
+           --------------------------------------------- */
+
+        if (
+            !upazilaDistrict ||
+            !cleanText(
+                upazilaDistrict.value
+            )
+        ) {
+
+            setFieldError(
+                upazilaDistrict,
+                "upazilaDistrictError",
+                "District নির্বাচন করুন।"
+            );
+
+            isValid = false;
+
+        }
+
+
+        /* ---------------------------------------------
+           English Name
+           --------------------------------------------- */
+
+        if (
+            !upazilaName ||
+            !cleanText(
+                upazilaName.value
+            )
+        ) {
+
+            setFieldError(
+                upazilaName,
+                "upazilaNameError",
+                "Name (English) দিন।"
+            );
+
+            isValid = false;
+
+        }
+
+
+        /* ---------------------------------------------
+           Bangla Name
+           --------------------------------------------- */
+
+        const upazilaNameBn =
+            document.getElementById(
+                "upazilaNameBn"
+            );
+
+
+        if (
+            !upazilaNameBn ||
+            !cleanText(
+                upazilaNameBn.value
+            )
+        ) {
+
+            setFieldError(
+                upazilaNameBn,
+                "upazilaNameBnError",
+                "নাম (বাংলা) দিন।"
+            );
+
+            isValid = false;
+
+        }
+
+
+        /* ---------------------------------------------
+           Slug
+           --------------------------------------------- */
+
+        if (
+            !upazilaSlug ||
+            !cleanText(
+                upazilaSlug.value
+            )
+        ) {
+
+            setFieldError(
+                upazilaSlug,
+                "upazilaSlugError",
+                "Slug তৈরি হয়নি। English Name পরীক্ষা করুন।"
+            );
+
+            isValid = false;
+
+        }
+
+
+        return isValid;
+
+    }
+
+
+    /* =====================================================
        OPEN FORM
        ===================================================== */
 
@@ -189,15 +398,12 @@
         }
 
 
-        /*
-         * Make sure District options are available
-         * whenever the form opens.
-         */
-
         loadDistrictOptions();
 
 
-        upazilaFormPanel.classList.add("active");
+        upazilaFormPanel.classList.add(
+            "active"
+        );
 
 
         const firstField =
@@ -266,84 +472,6 @@
 
 
     /* =====================================================
-       CLEAR ERRORS
-       ===================================================== */
-
-    function clearFormErrors() {
-
-        const errors = [
-            "upazilaDistrictError",
-            "upazilaNameError",
-            "upazilaNameBnError",
-            "upazilaSlugError"
-        ];
-
-
-        errors.forEach(
-            function (id) {
-
-                const element =
-                    document.getElementById(id);
-
-
-                if (element) {
-
-                    element.textContent = "";
-
-                    element.classList.remove(
-                        "show"
-                    );
-
-                }
-
-            }
-        );
-
-
-        const fields = [
-            "upazilaDistrict",
-            "upazilaName",
-            "upazilaNameBn",
-            "upazilaSlug"
-        ];
-
-
-        fields.forEach(
-            function (id) {
-
-                const element =
-                    document.getElementById(id);
-
-
-                if (element) {
-
-                    element.classList.remove(
-                        "is-invalid"
-                    );
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       AUTO SLUG
-       ===================================================== */
-       
-    if (upazilaName) {
-
-        upazilaName.addEventListener(
-            "input",
-            handleNameInput
-        );
-
-    }
-
-
-    /* =====================================================
        ADD BUTTON
        ===================================================== */
 
@@ -400,7 +528,21 @@
 
 
     /* =====================================================
-       FORM SUBMIT — TEMPORARY UI ONLY
+       AUTO SLUG
+       ===================================================== */
+
+    if (upazilaName) {
+
+        upazilaName.addEventListener(
+            "input",
+            handleNameInput
+        );
+
+    }
+
+
+    /* =====================================================
+       FORM SUBMIT — VALIDATION ONLY
        ===================================================== */
 
     if (upazilaForm) {
@@ -412,8 +554,23 @@
                 event.preventDefault();
 
 
+                const isValid =
+                    validateUpazilaForm();
+
+
+                if (!isValid) {
+
+                    console.log(
+                        "Upazila form validation failed."
+                    );
+
+                    return;
+
+                }
+
+
                 console.log(
-                    "Upazila form submit — Supabase logic will be added next."
+                    "Upazila form validation passed. Supabase insert will be added next."
                 );
 
             }
@@ -445,7 +602,10 @@
             resetUpazilaForm,
 
         reloadDistricts:
-            loadDistrictOptions
+            loadDistrictOptions,
+
+        validateForm:
+            validateUpazilaForm
 
     };
 
