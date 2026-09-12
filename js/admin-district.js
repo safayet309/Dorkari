@@ -352,76 +352,86 @@
     // =================================================
     // FORM ERRORS
     // =================================================
+     function clearFormErrors() {
 
-    function clearFormErrors() {
-
-        const errors = [
-            "districtDivisionError",
-            "districtNameError",
-            "districtNameBnError",
-            "districtSlugError"
-        ];
-
-        errors.forEach(function (id) {
-
-            const element =
-                document.getElementById(id);
-
-            if (element) {
-                element.textContent = "";
-            }
-
-        });
+    const errors = [
+        "districtDivisionError",
+        "districtNameError",
+        "districtNameBnError",
+        "districtSlugError"
+    ];
 
 
-        [
-            districtDivision,
-            districtName,
-            districtNameBn,
-            districtSlug
-        ].forEach(function (element) {
+    errors.forEach(function (id) {
 
-            if (element) {
+        const element =
+            document.getElementById(id);
 
-                element.classList.remove(
-                    "has-error"
-                );
+        if (element) {
 
-            }
+            element.textContent = "";
 
-        });
+            element.classList.remove(
+                "show"
+            );
 
-    }
+        }
 
+    });
+
+
+    [
+        districtDivision,
+        districtName,
+        districtNameBn,
+        districtSlug
+    ].forEach(function (element) {
+
+        if (element) {
+
+            element.classList.remove(
+                "is-invalid"
+            );
+
+        }
+
+    });
+
+}
 
     function setFieldError(
-        field,
-        errorId,
-        message
-    ) {
+    field,
+    errorId,
+    message
+) {
 
-        if (field) {
+    if (field) {
 
-            field.classList.add(
-                "has-error"
-            );
-
-        }
-
-        const error =
-            document.getElementById(
-                errorId
-            );
-
-        if (error) {
-
-            error.textContent =
-                message;
-
-        }
+        field.classList.add(
+            "is-invalid"
+        );
 
     }
 
+
+    const error =
+        document.getElementById(
+            errorId
+        );
+
+
+    if (error) {
+
+        error.textContent =
+            message;
+
+        error.classList.add(
+            "show"
+        );
+
+    }
+
+}
 
     // =================================================
     // FORM
