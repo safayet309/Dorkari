@@ -2152,31 +2152,68 @@
     };
 
 
-    /* =====================================================
-       WAIT FOR ADMIN GUARD
-       ===================================================== */
+ /* =====================================================
+   WAIT FOR ADMIN GUARD
+   ===================================================== */
 
-    function waitForAdmin() {
+function waitForAdmin() {
 
-        if (
-            window.DorkariAdmin &&
-            typeof window.DorkariAdmin.getSupabase ===
-            "function"
-        ) {
+    const admin =
+        window.DorkariAdmin;
 
-            initializeLocationPage();
+    /*
+     * DorkariAdmin object তৈরি হলেই যথেষ্ট নয়।
+     *
+     * Admin Guard-এর Supabase session এবং
+     * admin_profiles verification সম্পূর্ণ হওয়া পর্যন্ত
+     * Location Management অপেক্ষা করবে।
+     */
+
+    if (
+        admin &&
+        typeof admin.getSupabase === "function" &&
+        typeof admin.getProfile === "function"
+    ) {
+
+        const profile =
+            admin.getProfile();
+
+        /*
+         * Profile এখনো verify না হলে অপেক্ষা করবে।
+         */
+
+        if (!profile) {
+
+            window.setTimeout(
+                waitForAdmin,
+                100
+            );
 
             return;
         }
 
+        /*
+         * Verified admin profile পাওয়া গেছে।
+         * এখন Location Management initialize হবে।
+         */
 
-        window.setTimeout(
-            waitForAdmin,
-            100
-        );
+        initializeLocationPage();
+
+        return;
     }
 
 
-    waitForAdmin();
+    /*
+     * Admin Guard এখনো তৈরি হয়নি।
+     */
+
+    window.setTimeout(
+        waitForAdmin,
+        100
+    );
+}
+
+
+waitForAdmin();
 
 })();
