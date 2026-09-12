@@ -1,6 +1,6 @@
 // =========================================================
-// Dorkari — Admin Dashboard Statistics
-// Real Supabase Data
+// Dorkari — Admin Dashboard
+// Part 2.8 F — Real Supabase Statistics
 // =========================================================
 
 (function () {
@@ -9,7 +9,7 @@
 
 
     // =====================================================
-    // CONFIG CHECK
+    // CONFIG
     // =====================================================
 
     if (
@@ -20,7 +20,7 @@
     ) {
 
         console.error(
-            "Dorkari: Supabase configuration is missing."
+            "Dorkari Dashboard: Supabase configuration missing."
         );
 
         return;
@@ -37,7 +37,7 @@
     ) {
 
         console.error(
-            "Dorkari: Supabase library was not loaded."
+            "Dorkari Dashboard: Supabase library not loaded."
         );
 
         return;
@@ -56,7 +56,83 @@
 
 
     // =====================================================
-    // DOM HELPER
+    // TABLES
+    // =====================================================
+
+    const TABLES = {
+
+        divisions:
+            "divisions",
+
+        categories:
+            "categories",
+
+        emergencyContacts:
+            "emergency_contacts",
+
+        hospitals:
+            "hospitals",
+
+        doctors:
+            "doctors",
+
+        tests:
+            "tests",
+
+        ambulances:
+            "ambulances",
+
+        policeStations:
+            "police_stations",
+
+        governmentOffices:
+            "government_offices",
+
+        bloodBanks:
+            "blood_banks",
+
+        pharmacies:
+            "pharmacies"
+
+    };
+
+
+    // =====================================================
+    // STATE
+    // =====================================================
+
+    let dashboardStats = {
+
+        hospitals: 0,
+
+        doctors: 0,
+
+        emergencyContacts: 0,
+
+        ambulances: 0,
+
+        policeStations: 0,
+
+        governmentOffices: 0,
+
+        bloodBanks: 0,
+
+        pharmacies: 0,
+
+        tests: 0
+
+    };
+
+
+    let divisionData = [];
+
+    let categoryData = [];
+
+    let isLoading = false;
+
+
+    // =====================================================
+    // DOM HELPERS
     // =====================================================
 
     function getElement(id) {
@@ -66,640 +142,27 @@
     }
 
 
-    // =====================================================
-    // FORMAT NUMBER
-    // =====================================================
+    function getFirstElement(ids) {
 
-    function formatNumber(value) {
-
-        if (
-            typeof value !== "number" ||
-            Number.isNaN(value)
+        for (
+            let i = 0;
+            i < ids.length;
+            i++
         ) {
-            return "0";
-        }
 
-        return value.toLocaleString(
-            "en-US"
-        );
-    }
-
-
-    // =====================================================
-    // GET ACTIVE COUNT
-    // =====================================================
-
-    async function getActiveCount(
-        tableName
-    ) {
-
-        const {
-            count,
-            error
-        } =
-            await supabaseClient
-                .from(tableName)
-                .select(
-                    "id",
-                    {
-                        count: "exact",
-                        head: true
-                    }
-                )
-                .eq(
-                    "is_active",
-                    true
+            const element =
+                document.getElementById(
+                    ids[i]
                 );
 
 
-        if (error) {
-
-            throw new Error(
-                tableName +
-                ": " +
-                error.message
-            );
-        }
-
-
-        return count || 0;
-    }
-
-
-    // =====================================================
-    // GET TABLE COUNT
-    // =====================================================
-
-    async function getTableCount(
-        tableName
-    ) {
-
-        const {
-            count,
-            error
-        } =
-            await supabaseClient
-                .from(tableName)
-                .select(
-                    "id",
-                    {
-                        count: "exact",
-                        head: true
-                    }
-                );
-
-
-        if (error) {
-
-            throw new Error(
-                tableName +
-                ": " +
-                error.message
-            );
-        }
-
-
-        return count || 0;
-    }
-
-
-    // =====================================================
-    // SET TEXT
-    // =====================================================
-
-    function setText(
-        id,
-        value
-    ) {
-
-        const element =
-            getElement(id);
-
-
-        if (!element) {
-            return;
-        }
-
-
-        element.textContent =
-            value;
-    }
-
-
-    // =====================================================
-    // SET LOADING STATE
-    // =====================================================
-
-    function setStatsLoading() {
-
-        const statIds = [
-            "statTotalRecords",
-            "statHospitals",
-            "statDoctors",
-            "statEmergency",
-            "statAmbulances",
-            "statDivisions",
-            "statDistricts",
-            "statUpazilas"
-        ];
-
-
-        statIds.forEach(
-            function (id) {
-
-                setText(
-                    id,
-                    "..."
-                );
-
+            if (element) {
+                return element;
             }
-        );
-
-
-        setText(
-            "statTotalStatus",
-            "Updating..."
-        );
-    }
-
-
-    // =====================================================
-    // LOAD MAIN STATISTICS
-    // =====================================================
-
-    async function loadMainStatistics() {
-
-        /*
-         * These are all ACTIVE content records.
-         *
-         * Relationship tables such as:
-         * - doctor_hospitals
-         * - hospital_tests
-         *
-         * are intentionally not included in Total Active Records.
-         *
-         * They are relationship data, not primary content records.
-         */
-
-
-        const tables = [
-            "emergency_contacts",
-            "hospitals",
-            "doctors",
-            "tests",
-            "ambulances",
-            "police_stations",
-            "government_offices",
-            "blood_banks",
-            "pharmacies"
-        ];
-
-
-        const counts =
-            await Promise.all(
-                tables.map(
-                    function (table) {
-
-                        return getActiveCount(
-                            table
-                        );
-
-                    }
-                )
-            );
-
-
-        const [
-            emergencyCount,
-            hospitalCount,
-            doctorCount,
-            testCount,
-            ambulanceCount,
-            policeCount,
-            governmentCount,
-            bloodBankCount,
-            pharmacyCount
-        ] = counts;
-
-
-        const totalActiveRecords =
-            emergencyCount +
-            hospitalCount +
-            doctorCount +
-            testCount +
-            ambulanceCount +
-            policeCount +
-            governmentCount +
-            bloodBankCount +
-            pharmacyCount;
-
-
-        setText(
-            "statTotalRecords",
-            formatNumber(
-                totalActiveRecords
-            )
-        );
-
-
-        setText(
-            "statHospitals",
-            formatNumber(
-                hospitalCount
-            )
-        );
-
-
-        setText(
-            "statDoctors",
-            formatNumber(
-                doctorCount
-            )
-        );
-
-
-        setText(
-            "statEmergency",
-            formatNumber(
-                emergencyCount
-            )
-        );
-
-
-        setText(
-            "statAmbulances",
-            formatNumber(
-                ambulanceCount
-            )
-        );
-
-
-        setText(
-            "statTotalStatus",
-            "Live from Supabase"
-        );
-    }
-
-
-    // =====================================================
-    // LOAD LOCATION STATISTICS
-    // =====================================================
-
-    async function loadLocationStatistics() {
-
-        const [
-            divisions,
-            districts,
-            upazilas
-        ] =
-            await Promise.all([
-
-                getActiveCount(
-                    "divisions"
-                ),
-
-                getActiveCount(
-                    "districts"
-                ),
-
-                getActiveCount(
-                    "upazilas"
-                )
-
-            ]);
-
-
-        setText(
-            "statDivisions",
-            formatNumber(
-                divisions
-            )
-        );
-
-
-        setText(
-            "statDistricts",
-            formatNumber(
-                districts
-            )
-        );
-
-
-        setText(
-            "statUpazilas",
-            formatNumber(
-                upazilas
-            )
-        );
-    }
-
-
-    // =====================================================
-    // CATEGORY ICON
-    // =====================================================
-
-    function getCategoryIcon(
-        category
-    ) {
-
-        const value =
-            (
-                category.slug ||
-                category.name ||
-                ""
-            )
-            .toLowerCase();
-
-
-        if (
-            value.includes("fire") ||
-            value.includes("ফায়ার") ||
-            value.includes("fire-service")
-        ) {
-            return "🔥";
         }
 
 
-        if (
-            value.includes("police") ||
-            value.includes("পুলিশ")
-        ) {
-            return "👮";
-        }
-
-
-        if (
-            value.includes("ambulance") ||
-            value.includes("অ্যাম্বুলেন্স")
-        ) {
-            return "🚑";
-        }
-
-
-        if (
-            value.includes("child") ||
-            value.includes("শিশু")
-        ) {
-            return "👶";
-        }
-
-
-        if (
-            value.includes("women") ||
-            value.includes("নারী")
-        ) {
-            return "👩";
-        }
-
-
-        if (
-            value.includes("health") ||
-            value.includes("স্বাস্থ্য")
-        ) {
-            return "🏥";
-        }
-
-
-        if (
-            value.includes("national") ||
-            value.includes("জাতীয়")
-        ) {
-            return "🇧🇩";
-        }
-
-
-        return "📞";
-    }
-
-
-    // =====================================================
-    // LOAD CATEGORY DATA
-    // =====================================================
-
-    async function loadCategoryOverview() {
-
-        const container =
-            getElement(
-                "categoryOverview"
-            );
-
-
-        if (!container) {
-            return;
-        }
-
-
-        container.innerHTML = `
-            <div class="category-loading">
-                Loading categories...
-            </div>
-        `;
-
-
-        /*
-         * Load active categories
-         */
-
-        const {
-            data: categories,
-            error: categoryError
-        } =
-            await supabaseClient
-                .from("categories")
-                .select(
-                    "id,name,name_bn,slug,icon,sort_order"
-                )
-                .eq(
-                    "is_active",
-                    true
-                )
-                .order(
-                    "sort_order",
-                    {
-                        ascending: true
-                    }
-                )
-                .order(
-                    "name_bn",
-                    {
-                        ascending: true
-                    }
-                );
-
-
-        if (categoryError) {
-
-            throw new Error(
-                "categories: " +
-                categoryError.message
-            );
-        }
-
-
-        if (
-            !categories ||
-            categories.length === 0
-        ) {
-
-            container.innerHTML = `
-                <div class="category-empty">
-                    এখনো কোনো active category নেই।
-                </div>
-            `;
-
-            return;
-        }
-
-
-        /*
-         * Load active emergency contacts
-         */
-
-        const {
-            data: contacts,
-            error: contactError
-        } =
-            await supabaseClient
-                .from("emergency_contacts")
-                .select(
-                    "id,category_id"
-                )
-                .eq(
-                    "is_active",
-                    true
-                );
-
-
-        if (contactError) {
-
-            throw new Error(
-                "emergency_contacts: " +
-                contactError.message
-            );
-        }
-
-
-        /*
-         * Count contacts by category
-         */
-
-        const categoryCounts =
-            {};
-
-
-        (contacts || [])
-            .forEach(
-                function (contact) {
-
-                    const categoryId =
-                        contact.category_id;
-
-
-                    if (!categoryId) {
-                        return;
-                    }
-
-
-                    if (
-                        !categoryCounts[
-                            categoryId
-                        ]
-                    ) {
-
-                        categoryCounts[
-                            categoryId
-                        ] = 0;
-                    }
-
-
-                    categoryCounts[
-                        categoryId
-                    ] += 1;
-
-                }
-            );
-
-
-        /*
-         * Build category cards
-         */
-
-        const html =
-            categories
-                .map(
-                    function (category) {
-
-                        const count =
-                            categoryCounts[
-                                category.id
-                            ] || 0;
-
-
-                        const icon =
-                            category.icon ||
-                            getCategoryIcon(
-                                category
-                            );
-
-
-                        const englishName =
-                            category.name ||
-                            "Category";
-
-
-                        const banglaName =
-                            category.name_bn ||
-                            "";
-
-
-                        return `
-                            <div class="category-card">
-
-                                <div class="category-icon">
-                                    ${escapeHtml(icon)}
-                                </div>
-
-
-                                <div class="category-info">
-
-                                    <strong class="category-name">
-                                        ${escapeHtml(
-                                            banglaName ||
-                                            englishName
-                                        )}
-                                    </strong>
-
-
-                                    ${
-                                        banglaName &&
-                                        englishName
-                                            ? `
-                                                <span class="category-name-bn">
-                                                    ${escapeHtml(
-                                                        englishName
-                                                    )}
-                                                </span>
-                                            `
-                                            : ""
-                                    }
-
-                                </div>
-
-
-                                <span class="category-count">
-                                    ${formatNumber(count)}
-                                </span>
-
-                            </div>
-                        `;
-
-                    }
-                )
-                .join("");
-
-
-        container.innerHTML =
-            html;
+        return null;
     }
 
 
@@ -707,19 +170,11 @@
     // ESCAPE HTML
     // =====================================================
 
-    function escapeHtml(
-        value
-    ) {
+    function escapeHTML(value) {
 
-        if (
-            value === null ||
-            value === undefined
-        ) {
-            return "";
-        }
-
-
-        return String(value)
+        return String(
+            value ?? ""
+        )
             .replace(
                 /&/g,
                 "&amp;"
@@ -744,15 +199,32 @@
 
 
     // =====================================================
-    // UPDATE REFRESH TIME
+    // FORMAT NUMBER
     // =====================================================
 
-    function updateRefreshTime() {
+    function formatNumber(number) {
+
+        const value =
+            Number(number) || 0;
+
+
+        return value.toLocaleString(
+            "bn-BD"
+        );
+    }
+
+
+    // =====================================================
+    // SET STAT VALUE
+    // =====================================================
+
+    function setStatValue(
+        ids,
+        value
+    ) {
 
         const element =
-            getElement(
-                "lastRefresh"
-            );
+            getFirstElement(ids);
 
 
         if (!element) {
@@ -760,24 +232,834 @@
         }
 
 
-        const now =
-            new Date();
-
-
         element.textContent =
-            "Updated " +
-            now.toLocaleTimeString(
-                "en-BD",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit"
+            formatNumber(value);
+    }
+
+
+    // =====================================================
+    // SHOW LOADING STATE
+    // =====================================================
+
+    function showStatsLoading() {
+
+        const statSelectors = [
+
+            [
+                "totalHospitals",
+                "statHospitals",
+                "hospitalCount"
+            ],
+
+            [
+                "totalDoctors",
+                "statDoctors",
+                "doctorCount"
+            ],
+
+            [
+                "totalEmergencyContacts",
+                "statEmergencyContacts",
+                "emergencyCount"
+            ],
+
+            [
+                "totalAmbulances",
+                "statAmbulances",
+                "ambulanceCount"
+            ],
+
+            [
+                "totalPoliceStations",
+                "statPoliceStations",
+                "policeCount"
+            ],
+
+            [
+                "totalGovernmentOffices",
+                "statGovernmentOffices",
+                "governmentCount"
+            ],
+
+            [
+                "totalBloodBanks",
+                "statBloodBanks",
+                "bloodBankCount"
+            ],
+
+            [
+                "totalPharmacies",
+                "statPharmacies",
+                "pharmacyCount"
+            ],
+
+            [
+                "totalTests",
+                "statTests",
+                "testCount"
+            ]
+
+        ];
+
+
+        statSelectors.forEach(
+            function (ids) {
+
+                const element =
+                    getFirstElement(ids);
+
+
+                if (element) {
+
+                    element.textContent =
+                        "…";
+                }
+
+            }
+        );
+    }
+
+
+    // =====================================================
+    // COUNT ACTIVE RECORDS
+    // =====================================================
+
+    async function countActiveRecords(
+        table
+    ) {
+
+        const {
+            count,
+            error
+        } =
+            await supabaseClient
+                .from(table)
+                .select(
+                    "id",
+                    {
+                        count: "exact",
+                        head: true
+                    }
+                )
+                .eq(
+                    "is_active",
+                    true
+                );
+
+
+        if (error) {
+
+            throw error;
+        }
+
+
+        return Number(
+            count || 0
+        );
+    }
+
+
+    // =====================================================
+    // LOAD ALL STATISTICS
+    // =====================================================
+
+    async function loadStatistics() {
+
+        showStatsLoading();
+
+
+        const results =
+            await Promise.all([
+
+                countActiveRecords(
+                    TABLES.hospitals
+                ),
+
+                countActiveRecords(
+                    TABLES.doctors
+                ),
+
+                countActiveRecords(
+                    TABLES.emergencyContacts
+                ),
+
+                countActiveRecords(
+                    TABLES.ambulances
+                ),
+
+                countActiveRecords(
+                    TABLES.policeStations
+                ),
+
+                countActiveRecords(
+                    TABLES.governmentOffices
+                ),
+
+                countActiveRecords(
+                    TABLES.bloodBanks
+                ),
+
+                countActiveRecords(
+                    TABLES.pharmacies
+                ),
+
+                countActiveRecords(
+                    TABLES.tests
+                )
+
+            ]);
+
+
+        dashboardStats = {
+
+            hospitals:
+                results[0],
+
+            doctors:
+                results[1],
+
+            emergencyContacts:
+                results[2],
+
+            ambulances:
+                results[3],
+
+            policeStations:
+                results[4],
+
+            governmentOffices:
+                results[5],
+
+            bloodBanks:
+                results[6],
+
+            pharmacies:
+                results[7],
+
+            tests:
+                results[8]
+
+        };
+
+
+        renderStatistics();
+
+        return dashboardStats;
+    }
+
+
+    // =====================================================
+    // RENDER STATISTICS
+    // =====================================================
+
+    function renderStatistics() {
+
+        setStatValue(
+            [
+                "totalHospitals",
+                "statHospitals",
+                "hospitalCount"
+            ],
+            dashboardStats.hospitals
+        );
+
+
+        setStatValue(
+            [
+                "totalDoctors",
+                "statDoctors",
+                "doctorCount"
+            ],
+            dashboardStats.doctors
+        );
+
+
+        setStatValue(
+            [
+                "totalEmergencyContacts",
+                "statEmergencyContacts",
+                "emergencyCount"
+            ],
+            dashboardStats.emergencyContacts
+        );
+
+
+        setStatValue(
+            [
+                "totalAmbulances",
+                "statAmbulances",
+                "ambulanceCount"
+            ],
+            dashboardStats.ambulances
+        );
+
+
+        setStatValue(
+            [
+                "totalPoliceStations",
+                "statPoliceStations",
+                "policeCount"
+            ],
+            dashboardStats.policeStations
+        );
+
+
+        setStatValue(
+            [
+                "totalGovernmentOffices",
+                "statGovernmentOffices",
+                "governmentCount"
+            ],
+            dashboardStats.governmentOffices
+        );
+
+
+        setStatValue(
+            [
+                "totalBloodBanks",
+                "statBloodBanks",
+                "bloodBankCount"
+            ],
+            dashboardStats.bloodBanks
+        );
+
+
+        setStatValue(
+            [
+                "totalPharmacies",
+                "statPharmacies",
+                "pharmacyCount"
+            ],
+            dashboardStats.pharmacies
+        );
+
+
+        setStatValue(
+            [
+                "totalTests",
+                "statTests",
+                "testCount"
+            ],
+            dashboardStats.tests
+        );
+
+
+        /*
+         * Generic data-stat support.
+         *
+         * Example:
+         *
+         * <span data-stat="hospitals"></span>
+         */
+
+        document
+            .querySelectorAll(
+                "[data-stat]"
+            )
+            .forEach(
+                function (element) {
+
+                    const key =
+                        element.dataset.stat;
+
+
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            dashboardStats,
+                            key
+                        )
+                    ) {
+
+                        element.textContent =
+                            formatNumber(
+                                dashboardStats[key]
+                            );
+                    }
+
                 }
             );
     }
 
 
     // =====================================================
-    // SHOW DASHBOARD ERROR
+    // LOAD DIVISIONS
+    // =====================================================
+
+    async function loadDivisionOverview() {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient
+                .from(
+                    TABLES.divisions
+                )
+                .select(
+                    "id,name,name_bn"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order(
+                    "name_bn",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (error) {
+
+            throw error;
+        }
+
+
+        const divisions =
+            Array.isArray(data)
+                ? data
+                : [];
+
+
+        // ================================================
+        // Load active hospitals with division IDs
+        // ================================================
+
+        const {
+            data: hospitals,
+            error: hospitalError
+        } =
+            await supabaseClient
+                .from(
+                    TABLES.hospitals
+                )
+                .select(
+                    "id,division_id"
+                )
+                .eq(
+                    "is_active",
+                    true
+                );
+
+
+        if (hospitalError) {
+
+            throw hospitalError;
+        }
+
+
+        const hospitalRows =
+            Array.isArray(hospitals)
+                ? hospitals
+                : [];
+
+
+        // ================================================
+        // Build division map
+        // ================================================
+
+        const divisionMap = {};
+
+
+        divisions.forEach(
+            function (division) {
+
+                divisionMap[
+                    division.id
+                ] = {
+
+                    id:
+                        division.id,
+
+                    name:
+                        division.name,
+
+                    name_bn:
+                        division.name_bn,
+
+                    hospitals:
+                        0
+
+                };
+
+            }
+        );
+
+
+        hospitalRows.forEach(
+            function (hospital) {
+
+                const division =
+                    divisionMap[
+                        hospital.division_id
+                    ];
+
+
+                if (division) {
+
+                    division.hospitals++;
+                }
+
+            }
+        );
+
+
+        divisionData =
+            Object.values(
+                divisionMap
+            );
+
+
+        renderDivisionOverview();
+
+        return divisionData;
+    }
+
+
+    // =====================================================
+    // RENDER DIVISION OVERVIEW
+    // =====================================================
+
+    function renderDivisionOverview() {
+
+        const container =
+            getFirstElement([
+                "divisionOverview",
+                "locationOverview",
+                "divisionSummary",
+                "locationSummary"
+            ]);
+
+
+        if (!container) {
+
+            return;
+        }
+
+
+        if (
+            !Array.isArray(
+                divisionData
+            ) ||
+            divisionData.length === 0
+        ) {
+
+            container.innerHTML = `
+                <div class="dashboard-empty">
+                    এখনো কোনো বিভাগের তথ্য পাওয়া যায়নি।
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            divisionData
+                .map(
+                    function (division) {
+
+                        return `
+                            <div class="overview-row">
+
+                                <div class="overview-row-info">
+
+                                    <span class="overview-row-name">
+                                        ${escapeHTML(
+                                            division.name_bn ||
+                                            division.name ||
+                                            "বিভাগ"
+                                        )}
+                                    </span>
+
+                                    <span class="overview-row-subtitle">
+                                        হাসপাতাল
+                                    </span>
+
+                                </div>
+
+                                <span class="overview-row-count">
+                                    ${formatNumber(
+                                        division.hospitals
+                                    )}
+                                </span>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("");
+    }
+
+
+    // =====================================================
+    // LOAD EMERGENCY CATEGORY OVERVIEW
+    // =====================================================
+
+    async function loadCategoryOverview() {
+
+        const {
+            data: categories,
+            error: categoryError
+        } =
+            await supabaseClient
+                .from(
+                    TABLES.categories
+                )
+                .select(
+                    "id,name,name_bn"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order(
+                    "sort_order",
+                    {
+                        ascending: true
+                    }
+                )
+                .order(
+                    "name_bn",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (categoryError) {
+
+            throw categoryError;
+        }
+
+
+        const {
+            data: contacts,
+            error: contactError
+        } =
+            await supabaseClient
+                .from(
+                    TABLES.emergencyContacts
+                )
+                .select(
+                    "id,category_id"
+                )
+                .eq(
+                    "is_active",
+                    true
+                );
+
+
+        if (contactError) {
+
+            throw contactError;
+        }
+
+
+        const categoryRows =
+            Array.isArray(categories)
+                ? categories
+                : [];
+
+
+        const contactRows =
+            Array.isArray(contacts)
+                ? contacts
+                : [];
+
+
+        const categoryMap = {};
+
+
+        categoryRows.forEach(
+            function (category) {
+
+                categoryMap[
+                    category.id
+                ] = {
+
+                    id:
+                        category.id,
+
+                    name:
+                        category.name,
+
+                    name_bn:
+                        category.name_bn,
+
+                    count:
+                        0
+
+                };
+
+            }
+        );
+
+
+        contactRows.forEach(
+            function (contact) {
+
+                const category =
+                    categoryMap[
+                        contact.category_id
+                    ];
+
+
+                if (category) {
+
+                    category.count++;
+                }
+
+            }
+        );
+
+
+        /*
+         * Contacts without a category
+         * are also counted.
+         */
+
+        const uncategorized =
+            contactRows.filter(
+                function (contact) {
+
+                    return (
+                        !contact.category_id ||
+                        !categoryMap[
+                            contact.category_id
+                        ]
+                    );
+
+                }
+            ).length;
+
+
+        if (uncategorized > 0) {
+
+            categoryData =
+                Object.values(
+                    categoryMap
+                );
+
+
+            categoryData.push({
+
+                id:
+                    "uncategorized",
+
+                name:
+                    "Other",
+
+                name_bn:
+                    "অন্যান্য",
+
+                count:
+                    uncategorized
+
+            });
+
+        } else {
+
+            categoryData =
+                Object.values(
+                    categoryMap
+                );
+        }
+
+
+        // Sort by count
+        categoryData.sort(
+            function (a, b) {
+
+                return b.count - a.count;
+
+            }
+        );
+
+
+        renderCategoryOverview();
+
+        return categoryData;
+    }
+
+
+    // =====================================================
+    // RENDER CATEGORY OVERVIEW
+    // =====================================================
+
+    function renderCategoryOverview() {
+
+        const container =
+            getFirstElement([
+                "categoryOverview",
+                "emergencyCategoryOverview",
+                "categorySummary",
+                "emergencySummary"
+            ]);
+
+
+        if (!container) {
+
+            return;
+        }
+
+
+        if (
+            !Array.isArray(
+                categoryData
+            ) ||
+            categoryData.length === 0
+        ) {
+
+            container.innerHTML = `
+                <div class="dashboard-empty">
+                    এখনো কোনো জরুরি সেবার ক্যাটাগরি তথ্য নেই।
+                </div>
+            `;
+
+            return;
+        }
+
+
+        container.innerHTML =
+            categoryData
+                .map(
+                    function (category) {
+
+                        return `
+                            <div class="overview-row">
+
+                                <div class="overview-row-info">
+
+                                    <span class="overview-row-name">
+                                        ${escapeHTML(
+                                            category.name_bn ||
+                                            category.name ||
+                                            "অন্যান্য"
+                                        )}
+                                    </span>
+
+                                </div>
+
+                                <span class="overview-row-count">
+                                    ${formatNumber(
+                                        category.count
+                                    )}
+                                </span>
+
+                            </div>
+                        `;
+
+                    }
+                )
+                .join("");
+    }
+
+
+    // =====================================================
+    // DASHBOARD ERROR
     // =====================================================
 
     function showDashboardError(
@@ -785,80 +1067,14 @@
     ) {
 
         console.error(
-            "Dorkari Dashboard:",
+            "Dorkari Dashboard Error:",
             error
         );
 
 
-        setText(
-            "statTotalRecords",
-            "!"
-        );
-
-
-        setText(
-            "statTotalStatus",
-            "Unable to load data"
-        );
-
-
-        setText(
-            "statHospitals",
-            "!"
-        );
-
-
-        setText(
-            "statDoctors",
-            "!"
-        );
-
-
-        setText(
-            "statEmergency",
-            "!"
-        );
-
-
-        setText(
-            "statAmbulances",
-            "!"
-        );
-
-
-        setText(
-            "statDivisions",
-            "!"
-        );
-
-
-        setText(
-            "statDistricts",
-            "!"
-        );
-
-
-        setText(
-            "statUpazilas",
-            "!"
-        );
-
-
-        const categoryContainer =
-            getElement(
-                "categoryOverview"
-            );
-
-
-        if (categoryContainer) {
-
-            categoryContainer.innerHTML = `
-                <div class="category-error">
-                    Dashboard data load করা যায়নি।
-                    Supabase connection বা permission check করুন।
-                </div>
-            `;
-        }
+        const message =
+            error?.message ||
+            "ড্যাশবোর্ডের তথ্য লোড করা যায়নি।";
 
 
         if (
@@ -868,55 +1084,76 @@
         ) {
 
             window.DorkariAdmin.showToast(
-                "Dashboard data load করা যায়নি।"
+                "তথ্য লোড করতে সমস্যা হয়েছে।"
             );
         }
+
+
+        document
+            .querySelectorAll(
+                ".dashboard-error-message"
+            )
+            .forEach(
+                function (element) {
+
+                    element.textContent =
+                        message;
+
+                }
+            );
     }
 
 
     // =====================================================
-    // LOAD EVERYTHING
+    // LOAD COMPLETE DASHBOARD
     // =====================================================
 
-    async function loadDashboardData() {
+    async function loadDashboard() {
 
-        const refreshButton =
-            getElement(
-                "refreshDashboard"
-            );
+        if (isLoading) {
 
-
-        if (refreshButton) {
-
-            refreshButton.classList.add(
-                "loading"
-            );
-
-            refreshButton.textContent =
-                "↻ Updating...";
+            return;
         }
 
 
-        setStatsLoading();
+        isLoading = true;
+
+
+        document.body.classList.add(
+            "dashboard-loading"
+        );
 
 
         try {
 
             await Promise.all([
 
-                loadMainStatistics(),
+                loadStatistics(),
 
-                loadLocationStatistics(),
+                loadDivisionOverview(),
 
                 loadCategoryOverview()
 
             ]);
 
 
-            updateRefreshTime();
+            document.body.classList.remove(
+                "dashboard-data-error"
+            );
+
+
+            console.log(
+                "Dorkari Dashboard loaded:",
+                dashboardStats
+            );
 
 
         } catch (error) {
+
+            document.body.classList.add(
+                "dashboard-data-error"
+            );
+
 
             showDashboardError(
                 error
@@ -925,15 +1162,12 @@
 
         } finally {
 
-            if (refreshButton) {
+            isLoading = false;
 
-                refreshButton.classList.remove(
-                    "loading"
-                );
 
-                refreshButton.textContent =
-                    "↻ Refresh";
-            }
+            document.body.classList.remove(
+                "dashboard-loading"
+            );
         }
     }
 
@@ -944,40 +1178,171 @@
 
     function setupRefreshButton() {
 
-        const button =
-            getElement(
-                "refreshDashboard"
-            );
+        const refreshButton =
+            getFirstElement([
+                "dashboardRefresh",
+                "refreshDashboard",
+                "refreshButton",
+                "refreshStats",
+                "adminDashboardRefresh"
+            ]);
 
 
-        if (!button) {
+        if (!refreshButton) {
+
             return;
         }
 
 
-        button.addEventListener(
+        refreshButton.addEventListener(
             "click",
-            loadDashboardData
+            async function () {
+
+                if (isLoading) {
+
+                    return;
+                }
+
+
+                const originalText =
+                    refreshButton.innerHTML;
+
+
+                refreshButton.disabled =
+                    true;
+
+
+                refreshButton.classList.add(
+                    "loading"
+                );
+
+
+                refreshButton.innerHTML =
+                    "↻ লোড হচ্ছে...";
+
+
+                try {
+
+                    await loadDashboard();
+
+
+                } finally {
+
+                    refreshButton.disabled =
+                        false;
+
+
+                    refreshButton.classList.remove(
+                        "loading"
+                    );
+
+
+                    refreshButton.innerHTML =
+                        originalText;
+                }
+
+            }
         );
     }
 
 
     // =====================================================
-    // START AFTER AUTH
+    // LAST UPDATED
     // =====================================================
 
-    async function startDashboard() {
+    function updateLastUpdated() {
+
+        const element =
+            getFirstElement([
+                "dashboardLastUpdated",
+                "lastUpdated",
+                "statsLastUpdated"
+            ]);
+
+
+        if (!element) {
+
+            return;
+        }
+
+
+        const now =
+            new Date();
+
+
+        element.textContent =
+            "সর্বশেষ আপডেট: " +
+            now.toLocaleTimeString(
+                "bn-BD",
+                {
+                    hour:
+                        "2-digit",
+
+                    minute:
+                        "2-digit"
+                }
+            );
+    }
+
+
+    // =====================================================
+    // PUBLIC API
+    // =====================================================
+
+    window.DorkariDashboard = {
+
+        load:
+            loadDashboard,
+
+        refresh:
+            loadDashboard,
+
+        getStats:
+            function () {
+
+                return {
+                    ...dashboardStats
+                };
+
+            },
+
+        getDivisions:
+            function () {
+
+                return [
+                    ...divisionData
+                ];
+
+            },
+
+        getCategories:
+            function () {
+
+                return [
+                    ...categoryData
+                ];
+
+            }
+
+    };
+
+
+    // =====================================================
+    // INITIALIZE
+    // =====================================================
+
+    async function initializeDashboard() {
 
         /*
-         * admin-guard.js runs before this file.
+         * admin-guard.js must authenticate the user first.
          *
-         * We wait briefly for the guard to finish
-         * authentication verification.
+         * We wait briefly for the verified admin profile
+         * so this module never trusts sessionStorage alone.
          */
 
         let attempts = 0;
 
-        const maxAttempts = 50;
+        const maxAttempts = 100;
 
 
         while (
@@ -985,15 +1350,14 @@
         ) {
 
             if (
-                document.body.classList.contains(
-                    "admin-authenticated"
-                )
+                window.DorkariAdmin &&
+                typeof window.DorkariAdmin.getProfile ===
+                    "function" &&
+                window.DorkariAdmin.getProfile()
             ) {
+
                 break;
             }
-
-
-            attempts += 1;
 
 
             await new Promise(
@@ -1001,22 +1365,26 @@
 
                     setTimeout(
                         resolve,
-                        100
+                        50
                     );
 
                 }
             );
+
+
+            attempts++;
         }
 
 
         if (
-            !document.body.classList.contains(
-                "admin-authenticated"
-            )
+            !window.DorkariAdmin ||
+            typeof window.DorkariAdmin.getProfile !==
+                "function" ||
+            !window.DorkariAdmin.getProfile()
         ) {
 
             console.warn(
-                "Dashboard statistics waiting for authentication."
+                "Dorkari Dashboard: Admin guard is not ready."
             );
 
             return;
@@ -1025,7 +1393,9 @@
 
         setupRefreshButton();
 
-        await loadDashboardData();
+        await loadDashboard();
+
+        updateLastUpdated();
     }
 
 
@@ -1040,25 +1410,14 @@
 
         document.addEventListener(
             "DOMContentLoaded",
-            startDashboard
+            initializeDashboard
         );
 
     } else {
 
-        startDashboard();
+        initializeDashboard();
 
     }
 
-
-    // =====================================================
-    // GLOBAL ACCESS
-    // =====================================================
-
-    window.DorkariDashboard = {
-
-        refresh:
-            loadDashboardData
-
-    };
 
 })();
