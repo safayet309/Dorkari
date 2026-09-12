@@ -1046,52 +1046,546 @@
 
                 </section>
 
+  <!-- =========================================================
+     DISTRICT MANAGEMENT
+     F-7.3.1 — District Management UI
+     ========================================================= -->
 
-                <!-- =========================================
-                     DISTRICT SECTION — FOUNDATION
-                     ========================================= -->
+<section
+    class="location-section"
+    id="districtManagementSection"
+    data-location-section="district"
+    hidden
+>
 
-                <section
-                    class="location-section"
-                    id="districtManagementSection"
-                    data-location-section="district"
-                    hidden
+    <!-- =====================================================
+         SECTION HEADER
+         ===================================================== -->
+
+    <div class="location-section-header">
+
+        <div class="location-section-title">
+
+            <span class="section-eyebrow">
+                DISTRICT
+            </span>
+
+            <h2>
+                District Management
+            </h2>
+
+            <p>
+                Division অনুযায়ী জেলা পরিচালনা করুন।
+            </p>
+
+        </div>
+
+
+        <div class="location-section-tools">
+
+            <button
+                type="button"
+                class="crud-btn crud-btn-primary"
+                id="sectionAddDistrictButton"
+            >
+                + Add District
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DISTRICT FORM
+         ===================================================== -->
+
+    <div
+        class="location-form-panel"
+        id="districtFormPanel"
+    >
+
+        <div class="location-form-header">
+
+            <div class="location-form-heading">
+
+                <h3 id="districtFormTitle">
+                    Add District
+                </h3>
+
+                <p>
+                    District-এর প্রয়োজনীয় তথ্য দিন।
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="location-form-close"
+                id="closeDistrictForm"
+                aria-label="Form বন্ধ করুন"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form
+            id="districtForm"
+            class="location-form-grid"
+            novalidate
+        >
+
+            <!-- =================================================
+                 DIVISION
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label
+                    for="districtDivision"
+                    class="location-form-label"
+                >
+                    Division
+
+                    <span class="location-required">
+                        *
+                    </span>
+                </label>
+
+
+                <select
+                    id="districtDivision"
+                    name="division_id"
+                    class="location-form-select"
                 >
 
-                    <div class="location-section-header">
+                    <option value="">
+                        Division নির্বাচন করুন
+                    </option>
 
-                        <div class="location-section-title">
-
-                            <h2>
-                                District Management
-                            </h2>
-
-                            <p>
-                                Division অনুযায়ী জেলা পরিচালনা করুন।
-                            </p>
-
-                        </div>
-
-                    </div>
+                </select>
 
 
-                    <div class="location-state">
+                <span
+                    class="location-field-error"
+                    id="districtDivisionError"
+                ></span>
 
-                        <div class="location-state-icon">
-                            📍
-                        </div>
+            </div>
 
-                        <h3>
-                            District Management
-                        </h3>
 
-                        <p>
-                            District CRUD পরবর্তী ধাপে যুক্ত করা হবে।
-                        </p>
+            <!-- =================================================
+                 ENGLISH NAME
+                 ================================================= -->
 
-                    </div>
+            <div class="location-form-group">
 
-                </section>
+                <label
+                    for="districtName"
+                    class="location-form-label"
+                >
+                    Name (English)
+
+                    <span class="location-required">
+                        *
+                    </span>
+                </label>
+
+
+                <input
+                    type="text"
+                    id="districtName"
+                    name="name"
+                    class="location-form-input"
+                    placeholder="e.g. Dhaka"
+                    autocomplete="off"
+                >
+
+
+                <span
+                    class="location-field-error"
+                    id="districtNameError"
+                ></span>
+
+            </div>
+
+
+            <!-- =================================================
+                 BANGLA NAME
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label
+                    for="districtNameBn"
+                    class="location-form-label"
+                >
+                    নাম (বাংলা)
+
+                    <span class="location-required">
+                        *
+                    </span>
+                </label>
+
+
+                <input
+                    type="text"
+                    id="districtNameBn"
+                    name="name_bn"
+                    class="location-form-input"
+                    placeholder="যেমন: ঢাকা"
+                    autocomplete="off"
+                >
+
+
+                <span
+                    class="location-field-error"
+                    id="districtNameBnError"
+                ></span>
+
+            </div>
+
+
+            <!-- =================================================
+                 SLUG
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label
+                    for="districtSlug"
+                    class="location-form-label"
+                >
+                    Slug
+
+                    <span class="location-required">
+                        *
+                    </span>
+                </label>
+
+
+                <input
+                    type="text"
+                    id="districtSlug"
+                    name="slug"
+                    class="location-form-input"
+                    placeholder="e.g. dhaka"
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+
+
+                <span
+                    class="location-field-error"
+                    id="districtSlugError"
+                ></span>
+
+            </div>
+
+
+            <!-- =================================================
+                 ACTIVE STATUS
+                 ================================================= -->
+
+            <div class="location-form-group">
+
+                <label class="location-form-label">
+                    Status
+                </label>
+
+
+                <div class="location-checkbox-group">
+
+                    <input
+                        type="checkbox"
+                        id="districtIsActive"
+                        name="is_active"
+                        class="location-checkbox"
+                        checked
+                    >
+
+
+                    <label
+                        for="districtIsActive"
+                        class="location-checkbox-label"
+                    >
+                        Active District
+                    </label>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORM ACTIONS
+                 ================================================= -->
+
+            <div class="location-form-actions">
+
+                <button
+                    type="button"
+                    class="crud-btn crud-btn-secondary"
+                    id="cancelDistrictButton"
+                >
+                    Cancel
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="crud-btn crud-btn-primary"
+                    id="saveDistrictButton"
+                >
+                    Save District
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         SEARCH / FILTER
+         ===================================================== -->
+
+    <div class="location-toolbar">
+
+        <!-- Search -->
+
+        <div class="location-search-wrap">
+
+            <span
+                class="location-search-icon"
+                aria-hidden="true"
+            >
+                🔍
+            </span>
+
+
+            <input
+                type="search"
+                id="districtSearch"
+                class="location-search"
+                placeholder="District খুঁজুন..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <!-- Division Filter -->
+
+        <div class="location-filter-group">
+
+            <select
+                id="districtDivisionFilter"
+                class="location-form-select"
+                aria-label="Division filter"
+            >
+
+                <option value="">
+                    সব Division
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Status Filter -->
+
+        <div class="location-filter-group">
+
+            <select
+                id="districtStatusFilter"
+                class="location-form-select"
+                aria-label="District status"
+            >
+
+                <option value="active">
+                    Active
+                </option>
+
+                <option value="all">
+                    All
+                </option>
+
+                <option value="inactive">
+                    Inactive
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DISTRICT TABLE
+         ===================================================== -->
+
+    <div
+        class="location-table-wrapper"
+        id="districtTableWrapper"
+    >
+
+        <!-- Loading -->
+
+        <div
+            class="location-state"
+            id="districtLoadingState"
+        >
+
+            <div class="location-state-icon">
+                ⏳
+            </div>
+
+            <h3>
+                District data লোড হচ্ছে...
+            </h3>
+
+            <p>
+                অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন।
+            </p>
+
+        </div>
+
+
+        <!-- Empty -->
+
+        <div
+            class="location-state"
+            id="districtEmptyState"
+            hidden
+        >
+
+            <div class="location-state-icon">
+                📍
+            </div>
+
+            <h3>
+                কোনো District পাওয়া যায়নি
+            </h3>
+
+            <p>
+                নতুন District যোগ করলে এখানে দেখা যাবে।
+            </p>
+
+        </div>
+
+
+        <!-- Error -->
+
+        <div
+            class="location-state error"
+            id="districtErrorState"
+            hidden
+        >
+
+            <div class="location-state-icon">
+                ⚠️
+            </div>
+
+            <h3>
+                তথ্য লোড করা যায়নি
+            </h3>
+
+            <p id="districtErrorMessage">
+                District data আনতে সমস্যা হয়েছে।
+            </p>
+
+        </div>
+
+
+        <!-- Table -->
+
+        <table
+            class="location-table"
+            id="districtTable"
+            hidden
+        >
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        District
+                    </th>
+
+                    <th>
+                        Division
+                    </th>
+
+                    <th>
+                        Slug
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Created
+                    </th>
+
+                    <th>
+                        Actions
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="districtTableBody">
+
+                <!-- JS will render rows -->
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- =====================================================
+         PAGINATION
+         ===================================================== -->
+
+    <div
+        class="location-pagination"
+        id="districtPagination"
+        hidden
+    >
+
+        <div
+            class="location-pagination-info"
+            id="districtPaginationInfo"
+        >
+            Showing 0 districts
+        </div>
+
+
+        <div
+            class="location-pagination-controls"
+            id="districtPaginationControls"
+        >
+
+            <!-- JS will render pagination -->
+
+        </div>
+
+    </div>
+
+</section>
 
 
                 <!-- =========================================
