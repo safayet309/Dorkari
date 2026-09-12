@@ -1896,21 +1896,263 @@
          FOUNDATION STATE
          ===================================================== -->
 
-    <div class="location-state">
+ <!-- =====================================================
+     UPAZILA SEARCH / FILTER
+     ===================================================== -->
+
+<div class="location-toolbar">
+
+    <!-- Search -->
+
+    <div class="location-search-wrap">
+
+        <span
+            class="location-search-icon"
+            aria-hidden="true"
+        >
+            🔍
+        </span>
+
+        <input
+            type="search"
+            id="upazilaSearch"
+            class="location-search"
+            placeholder="Upazila খুঁজুন..."
+            autocomplete="off"
+        >
+
+    </div>
+
+
+    <!-- Division Filter -->
+
+    <div class="location-filter-group">
+
+        <select
+            id="upazilaDivisionFilter"
+            class="location-form-select"
+            aria-label="Division filter"
+        >
+
+            <option value="">
+                সব Division
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- District Filter -->
+
+    <div class="location-filter-group">
+
+        <select
+            id="upazilaDistrictFilter"
+            class="location-form-select"
+            aria-label="District filter"
+        >
+
+            <option value="">
+                সব District
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- Status Filter -->
+
+    <div class="location-filter-group">
+
+        <select
+            id="upazilaStatusFilter"
+            class="location-form-select"
+            aria-label="Upazila status"
+        >
+
+            <option value="active">
+                Active
+            </option>
+
+            <option value="all">
+                All
+            </option>
+
+            <option value="inactive">
+                Inactive
+            </option>
+
+        </select>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     UPAZILA TABLE
+     ===================================================== -->
+
+<div
+    class="location-table-wrapper"
+    id="upazilaTableWrapper"
+>
+
+
+    <!-- Loading -->
+
+    <div
+        class="location-state"
+        id="upazilaLoadingState"
+    >
 
         <div class="location-state-icon">
-            🏘️
+            ⏳
         </div>
 
         <h3>
-            Upazila Management
+            Upazila data লোড হচ্ছে...
         </h3>
 
         <p>
-            Upazila management শুরু করার জন্য প্রস্তুত।
+            অনুগ্রহ করে কিছুক্ষণ অপেক্ষা করুন।
         </p>
 
     </div>
+
+
+    <!-- Empty -->
+
+    <div
+        class="location-state"
+        id="upazilaEmptyState"
+        hidden
+    >
+
+        <div class="location-state-icon">
+            📍
+        </div>
+
+        <h3>
+            কোনো Upazila পাওয়া যায়নি
+        </h3>
+
+        <p>
+            আপনার search বা filter পরিবর্তন করে আবার চেষ্টা করুন।
+        </p>
+
+    </div>
+
+
+    <!-- Error -->
+
+    <div
+        class="location-state"
+        id="upazilaErrorState"
+        hidden
+    >
+
+        <div class="location-state-icon">
+            ⚠️
+        </div>
+
+        <h3>
+            Upazila data লোড করা যায়নি
+        </h3>
+
+        <p>
+            অনুগ্রহ করে আবার চেষ্টা করুন।
+        </p>
+
+    </div>
+
+
+    <!-- Table -->
+
+    <table
+        class="location-table"
+        id="upazilaTable"
+        hidden
+    >
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Upazila
+                </th>
+
+                <th>
+                    District
+                </th>
+
+                <th>
+                    Division
+                </th>
+
+                <th>
+                    Slug
+                </th>
+
+                <th>
+                    Status
+                </th>
+
+                <th>
+                    Created
+                </th>
+
+                <th>
+                    Actions
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody id="upazilaTableBody">
+
+            <!-- JS will render rows -->
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- =====================================================
+     UPAZILA PAGINATION
+     ===================================================== -->
+
+<div
+    class="location-pagination"
+    id="upazilaPagination"
+    hidden
+>
+
+    <div
+        class="location-pagination-info"
+        id="upazilaPaginationInfo"
+    >
+        Showing 0 upazilas
+    </div>
+
+
+    <div
+        class="location-pagination-controls"
+        id="upazilaPaginationControls"
+    >
+
+        <!-- JS will render pagination -->
+
+    </div>
+
+</div>
 
 
 </section>
