@@ -1,7 +1,7 @@
 // =========================================================
 // Dorkari — Admin Dashboard
 // 2.8 Part F — Part 2
-// Real Supabase Statistics
+// Real Supabase Statistics + Division Overview
 // =========================================================
 
 (function () {
@@ -19,6 +19,7 @@
         !DORKARI_CONFIG.SUPABASE.URL ||
         !DORKARI_CONFIG.SUPABASE.PUBLISHABLE_KEY
     ) {
+
         console.error(
             "Dorkari Dashboard: Supabase configuration missing."
         );
@@ -35,6 +36,7 @@
         typeof window.supabase === "undefined" ||
         typeof window.supabase.createClient !== "function"
     ) {
+
         console.error(
             "Dorkari Dashboard: Supabase library not loaded."
         );
@@ -47,7 +49,7 @@
     // SUPABASE CLIENT
     // =====================================================
 
-     let supabaseClient = null;
+    let supabaseClient = null;
 
 
     // =====================================================
@@ -192,6 +194,38 @@
 
 
     // =====================================================
+    // ESCAPE HTML
+    // =====================================================
+
+    function escapeHTML(value) {
+
+        return String(
+            value ?? ""
+        )
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+    }
+
+
+    // =====================================================
     // SHOW LOADING
     // =====================================================
 
@@ -240,6 +274,22 @@
             "lastRefresh",
             "Updating..."
         );
+
+
+        const divisionContainer =
+            getElement(
+                "divisionOverview"
+            );
+
+
+        if (divisionContainer) {
+
+            divisionContainer.innerHTML = `
+                <div class="category-loading">
+                    বিভাগভিত্তিক তথ্য লোড হচ্ছে...
+                </div>
+            `;
+        }
     }
 
 
@@ -311,6 +361,22 @@
         );
 
 
+        const divisionContainer =
+            getElement(
+                "divisionOverview"
+            );
+
+
+        if (divisionContainer) {
+
+            divisionContainer.innerHTML = `
+                <div class="category-error">
+                    বিভাগভিত্তিক তথ্য লোড করা যায়নি।
+                </div>
+            `;
+        }
+
+
         if (
             window.DorkariAdmin &&
             typeof window.DorkariAdmin.showToast ===
@@ -353,7 +419,9 @@
 
 
         if (error) {
+
             throw error;
+
         }
 
 
@@ -485,6 +553,7 @@
 
 
         dashboardStats.totalRecords =
+
             dashboardStats.hospitals +
 
             dashboardStats.doctors +
@@ -532,34 +601,35 @@
             "Active database records"
         );
 
+
         // ================================================
-// SERVICES
-// ================================================
+        // SERVICES
+        // ================================================
 
-setNumber(
-    "statHospitals",
-    dashboardStats.hospitals
-);
-
-
-setNumber(
-    "statDoctors",
-    dashboardStats.doctors
-);
+        setNumber(
+            "statHospitals",
+            dashboardStats.hospitals
+        );
 
 
-setNumber(
-    "statEmergency",
-    dashboardStats.emergency
-);
+        setNumber(
+            "statDoctors",
+            dashboardStats.doctors
+        );
 
 
-setNumber(
-    "statAmbulances",
-    dashboardStats.ambulances
-);
+        setNumber(
+            "statEmergency",
+            dashboardStats.emergency
+        );
 
-        
+
+        setNumber(
+            "statAmbulances",
+            dashboardStats.ambulances
+        );
+
+
         // ================================================
         // LOCATION
         // ================================================
@@ -613,7 +683,9 @@ setNumber(
 
 
         if (categoriesError) {
+
             throw categoriesError;
+
         }
 
 
@@ -635,7 +707,9 @@ setNumber(
 
 
         if (contactsError) {
+
             throw contactsError;
+
         }
 
 
@@ -767,40 +841,6 @@ setNumber(
 
 
     // =====================================================
-    // ESCAPE HTML
-    // =====================================================
-
-    function escapeHTML(
-        value
-    ) {
-
-        return String(
-            value ?? ""
-        )
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-    }
-
-
-    // =====================================================
     // RENDER CATEGORY OVERVIEW
     // =====================================================
 
@@ -837,11 +877,11 @@ setNumber(
                     function (category) {
 
                         return `
-                            <div class="category-item">
+                            <div class="category-card">
 
-                                <div class="category-item-info">
+                                <div class="category-info">
 
-                                    <span class="category-item-name">
+                                    <span class="category-name">
                                         ${escapeHTML(
                                             category.name_bn ||
                                             category.name ||
@@ -849,9 +889,24 @@ setNumber(
                                         )}
                                     </span>
 
+                                    ${
+                                        category.name &&
+                                        category.name_bn &&
+                                        category.name !==
+                                            category.name_bn
+                                            ? `
+                                                <span class="category-name-bn">
+                                                    ${escapeHTML(
+                                                        category.name
+                                                    )}
+                                                </span>
+                                            `
+                                            : ""
+                                    }
+
                                 </div>
 
-                                <strong class="category-item-count">
+                                <strong class="category-count">
                                     ${formatNumber(
                                         category.count
                                     )}
@@ -863,6 +918,231 @@ setNumber(
                     }
                 )
                 .join("");
+    }
+
+
+    // =====================================================
+    // LOAD DIVISION-WISE HOSPITAL OVERVIEW
+    // =====================================================
+
+    async function loadDivisionOverview() {
+
+        const container =
+            getElement(
+                "divisionOverview"
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        // =================================================
+        // LOADING STATE
+        // =================================================
+
+        container.innerHTML = `
+            <div class="category-loading">
+                বিভাগভিত্তিক তথ্য লোড হচ্ছে...
+            </div>
+        `;
+
+
+        try {
+
+            // =============================================
+            // LOAD ACTIVE DIVISIONS
+            // =============================================
+
+            const {
+                data: divisions,
+                error: divisionError
+            } =
+                await supabaseClient
+                    .from(
+                        TABLES.divisions
+                    )
+                    .select(
+                        "id,name,name_bn"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name_bn",
+                        {
+                            ascending: true
+                        }
+                    );
+
+
+            if (divisionError) {
+
+                throw divisionError;
+
+            }
+
+
+            // =============================================
+            // LOAD ACTIVE HOSPITALS
+            // =============================================
+
+            const {
+                data: hospitals,
+                error: hospitalError
+            } =
+                await supabaseClient
+                    .from(
+                        TABLES.hospitals
+                    )
+                    .select(
+                        "id,division_id"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    );
+
+
+            if (hospitalError) {
+
+                throw hospitalError;
+
+            }
+
+
+            // =============================================
+            // COUNT HOSPITALS BY DIVISION
+            // =============================================
+
+            const hospitalCounts = {};
+
+
+            (
+                hospitals || []
+            ).forEach(
+                function (hospital) {
+
+                    if (
+                        !hospital.division_id
+                    ) {
+
+                        return;
+                    }
+
+
+                    if (
+                        hospitalCounts[
+                            hospital.division_id
+                        ] === undefined
+                    ) {
+
+                        hospitalCounts[
+                            hospital.division_id
+                        ] = 0;
+                    }
+
+
+                    hospitalCounts[
+                        hospital.division_id
+                    ]++;
+
+                }
+            );
+
+
+            // =============================================
+            // EMPTY STATE
+            // =============================================
+
+            if (
+                !divisions ||
+                divisions.length === 0
+            ) {
+
+                container.innerHTML = `
+                    <div class="category-empty">
+                        কোনো সক্রিয় division পাওয়া যায়নি।
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            // =============================================
+            // RENDER DIVISIONS
+            // =============================================
+
+            container.innerHTML =
+                divisions
+                    .map(
+                        function (division) {
+
+                            const count =
+                                hospitalCounts[
+                                    division.id
+                                ] || 0;
+
+
+                            return `
+                                <div class="overview-card">
+
+                                    <div class="overview-card-top">
+
+                                        <div class="overview-icon">
+                                            🇧🇩
+                                        </div>
+
+                                        <span>
+                                            ${escapeHTML(
+                                                division.name
+                                            )}
+                                        </span>
+
+                                    </div>
+
+
+                                    <strong
+                                        class="overview-number"
+                                    >
+                                        ${formatNumber(
+                                            count
+                                        )}
+                                    </strong>
+
+
+                                    <small>
+                                        ${escapeHTML(
+                                            division.name_bn
+                                        )}
+                                        — সক্রিয় হাসপাতাল
+                                    </small>
+
+                                </div>
+                            `;
+
+                        }
+                    )
+                    .join("");
+
+
+        } catch (error) {
+
+            console.error(
+                "Division overview loading failed:",
+                error
+            );
+
+
+            container.innerHTML = `
+                <div class="category-error">
+                    বিভাগভিত্তিক তথ্য লোড করা যায়নি।
+                </div>
+            `;
+        }
     }
 
 
@@ -935,7 +1215,9 @@ setNumber(
 
                 loadServiceCounts(),
 
-                loadCategoryOverview()
+                loadCategoryOverview(),
+
+                loadDivisionOverview()
 
             ]);
 
@@ -1156,9 +1438,10 @@ setNumber(
             return;
         }
 
-// =====================================================
-// USE THE SAME SUPABASE CLIENT FROM ADMIN GUARD
-// =====================================================
+
+        // =================================================
+        // USE SAME SUPABASE CLIENT FROM ADMIN GUARD
+        // =================================================
 
         if (
             typeof window.DorkariAdmin.getSupabase !==
@@ -1186,7 +1469,17 @@ setNumber(
             return;
         }
 
+
+        // =================================================
+        // SETUP REFRESH
+        // =================================================
+
         setupRefreshButton();
+
+
+        // =================================================
+        // LOAD DASHBOARD
+        // =================================================
 
         await loadDashboard();
 
