@@ -971,8 +971,8 @@
 
         allUpazilas =
             data || [];
-       loadDivisionFilterOptions();
-       loadDistrictFilterOptions();
+        loadDivisionFilterOptions();
+        loadDistrictFilterOptions();
 
 
         filteredUpazilas =
@@ -996,188 +996,188 @@
 
     }
 
-   /* =====================================================
-   LOAD DIVISION FILTER OPTIONS
-   ===================================================== */
+    /* =====================================================
+    LOAD DIVISION FILTER OPTIONS
+    ===================================================== */
 
-function loadDivisionFilterOptions() {
+    function loadDivisionFilterOptions() {
 
-    if (!upazilaDivisionFilter) {
-        return;
-    }
-
-
-    const divisions = [];
-
-
-    allUpazilas.forEach(function (upazila) {
-
-        const district =
-            upazila.districts || {};
-
-        const division =
-            district.divisions || {};
-
-
-        if (!division.id) {
+        if (!upazilaDivisionFilter) {
             return;
         }
 
 
-        const alreadyExists =
-            divisions.some(function (item) {
-
-                return item.id === division.id;
-
-            });
+        const divisions = [];
 
 
-        if (!alreadyExists) {
+        allUpazilas.forEach(function (upazila) {
 
-            divisions.push({
-                id: division.id,
-                name: division.name,
-                name_bn: division.name_bn
-            });
+            const district =
+                upazila.districts || {};
 
-        }
-
-    });
+            const division =
+                district.divisions || {};
 
 
-    divisions.sort(function (a, b) {
-
-        const nameA =
-            a.name_bn ||
-            a.name ||
-            "";
-
-        const nameB =
-            b.name_bn ||
-            b.name ||
-            "";
+            if (!division.id) {
+                return;
+            }
 
 
-        return nameA.localeCompare(
-            nameB,
-            "bn"
-        );
+            const alreadyExists =
+                divisions.some(function (item) {
 
-    });
+                    return item.id === division.id;
+
+                });
 
 
-    upazilaDivisionFilter.innerHTML = `
+            if (!alreadyExists) {
+
+                divisions.push({
+                    id: division.id,
+                    name: division.name,
+                    name_bn: division.name_bn
+                });
+
+            }
+
+        });
+
+
+        divisions.sort(function (a, b) {
+
+            const nameA =
+                a.name_bn ||
+                a.name ||
+                "";
+
+            const nameB =
+                b.name_bn ||
+                b.name ||
+                "";
+
+
+            return nameA.localeCompare(
+                nameB,
+                "bn"
+            );
+
+        });
+
+
+        upazilaDivisionFilter.innerHTML = `
         <option value="">
             সব Division
         </option>
     `;
 
 
-    divisions.forEach(function (division) {
+        divisions.forEach(function (division) {
 
-        const option =
-            document.createElement("option");
-
-
-        option.value =
-            division.id;
+            const option =
+                document.createElement("option");
 
 
-        option.textContent =
-            division.name_bn ||
-            division.name;
+            option.value =
+                division.id;
 
 
-        upazilaDivisionFilter.appendChild(
-            option
-        );
+            option.textContent =
+                division.name_bn ||
+                division.name;
 
-    });
 
-}
-/* =====================================================
-   LOAD DISTRICT FILTER OPTIONS
-   ===================================================== */
+            upazilaDivisionFilter.appendChild(
+                option
+            );
 
-function loadDistrictFilterOptions() {
+        });
 
-    if (!upazilaDistrictFilter) {
-        return;
     }
+    /* =====================================================
+       LOAD DISTRICT FILTER OPTIONS
+       ===================================================== */
 
-    const districts = [];
+    function loadDistrictFilterOptions() {
 
-    allUpazilas.forEach(function (upazila) {
-
-        const district =
-            upazila.districts || {};
-
-        if (!district.id) {
+        if (!upazilaDistrictFilter) {
             return;
         }
 
-        const alreadyExists =
-            districts.some(function (item) {
-                return item.id === district.id;
-            });
+        const districts = [];
 
-        if (!alreadyExists) {
+        allUpazilas.forEach(function (upazila) {
 
-            districts.push({
-                id: district.id,
-                name: district.name,
-                name_bn: district.name_bn,
-                division_id: district.division_id
-            });
+            const district =
+                upazila.districts || {};
 
-        }
+            if (!district.id) {
+                return;
+            }
 
-    });
+            const alreadyExists =
+                districts.some(function (item) {
+                    return item.id === district.id;
+                });
 
-    districts.sort(function (a, b) {
+            if (!alreadyExists) {
 
-        const nameA =
-            a.name_bn ||
-            a.name ||
-            "";
+                districts.push({
+                    id: district.id,
+                    name: district.name,
+                    name_bn: district.name_bn,
+                    division_id: district.division_id
+                });
 
-        const nameB =
-            b.name_bn ||
-            b.name ||
-            "";
+            }
 
-        return nameA.localeCompare(
-            nameB,
-            "bn"
-        );
+        });
 
-    });
+        districts.sort(function (a, b) {
 
-    upazilaDistrictFilter.innerHTML = `
+            const nameA =
+                a.name_bn ||
+                a.name ||
+                "";
+
+            const nameB =
+                b.name_bn ||
+                b.name ||
+                "";
+
+            return nameA.localeCompare(
+                nameB,
+                "bn"
+            );
+
+        });
+
+        upazilaDistrictFilter.innerHTML = `
         <option value="">
             সব District
         </option>
     `;
 
-    districts.forEach(function (district) {
+        districts.forEach(function (district) {
 
-        const option =
-            document.createElement("option");
+            const option =
+                document.createElement("option");
 
-        option.value =
-            district.id;
+            option.value =
+                district.id;
 
-        option.textContent =
-            district.name_bn ||
-            district.name;
+            option.textContent =
+                district.name_bn ||
+                district.name;
 
-        upazilaDistrictFilter.appendChild(
-            option
-        );
+            upazilaDistrictFilter.appendChild(
+                option
+            );
 
-    });
+        });
 
-}
+    }
 
     /* =====================================================
        RENDER TABLE
@@ -1293,24 +1293,23 @@ function loadDistrictFilterOptions() {
 
                         <strong>
                             ${escapeHTML(
-                                upazila.name_bn ||
-                                upazila.name ||
-                                "—"
-                            )}
+            upazila.name_bn ||
+            upazila.name ||
+            "—"
+        )}
                         </strong>
 
-                        ${
-                            upazila.name &&
-                            upazila.name_bn
-                                ? `
+                        ${upazila.name &&
+                upazila.name_bn
+                ? `
                                     <small>
                                         ${escapeHTML(
-                                            upazila.name
-                                        )}
+                    upazila.name
+                )}
                                     </small>
                                   `
-                                : ""
-                        }
+                : ""
+            }
 
                     </div>
 
@@ -1323,24 +1322,23 @@ function loadDistrictFilterOptions() {
 
                         <strong>
                             ${escapeHTML(
-                                district.name_bn ||
-                                district.name ||
-                                "—"
-                            )}
+                district.name_bn ||
+                district.name ||
+                "—"
+            )}
                         </strong>
 
-                        ${
-                            district.name &&
-                            district.name_bn
-                                ? `
+                        ${district.name &&
+                district.name_bn
+                ? `
                                     <small>
                                         ${escapeHTML(
-                                            district.name
-                                        )}
+                    district.name
+                )}
                                     </small>
                                   `
-                                : ""
-                        }
+                : ""
+            }
 
                     </div>
 
@@ -1353,24 +1351,23 @@ function loadDistrictFilterOptions() {
 
                         <strong>
                             ${escapeHTML(
-                                division.name_bn ||
-                                division.name ||
-                                "—"
-                            )}
+                division.name_bn ||
+                division.name ||
+                "—"
+            )}
                         </strong>
 
-                        ${
-                            division.name &&
-                            division.name_bn
-                                ? `
+                        ${division.name &&
+                division.name_bn
+                ? `
                                     <small>
                                         ${escapeHTML(
-                                            division.name
-                                        )}
+                    division.name
+                )}
                                     </small>
                                   `
-                                : ""
-                        }
+                : ""
+            }
 
                     </div>
 
@@ -1381,8 +1378,8 @@ function loadDistrictFilterOptions() {
 
                     <code>
                         ${escapeHTML(
-                            upazila.slug
-                        )}
+                upazila.slug
+            )}
                     </code>
 
                 </td>
@@ -1402,8 +1399,8 @@ function loadDistrictFilterOptions() {
                 <td>
 
                     ${formatDate(
-                        upazila.created_at
-                    )}
+                upazila.created_at
+            )}
 
                 </td>
 
@@ -1451,7 +1448,7 @@ function loadDistrictFilterOptions() {
 
         const start =
             ((currentPage - 1) *
-            PAGE_SIZE) + 1;
+                PAGE_SIZE) + 1;
 
 
         const end =
@@ -1541,11 +1538,10 @@ function loadDistrictFilterOptions() {
             html += `
                 <button
                     type="button"
-                    class="crud-pagination-btn ${
-                        page === currentPage
-                            ? "active"
-                            : ""
-                    }"
+                    class="crud-pagination-btn ${page === currentPage
+                    ? "active"
+                    : ""
+                }"
                     data-upazila-page="${page}"
                 >
                     ${page}
@@ -1560,11 +1556,10 @@ function loadDistrictFilterOptions() {
                 type="button"
                 class="crud-pagination-btn"
                 data-upazila-page="next"
-                ${
-                    currentPage === totalPages
-                        ? "disabled"
-                        : ""
-                }
+                ${currentPage === totalPages
+                ? "disabled"
+                : ""
+            }
             >
                 →
             </button>
@@ -1683,10 +1678,14 @@ function loadDistrictFilterOptions() {
             upazilaStatusFilter
                 ? upazilaStatusFilter.value
                 : "active";
-       const divisionId =
-             upazilaDivisionFilter
-              ? upazilaDivisionFilter.value
-              : "";
+        const divisionId =
+            upazilaDivisionFilter
+                ? upazilaDivisionFilter.value
+                : "";
+        const districtId =
+            upazilaDistrictFilter
+                ? upazilaDistrictFilter.value
+                : "";
 
 
         filteredUpazilas =
@@ -1746,27 +1745,45 @@ function loadDistrictFilterOptions() {
 
                     }
 
-                   /* Division */
+                    /* Division */
 
-if (divisionId) {
+                    if (divisionId) {
 
-    const district =
-        upazila.districts || {};
+                        const district =
+                            upazila.districts || {};
 
-    const division =
-        district.divisions || {};
+                        const division =
+                            district.divisions || {};
 
 
-    if (
-        division.id !==
-        divisionId
-    ) {
+                        if (
+                            division.id !==
+                            divisionId
+                        ) {
 
-        return false;
+                            return false;
 
-    }
+                        }
 
-}
+                    }
+
+                    /* District */
+
+                    if (districtId) {
+
+                        const district =
+                            upazila.districts || {};
+
+                        if (
+                            district.id !==
+                            districtId
+                        ) {
+
+                            return false;
+
+                        }
+
+                    }
 
 
                     if (
@@ -2197,15 +2214,15 @@ if (divisionId) {
 
         }
 
-       if (upazilaDivisionFilter) {
+        if (upazilaDivisionFilter) {
 
-    upazilaDivisionFilter
-        .addEventListener(
-            "change",
-            applyUpazilaFilters
-        );
+            upazilaDivisionFilter
+                .addEventListener(
+                    "change",
+                    applyUpazilaFilters
+                );
 
-}
+        }
 
     }
 
