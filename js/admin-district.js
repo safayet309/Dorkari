@@ -440,14 +440,12 @@
 
         clearFormErrors();
 
-
         if (districtFormTitle) {
 
             districtFormTitle.textContent =
                 "Add District";
 
         }
-
 
         if (districtIsActive) {
 
@@ -456,14 +454,10 @@
 
         }
 
-
         if (saveDistrictButton) {
 
             saveDistrictButton.textContent =
                 "Save District";
-
-            saveDistrictButton.disabled =
-                !canManageDistrict();
 
         }
 
@@ -908,16 +902,13 @@
                         .join(" ")
                         .toLowerCase();
 
-
                     if (
                         search &&
                         !searchable.includes(
                             search
                         )
                     ) {
-
                         return false;
-
                     }
 
 
@@ -949,7 +940,6 @@
 
                     }
 
-
                     if (
                         status === "inactive" &&
                         district.is_active !== false
@@ -958,7 +948,6 @@
                         return false;
 
                     }
-
 
                     return true;
 
@@ -983,10 +972,8 @@
             return;
         }
 
-
         const total =
             filteredDistricts.length;
-
 
         if (total === 0) {
 
@@ -1006,10 +993,8 @@
             (currentPage - 1) *
             PAGE_SIZE;
 
-
         const end =
             start + PAGE_SIZE;
-
 
         const pageItems =
             filteredDistricts.slice(
@@ -1221,10 +1206,8 @@
             return;
         }
 
-
         const total =
             filteredDistricts.length;
-
 
         const totalPages =
             Math.ceil(
@@ -1249,7 +1232,6 @@
         const start =
             ((currentPage - 1) *
             PAGE_SIZE) + 1;
-
 
         const end =
             Math.min(
@@ -1362,18 +1344,12 @@
                 PAGE_SIZE
             );
 
-
-        if (
-            page < 1 ||
-            page > totalPages
-        ) {
+        if (page < 1 || page > totalPages) {
             return;
         }
 
-
         currentPage =
             page;
-
 
         renderDistrictTable();
 
@@ -1387,26 +1363,18 @@
     function hideDistrictStates() {
 
         if (districtLoadingState) {
-
             districtLoadingState.hidden =
                 true;
-
         }
-
 
         if (districtEmptyState) {
-
             districtEmptyState.hidden =
                 true;
-
         }
 
-
         if (districtErrorState) {
-
             districtErrorState.hidden =
                 true;
-
         }
 
     }
@@ -1416,28 +1384,19 @@
 
         hideDistrictStates();
 
-
         if (districtTable) {
-
             districtTable.hidden =
                 true;
-
         }
-
 
         if (districtPagination) {
-
             districtPagination.hidden =
                 true;
-
         }
 
-
         if (districtLoadingState) {
-
             districtLoadingState.hidden =
                 false;
-
         }
 
     }
@@ -1447,28 +1406,19 @@
 
         hideDistrictStates();
 
-
         if (districtTable) {
-
             districtTable.hidden =
                 true;
-
         }
-
 
         if (districtPagination) {
-
             districtPagination.hidden =
                 true;
-
         }
 
-
         if (districtEmptyState) {
-
             districtEmptyState.hidden =
                 false;
-
         }
 
     }
@@ -1480,22 +1430,15 @@
 
         hideDistrictStates();
 
-
         if (districtTable) {
-
             districtTable.hidden =
                 true;
-
         }
-
 
         if (districtPagination) {
-
             districtPagination.hidden =
                 true;
-
         }
-
 
         if (districtErrorMessage) {
 
@@ -1503,7 +1446,6 @@
                 message;
 
         }
-
 
         if (districtErrorState) {
 
@@ -1602,7 +1544,6 @@
                     districtSlug.value
                 );
 
-
             if (
                 !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(
                     slug
@@ -1638,18 +1579,15 @@
                 districtDivision.value
             );
 
-
         const name =
             cleanText(
                 districtName.value
             );
 
-
         const nameBn =
             cleanText(
                 districtNameBn.value
             );
-
 
         const slug =
             cleanText(
@@ -1758,18 +1696,15 @@
                 districtDivision.value
             );
 
-
         const name =
             cleanText(
                 districtName.value
             );
 
-
         const nameBn =
             cleanText(
                 districtNameBn.value
             );
-
 
         const slug =
             cleanText(
@@ -1957,7 +1892,6 @@
             closeDistrictFormPanel();
 
             await loadDistricts();
-
 
             if (
                 window.DorkariLocation &&
@@ -2217,7 +2151,6 @@
         const action =
             button.dataset
                 .districtAction;
-
 
         const id =
             button.dataset.id;
