@@ -50,6 +50,10 @@
         document.getElementById(
             "upazilaFormPanel"
         );
+    const upazilaFormTitle =
+        document.getElementById(
+            "upazilaFormTitle"
+        );
 
     const closeUpazilaForm =
         document.getElementById(
@@ -1982,6 +1986,10 @@
        SAVE UPAZILA
        ===================================================== */
 
+    /* =====================================================
+  SAVE UPAZILA
+  ===================================================== */
+
     async function saveUpazila() {
 
         if (
@@ -2078,320 +2086,404 @@
             let data;
             let error;
 
+
+            /* =================================================
+               UPDATE EXISTING UPAZILA
+               ================================================= */
+
             if (editingUpazilaId) {
 
-                const result = await supabaseClient
-                    .from(TABLE_UPAZILAS)
-                    .update(payload)
-                    .eq("id", editingUpazilaId)
-                    .select()
-                    .single();
+                const result =
+                    await supabaseClient
+                        .from(
+                            TABLE_UPAZILAS
+                        )
+                        .update(
+                            payload
+                        )
+                        .eq(
+                            "id",
+                            editingUpazilaId
+                        )
+                        .select()
+                        .single();
 
-                data = result.data;
-                error = result.error;
+
+                data =
+                    result.data;
+
+                error =
+                    result.error;
+
 
             } else {
 
-                const result = await supabaseClient
-                    .from(TABLE_UPAZILAS)
-                    .insert(payload)
-                    .select()
-                    .single();
 
-                data = result.data;
-                error = result.error;
+                /* =============================================
+                   INSERT NEW UPAZILA
+                   ============================================= */
+
+                const result =
+                    await supabaseClient
+                        .from(
+                            TABLE_UPAZILAS
+                        )
+                        .insert(
+                            payload
+                        )
+                        .select()
+                        .single();
+
+
+                data =
+                    result.data;
+
+                error =
+                    result.error;
+
             }
 
 
+            /* =================================================
+               ERROR HANDLING
+               ================================================= */
+
             if (error) {
 
-                if (error) {
+                if (
+                    error.code ===
+                    "23505"
+                ) {
 
-                    if (
-                        error.code ===
-                        "23505"
-                    ) {
-
-                        throw new Error(
-                            "এই District-এর মধ্যে এই Slug ইতোমধ্যে আছে।"
-                        );
-
-                    }
-
-
-                    if (
-                        error.code ===
-                        "23503"
-                    ) {
-
-                        throw new Error(
-                            "নির্বাচিত District সঠিক নয়।"
-                        );
-
-                    }
-
-
-                    if (
-                        error.code ===
-                        "42501"
-                    ) {
-
-                        throw new Error(
-                            "আপনার এই কাজের অনুমতি নেই।"
-                        );
-
-                    }
-
-
-                    throw error;
+                    throw new Error(
+                        "এই District-এর মধ্যে এই Slug ইতোমধ্যে আছে।"
+                    );
 
                 }
 
 
-                showToast(
-                    editingUpazilaId
-                        ? "Upazila সফলভাবে আপডেট করা হয়েছে।"
-                        : "Upazila সফলভাবে যোগ হয়েছে।",
-                    "success"
-                );
+                if (
+                    error.code ===
+                    "23503"
+                ) {
 
-
-                editingUpazilaId = null;
-
-                resetUpazilaForm();
-
-                closeUpazilaFormPanel();
-
-
-                /*
-                 * IMPORTANT:
-                 * Newly inserted Upazila immediately
-                 * appears in the list.
-                 */
-
-                await loadUpazilas();
-
-            } catch (error) {
-
-                console.error(
-                    "Upazila save error:",
-                    error
-                );
-
-
-                showToast(
-                    error.message ||
-                    "Upazila সংরক্ষণ করতে সমস্যা হয়েছে।",
-                    "error"
-                );
-
-            } finally {
-
-                if (saveUpazilaButton) {
-
-                    const adminNow =
-                        getAdmin();
-
-
-                    saveUpazilaButton.disabled =
-                        !(
-                            adminNow &&
-                            typeof adminNow
-                                .canManageContent ===
-                            "function" &&
-                            adminNow
-                                .canManageContent()
-                        );
-
-
-                    saveUpazilaButton.textContent =
-                        "Save Upazila";
+                    throw new Error(
+                        "নির্বাচিত District সঠিক নয়।"
+                    );
 
                 }
+
+
+                if (
+                    error.code ===
+                    "42501"
+                ) {
+
+                    throw new Error(
+                        "আপনার এই কাজের অনুমতি নেই।"
+                    );
+
+                }
+
+
+                throw error;
+
+            }
+
+
+            /* =================================================
+               SUCCESS
+               ================================================= */
+
+            showToast(
+                editingUpazilaId
+                    ? "Upazila সফলভাবে আপডেট করা হয়েছে।"
+                    : "Upazila সফলভাবে যোগ হয়েছে।",
+                "success"
+            );
+
+
+            editingUpazilaId =
+                null;
+
+
+            resetUpazilaForm();
+
+
+            closeUpazilaFormPanel();
+
+
+            /*
+             * Updated / newly inserted Upazila
+             * immediately appears in the list.
+             */
+
+            await loadUpazilas();
+
+
+        } catch (error) {
+
+            console.error(
+                "Upazila save error:",
+                error
+            );
+
+
+            showToast(
+                error.message ||
+                "Upazila সংরক্ষণ করতে সমস্যা হয়েছে।",
+                "error"
+            );
+
+
+        } finally {
+
+            if (saveUpazilaButton) {
+
+                const adminNow =
+                    getAdmin();
+
+
+                saveUpazilaButton.disabled =
+                    !(
+                        adminNow &&
+                        typeof adminNow
+                            .canManageContent ===
+                        "function" &&
+                        adminNow
+                            .canManageContent()
+                    );
+
+
+                saveUpazilaButton.textContent =
+                    "Save Upazila";
 
             }
 
         }
 
-
+    }
     /* =====================================================
        EVENTS
        ===================================================== */
 
     function setupEvents() {
 
-            if (
-                sectionAddUpazilaButton
-            ) {
+        if (
+            sectionAddUpazilaButton
+        ) {
 
-                sectionAddUpazilaButton
-                    .addEventListener(
-                        "click",
-                        function () {
+            sectionAddUpazilaButton
+                .addEventListener(
+                    "click",
+                    function () {
 
-                            resetUpazilaForm();
+                        resetUpazilaForm();
 
-                            openUpazilaForm();
+                        openUpazilaForm();
 
-                        }
-                    );
-
-            }
-
-
-            if (closeUpazilaForm) {
-
-                closeUpazilaForm
-                    .addEventListener(
-                        "click",
-                        closeUpazilaFormPanel
-                    );
-
-            }
-
-
-            if (cancelUpazilaButton) {
-
-                cancelUpazilaButton
-                    .addEventListener(
-                        "click",
-                        closeUpazilaFormPanel
-                    );
-
-            }
-
-
-            if (upazilaName) {
-
-                upazilaName
-                    .addEventListener(
-                        "input",
-                        handleNameInput
-                    );
-
-            }
-
-
-            if (upazilaForm) {
-
-                upazilaForm
-                    .addEventListener(
-                        "submit",
-                        function (event) {
-
-                            event.preventDefault();
-
-                            saveUpazila();
-
-                        }
-                    );
-
-            }
-
-
-            if (upazilaSearch) {
-
-                upazilaSearch
-                    .addEventListener(
-                        "input",
-                        applyUpazilaFilters
-                    );
-
-            }
-
-
-            if (upazilaStatusFilter) {
-
-                upazilaStatusFilter
-                    .addEventListener(
-                        "change",
-                        applyUpazilaFilters
-                    );
-
-            }
-
-
-            if (
-                upazilaPaginationControls
-            ) {
-
-                upazilaPaginationControls
-                    .addEventListener(
-                        "click",
-                        handlePagination
-                    );
-
-            }
-
-            /* Edit action */
-            if (upazilaTableBody) {
-                upazilaTableBody.addEventListener("click", function (event) {
-
-                    const button = event.target.closest(
-                        '[data-upazila-action="edit"]'
-                    );
-
-                    if (!button) return;
-
-                    const upazilaId = button.getAttribute(
-                        "data-upazila-id"
-                    );
-
-                    openUpazilaEditForm(upazilaId);
-                });
-            }
-
-            if (upazilaDivisionFilter) {
-
-                upazilaDivisionFilter
-                    .addEventListener(
-                        "change",
-                        function () {
-
-                            loadDistrictFilterOptions();
-
-                            if (upazilaDistrictFilter) {
-                                upazilaDistrictFilter.value = "";
-                            }
-
-                            applyUpazilaFilters();
-
-                        }
-                    );
-
-            }
-            if (upazilaDistrictFilter) {
-
-                upazilaDistrictFilter
-                    .addEventListener(
-                        "change",
-                        applyUpazilaFilters
-                    );
-
-            }
+                    }
+                );
 
         }
 
 
-        /* =====================================================
-           INITIALIZE
-           ===================================================== */
+        if (closeUpazilaForm) {
 
-        async function initializeUpazila() {
+            closeUpazilaForm
+                .addEventListener(
+                    "click",
+                    closeUpazilaFormPanel
+                );
 
-            if (!upazilaFormPanel) {
-
-                return;
-
-            }
+        }
 
 
-            if (
-                !initializeSupabase()
-            ) {
+        if (cancelUpazilaButton) {
 
-                showListError(
-                    "Supabase connection পাওয়া যায়নি।"
+            cancelUpazilaButton
+                .addEventListener(
+                    "click",
+                    closeUpazilaFormPanel
+                );
+
+        }
+
+
+        if (upazilaName) {
+
+            upazilaName
+                .addEventListener(
+                    "input",
+                    handleNameInput
+                );
+
+        }
+
+
+        if (upazilaForm) {
+
+            upazilaForm
+                .addEventListener(
+                    "submit",
+                    function (event) {
+
+                        event.preventDefault();
+
+                        saveUpazila();
+
+                    }
+                );
+
+        }
+
+
+        if (upazilaSearch) {
+
+            upazilaSearch
+                .addEventListener(
+                    "input",
+                    applyUpazilaFilters
+                );
+
+        }
+
+
+        if (upazilaStatusFilter) {
+
+            upazilaStatusFilter
+                .addEventListener(
+                    "change",
+                    applyUpazilaFilters
+                );
+
+        }
+
+
+        if (
+            upazilaPaginationControls
+        ) {
+
+            upazilaPaginationControls
+                .addEventListener(
+                    "click",
+                    handlePagination
+                );
+
+        }
+
+        /* Edit action */
+        if (upazilaTableBody) {
+            upazilaTableBody.addEventListener("click", function (event) {
+
+                const button = event.target.closest(
+                    '[data-upazila-action="edit"]'
+                );
+
+                if (!button) return;
+
+                const upazilaId = button.getAttribute(
+                    "data-upazila-id"
+                );
+
+                openUpazilaEditForm(upazilaId);
+            });
+        }
+
+        if (upazilaDivisionFilter) {
+
+            upazilaDivisionFilter
+                .addEventListener(
+                    "change",
+                    function () {
+
+                        loadDistrictFilterOptions();
+
+                        if (upazilaDistrictFilter) {
+                            upazilaDistrictFilter.value = "";
+                        }
+
+                        applyUpazilaFilters();
+
+                    }
+                );
+
+        }
+        if (upazilaDistrictFilter) {
+
+            upazilaDistrictFilter
+                .addEventListener(
+                    "change",
+                    applyUpazilaFilters
+                );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       INITIALIZE
+       ===================================================== */
+
+    async function initializeUpazila() {
+
+        if (!upazilaFormPanel) {
+
+            return;
+
+        }
+
+
+        if (
+            !initializeSupabase()
+        ) {
+
+            showListError(
+                "Supabase connection পাওয়া যায়নি।"
+            );
+
+            return;
+
+        }
+
+
+        setupEvents();
+
+        loadDistrictOptions();
+
+        await loadUpazilas();
+
+    }
+
+
+    /* =====================================================
+       WAIT FOR ADMIN GUARD
+       ===================================================== */
+
+    function waitForAdmin() {
+
+        const admin =
+            window.DorkariAdmin;
+
+
+        if (
+            admin &&
+            typeof admin.getSupabase ===
+            "function" &&
+            typeof admin.getProfile ===
+            "function"
+        ) {
+
+            const profile =
+                admin.getProfile();
+
+
+            if (!profile) {
+
+                window.setTimeout(
+                    waitForAdmin,
+                    100
                 );
 
                 return;
@@ -2399,102 +2491,59 @@
             }
 
 
-            setupEvents();
+            initializeUpazila();
 
-            loadDistrictOptions();
-
-            await loadUpazilas();
+            return;
 
         }
 
 
-        /* =====================================================
-           WAIT FOR ADMIN GUARD
-           ===================================================== */
+        window.setTimeout(
+            waitForAdmin,
+            100
+        );
 
-        function waitForAdmin() {
-
-            const admin =
-                window.DorkariAdmin;
+    }
 
 
-            if (
-                admin &&
-                typeof admin.getSupabase ===
-                "function" &&
-                typeof admin.getProfile ===
-                "function"
-            ) {
+    /* =====================================================
+       PUBLIC API
+       ===================================================== */
 
-                const profile =
-                    admin.getProfile();
+    window.DorkariUpazila = {
 
+        openForm:
+            openUpazilaForm,
 
-                if (!profile) {
+        closeForm:
+            closeUpazilaFormPanel,
 
-                    window.setTimeout(
-                        waitForAdmin,
-                        100
-                    );
+        resetForm:
+            resetUpazilaForm,
 
-                    return;
+        reload:
+            loadUpazilas,
 
-                }
+        refresh:
+            loadUpazilas,
 
+        reloadDistricts:
+            loadDistrictOptions,
 
-                initializeUpazila();
+        validateForm:
+            validateUpazilaForm,
 
-                return;
+        save:
+            saveUpazila
 
-            }
-
-
-            window.setTimeout(
-                waitForAdmin,
-                100
-            );
-
-        }
+    };
 
 
-        /* =====================================================
-           PUBLIC API
-           ===================================================== */
+    /* =====================================================
+       START
+       ===================================================== */
 
-        window.DorkariUpazila = {
-
-            openForm:
-                openUpazilaForm,
-
-            closeForm:
-                closeUpazilaFormPanel,
-
-            resetForm:
-                resetUpazilaForm,
-
-            reload:
-                loadUpazilas,
-
-            refresh:
-                loadUpazilas,
-
-            reloadDistricts:
-                loadDistrictOptions,
-
-            validateForm:
-                validateUpazilaForm,
-
-            save:
-                saveUpazila
-
-        };
+    waitForAdmin();
 
 
-        /* =====================================================
-           START
-           ===================================================== */
-
-        waitForAdmin();
-
-
-    }) ();
+})();
