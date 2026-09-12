@@ -1,6 +1,6 @@
 /* =========================================================
    DORKARI — ADMIN UPAZILA MANAGEMENT
-   F-7.4 — ADD UPAZILA
+   F-7.4 — UPAZILA LIST + ADD
    ========================================================= */
 
 (function () {
@@ -14,6 +14,26 @@
 
     const TABLE_UPAZILAS =
         "upazilas";
+
+    const PAGE_SIZE =
+        10;
+
+
+    /* =====================================================
+       STATE
+       ===================================================== */
+
+    let supabaseClient =
+        null;
+
+    let allUpazilas =
+        [];
+
+    let filteredUpazilas =
+        [];
+
+    let currentPage =
+        1;
 
 
     /* =====================================================
@@ -77,12 +97,78 @@
 
 
     /* =====================================================
+       LIST ELEMENTS
+       ===================================================== */
+
+    const upazilaSearch =
+        document.getElementById(
+            "upazilaSearch"
+        );
+
+    const upazilaDivisionFilter =
+        document.getElementById(
+            "upazilaDivisionFilter"
+        );
+
+    const upazilaDistrictFilter =
+        document.getElementById(
+            "upazilaDistrictFilter"
+        );
+
+    const upazilaStatusFilter =
+        document.getElementById(
+            "upazilaStatusFilter"
+        );
+
+    const upazilaLoadingState =
+        document.getElementById(
+            "upazilaLoadingState"
+        );
+
+    const upazilaEmptyState =
+        document.getElementById(
+            "upazilaEmptyState"
+        );
+
+    const upazilaErrorState =
+        document.getElementById(
+            "upazilaErrorState"
+        );
+
+    const upazilaTable =
+        document.getElementById(
+            "upazilaTable"
+        );
+
+    const upazilaTableBody =
+        document.getElementById(
+            "upazilaTableBody"
+        );
+
+    const upazilaPagination =
+        document.getElementById(
+            "upazilaPagination"
+        );
+
+    const upazilaPaginationInfo =
+        document.getElementById(
+            "upazilaPaginationInfo"
+        );
+
+    const upazilaPaginationControls =
+        document.getElementById(
+            "upazilaPaginationControls"
+        );
+
+
+    /* =====================================================
        ADMIN
        ===================================================== */
 
     function getAdmin() {
 
-        return window.DorkariAdmin || null;
+        return window.DorkariAdmin ||
+            null;
 
     }
 
@@ -91,7 +177,7 @@
        SUPABASE
        ===================================================== */
 
-    function getSupabaseClient() {
+    function initializeSupabase() {
 
         const admin =
             getAdmin();
@@ -103,62 +189,105 @@
             "function"
         ) {
 
-            return null;
-
-        }
-
-
-        return admin.getSupabase();
-
-    }
-
-
-    /* =====================================================
-       PERMISSION
-       ===================================================== */
-
-    function canManageUpazila() {
-
-        const admin =
-            getAdmin();
-
-
-        if (
-            !admin ||
-            typeof admin.canManageContent !==
-            "function"
-        ) {
-
             return false;
 
         }
 
 
-        return admin.canManageContent();
+        supabaseClient =
+            admin.getSupabase();
+
+
+        return !!supabaseClient;
 
     }
 
 
-    function updatePermissionUI() {
+    /* =====================================================
+       TEXT HELPERS
+       ===================================================== */
 
-        const allowed =
-            canManageUpazila();
+    function cleanText(value) {
+
+        return String(
+            value || ""
+        ).trim();
+
+    }
 
 
-        if (sectionAddUpazilaButton) {
+    function escapeHTML(value) {
 
-            sectionAddUpazilaButton.hidden =
-                !allowed;
+        return String(
+            value ?? ""
+        )
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    function formatNumber(value) {
+
+        return Number(
+            value || 0
+        ).toLocaleString(
+            "bn-BD"
+        );
+
+    }
+
+
+    function formatDate(value) {
+
+        if (!value) {
+
+            return "—";
 
         }
 
 
-        if (saveUpazilaButton) {
+        const date =
+            new Date(value);
 
-            saveUpazilaButton.disabled =
-                !allowed;
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return "—";
 
         }
+
+
+        return date.toLocaleDateString(
+            "bn-BD",
+            {
+                year: "numeric",
+                month: "short",
+                day: "numeric"
+            }
+        );
 
     }
 
@@ -171,34 +300,6 @@
         message,
         type
     ) {
-
-        const admin =
-            getAdmin();
-
-
-        /*
-         * Prefer the existing Admin toast system.
-         */
-
-        if (
-            admin &&
-            typeof admin.showToast ===
-            "function"
-        ) {
-
-            admin.showToast(
-                message,
-                type || "success"
-            );
-
-            return;
-
-        }
-
-
-        /*
-         * Fallback for safety.
-         */
 
         const toast =
             document.getElementById(
@@ -275,19 +376,6 @@
 
 
     /* =====================================================
-       TEXT
-       ===================================================== */
-
-    function cleanText(value) {
-
-        return String(
-            value || ""
-        ).trim();
-
-    }
-
-
-    /* =====================================================
        SLUG
        ===================================================== */
 
@@ -350,7 +438,7 @@
 
 
     /* =====================================================
-       LOAD DISTRICTS
+       LOAD DISTRICTS FOR ADD FORM
        ===================================================== */
 
     function loadDistrictOptions() {
@@ -565,7 +653,7 @@
 
 
     /* =====================================================
-       VALIDATION
+       FORM VALIDATION
        ===================================================== */
 
     function validateUpazilaForm() {
@@ -576,10 +664,6 @@
         let isValid =
             true;
 
-
-        /* ---------------------------------------------
-           District
-           --------------------------------------------- */
 
         if (
             !upazilaDistrict ||
@@ -600,10 +684,6 @@
         }
 
 
-        /* ---------------------------------------------
-           English Name
-           --------------------------------------------- */
-
         if (
             !upazilaName ||
             !cleanText(
@@ -623,10 +703,6 @@
         }
 
 
-        /* ---------------------------------------------
-           Bangla Name
-           --------------------------------------------- */
-
         if (
             !upazilaNameBn ||
             !cleanText(
@@ -645,10 +721,6 @@
 
         }
 
-
-        /* ---------------------------------------------
-           Slug
-           --------------------------------------------- */
 
         if (
             !upazilaSlug ||
@@ -675,66 +747,841 @@
 
 
     /* =====================================================
-       SUPABASE ERROR MESSAGE
+       LIST STATES
        ===================================================== */
 
-    function getSupabaseErrorMessage(
-        error
+    function hideListStates() {
+
+        if (upazilaLoadingState) {
+
+            upazilaLoadingState.hidden =
+                true;
+
+        }
+
+
+        if (upazilaEmptyState) {
+
+            upazilaEmptyState.hidden =
+                true;
+
+        }
+
+
+        if (upazilaErrorState) {
+
+            upazilaErrorState.hidden =
+                true;
+
+        }
+
+    }
+
+
+    function showListLoading() {
+
+        hideListStates();
+
+
+        if (upazilaTable) {
+
+            upazilaTable.hidden =
+                true;
+
+        }
+
+
+        if (upazilaPagination) {
+
+            upazilaPagination.hidden =
+                true;
+
+        }
+
+
+        if (upazilaLoadingState) {
+
+            upazilaLoadingState.hidden =
+                false;
+
+        }
+
+    }
+
+
+    function showListEmpty() {
+
+        hideListStates();
+
+
+        if (upazilaTable) {
+
+            upazilaTable.hidden =
+                true;
+
+        }
+
+
+        if (upazilaPagination) {
+
+            upazilaPagination.hidden =
+                true;
+
+        }
+
+
+        if (upazilaEmptyState) {
+
+            upazilaEmptyState.hidden =
+                false;
+
+        }
+
+    }
+
+
+    function showListError(
+        message
     ) {
 
-        if (!error) {
+        hideListStates();
 
-            return "তথ্য সংরক্ষণ করতে সমস্যা হয়েছে।";
+
+        if (upazilaTable) {
+
+            upazilaTable.hidden =
+                true;
 
         }
 
 
-        /*
-         * Unique constraint
-         */
+        if (upazilaPagination) {
+
+            upazilaPagination.hidden =
+                true;
+
+        }
+
+
+        const errorText =
+            upazilaErrorState
+                ? upazilaErrorState.querySelector(
+                    "p"
+                )
+                : null;
+
+
+        if (errorText) {
+
+            errorText.textContent =
+                message;
+
+        }
+
+
+        if (upazilaErrorState) {
+
+            upazilaErrorState.hidden =
+                false;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       LOAD UPAZILAS FROM SUPABASE
+       ===================================================== */
+
+    async function loadUpazilas() {
+
+        showListLoading();
+
+
+        if (!supabaseClient) {
+
+            if (
+                !initializeSupabase()
+            ) {
+
+                showListError(
+                    "Supabase connection পাওয়া যায়নি।"
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from(
+                TABLE_UPAZILAS
+            )
+            .select(`
+                id,
+                district_id,
+                name,
+                name_bn,
+                slug,
+                is_active,
+                created_at,
+                districts (
+                    id,
+                    name,
+                    name_bn,
+                    division_id,
+                    divisions (
+                        id,
+                        name,
+                        name_bn
+                    )
+                )
+            `)
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+        if (error) {
+
+            console.error(
+                "Upazila load error:",
+                error
+            );
+
+
+            showListError(
+                error.message ||
+                "Upazila data লোড করা যায়নি।"
+            );
+
+
+            return;
+
+        }
+
+
+        allUpazilas =
+            data || [];
+
+
+        filteredUpazilas =
+            allUpazilas.filter(
+                function (upazila) {
+
+                    return (
+                        upazila.is_active ===
+                        true
+                    );
+
+                }
+            );
+
+
+        currentPage =
+            1;
+
+
+        renderUpazilaTable();
+
+    }
+
+
+    /* =====================================================
+       RENDER TABLE
+       ===================================================== */
+
+    function renderUpazilaTable() {
+
+        if (!upazilaTableBody) {
+
+            return;
+
+        }
+
+
+        const total =
+            filteredUpazilas.length;
+
+
+        if (total === 0) {
+
+            showListEmpty();
+
+            updatePaginationInfo();
+
+            return;
+
+        }
+
+
+        hideListStates();
+
+
+        if (upazilaTable) {
+
+            upazilaTable.hidden =
+                false;
+
+        }
+
+
+        const start =
+            (currentPage - 1) *
+            PAGE_SIZE;
+
+
+        const end =
+            start +
+            PAGE_SIZE;
+
+
+        const pageItems =
+            filteredUpazilas.slice(
+                start,
+                end
+            );
+
+
+        upazilaTableBody.innerHTML =
+            pageItems
+                .map(
+                    function (upazila) {
+
+                        return createUpazilaRow(
+                            upazila
+                        );
+
+                    }
+                )
+                .join("");
+
+
+        renderPagination();
+
+    }
+
+
+    /* =====================================================
+       CREATE TABLE ROW
+       ===================================================== */
+
+    function createUpazilaRow(
+        upazila
+    ) {
+
+        const district =
+            upazila.districts ||
+            {};
+
+
+        const division =
+            district.divisions ||
+            {};
+
+
+        const statusClass =
+            upazila.is_active
+                ? "crud-status-active"
+                : "crud-status-inactive";
+
+
+        const statusText =
+            upazila.is_active
+                ? "Active"
+                : "Inactive";
+
+
+        return `
+            <tr>
+
+                <td>
+
+                    <div class="location-table-name">
+
+                        <strong>
+                            ${escapeHTML(
+                                upazila.name_bn ||
+                                upazila.name ||
+                                "—"
+                            )}
+                        </strong>
+
+                        ${
+                            upazila.name &&
+                            upazila.name_bn
+                                ? `
+                                    <small>
+                                        ${escapeHTML(
+                                            upazila.name
+                                        )}
+                                    </small>
+                                  `
+                                : ""
+                        }
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div class="location-table-name">
+
+                        <strong>
+                            ${escapeHTML(
+                                district.name_bn ||
+                                district.name ||
+                                "—"
+                            )}
+                        </strong>
+
+                        ${
+                            district.name &&
+                            district.name_bn
+                                ? `
+                                    <small>
+                                        ${escapeHTML(
+                                            district.name
+                                        )}
+                                    </small>
+                                  `
+                                : ""
+                        }
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div class="location-table-name">
+
+                        <strong>
+                            ${escapeHTML(
+                                division.name_bn ||
+                                division.name ||
+                                "—"
+                            )}
+                        </strong>
+
+                        ${
+                            division.name &&
+                            division.name_bn
+                                ? `
+                                    <small>
+                                        ${escapeHTML(
+                                            division.name
+                                        )}
+                                    </small>
+                                  `
+                                : ""
+                        }
+
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <code>
+                        ${escapeHTML(
+                            upazila.slug
+                        )}
+                    </code>
+
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="crud-status ${statusClass}"
+                    >
+                        ${statusText}
+                    </span>
+
+                </td>
+
+
+                <td>
+
+                    ${formatDate(
+                        upazila.created_at
+                    )}
+
+                </td>
+
+
+                <td>
+
+                    <span class="crud-muted">
+                        —
+                    </span>
+
+                </td>
+
+            </tr>
+        `;
+
+    }
+
+
+    /* =====================================================
+       PAGINATION
+       ===================================================== */
+
+    function updatePaginationInfo() {
+
+        if (!upazilaPaginationInfo) {
+
+            return;
+
+        }
+
+
+        const total =
+            filteredUpazilas.length;
+
+
+        if (total === 0) {
+
+            upazilaPaginationInfo.textContent =
+                "Showing 0 upazilas";
+
+            return;
+
+        }
+
+
+        const start =
+            ((currentPage - 1) *
+            PAGE_SIZE) + 1;
+
+
+        const end =
+            Math.min(
+                currentPage *
+                PAGE_SIZE,
+                total
+            );
+
+
+        upazilaPaginationInfo.textContent =
+            `Showing ${formatNumber(start)}–${formatNumber(end)} of ${formatNumber(total)} upazilas`;
+
+    }
+
+
+    function renderPagination() {
+
+        if (!upazilaPagination) {
+
+            return;
+
+        }
+
+
+        const total =
+            filteredUpazilas.length;
+
+
+        const totalPages =
+            Math.ceil(
+                total /
+                PAGE_SIZE
+            );
+
+
+        updatePaginationInfo();
+
 
         if (
-            error.code ===
-            "23505"
+            totalPages <= 1
         ) {
 
-            return "এই District-এর মধ্যে এই Slug ইতোমধ্যে আছে।";
+            upazilaPagination.hidden =
+                true;
+
+            return;
 
         }
 
 
-        /*
-         * Foreign key
-         */
+        upazilaPagination.hidden =
+            false;
+
 
         if (
-            error.code ===
-            "23503"
+            !upazilaPaginationControls
         ) {
 
-            return "নির্বাচিত District সঠিক নয়।";
+            return;
 
         }
 
 
-        /*
-         * Permission / RLS
-         */
+        let html =
+            "";
+
+
+        html += `
+            <button
+                type="button"
+                class="crud-pagination-btn"
+                data-upazila-page="prev"
+                ${currentPage === 1 ? "disabled" : ""}
+            >
+                ←
+            </button>
+        `;
+
+
+        for (
+            let page = 1;
+            page <= totalPages;
+            page++
+        ) {
+
+            html += `
+                <button
+                    type="button"
+                    class="crud-pagination-btn ${
+                        page === currentPage
+                            ? "active"
+                            : ""
+                    }"
+                    data-upazila-page="${page}"
+                >
+                    ${page}
+                </button>
+            `;
+
+        }
+
+
+        html += `
+            <button
+                type="button"
+                class="crud-pagination-btn"
+                data-upazila-page="next"
+                ${
+                    currentPage === totalPages
+                        ? "disabled"
+                        : ""
+                }
+            >
+                →
+            </button>
+        `;
+
+
+        upazilaPaginationControls.innerHTML =
+            html;
+
+    }
+
+
+    function handlePagination(
+        event
+    ) {
+
+        const button =
+            event.target.closest(
+                "[data-upazila-page]"
+            );
+
+
+        if (!button) {
+
+            return;
+
+        }
+
+
+        const value =
+            button.dataset
+                .upazilaPage;
+
+
+        const totalPages =
+            Math.ceil(
+                filteredUpazilas.length /
+                PAGE_SIZE
+            );
+
 
         if (
-            error.code ===
-            "42501"
+            value === "prev"
         ) {
 
-            return "আপনার এই কাজের অনুমতি নেই।";
+            if (
+                currentPage > 1
+            ) {
+
+                currentPage--;
+
+                renderUpazilaTable();
+
+            }
+
+            return;
 
         }
 
 
-        return (
-            error.message ||
-            "তথ্য সংরক্ষণ করতে সমস্যা হয়েছে।"
-        );
+        if (
+            value === "next"
+        ) {
+
+            if (
+                currentPage <
+                totalPages
+            ) {
+
+                currentPage++;
+
+                renderUpazilaTable();
+
+            }
+
+            return;
+
+        }
+
+
+        const page =
+            Number(value);
+
+
+        if (
+            Number.isInteger(page) &&
+            page >= 1 &&
+            page <= totalPages
+        ) {
+
+            currentPage =
+                page;
+
+            renderUpazilaTable();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       FILTER — BASIC CURRENT STATUS
+       ===================================================== */
+
+    function applyUpazilaFilters() {
+
+        const search =
+            cleanText(
+                upazilaSearch
+                    ? upazilaSearch.value
+                    : ""
+            ).toLowerCase();
+
+
+        const status =
+            upazilaStatusFilter
+                ? upazilaStatusFilter.value
+                : "active";
+
+
+        filteredUpazilas =
+            allUpazilas.filter(
+                function (upazila) {
+
+                    /* Search */
+
+                    if (search) {
+
+                        const district =
+                            upazila.districts ||
+                            {};
+
+                        const division =
+                            district.divisions ||
+                            {};
+
+                        const searchText =
+                            [
+                                upazila.name,
+                                upazila.name_bn,
+                                upazila.slug,
+                                district.name,
+                                district.name_bn,
+                                division.name,
+                                division.name_bn
+                            ]
+                                .filter(Boolean)
+                                .join(" ")
+                                .toLowerCase();
+
+
+                        if (
+                            !searchText.includes(
+                                search
+                            )
+                        ) {
+
+                            return false;
+
+                        }
+
+                    }
+
+
+                    /* Status */
+
+                    if (
+                        status ===
+                        "active" &&
+                        upazila.is_active !==
+                        true
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        status ===
+                        "inactive" &&
+                        upazila.is_active !==
+                        false
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    return true;
+
+                }
+            );
+
+
+        currentPage =
+            1;
+
+
+        renderUpazilaTable();
 
     }
 
@@ -819,31 +1666,30 @@
 
 
     /* =====================================================
-       SAVE — INSERT UPAZILA
+       SAVE UPAZILA
        ===================================================== */
 
     async function saveUpazila() {
 
-        /* ---------------------------------------------
-           Validation
-           --------------------------------------------- */
-
-        const isValid =
-            validateUpazilaForm();
-
-
-        if (!isValid) {
+        if (
+            !validateUpazilaForm()
+        ) {
 
             return;
 
         }
 
 
-        /* ---------------------------------------------
-           Permission
-           --------------------------------------------- */
+        const admin =
+            getAdmin();
 
-        if (!canManageUpazila()) {
+
+        if (
+            !admin ||
+            typeof admin.canManageContent !==
+            "function" ||
+            !admin.canManageContent()
+        ) {
 
             showToast(
                 "আপনার এই কাজের অনুমতি নেই।",
@@ -855,93 +1701,15 @@
         }
 
 
-        /* ---------------------------------------------
-           Supabase
-           --------------------------------------------- */
+        if (!supabaseClient) {
 
-        const supabase =
-            getSupabaseClient();
+            if (
+                !initializeSupabase()
+            ) {
 
-
-        if (!supabase) {
-
-            showToast(
-                "Supabase connection পাওয়া যায়নি।",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        /* ---------------------------------------------
-           Values
-           --------------------------------------------- */
-
-        const districtId =
-            cleanText(
-                upazilaDistrict.value
-            );
-
-
-        const name =
-            cleanText(
-                upazilaName.value
-            );
-
-
-        const nameBn =
-            cleanText(
-                upazilaNameBn.value
-            );
-
-
-        const slug =
-            cleanText(
-                upazilaSlug.value
-            ).toLowerCase();
-
-
-        /* ---------------------------------------------
-           Verify District
-           --------------------------------------------- */
-
-        const districtAPI =
-            window.DorkariDistrict;
-
-
-        if (
-            districtAPI &&
-            typeof districtAPI.getDistricts ===
-            "function"
-        ) {
-
-            const districts =
-                districtAPI.getDistricts();
-
-
-            const districtExists =
-                (districts || []).some(
-                    function (district) {
-
-                        return (
-                            district.id ===
-                            districtId &&
-                            district.is_active ===
-                            true
-                        );
-
-                    }
-                );
-
-
-            if (!districtExists) {
-
-                setFieldError(
-                    upazilaDistrict,
-                    "upazilaDistrictError",
-                    "নির্বাচিত District সঠিক নয়।"
+                showToast(
+                    "Supabase connection পাওয়া যায়নি।",
+                    "error"
                 );
 
                 return;
@@ -951,9 +1719,35 @@
         }
 
 
-        /* ---------------------------------------------
-           Loading state
-           --------------------------------------------- */
+        const payload = {
+
+            district_id:
+                cleanText(
+                    upazilaDistrict.value
+                ),
+
+            name:
+                cleanText(
+                    upazilaName.value
+                ),
+
+            name_bn:
+                cleanText(
+                    upazilaNameBn.value
+                ),
+
+            slug:
+                cleanText(
+                    upazilaSlug.value
+                ).toLowerCase(),
+
+            is_active:
+                upazilaIsActive
+                    ? upazilaIsActive.checked
+                    : true
+
+        };
+
 
         if (saveUpazilaButton) {
 
@@ -968,39 +1762,9 @@
 
         try {
 
-            /* -----------------------------------------
-               Payload
-               ----------------------------------------- */
-
-            const payload = {
-
-                district_id:
-                    districtId,
-
-                name:
-                    name,
-
-                name_bn:
-                    nameBn,
-
-                slug:
-                    slug,
-
-                is_active:
-                    upazilaIsActive
-                        ? upazilaIsActive.checked
-                        : true
-
-            };
-
-
-            /* -----------------------------------------
-               INSERT
-               ----------------------------------------- */
-
             const {
                 error
-            } = await supabase
+            } = await supabaseClient
                 .from(
                     TABLE_UPAZILAS
                 )
@@ -1011,14 +1775,46 @@
 
             if (error) {
 
+                if (
+                    error.code ===
+                    "23505"
+                ) {
+
+                    throw new Error(
+                        "এই District-এর মধ্যে এই Slug ইতোমধ্যে আছে।"
+                    );
+
+                }
+
+
+                if (
+                    error.code ===
+                    "23503"
+                ) {
+
+                    throw new Error(
+                        "নির্বাচিত District সঠিক নয়।"
+                    );
+
+                }
+
+
+                if (
+                    error.code ===
+                    "42501"
+                ) {
+
+                    throw new Error(
+                        "আপনার এই কাজের অনুমতি নেই।"
+                    );
+
+                }
+
+
                 throw error;
 
             }
 
-
-            /* -----------------------------------------
-               SUCCESS
-               ----------------------------------------- */
 
             showToast(
                 "Upazila সফলভাবে যোগ হয়েছে।",
@@ -1031,21 +1827,13 @@
             closeUpazilaFormPanel();
 
 
-            /* -----------------------------------------
-               Refresh location data if available
-               ----------------------------------------- */
+            /*
+             * IMPORTANT:
+             * Newly inserted Upazila immediately
+             * appears in the list.
+             */
 
-            if (
-                window.DorkariLocation &&
-                typeof window.DorkariLocation
-                    .refreshSummary ===
-                "function"
-            ) {
-
-                window.DorkariLocation
-                    .refreshSummary();
-
-            }
+            await loadUpazilas();
 
         } catch (error) {
 
@@ -1056,24 +1844,29 @@
 
 
             showToast(
-                getSupabaseErrorMessage(
-                    error
-                ),
+                error.message ||
+                "Upazila সংরক্ষণ করতে সমস্যা হয়েছে।",
                 "error"
             );
 
         } finally {
 
-            /*
-             * IMPORTANT:
-             * Restore permission-based state,
-             * not simply disabled = false.
-             */
-
-            updatePermissionUI();
-
-
             if (saveUpazilaButton) {
+
+                const adminNow =
+                    getAdmin();
+
+
+                saveUpazilaButton.disabled =
+                    !(
+                        adminNow &&
+                        typeof adminNow
+                            .canManageContent ===
+                        "function" &&
+                        adminNow
+                            .canManageContent()
+                    );
+
 
                 saveUpazilaButton.textContent =
                     "Save Upazila";
@@ -1086,97 +1879,111 @@
 
 
     /* =====================================================
-       EVENT SETUP
+       EVENTS
        ===================================================== */
 
     function setupEvents() {
 
-        /* ---------------------------------------------
-           Add
-           --------------------------------------------- */
+        if (
+            sectionAddUpazilaButton
+        ) {
 
-        if (sectionAddUpazilaButton) {
+            sectionAddUpazilaButton
+                .addEventListener(
+                    "click",
+                    function () {
 
-            sectionAddUpazilaButton.addEventListener(
-                "click",
-                function () {
+                        resetUpazilaForm();
 
-                    resetUpazilaForm();
+                        openUpazilaForm();
 
-                    openUpazilaForm();
-
-                }
-            );
+                    }
+                );
 
         }
 
-
-        /* ---------------------------------------------
-           Close
-           --------------------------------------------- */
 
         if (closeUpazilaForm) {
 
-            closeUpazilaForm.addEventListener(
-                "click",
-                function () {
-
-                    closeUpazilaFormPanel();
-
-                }
-            );
+            closeUpazilaForm
+                .addEventListener(
+                    "click",
+                    closeUpazilaFormPanel
+                );
 
         }
 
-
-        /* ---------------------------------------------
-           Cancel
-           --------------------------------------------- */
 
         if (cancelUpazilaButton) {
 
-            cancelUpazilaButton.addEventListener(
-                "click",
-                function () {
-
-                    closeUpazilaFormPanel();
-
-                }
-            );
+            cancelUpazilaButton
+                .addEventListener(
+                    "click",
+                    closeUpazilaFormPanel
+                );
 
         }
 
-
-        /* ---------------------------------------------
-           Auto Slug
-           --------------------------------------------- */
 
         if (upazilaName) {
 
-            upazilaName.addEventListener(
-                "input",
-                handleNameInput
-            );
+            upazilaName
+                .addEventListener(
+                    "input",
+                    handleNameInput
+                );
 
         }
 
 
-        /* ---------------------------------------------
-           Submit
-           --------------------------------------------- */
-
         if (upazilaForm) {
 
-            upazilaForm.addEventListener(
-                "submit",
-                function (event) {
+            upazilaForm
+                .addEventListener(
+                    "submit",
+                    function (event) {
 
-                    event.preventDefault();
+                        event.preventDefault();
 
-                    saveUpazila();
+                        saveUpazila();
 
-                }
-            );
+                    }
+                );
+
+        }
+
+
+        if (upazilaSearch) {
+
+            upazilaSearch
+                .addEventListener(
+                    "input",
+                    applyUpazilaFilters
+                );
+
+        }
+
+
+        if (upazilaStatusFilter) {
+
+            upazilaStatusFilter
+                .addEventListener(
+                    "change",
+                    applyUpazilaFilters
+                );
+
+        }
+
+
+        if (
+            upazilaPaginationControls
+        ) {
+
+            upazilaPaginationControls
+                .addEventListener(
+                    "click",
+                    handlePagination
+                );
 
         }
 
@@ -1187,7 +1994,7 @@
        INITIALIZE
        ===================================================== */
 
-    function initializeUpazila() {
+    async function initializeUpazila() {
 
         if (!upazilaFormPanel) {
 
@@ -1196,11 +2003,24 @@
         }
 
 
-        updatePermissionUI();
+        if (
+            !initializeSupabase()
+        ) {
+
+            showListError(
+                "Supabase connection পাওয়া যায়নি।"
+            );
+
+            return;
+
+        }
+
 
         setupEvents();
 
         loadDistrictOptions();
+
+        await loadUpazilas();
 
     }
 
@@ -1220,19 +2040,12 @@
             typeof admin.getSupabase ===
             "function" &&
             typeof admin.getProfile ===
-            "function" &&
-            typeof admin.canManageContent ===
             "function"
         ) {
 
             const profile =
                 admin.getProfile();
 
-
-            /*
-             * Admin profile is loaded asynchronously.
-             * Wait until it is available.
-             */
 
             if (!profile) {
 
@@ -1275,6 +2088,12 @@
 
         resetForm:
             resetUpazilaForm,
+
+        reload:
+            loadUpazilas,
+
+        refresh:
+            loadUpazilas,
 
         reloadDistricts:
             loadDistrictOptions,
