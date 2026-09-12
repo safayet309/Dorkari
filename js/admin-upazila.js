@@ -2223,6 +2223,15 @@
                 );
 
         }
+        if (upazilaDistrictFilter) {
+
+            upazilaDistrictFilter
+                .addEventListener(
+                    "change",
+                    applyUpazilaFilters
+                );
+
+        }
 
     }
 
