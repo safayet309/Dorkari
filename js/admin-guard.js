@@ -1330,57 +1330,93 @@
 
     window.DorkariAdmin = {
 
-        getProfile:
-            function () {
+    // =================================================
+    // VERIFIED ADMIN PROFILE
+    // =================================================
 
-                return currentProfile;
+    getProfile:
+        function () {
 
-            },
+            return currentProfile;
 
-
-        getSession:
-            function () {
-
-                return currentSession;
-
-            },
+        },
 
 
-        getRole:
-            function () {
+    // =================================================
+    // CURRENT SUPABASE SESSION
+    // =================================================
 
-                return currentProfile
-                    ? currentProfile.role
-                    : null;
+    getSession:
+        function () {
 
-            },
+            return currentSession;
 
-
-        canManageContent:
-            function () {
-
-                return (
-                    currentProfile &&
-                    (
-                        currentProfile.role ===
-                            "super_admin" ||
-
-                        currentProfile.role ===
-                            "admin"
-                    )
-                );
-
-            },
+        },
 
 
-        showToast:
-            showToast,
+    // =================================================
+    // SUPABASE CLIENT
+    // =================================================
+
+    getSupabase:
+        function () {
+
+            return supabaseClient;
+
+        },
 
 
-        logout:
-            logout
+    // =================================================
+    // CURRENT ROLE
+    // =================================================
 
-    };
+    getRole:
+        function () {
+
+            return currentProfile
+                ? currentProfile.role
+                : null;
+
+        },
+
+
+    // =================================================
+    // CONTENT MANAGEMENT PERMISSION
+    // =================================================
+
+    canManageContent:
+        function () {
+
+            return (
+                currentProfile &&
+                (
+                    currentProfile.role ===
+                        "super_admin" ||
+
+                    currentProfile.role ===
+                        "admin"
+                )
+            );
+
+        },
+
+
+    // =================================================
+    // TOAST
+    // =================================================
+
+    showToast:
+        showToast,
+
+
+    // =================================================
+    // LOGOUT
+    // =================================================
+
+    logout:
+        logout
+
+};
 
 
 })();
