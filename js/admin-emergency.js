@@ -2342,19 +2342,31 @@
         }
 
 
-        const result =
-            await sb
-                .from(
-                    T[S.entity]
-                )
+        let q;
+
+        if (S.entity === "police") {
+
+            q = await sb.rpc(
+                "set_police_station_status",
+                {
+                    p_id: r.id,
+                    p_is_active: !r.is_active
+                }
+            );
+
+        } else {
+
+            q = await sb
+                .from(T[S.entity])
                 .update({
-                    is_active:
-                        !record.is_active
+                    is_active: !r.is_active
                 })
                 .eq(
                     "id",
-                    record.id
+                    r.id
                 );
+
+        }
 
 
         if (result.error) {
