@@ -1,2465 +1,1383 @@
-/* =========================================================
-   DORKARI — HOSPITAL MANAGEMENT
-   File: js/admin-hospital.js
-
-   F-8.2 — Hospital Add
-
-   Handles:
-   - Hospital list
-   - Search
-   - Filters
-   - Location dependency
-   - Add Hospital
-   - Validation
-   - Duplicate validation
-   - Supabase insert
-   ========================================================= */
+// =========================================================
+// Dorkari — Hospital Management
+// F-8.1 — Hospital Foundation
+// =========================================================
 
 (function () {
+
     "use strict";
 
 
-    /* =====================================================
-       CONFIG
-       ===================================================== */
+    // =====================================================
+    // STATE
+    // =====================================================
 
-    const TABLE = "hospitals";
-    const PAGE_SIZE = 10;
+    const state = {
 
+        supabase: null,
 
-    /* =====================================================
-       STATE
-       ===================================================== */
-
-    const S = {
         hospitals: [],
-        filteredHospitals: [],
 
         divisions: [],
+
         districts: [],
+
         upazilas: [],
 
-        currentPage: 1,
+        filteredHospitals: [],
 
-        editingHospitalId: null,
+        loading: false
 
-        isSaving: false
     };
 
 
-    /* =====================================================
-       DOM HELPERS
-       ===================================================== */
+    // =====================================================
+    // DOM
+    // =====================================================
 
-    function getElement(id) {
+    function get(id) {
+
         return document.getElementById(id);
+
     }
 
 
-    function cleanText(value) {
-        return String(value || "").trim();
-    }
-
+    // =====================================================
+    // HTML ESCAPE
+    // =====================================================
 
     function escapeHTML(value) {
+
         return String(value ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+
     }
 
 
-    function showToast(message, type) {
+    // =====================================================
+    // NUMBER
+    // =====================================================
 
-        let toast =
-            document.getElementById(
-                "hospitalToast"
-            );
+    function formatNumber(value) {
 
-        if (!toast) {
+        return Number(value || 0).toLocaleString("bn-BD");
 
-            toast =
-                document.createElement("div");
-
-            toast.id =
-                "hospitalToast";
-
-            toast.className =
-                "hospital-toast";
-
-            document.body.appendChild(
-                toast
-            );
-        }
-
-
-        toast.textContent =
-            message;
-
-
-        toast.className =
-            "hospital-toast " +
-            (type || "info");
-
-
-        clearTimeout(
-            toast._timer
-        );
-
-
-        toast._timer =
-            setTimeout(
-                function () {
-
-                    toast.className =
-                        "hospital-toast";
-
-                },
-                3500
-            );
     }
 
 
-    function getErrorMessage(error) {
+    // =====================================================
+    // TOAST
+    // =====================================================
 
-        if (!error) {
-            return "একটি সমস্যা হয়েছে।";
-        }
+    function showToast(message) {
 
+        const toast = get("hospitalToast");
+        const messageElement = get("hospitalToastMessage");
 
-        if (
-            error.code ===
-            "23505"
-        ) {
-            return "এই Hospital তথ্যটি আগে থেকেই আছে।";
-        }
-
-
-        if (
-            error.message
-        ) {
-
-            return error.message;
-        }
-
-
-        return "Hospital সংরক্ষণ করা যায়নি।";
-    }
-
-
-    /* =====================================================
-       SUPABASE
-       ===================================================== */
-
-    let supabaseClient = null;
-
-
-    function initializeSupabase() {
-
-        if (
-            window.DorkariAdmin &&
-            typeof window.DorkariAdmin.getSupabase ===
-            "function"
-        ) {
-
-            supabaseClient =
-                window.DorkariAdmin.getSupabase();
-
+        if (!toast || !messageElement) {
             return;
         }
 
+        messageElement.textContent = message;
 
-        /*
-         * Fallback:
-         * যদি admin-auth.js/config.js থেকে
-         * global Supabase client পাওয়া যায়।
-         */
+        toast.classList.add("show");
 
-        if (
-            window.supabaseClient
-        ) {
+        clearTimeout(showToast.timer);
 
-            supabaseClient =
-                window.supabaseClient;
+        showToast.timer = setTimeout(function () {
 
-            return;
-        }
+            toast.classList.remove("show");
 
+        }, 2500);
 
-        if (
-            window.supabase &&
-            typeof window.supabase.createClient ===
-            "function"
-        ) {
-
-            const config =
-                window.DorkariConfig ||
-                window.DorkariConfigData ||
-                window.CONFIG;
-
-            if (
-                config &&
-                config.supabaseUrl &&
-                config.supabaseAnonKey
-            ) {
-
-                supabaseClient =
-                    window.supabase.createClient(
-                        config.supabaseUrl,
-                        config.supabaseAnonKey
-                    );
-
-                return;
-            }
-        }
-
-
-        throw new Error(
-            "Supabase client পাওয়া যায়নি।"
-        );
     }
 
 
-    /* =====================================================
-       DOM
-       ===================================================== */
+    // =====================================================
+    // LOADING
+    // =====================================================
 
-    const hospitalFormPanel =
-        getElement(
-            "hospitalFormPanel"
-        );
+    function showLoading() {
 
-    const hospitalForm =
-        getElement(
-            "hospitalForm"
-        );
+        const list = get("hospitalList");
 
-    const hospitalName =
-        getElement(
-            "hospitalName"
-        );
+        if (!list) {
+            return;
+        }
 
-    const hospitalNameBn =
-        getElement(
-            "hospitalNameBn"
-        );
+        list.innerHTML = `
+            <div class="hospital-loading">
+                হাসপাতালের তথ্য লোড হচ্ছে...
+            </div>
+        `;
 
-    const hospitalType =
-        getElement(
-            "hospitalType"
-        );
-
-    const hospitalDivision =
-        getElement(
-            "hospitalDivision"
-        );
-
-    const hospitalDistrict =
-        getElement(
-            "hospitalDistrict"
-        );
-
-    const hospitalUpazila =
-        getElement(
-            "hospitalUpazila"
-        );
-
-    const hospitalAddress =
-        getElement(
-            "hospitalAddress"
-        );
-
-    const hospitalPhone =
-        getElement(
-            "hospitalPhone"
-        );
-
-    const hospitalEmergencyPhone =
-        getElement(
-            "hospitalEmergencyPhone"
-        );
-
-    const hospitalEmail =
-        getElement(
-            "hospitalEmail"
-        );
-
-    const hospitalWebsite =
-        getElement(
-            "hospitalWebsite"
-        );
-
-    const hospitalDescription =
-        getElement(
-            "hospitalDescription"
-        );
-
-    const hospitalLatitude =
-        getElement(
-            "hospitalLatitude"
-        );
-
-    const hospitalLongitude =
-        getElement(
-            "hospitalLongitude"
-        );
-
-    const hospitalIsVerified =
-        getElement(
-            "hospitalIsVerified"
-        );
-
-    const hospitalIsActive =
-        getElement(
-            "hospitalIsActive"
-        );
-
-    const saveHospitalButton =
-        getElement(
-            "hospitalSaveBtn"
-        );
-
-    const hospitalSearch =
-        getElement(
-            "hospitalSearch"
-        );
-
-    const hospitalTypeFilter =
-        getElement(
-            "hospitalTypeFilter"
-        );
-
-    const hospitalDivisionFilter =
-        getElement(
-            "hospitalDivisionFilter"
-        );
-
-    const hospitalDistrictFilter =
-        getElement(
-            "hospitalDistrictFilter"
-        );
-
-    const hospitalUpazilaFilter =
-        getElement(
-            "hospitalUpazilaFilter"
-        );
-
-    const hospitalStatusFilter =
-        getElement(
-            "hospitalStatusFilter"
-        );
-
-    const hospitalVerificationFilter =
-        getElement(
-            "hospitalVerificationFilter"
-        );
+    }
 
 
-    /* =====================================================
-       LOCATION DATA
-       ===================================================== */
+    // =====================================================
+    // ERROR
+    // =====================================================
 
-    async function loadDivisions() {
+    function showError(message) {
 
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
+        const list = get("hospitalList");
+
+        if (!list) {
+            return;
+        }
+
+        list.innerHTML = `
+            <div class="hospital-error">
+                ${escapeHTML(
+                    message ||
+                    "হাসপাতালের তথ্য লোড করা যায়নি।"
+                )}
+            </div>
+        `;
+
+    }
+
+
+    // =====================================================
+    // LOAD LOCATIONS
+    // =====================================================
+
+    async function loadLocations() {
+
+        const [
+
+            divisionResult,
+
+            districtResult,
+
+            upazilaResult
+
+        ] = await Promise.all([
+
+            state.supabase
                 .from("divisions")
-                .select(
-                    "id,name,name_bn"
-                )
-                .eq(
-                    "is_active",
-                    true
-                )
-                .order(
-                    "name_bn",
-                    {
-                        ascending: true
-                    }
-                );
+                .select("id,name,name_bn")
+                .eq("is_active", true)
+                .order("name_bn", {
+                    ascending: true
+                }),
 
-
-        if (error) {
-            throw error;
-        }
-
-
-        S.divisions =
-            data || [];
-
-
-        populateDivisionSelect(
-            hospitalDivision,
-            "বিভাগ নির্বাচন করুন",
-            S.divisions
-        );
-
-
-        populateDivisionSelect(
-            hospitalDivisionFilter,
-            "সব বিভাগ",
-            S.divisions
-        );
-    }
-
-
-    async function loadDistricts() {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
+            state.supabase
                 .from("districts")
-                .select(
-                    "id,name,name_bn,division_id"
-                )
-                .eq(
-                    "is_active",
-                    true
-                )
-                .order(
-                    "name_bn",
-                    {
-                        ascending: true
-                    }
-                );
+                .select("id,name,name_bn,division_id")
+                .eq("is_active", true)
+                .order("name_bn", {
+                    ascending: true
+                }),
 
-
-        if (error) {
-            throw error;
-        }
-
-
-        S.districts =
-            data || [];
-
-
-        populateDistrictSelect(
-            hospitalDistrictFilter,
-            "সব জেলা",
-            S.districts
-        );
-    }
-
-
-    async function loadUpazilas() {
-
-        const {
-            data,
-            error
-        } =
-            await supabaseClient
+            state.supabase
                 .from("upazilas")
-                .select(
-                    "id,name,name_bn,district_id"
-                )
-                .eq(
-                    "is_active",
-                    true
-                )
-                .order(
-                    "name_bn",
-                    {
-                        ascending: true
-                    }
-                );
+                .select("id,name,name_bn,district_id")
+                .eq("is_active", true)
+                .order("name_bn", {
+                    ascending: true
+                })
+
+        ]);
 
 
-        if (error) {
-            throw error;
+        if (divisionResult.error) {
+            throw divisionResult.error;
+        }
+
+        if (districtResult.error) {
+            throw districtResult.error;
+        }
+
+        if (upazilaResult.error) {
+            throw upazilaResult.error;
         }
 
 
-        S.upazilas =
-            data || [];
+        state.divisions = divisionResult.data || [];
+
+        state.districts = districtResult.data || [];
+
+        state.upazilas = upazilaResult.data || [];
+
+
+        renderDivisionOptions();
+
     }
 
 
-    function populateDivisionSelect(
-        select,
-        placeholder,
-        rows
+    // =====================================================
+    // DIVISION OPTIONS
+    // =====================================================
+
+    function renderDivisionOptions() {
+
+        const filter = get("hospitalDivisionFilter");
+        const form = get("hospitalDivision");
+
+        if (filter) {
+
+            filter.innerHTML = `
+                <option value="">
+                    সব বিভাগ
+                </option>
+            `;
+
+            state.divisions.forEach(function (division) {
+
+                filter.insertAdjacentHTML(
+                    "beforeend",
+                    `
+                    <option value="${escapeHTML(division.id)}">
+                        ${escapeHTML(
+                            division.name_bn ||
+                            division.name
+                        )}
+                    </option>
+                    `
+                );
+
+            });
+
+        }
+
+
+        if (form) {
+
+            form.innerHTML = `
+                <option value="">
+                    Select Division
+                </option>
+            `;
+
+            state.divisions.forEach(function (division) {
+
+                form.insertAdjacentHTML(
+                    "beforeend",
+                    `
+                    <option value="${escapeHTML(division.id)}">
+                        ${escapeHTML(
+                            division.name_bn ||
+                            division.name
+                        )}
+                    </option>
+                    `
+                );
+
+            });
+
+        }
+
+    }
+
+
+    // =====================================================
+    // DISTRICT OPTIONS
+    // =====================================================
+
+    function renderDistrictOptions(
+        divisionId,
+        targetId,
+        placeholder
     ) {
+
+        const select = get(targetId);
 
         if (!select) {
             return;
         }
 
 
-        select.innerHTML =
-            `<option value="">${escapeHTML(
-                placeholder
-            )}</option>`;
+        select.innerHTML = `
+            <option value="">
+                ${placeholder}
+            </option>
+        `;
 
 
-        rows.forEach(
-            function (row) {
+        if (!divisionId) {
 
-                const option =
-                    document.createElement(
-                        "option"
+            select.disabled = true;
+
+            return;
+
+        }
+
+
+        const districts =
+            state.districts.filter(
+                function (district) {
+
+                    return (
+                        district.division_id ===
+                        divisionId
                     );
 
-                option.value =
-                    row.id;
+                }
+            );
 
-                option.textContent =
-                    row.name_bn
-                        ? `${row.name_bn} (${row.name})`
-                        : row.name;
 
-                select.appendChild(
-                    option
-                );
-            }
-        );
+        districts.forEach(function (district) {
+
+            select.insertAdjacentHTML(
+                "beforeend",
+                `
+                <option value="${escapeHTML(district.id)}">
+                    ${escapeHTML(
+                        district.name_bn ||
+                        district.name
+                    )}
+                </option>
+                `
+            );
+
+        });
+
+
+        select.disabled = false;
+
     }
 
 
-    function populateDistrictSelect(
-        select,
-        placeholder,
-        rows,
-        divisionId
+    // =====================================================
+    // UPAZILA OPTIONS
+    // =====================================================
+
+    function renderUpazilaOptions(
+        districtId,
+        targetId,
+        placeholder
     ) {
+
+        const select = get(targetId);
 
         if (!select) {
             return;
         }
 
 
-        const filtered =
-            divisionId
-                ? rows.filter(
-                    function (row) {
-                        return (
-                            row.division_id ===
-                            divisionId
-                        );
-                    }
-                )
-                : rows;
+        select.innerHTML = `
+            <option value="">
+                ${placeholder}
+            </option>
+        `;
 
 
-        select.innerHTML =
-            `<option value="">${escapeHTML(
-                placeholder
-            )}</option>`;
+        if (!districtId) {
+
+            select.disabled = true;
+
+            return;
+
+        }
 
 
-        filtered.forEach(
-            function (row) {
+        const upazilas =
+            state.upazilas.filter(
+                function (upazila) {
 
-                const option =
-                    document.createElement(
-                        "option"
+                    return (
+                        upazila.district_id ===
+                        districtId
                     );
 
-                option.value =
-                    row.id;
+                }
+            );
 
-                option.textContent =
-                    row.name_bn
-                        ? `${row.name_bn} (${row.name})`
-                        : row.name;
 
-                select.appendChild(
-                    option
-                );
-            }
-        );
+        upazilas.forEach(function (upazila) {
+
+            select.insertAdjacentHTML(
+                "beforeend",
+                `
+                <option value="${escapeHTML(upazila.id)}">
+                    ${escapeHTML(
+                        upazila.name_bn ||
+                        upazila.name
+                    )}
+                </option>
+                `
+            );
+
+        });
+
+
+        select.disabled = false;
+
     }
 
 
-    function populateUpazilaSelect(
-        select,
-        placeholder,
-        rows,
-        districtId
-    ) {
-
-        if (!select) {
-            return;
-        }
-
-
-        const filtered =
-            districtId
-                ? rows.filter(
-                    function (row) {
-                        return (
-                            row.district_id ===
-                            districtId
-                        );
-                    }
-                )
-                : rows;
-
-
-        select.innerHTML =
-            `<option value="">${escapeHTML(
-                placeholder
-            )}</option>`;
-
-
-        filtered.forEach(
-            function (row) {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    row.id;
-
-                option.textContent =
-                    row.name_bn
-                        ? `${row.name_bn} (${row.name})`
-                        : row.name;
-
-                select.appendChild(
-                    option
-                );
-            }
-        );
-    }
-
-
-    /* =====================================================
-       LOCATION DEPENDENCY
-       ===================================================== */
-
-    function handleFormDivisionChange() {
-
-        const divisionId =
-            hospitalDivision
-                ? hospitalDivision.value
-                : "";
-
-
-        /*
-         * Division নির্বাচন করলে
-         * শুধু সেই Division-এর District দেখাবে।
-         */
-        populateDistrictSelect(
-            hospitalDistrict,
-            "জেলা নির্বাচন করুন",
-            S.districts,
-            divisionId
-        );
-
-
-        /*
-         * District reset
-         */
-        if (hospitalDistrict) {
-            hospitalDistrict.value = "";
-        }
-
-
-        /*
-         * Upazila reset
-         */
-        populateUpazilaSelect(
-            hospitalUpazila,
-            "উপজেলা নির্বাচন করুন",
-            [],
-            ""
-        );
-
-
-        if (hospitalUpazila) {
-            hospitalUpazila.value = "";
-        }
-    }
-
-
-    function handleFormDistrictChange() {
-
-        if (!hospitalUpazila) {
-            return;
-        }
-
-
-        const districtId =
-            hospitalDistrict
-                ? hospitalDistrict.value
-                : "";
-
-
-        populateUpazilaSelect(
-            hospitalUpazila,
-            "উপজেলা নির্বাচন করুন",
-            S.upazilas,
-            districtId
-        );
-    }
-
-
-    function handleFilterDivisionChange() {
-
-        const divisionId =
-            hospitalDivisionFilter
-                ? hospitalDivisionFilter.value
-                : "";
-
-
-        /*
-         * Selected Division অনুযায়ী
-         * District dropdown populate হবে।
-         */
-        populateDistrictSelect(
-            hospitalDistrictFilter,
-            "সব জেলা",
-            S.districts,
-            divisionId
-        );
-
-
-        /*
-         * District reset
-         */
-        if (hospitalDistrictFilter) {
-            hospitalDistrictFilter.value = "";
-        }
-
-
-        /*
-         * Upazila reset
-         */
-        populateUpazilaSelect(
-            hospitalUpazilaFilter,
-            "সব উপজেলা",
-            [],
-            ""
-        );
-
-
-        if (hospitalUpazilaFilter) {
-            hospitalUpazilaFilter.value = "";
-        }
-
-
-        applyFilters();
-    }
-
-
-    function handleFilterDistrictChange() {
-
-        const districtId =
-            hospitalDistrictFilter
-                ? hospitalDistrictFilter.value
-                : "";
-
-
-        populateUpazilaSelect(
-            hospitalUpazilaFilter,
-            "সব উপজেলা",
-            S.upazilas,
-            districtId
-        );
-
-
-        applyFilters();
-    }
-
-
-    /* =====================================================
-       HOSPITAL DATA
-       ===================================================== */
+    // =====================================================
+    // LOAD HOSPITALS
+    // =====================================================
 
     async function loadHospitals() {
 
-        showLoadingState();
+        state.loading = true;
+
+        showLoading();
 
 
         const {
+
             data,
+
             error
-        } =
-            await supabaseClient
-                .from(TABLE)
-                .select(`
-                    id,
-                    name,
-                    name_bn,
-                    hospital_type,
-                    division_id,
-                    district_id,
-                    upazila_id,
-                    address,
-                    phone,
-                    emergency_phone,
-                    email,
-                    website,
-                    description,
-                    latitude,
-                    longitude,
-                    is_verified,
-                    is_active,
-                    created_at,
-                    updated_at
-                `)
-                .order(
-                    "created_at",
-                    {
-                        ascending: false
-                    }
-                );
+
+        } = await state.supabase
+            .from("hospitals")
+            .select(`
+                id,
+                name,
+                name_bn,
+                hospital_type,
+                division_id,
+                district_id,
+                upazila_id,
+                address,
+                phone,
+                emergency_phone,
+                email,
+                website,
+                description,
+                latitude,
+                longitude,
+                is_verified,
+                is_active,
+                created_at,
+                updated_at
+            `)
+            .order("name_bn", {
+                ascending: true
+            });
+
+
+        state.loading = false;
 
 
         if (error) {
-            throw error;
+
+            console.error(
+                "Hospital Load Error:",
+                error
+            );
+
+            showError(
+                "Hospital data load করতে সমস্যা হয়েছে।"
+            );
+
+            return;
+
         }
 
 
-        S.hospitals =
-            data || [];
+        state.hospitals = data || [];
+
+        state.filteredHospitals =
+            [...state.hospitals];
 
 
-        updateSummary();
-
+        renderStatistics();
 
         applyFilters();
+
     }
 
 
-    /* =====================================================
-       SUMMARY
-       ===================================================== */
+    // =====================================================
+    // STATISTICS
+    // =====================================================
 
-    function updateSummary() {
+    function renderStatistics() {
 
         const total =
-            S.hospitals.length;
+            state.hospitals.length;
 
 
         const active =
-            S.hospitals.filter(
-                function (item) {
-                    return (
-                        item.is_active ===
-                        true
-                    );
+            state.hospitals.filter(
+                function (hospital) {
+
+                    return hospital.is_active === true;
+
                 }
             ).length;
 
 
         const verified =
-            S.hospitals.filter(
-                function (item) {
-                    return (
-                        item.is_verified ===
-                        true
-                    );
+            state.hospitals.filter(
+                function (hospital) {
+
+                    return hospital.is_verified === true;
+
                 }
             ).length;
 
 
-        setNumber(
-            "hospitalTotalCount",
-            total
-        );
+        const totalElement =
+            get("hospitalTotalCount");
+
+        const activeElement =
+            get("hospitalActiveCount");
+
+        const verifiedElement =
+            get("hospitalVerifiedCount");
 
 
-        setNumber(
-            "hospitalActiveCount",
-            active
-        );
+        if (totalElement) {
 
+            totalElement.textContent =
+                formatNumber(total);
 
-        setNumber(
-            "hospitalVerifiedCount",
-            verified
-        );
-    }
-
-
-    function setNumber(
-        id,
-        value
-    ) {
-
-        const element =
-            getElement(id);
-
-
-        if (element) {
-
-            element.textContent =
-                Number(value || 0)
-                    .toLocaleString(
-                        "en-US"
-                    );
         }
+
+
+        if (activeElement) {
+
+            activeElement.textContent =
+                formatNumber(active);
+
+        }
+
+
+        if (verifiedElement) {
+
+            verifiedElement.textContent =
+                formatNumber(verified);
+
+        }
+
     }
 
 
-    /* =====================================================
-       FILTERS
-       ===================================================== */
+    // =====================================================
+    // GET LOCATION NAME
+    // =====================================================
+
+    function getDivisionName(id) {
+
+        const item =
+            state.divisions.find(
+                function (division) {
+
+                    return division.id === id;
+
+                }
+            );
+
+        return item
+            ? (item.name_bn || item.name)
+            : "";
+
+    }
+
+
+    function getDistrictName(id) {
+
+        const item =
+            state.districts.find(
+                function (district) {
+
+                    return district.id === id;
+
+                }
+            );
+
+        return item
+            ? (item.name_bn || item.name)
+            : "";
+
+    }
+
+
+    function getUpazilaName(id) {
+
+        const item =
+            state.upazilas.find(
+                function (upazila) {
+
+                    return upazila.id === id;
+
+                }
+            );
+
+        return item
+            ? (item.name_bn || item.name)
+            : "";
+
+    }
+
+
+    // =====================================================
+    // RENDER LIST
+    // =====================================================
+
+    function renderList() {
+
+        const list =
+            get("hospitalList");
+
+
+        if (!list) {
+            return;
+        }
+
+
+        if (
+            state.filteredHospitals.length === 0
+        ) {
+
+            list.innerHTML = `
+                <div class="hospital-empty">
+                    কোনো হাসপাতাল পাওয়া যায়নি।
+                </div>
+            `;
+
+            updateResultCount();
+
+            return;
+
+        }
+
+
+        list.innerHTML =
+            state.filteredHospitals
+                .map(function (hospital) {
+
+                    const locationParts = [
+
+                        getDivisionName(
+                            hospital.division_id
+                        ),
+
+                        getDistrictName(
+                            hospital.district_id
+                        ),
+
+                        getUpazilaName(
+                            hospital.upazila_id
+                        )
+
+                    ].filter(Boolean);
+
+
+                    const status =
+                        hospital.is_active
+                            ? "Active"
+                            : "Inactive";
+
+
+                    const verification =
+                        hospital.is_verified
+                            ? "Verified"
+                            : "Unverified";
+
+
+                    return `
+                        <article
+                            class="hospital-card"
+                            data-id="${escapeHTML(
+                                hospital.id
+                            )}"
+                        >
+
+                            <div class="hospital-card-main">
+
+                                <h3 class="hospital-card-title">
+                                    ${escapeHTML(
+                                        hospital.name_bn ||
+                                        hospital.name ||
+                                        "Unnamed Hospital"
+                                    )}
+                                </h3>
+
+                                ${
+                                    hospital.name &&
+                                    hospital.name_bn &&
+                                    hospital.name !==
+                                        hospital.name_bn
+
+                                        ? `
+                                            <div class="hospital-card-subtitle">
+                                                ${escapeHTML(
+                                                    hospital.name
+                                                )}
+                                            </div>
+                                          `
+                                        : ""
+                                }
+
+
+                                <div class="hospital-card-meta">
+
+                                    ${
+                                        hospital.hospital_type
+                                            ? `
+                                                <span class="hospital-badge">
+                                                    ${escapeHTML(
+                                                        hospital.hospital_type
+                                                    )}
+                                                </span>
+                                              `
+                                            : ""
+                                    }
+
+
+                                    ${
+                                        locationParts.length
+                                            ? `
+                                                <span class="hospital-badge">
+                                                    📍
+                                                    ${escapeHTML(
+                                                        locationParts.join(" • ")
+                                                    )}
+                                                </span>
+                                              `
+                                            : ""
+                                    }
+
+
+                                    <span class="hospital-badge">
+                                        ${status}
+                                    </span>
+
+
+                                    <span class="hospital-badge">
+                                        ${verification}
+                                    </span>
+
+                                </div>
+
+
+                                ${
+                                    hospital.phone
+                                        ? `
+                                            <div class="hospital-card-subtitle">
+                                                ☎ ${escapeHTML(
+                                                    hospital.phone
+                                                )}
+                                            </div>
+                                          `
+                                        : ""
+                                }
+
+                            </div>
+
+
+                            <div class="hospital-card-actions">
+
+                                <button
+                                    type="button"
+                                    class="hospital-card-btn"
+                                    data-action="edit"
+                                    data-id="${escapeHTML(
+                                        hospital.id
+                                    )}"
+                                >
+                                    Edit
+                                </button>
+
+                            </div>
+
+                        </article>
+                    `;
+
+                })
+                .join("");
+
+
+        updateResultCount();
+
+    }
+
+
+    // =====================================================
+    // FILTER
+    // =====================================================
 
     function applyFilters() {
 
         const search =
-            cleanText(
-                hospitalSearch
-                    ? hospitalSearch.value
-                    : ""
-            ).toLowerCase();
+            (
+                get("hospitalSearch")?.value ||
+                ""
+            )
+                .trim()
+                .toLowerCase();
 
 
         const type =
-            hospitalTypeFilter
-                ? hospitalTypeFilter.value
-                : "";
-
-
-        const division =
-            hospitalDivisionFilter
-                ? hospitalDivisionFilter.value
-                : "";
-
-
-        const district =
-            hospitalDistrictFilter
-                ? hospitalDistrictFilter.value
-                : "";
-
-
-        const upazila =
-            hospitalUpazilaFilter
-                ? hospitalUpazilaFilter.value
-                : "";
-
-
-        const status =
-            hospitalStatusFilter
-                ? hospitalStatusFilter.value
-                : "";
-
-
-        const verification =
-            hospitalVerificationFilter
-                ? hospitalVerificationFilter.value
-                : "";
-
-
-        S.filteredHospitals =
-            S.hospitals.filter(
-                function (hospital) {
-
-                    const matchesSearch =
-                        !search ||
-                        String(
-                            hospital.name ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(search) ||
-                        String(
-                            hospital.name_bn ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(search);
-
-
-                    const matchesType =
-                        !type ||
-                        hospital.hospital_type ===
-                        type;
-
-
-                    const matchesDivision =
-                        !division ||
-                        hospital.division_id ===
-                        division;
-
-
-                    const matchesDistrict =
-                        !district ||
-                        hospital.district_id ===
-                        district;
-
-
-                    const matchesUpazila =
-                        !upazila ||
-                        hospital.upazila_id ===
-                        upazila;
-
-
-                    const matchesStatus =
-                        !status ||
-                        (
-                            status === "active"
-                                ? hospital.is_active ===
-                                true
-                                : hospital.is_active ===
-                                false
-                        );
-
-
-                    const matchesVerification =
-                        !verification ||
-                        (
-                            verification ===
-                                "verified"
-                                ? hospital.is_verified ===
-                                true
-                                : hospital.is_verified ===
-                                false
-                        );
-
-
-                    return (
-                        matchesSearch &&
-                        matchesType &&
-                        matchesDivision &&
-                        matchesDistrict &&
-                        matchesUpazila &&
-                        matchesStatus &&
-                        matchesVerification
-                    );
-                }
-            );
-
-
-        S.currentPage =
-            1;
-
-
-        renderHospitalTable();
-    }
-
-
-    /* =====================================================
-       TABLE
-       ===================================================== */
-
-    function renderHospitalTable() {
-
-        const tbody =
-            getElement(
-                "hospitalTableBody"
-            );
-
-
-        if (!tbody) {
-            return;
-        }
-
-
-        if (
-            S.filteredHospitals
-                .length === 0
-        ) {
-
-            tbody.innerHTML = "";
-
-
-            showTableState(
-                "empty"
-            );
-
-
-            return;
-        }
-
-
-        const start =
-            (
-                S.currentPage -
-                1
-            ) *
-            PAGE_SIZE;
-
-
-        const pageItems =
-            S.filteredHospitals.slice(
-                start,
-                start + PAGE_SIZE
-            );
-
-
-        tbody.innerHTML =
-            pageItems
-                .map(
-                    function (hospital) {
-
-                        const division =
-                            S.divisions.find(
-                                function (item) {
-                                    return (
-                                        item.id ===
-                                        hospital.division_id
-                                    );
-                                }
-                            );
-
-
-                        const district =
-                            S.districts.find(
-                                function (item) {
-                                    return (
-                                        item.id ===
-                                        hospital.district_id
-                                    );
-                                }
-                            );
-
-
-                        const upazila =
-                            S.upazilas.find(
-                                function (item) {
-                                    return (
-                                        item.id ===
-                                        hospital.upazila_id
-                                    );
-                                }
-                            );
-
-
-                        return `
-                            <tr data-id="${escapeHTML(
-                            hospital.id
-                        )}">
-
-                                <td>
-                                    <div class="hospital-table-name">
-
-                                        <div class="hospital-table-icon">
-                                            🏥
-                                        </div>
-
-                                        <div class="hospital-table-name-text">
-
-                                            <span class="hospital-table-name-bn">
-                                                ${escapeHTML(
-                            hospital.name_bn ||
-                            hospital.name ||
-                            "—"
-                        )}
-                                            </span>
-
-                                            <span class="hospital-table-name-en">
-                                                ${escapeHTML(
-                            hospital.name ||
-                            "—"
-                        )}
-                                            </span>
-
-                                        </div>
-
-                                    </div>
-                                </td>
-
-
-                                <td>
-                                    ${escapeHTML(
-                            hospital.hospital_type ||
-                            "—"
-                        )}
-                                </td>
-
-
-                                <td>
-                                    ${escapeHTML(
-                            division
-                                ? (
-                                    division.name_bn ||
-                                    division.name
-                                )
-                                : "—"
-                        )}
-                                </td>
-
-
-                                <td>
-                                    ${escapeHTML(
-                            district
-                                ? (
-                                    district.name_bn ||
-                                    district.name
-                                )
-                                : "—"
-                        )}
-                                </td>
-
-
-                                <td>
-                                    ${escapeHTML(
-                            upazila
-                                ? (
-                                    upazila.name_bn ||
-                                    upazila.name
-                                )
-                                : "—"
-                        )}
-                                </td>
-
-
-                                <td>
-                                    <span class="hospital-status ${hospital.is_active
-                                ? "active"
-                                : "inactive"
-                            }">
-                                        ${hospital.is_active
-                                ? "Active"
-                                : "Inactive"
-                            }
-                                    </span>
-                                </td>
-
-
-                                <td>
-                                    <span class="hospital-status ${hospital.is_verified
-                                ? "verified"
-                                : "unverified"
-                            }">
-                                        ${hospital.is_verified
-                                ? "Verified"
-                                : "Not verified"
-                            }
-                                    </span>
-                                </td>
-
-
-                                <td>
-                                    <span class="hospital-phone">
-                                        ${escapeHTML(
-                                hospital.phone ||
-                                "—"
-                            )}
-                                    </span>
-                                </td>
-
-
-                                <td>
-                                    <div class="hospital-table-actions">
-
-                                        <button
-                                            type="button"
-                                            class="hospital-action-btn edit"
-                                            data-action="edit"
-                                            data-id="${escapeHTML(
-                                hospital.id
-                            )}"
-                                        >
-                                            Edit
-                                        </button>
-
-                                    </div>
-                                </td>
-
-                            </tr>
-                        `;
-                    }
-                )
-                .join("");
-
-
-        showTableState(
-            "table"
-        );
-
-
-        renderPagination();
-    }
-
-
-    function showTableState(
-        state
-    ) {
-
-        const table =
-            getElement(
-                "hospitalTable"
-            );
-
-        const empty =
-            getElement(
-                "hospitalEmptyState"
-            );
-
-        const loading =
-            getElement(
-                "hospitalLoadingState"
-            );
-
-        const error =
-            getElement(
-                "hospitalErrorState"
-            );
-
-
-        if (table) {
-            table.hidden =
-                state !== "table";
-        }
-
-
-        if (empty) {
-            empty.hidden =
-                state !== "empty";
-        }
-
-
-        if (loading) {
-            loading.hidden =
-                state !== "loading";
-        }
-
-
-        if (error) {
-            error.hidden =
-                state !== "error";
-        }
-    }
-
-
-    function showLoadingState() {
-
-        showTableState(
-            "loading"
-        );
-    }
-
-
-    /* =====================================================
-       PAGINATION
-       ===================================================== */
-
-    function renderPagination() {
-
-        const controls =
-            getElement(
-                "hospitalPaginationControls"
-            );
-
-        const info =
-            getElement(
-                "hospitalPaginationInfo"
-            );
-
-
-        if (!controls) {
-            return;
-        }
-
-
-        const total =
-            S.filteredHospitals.length;
-
-
-        const totalPages =
-            Math.max(
-                1,
-                Math.ceil(
-                    total /
-                    PAGE_SIZE
-                )
-            );
-
-
-        if (
-            S.currentPage >
-            totalPages
-        ) {
-
-            S.currentPage =
-                totalPages;
-        }
-
-
-        if (info) {
-
-            if (total === 0) {
-
-                info.textContent =
-                    "Showing 0 hospitals";
-
-            } else {
-
-                const start =
-                    (
-                        S.currentPage -
-                        1
-                    ) *
-                    PAGE_SIZE +
-                    1;
-
-
-                const end =
-                    Math.min(
-                        S.currentPage *
-                        PAGE_SIZE,
-                        total
-                    );
-
-
-                info.textContent =
-                    `Showing ${start}–${end} of ${total} hospitals`;
-            }
-        }
-
-
-        controls.innerHTML =
+            get("hospitalTypeFilter")?.value ||
             "";
 
 
-        if (
-            totalPages <= 1
-        ) {
-            return;
-        }
-
-
-        for (
-            let page = 1;
-            page <= totalPages;
-            page++
-        ) {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-
-            button.className =
-                "hospital-page-btn" +
-                (
-                    page ===
-                        S.currentPage
-                        ? " active"
-                        : ""
-                );
-
-
-            button.textContent =
-                page;
-
-
-            button.addEventListener(
-                "click",
-                function () {
-
-                    S.currentPage =
-                        page;
-
-                    renderHospitalTable();
-                }
-            );
-
-
-            controls.appendChild(
-                button
-            );
-        }
-    }
-
-
-    /* =====================================================
-       ADD FORM
-       ===================================================== */
-
-    function openAddForm() {
-
-        S.editingHospitalId =
-            null;
-
-
-        if (hospitalForm) {
-            hospitalForm.reset();
-        }
-
-
-        clearFormErrors();
-
-
-        if (
-            hospitalFormPanel
-        ) {
-
-            hospitalFormPanel.hidden =
-                false;
-        }
-
-
-        const title =
-            getElement(
-                "hospitalFormTitle"
-            );
-
-
-        if (title) {
-
-            title.textContent =
-                "Add Hospital";
-        }
-
-
-        /*
-         * Default:
-         * New hospital active থাকবে।
-         */
-
-        if (
-            hospitalIsActive
-        ) {
-
-            hospitalIsActive.checked =
-                true;
-        }
-
-
-        if (
-            hospitalIsVerified
-        ) {
-
-            hospitalIsVerified.checked =
-                false;
-        }
-
-
-        if (
-            hospitalDistrict
-        ) {
-
-            populateDistrictSelect(
-                hospitalDistrict,
-                "জেলা নির্বাচন করুন",
-                []
-            );
-        }
-
-
-        if (
-            hospitalUpazila
-        ) {
-
-            populateUpazilaSelect(
-                hospitalUpazila,
-                "উপজেলা নির্বাচন করুন",
-                []
-            );
-        }
-    }
-
-
-    function closeForm() {
-
-        if (
-            hospitalFormPanel
-        ) {
-
-            hospitalFormPanel.hidden =
-                true;
-        }
-
-
-        S.editingHospitalId =
-            null;
-
-
-        clearFormErrors();
-    }
-
-
-    /* =====================================================
-       VALIDATION
-       ===================================================== */
-
-    function clearFormErrors() {
-
-        document
-            .querySelectorAll(
-                ".hospital-field-error"
-            )
-            .forEach(
-                function (element) {
-
-                    element.remove();
-                }
-            );
-
-
-        document
-            .querySelectorAll(
-                ".hospital-input-error"
-            )
-            .forEach(
-                function (element) {
-
-                    element.classList.remove(
-                        "hospital-input-error"
-                    );
-                }
-            );
-    }
-
-
-    function setFieldError(
-        field,
-        message
-    ) {
-
-        if (!field) {
-            return;
-        }
-
-
-        field.classList.add(
-            "hospital-input-error"
-        );
-
-
-        const error =
-            document.createElement(
-                "div"
-            );
-
-
-        error.className =
-            "hospital-field-error";
-
-
-        error.textContent =
-            message;
-
-
-        field.parentElement.appendChild(
-            error
-        );
-    }
-
-
-    function validateHospitalForm() {
-
-        clearFormErrors();
-
-
-        let valid =
-            true;
-
-
-        const name =
-            cleanText(
-                hospitalName
-                    ? hospitalName.value
-                    : ""
-            );
-
-
-        const nameBn =
-            cleanText(
-                hospitalNameBn
-                    ? hospitalNameBn.value
-                    : ""
-            );
-
-
-        const type =
-            cleanText(
-                hospitalType
-                    ? hospitalType.value
-                    : ""
-            );
-
-
         const divisionId =
-            hospitalDivision
-                ? hospitalDivision.value
-                : "";
+            get("hospitalDivisionFilter")?.value ||
+            "";
 
 
-        const phone =
-            cleanText(
-                hospitalPhone
-                    ? hospitalPhone.value
-                    : ""
+        const districtId =
+            get("hospitalDistrictFilter")?.value ||
+            "";
+
+
+        const upazilaId =
+            get("hospitalUpazilaFilter")?.value ||
+            "";
+
+
+        const status =
+            get("hospitalStatusFilter")?.value ||
+            "";
+
+
+        const verification =
+            get("hospitalVerificationFilter")?.value ||
+            "";
+
+
+        state.filteredHospitals =
+            state.hospitals.filter(
+                function (hospital) {
+
+                    const searchText = [
+
+                        hospital.name,
+
+                        hospital.name_bn,
+
+                        hospital.hospital_type,
+
+                        hospital.address,
+
+                        hospital.phone
+
+                    ]
+                        .filter(Boolean)
+                        .join(" ")
+                        .toLowerCase();
+
+
+                    if (
+                        search &&
+                        !searchText.includes(search)
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        type &&
+                        hospital.hospital_type !== type
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        divisionId &&
+                        hospital.division_id !== divisionId
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        districtId &&
+                        hospital.district_id !== districtId
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        upazilaId &&
+                        hospital.upazila_id !== upazilaId
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        status === "active" &&
+                        hospital.is_active !== true
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        status === "inactive" &&
+                        hospital.is_active !== false
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        verification === "verified" &&
+                        hospital.is_verified !== true
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        verification === "unverified" &&
+                        hospital.is_verified !== false
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    return true;
+
+                }
             );
 
 
-        if (!name) {
+        renderList();
 
-            setFieldError(
-                hospitalName,
-                "Hospital name আবশ্যক।"
-            );
-
-            valid =
-                false;
-        }
-
-
-        if (!nameBn) {
-
-            setFieldError(
-                hospitalNameBn,
-                "বাংলা নাম আবশ্যক।"
-            );
-
-            valid =
-                false;
-        }
-
-
-        if (!type) {
-
-            setFieldError(
-                hospitalType,
-                "Hospital type নির্বাচন করুন।"
-            );
-
-            valid =
-                false;
-        }
-
-
-        if (!divisionId) {
-
-            setFieldError(
-                hospitalDivision,
-                "Division নির্বাচন করুন।"
-            );
-
-            valid =
-                false;
-        }
-
-
-        if (!phone) {
-
-            setFieldError(
-                hospitalPhone,
-                "Phone number আবশ্যক।"
-            );
-
-            valid =
-                false;
-        }
-
-
-        if (
-            hospitalEmail &&
-            hospitalEmail.value &&
-            !hospitalEmail.validity.valid
-        ) {
-
-            setFieldError(
-                hospitalEmail,
-                "সঠিক email দিন।"
-            );
-
-            valid =
-                false;
-        }
-
-
-        return valid;
     }
 
 
-    /* =====================================================
-       DUPLICATE VALIDATION
-       ===================================================== */
+    // =====================================================
+    // RESULT COUNT
+    // =====================================================
 
-    async function checkHospitalDuplicate(
-        name,
-        nameBn
-    ) {
+    function updateResultCount() {
 
-        let query =
-            supabaseClient
-                .from(TABLE)
-                .select(
-                    "id,name,name_bn"
-                );
+        const element =
+            get("hospitalResultCount");
 
 
-        /*
-         * Case-insensitive exact
-         * name check.
-         */
-
-        const {
-            data,
-            error
-        } =
-            await query
-                .or(
-                    `name.ilike.${escapeForIlike(
-                        name
-                    )},name_bn.ilike.${escapeForIlike(
-                        nameBn
-                    )}`
-                );
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        return (
-            data || []
-        ).find(
-            function (item) {
-
-                return (
-                    item.id !==
-                    S.editingHospitalId &&
-                    (
-                        String(
-                            item.name ||
-                            ""
-                        ).toLowerCase() ===
-                        name.toLowerCase() ||
-                        String(
-                            item.name_bn ||
-                            ""
-                        ).toLowerCase() ===
-                        nameBn.toLowerCase()
-                    )
-                );
-            }
-        ) || null;
-    }
-
-
-    function escapeForIlike(
-        value
-    ) {
-
-        return String(
-            value || ""
-        )
-            .replace(
-                /\\/g,
-                "\\\\"
-            )
-            .replace(
-                /%/g,
-                "\\%"
-            )
-            .replace(
-                /_/g,
-                "\\_"
-            )
-            .replace(
-                /,/g,
-                "\\,"
-            );
-    }
-
-
-    /* =====================================================
-       FORM DATA
-       ===================================================== */
-
-    function getHospitalPayload() {
-
-        return {
-
-            name:
-                cleanText(
-                    hospitalName
-                        ? hospitalName.value
-                        : ""
-                ),
-
-            name_bn:
-                cleanText(
-                    hospitalNameBn
-                        ? hospitalNameBn.value
-                        : ""
-                ),
-
-            hospital_type:
-                cleanText(
-                    hospitalType
-                        ? hospitalType.value
-                        : ""
-                ),
-
-            division_id:
-                hospitalDivision &&
-                    hospitalDivision.value
-                    ? hospitalDivision.value
-                    : null,
-
-            district_id:
-                hospitalDistrict &&
-                    hospitalDistrict.value
-                    ? hospitalDistrict.value
-                    : null,
-
-            upazila_id:
-                hospitalUpazila &&
-                    hospitalUpazila.value
-                    ? hospitalUpazila.value
-                    : null,
-
-            address:
-                cleanText(
-                    hospitalAddress
-                        ? hospitalAddress.value
-                        : ""
-                ) || null,
-
-            phone:
-                cleanText(
-                    hospitalPhone
-                        ? hospitalPhone.value
-                        : ""
-                ),
-
-            emergency_phone:
-                cleanText(
-                    hospitalEmergencyPhone
-                        ? hospitalEmergencyPhone.value
-                        : ""
-                ) || null,
-
-            email:
-                cleanText(
-                    hospitalEmail
-                        ? hospitalEmail.value
-                        : ""
-                ) || null,
-
-            website:
-                cleanText(
-                    hospitalWebsite
-                        ? hospitalWebsite.value
-                        : ""
-                ) || null,
-
-            description:
-                cleanText(
-                    hospitalDescription
-                        ? hospitalDescription.value
-                        : ""
-                ) || null,
-
-            latitude:
-                parseCoordinate(
-                    hospitalLatitude
-                        ? hospitalLatitude.value
-                        : ""
-                ),
-
-            longitude:
-                parseCoordinate(
-                    hospitalLongitude
-                        ? hospitalLongitude.value
-                        : ""
-                ),
-
-            is_verified:
-                hospitalIsVerified
-                    ? hospitalIsVerified.checked
-                    : false,
-
-            is_active:
-                hospitalIsActive
-                    ? hospitalIsActive.checked
-                    : true
-        };
-    }
-
-
-    function parseCoordinate(
-        value
-    ) {
-
-        const text =
-            cleanText(
-                value
-            );
-
-
-        if (!text) {
-            return null;
-        }
-
-
-        const number =
-            Number(text);
-
-
-        return Number.isFinite(
-            number
-        )
-            ? number
-            : null;
-    }
-
-
-    /* =====================================================
-       SAVE — F-8.2
-       ===================================================== */
-
-    async function saveHospital() {
-
-        if (S.isSaving) {
+        if (!element) {
             return;
         }
 
 
-        if (
-            !validateHospitalForm()
-        ) {
+        element.textContent =
+            formatNumber(
+                state.filteredHospitals.length
+            ) +
+            "টি হাসপাতাল";
+
+    }
+
+
+    // =====================================================
+    // MODAL
+    // =====================================================
+
+    function openModal() {
+
+        const modal =
+            get("hospitalModal");
+
+
+        if (!modal) {
             return;
         }
 
 
-        const payload =
-            getHospitalPayload();
+        modal.classList.add("is-open");
 
-
-        S.isSaving =
-            true;
-
-
-        setSaveButtonLoading(
-            true
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
         );
 
-
-        try {
-
-            /*
-             * Duplicate check
-             */
-
-            const duplicate =
-                await checkHospitalDuplicate(
-                    payload.name,
-                    payload.name_bn
-                );
+        document.body.style.overflow =
+            "hidden";
 
 
-            if (duplicate) {
+        get("hospitalModalTitle")
+            .textContent =
+            "Add Hospital";
 
-                if (
-                    String(
-                        duplicate.name ||
-                        ""
-                    ).toLowerCase() ===
-                    payload.name.toLowerCase()
-                ) {
-
-                    setFieldError(
-                        hospitalName,
-                        "এই Hospital name ইতোমধ্যে আছে।"
-                    );
-
-                } else {
-
-                    setFieldError(
-                        hospitalNameBn,
-                        "এই বাংলা নাম ইতোমধ্যে আছে।"
-                    );
-                }
-
-
-                showToast(
-                    "Duplicate Hospital পাওয়া গেছে।",
-                    "error"
-                );
-
-
-                return;
-            }
-
-
-            /*
-             * F-8.2:
-             * শুধুমাত্র INSERT।
-             */
-
-            const {
-                data,
-                error
-            } =
-                await supabaseClient
-                    .from(TABLE)
-                    .insert(
-                        payload
-                    )
-                    .select()
-                    .single();
-
-
-            if (error) {
-                throw error;
-            }
-
-
-            if (!data) {
-
-                throw new Error(
-                    "Hospital insert সফল হয়নি।"
-                );
-            }
-
-
-            showToast(
-                "Hospital সফলভাবে যোগ হয়েছে।",
-                "success"
-            );
-
-
-            closeForm();
-
-
-            await loadHospitals();
-
-
-            /*
-             * Dashboard যদি একই tab/session-এ
-             * refresh API ব্যবহার করে, তাহলে
-             * পরবর্তী integration phase-এ
-             * সেটি আরও উন্নত করা হবে।
-             */
-
-        } catch (error) {
-
-            console.error(
-                "Hospital Add Error:",
-                error
-            );
-
-
-            showToast(
-                getErrorMessage(
-                    error
-                ),
-                "error"
-            );
-
-        } finally {
-
-            S.isSaving =
-                false;
-
-
-            setSaveButtonLoading(
-                false
-            );
-        }
     }
 
 
-    function setSaveButtonLoading(
-        loading
-    ) {
+    function closeModal() {
 
-        if (
-            !saveHospitalButton
-        ) {
+        const modal =
+            get("hospitalModal");
+
+
+        if (!modal) {
             return;
         }
 
 
-        saveHospitalButton.disabled =
-            loading;
+        modal.classList.remove(
+            "is-open"
+        );
 
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
 
-        const text =
-            saveHospitalButton.querySelector(
-                "[data-save-text]"
-            );
+        document.body.style.overflow =
+            "";
 
-
-        if (text) {
-
-            text.textContent =
-                loading
-                    ? "Saving..."
-                    : "Save Hospital";
-
-        } else {
-
-            saveHospitalButton.textContent =
-                loading
-                    ? "Saving..."
-                    : "Save Hospital";
-        }
     }
 
 
-    /* =====================================================
-       EVENTS
-       ===================================================== */
+    // =====================================================
+    // EVENT BINDINGS
+    // =====================================================
 
     function bindEvents() {
 
-        /* =================================================
-           ADD HOSPITAL
-           ================================================= */
-
         const addButton =
-            getElement("hospitalAddBtn");
+            get("hospitalAddBtn");
+
 
         if (addButton) {
+
             addButton.addEventListener(
                 "click",
-                openAddForm
+                openModal
             );
+
         }
 
 
-        /* =================================================
-           REFRESH
-           ================================================= */
-
         const refreshButton =
-            getElement("hospitalRefresh");
+            get("hospitalRefresh");
+
 
         if (refreshButton) {
 
             refreshButton.addEventListener(
                 "click",
-                async function () {
-
-                    try {
-
-                        await loadHospitals();
-
-                        showToast(
-                            "Hospital list refresh হয়েছে।",
-                            "success"
-                        );
-
-                    } catch (error) {
-
-                        console.error(
-                            "Hospital refresh error:",
-                            error
-                        );
-
-                        showToast(
-                            getErrorMessage(error),
-                            "error"
-                        );
-                    }
-                }
+                loadHospitals
             );
+
         }
 
 
-        /* =================================================
-           CLEAR FILTERS
-           ================================================= */
+        const closeButton =
+            get("hospitalModalClose");
 
-        const clearFiltersButton =
-            getElement("hospitalClearFilters");
 
-        if (clearFiltersButton) {
+        if (closeButton) {
 
-            clearFiltersButton.addEventListener(
+            closeButton.addEventListener(
+                "click",
+                closeModal
+            );
+
+        }
+
+
+        const cancelButton =
+            get("hospitalCancelBtn");
+
+
+        if (cancelButton) {
+
+            cancelButton.addEventListener(
+                "click",
+                closeModal
+            );
+
+        }
+
+
+        const backdrop =
+            document.querySelector(
+                ".hospital-modal-backdrop"
+            );
+
+
+        if (backdrop) {
+
+            backdrop.addEventListener(
+                "click",
+                closeModal
+            );
+
+        }
+
+
+        const search =
+            get("hospitalSearch");
+
+
+        if (search) {
+
+            search.addEventListener(
+                "input",
+                applyFilters
+            );
+
+        }
+
+
+        [
+
+            "hospitalTypeFilter",
+
+            "hospitalStatusFilter",
+
+            "hospitalVerificationFilter"
+
+        ].forEach(function (id) {
+
+            const element = get(id);
+
+            if (element) {
+
+                element.addEventListener(
+                    "change",
+                    applyFilters
+                );
+
+            }
+
+        });
+
+
+        const divisionFilter =
+            get("hospitalDivisionFilter");
+
+
+        if (divisionFilter) {
+
+            divisionFilter.addEventListener(
+                "change",
+                function () {
+
+                    renderDistrictOptions(
+                        this.value,
+                        "hospitalDistrictFilter",
+                        "সব জেলা"
+                    );
+
+
+                    const upazila =
+                        get(
+                            "hospitalUpazilaFilter"
+                        );
+
+
+                    if (upazila) {
+
+                        upazila.innerHTML = `
+                            <option value="">
+                                সব উপজেলা
+                            </option>
+                        `;
+
+                        upazila.disabled = true;
+
+                    }
+
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+
+
+        const districtFilter =
+            get("hospitalDistrictFilter");
+
+
+        if (districtFilter) {
+
+            districtFilter.addEventListener(
+                "change",
+                function () {
+
+                    renderUpazilaOptions(
+                        this.value,
+                        "hospitalUpazilaFilter",
+                        "সব উপজেলা"
+                    );
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+
+
+        const upazilaFilter =
+            get("hospitalUpazilaFilter");
+
+
+        if (upazilaFilter) {
+
+            upazilaFilter.addEventListener(
+                "change",
+                applyFilters
+            );
+
+        }
+
+
+        const divisionForm =
+            get("hospitalDivision");
+
+
+        if (divisionForm) {
+
+            divisionForm.addEventListener(
+                "change",
+                function () {
+
+                    renderDistrictOptions(
+                        this.value,
+                        "hospitalDistrict",
+                        "Select District"
+                    );
+
+
+                    const upazila =
+                        get("hospitalUpazila");
+
+
+                    if (upazila) {
+
+                        upazila.innerHTML = `
+                            <option value="">
+                                Select Upazila
+                            </option>
+                        `;
+
+                        upazila.disabled = true;
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        const districtForm =
+            get("hospitalDistrict");
+
+
+        if (districtForm) {
+
+            districtForm.addEventListener(
+                "change",
+                function () {
+
+                    renderUpazilaOptions(
+                        this.value,
+                        "hospitalUpazila",
+                        "Select Upazila"
+                    );
+
+                }
+            );
+
+        }
+
+
+        const clearButton =
+            get("hospitalClearFilters");
+
+
+        if (clearButton) {
+
+            clearButton.addEventListener(
                 "click",
                 function () {
 
-                    if (hospitalSearch) {
-                        hospitalSearch.value = "";
-                    }
+                    get("hospitalSearch").value = "";
 
-                    if (hospitalTypeFilter) {
-                        hospitalTypeFilter.value = "";
-                    }
+                    get("hospitalTypeFilter").value = "";
 
-                    if (hospitalDivisionFilter) {
-                        hospitalDivisionFilter.value = "";
-                    }
+                    get("hospitalDivisionFilter").value = "";
 
-                    if (hospitalDistrictFilter) {
+                    get("hospitalDistrictFilter").innerHTML = `
+                        <option value="">
+                            সব জেলা
+                        </option>
+                    `;
 
-                        populateDistrictSelect(
-                            hospitalDistrictFilter,
-                            "সব জেলা",
-                            S.districts
-                        );
+                    get("hospitalDistrictFilter").disabled = true;
 
-                        hospitalDistrictFilter.value = "";
-                    }
+                    get("hospitalUpazilaFilter").innerHTML = `
+                        <option value="">
+                            সব উপজেলা
+                        </option>
+                    `;
 
-                    if (hospitalUpazilaFilter) {
+                    get("hospitalUpazilaFilter").disabled = true;
 
-                        populateUpazilaSelect(
-                            hospitalUpazilaFilter,
-                            "সব উপজেলা",
-                            []
-                        );
+                    get("hospitalStatusFilter").value = "";
 
-                        hospitalUpazilaFilter.value = "";
-                    }
-
-                    if (hospitalStatusFilter) {
-                        hospitalStatusFilter.value = "";
-                    }
-
-                    if (hospitalVerificationFilter) {
-                        hospitalVerificationFilter.value = "";
-                    }
+                    get("hospitalVerificationFilter").value = "";
 
                     applyFilters();
+
                 }
             );
+
         }
 
 
-        /* =================================================
-           CLOSE / CANCEL
-           ================================================= */
-
-        document
-            .querySelectorAll(
-                "#hospitalCloseBtn, #hospitalCancelBtn"
-            )
-            .forEach(
-                function (button) {
-
-                    button.addEventListener(
-                        "click",
-                        closeForm
-                    );
-                }
-            );
+        const form =
+            get("hospitalForm");
 
 
-        /* =================================================
-           FORM SUBMIT
-           ================================================= */
+        if (form) {
 
-        if (hospitalForm) {
-
-            hospitalForm.addEventListener(
+            form.addEventListener(
                 "submit",
                 function (event) {
 
                     event.preventDefault();
 
-                    saveHospital();
-                }
-            );
-        }
-
-
-        /* =================================================
-           FORM DIVISION → DISTRICT
-           ================================================= */
-
-        if (hospitalDivision) {
-
-            hospitalDivision.addEventListener(
-                "change",
-                handleFormDivisionChange
-            );
-        }
-
-
-        /* =================================================
-           FORM DISTRICT → UPAZILA
-           ================================================= */
-
-        if (hospitalDistrict) {
-
-            hospitalDistrict.addEventListener(
-                "change",
-                handleFormDistrictChange
-            );
-        }
-
-
-        /* =================================================
-           FILTER DIVISION → DISTRICT
-           ================================================= */
-
-        if (hospitalDivisionFilter) {
-
-            hospitalDivisionFilter.addEventListener(
-                "change",
-                handleFilterDivisionChange
-            );
-        }
-
-
-        /* =================================================
-           FILTER DISTRICT → UPAZILA
-           ================================================= */
-
-        if (hospitalDistrictFilter) {
-
-            hospitalDistrictFilter.addEventListener(
-                "change",
-                handleFilterDistrictChange
-            );
-        }
-
-
-        /* =================================================
-           SEARCH
-           ================================================= */
-
-        if (hospitalSearch) {
-
-            hospitalSearch.addEventListener(
-                "input",
-                applyFilters
-            );
-        }
-
-
-        /* =================================================
-           OTHER FILTERS
-           ================================================= */
-
-        [
-            hospitalTypeFilter,
-            hospitalUpazilaFilter,
-            hospitalStatusFilter,
-            hospitalVerificationFilter
-        ]
-            .filter(Boolean)
-            .forEach(
-                function (element) {
-
-                    element.addEventListener(
-                        "change",
-                        applyFilters
+                    showToast(
+                        "Hospital Save functionality পরবর্তী ধাপে যুক্ত হবে।"
                     );
+
                 }
             );
 
+        }
 
-        /* =================================================
-           EDIT
-           ================================================= */
 
-        const tableBody =
-            getElement(
-                "hospitalTableBody"
-            );
+        const list =
+            get("hospitalList");
 
-        if (tableBody) {
 
-            tableBody.addEventListener(
+        if (list) {
+
+            list.addEventListener(
                 "click",
                 function (event) {
 
@@ -2468,42 +1386,55 @@
                             "[data-action='edit']"
                         );
 
+
                     if (!button) {
                         return;
                     }
 
+
                     showToast(
-                        "Edit/Update পরবর্তী ধাপে যুক্ত হবে।",
-                        "info"
+                        "Hospital Edit functionality পরবর্তী ধাপে যুক্ত হবে।"
                     );
+
                 }
             );
+
         }
+
     }
 
 
-    /* =====================================================
-       INITIALIZE
-       ===================================================== */
+    // =====================================================
+    // INITIALIZE
+    // =====================================================
+
     async function initialize() {
 
         try {
 
-            /* =================================================
-               WAIT FOR ADMIN AUTH
-               ================================================= */
+            // Wait for admin guard
 
             let attempts = 0;
+
             const maxAttempts = 100;
 
+
             while (
-                attempts < maxAttempts &&
-                (
-                    !window.DorkariAdmin ||
-                    typeof window.DorkariAdmin.canManageContent !==
-                    "function"
-                )
+                attempts < maxAttempts
             ) {
+
+                if (
+                    window.DorkariAdmin &&
+                    typeof
+                        window.DorkariAdmin.getProfile ===
+                        "function" &&
+                    window.DorkariAdmin.getProfile()
+                ) {
+
+                    break;
+
+                }
+
 
                 await new Promise(
                     function (resolve) {
@@ -2512,143 +1443,109 @@
                             resolve,
                             50
                         );
+
                     }
                 );
 
+
                 attempts++;
+
             }
 
-
-            /* =================================================
-               ADMIN CHECK
-               ================================================= */
 
             if (
                 !window.DorkariAdmin ||
-                typeof window.DorkariAdmin.canManageContent !==
-                "function"
+                typeof
+                    window.DorkariAdmin.getSupabase !==
+                    "function"
             ) {
 
-                throw new Error(
-                    "Admin system ready হয়নি।"
+                showError(
+                    "Admin security guard ready হয়নি।"
                 );
+
+                return;
+
             }
 
 
-            if (
-                !window.DorkariAdmin.canManageContent()
-            ) {
+            state.supabase =
+                window.DorkariAdmin.getSupabase();
 
-                throw new Error(
-                    "আপনার Hospital Management ব্যবহারের অনুমতি নেই।"
+
+            if (!state.supabase) {
+
+                showError(
+                    "Supabase client পাওয়া যায়নি।"
                 );
+
+                return;
+
             }
 
-
-            /* =================================================
-               SUPABASE
-               ================================================= */
-
-            initializeSupabase();
-
-
-            /* =================================================
-               IMPORTANT:
-               Events BEFORE database loading
-               ================================================= */
 
             bindEvents();
 
 
-            /* =================================================
-               LOCATION DATA
-               ================================================= */
-
-            await Promise.all([
-                loadDivisions(),
-                loadDistricts(),
-                loadUpazilas()
-            ]);
-
-
-            /* =================================================
-               HOSPITAL DATA
-               ================================================= */
+            await loadLocations();
 
             await loadHospitals();
 
 
+            console.log(
+                "Dorkari Hospital Foundation ready."
+            );
+
         } catch (error) {
 
             console.error(
-                "Hospital initialization failed:",
+                "Hospital Initialization Error:",
                 error
             );
 
 
-            const message =
-                getElement(
-                    "hospitalErrorMessage"
-                );
-
-            if (message) {
-
-                message.textContent =
-                    getErrorMessage(error);
-            }
-
-
-            showTableState(
-                "error"
+            showError(
+                "Hospital module initialize করতে সমস্যা হয়েছে।"
             );
 
-
-            showToast(
-                getErrorMessage(error),
-                "error"
-            );
         }
+
     }
 
 
-    /* =====================================================
-       PUBLIC API
-       ===================================================== */
+    // =====================================================
+    // PUBLIC API
+    // =====================================================
 
     window.DorkariHospital = {
 
-        refresh:
-            loadHospitals,
+        refresh: loadHospitals,
 
-        getHospitals:
-            function () {
-                return [
-                    ...S.hospitals
-                ];
-            },
+        getHospitals: function () {
 
-        getFilteredHospitals:
-            function () {
-                return [
-                    ...S.filteredHospitals
-                ];
-            },
+            return [
+                ...state.hospitals
+            ];
 
-        openAddForm:
-            openAddForm,
+        },
 
-        closeForm:
-            closeForm
+        getFilteredHospitals: function () {
+
+            return [
+                ...state.filteredHospitals
+            ];
+
+        }
+
     };
 
 
-    /* =====================================================
-       START
-       ===================================================== */
+    // =====================================================
+    // START
+    // =====================================================
 
     if (
-        document.readyState ===
-        "loading"
+        document.readyState === "loading"
     ) {
 
         document.addEventListener(
@@ -2659,6 +1556,8 @@
     } else {
 
         initialize();
+
     }
+
 
 })();
