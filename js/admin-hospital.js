@@ -95,7 +95,779 @@
         }, 2500);
 
     }
+    // =====================================================
+    // F-8.2 — FORM VALIDATION
+    // =====================================================
 
+    function clearHospitalFormErrors() {
+
+        document
+            .querySelectorAll(
+                "#hospitalForm .hospital-field-error"
+            )
+            .forEach(function (element) {
+
+                element.remove();
+
+            });
+
+
+        document
+            .querySelectorAll(
+                "#hospitalForm .hospital-input-error"
+            )
+            .forEach(function (element) {
+
+                element.classList.remove(
+                    "hospital-input-error"
+                );
+
+            });
+
+    }
+
+
+    function setHospitalFieldError(
+        field,
+        message
+    ) {
+
+        if (!field) {
+            return;
+        }
+
+
+        field.classList.add(
+            "hospital-input-error"
+        );
+
+
+        const parent =
+            field.parentElement;
+
+        if (!parent) {
+            return;
+        }
+
+
+        const oldError =
+            parent.querySelector(
+                ".hospital-field-error"
+            );
+
+        if (oldError) {
+            oldError.remove();
+        }
+
+
+        const error =
+            document.createElement(
+                "div"
+            );
+
+        error.className =
+            "hospital-field-error";
+
+        error.textContent =
+            message;
+
+
+        parent.appendChild(
+            error
+        );
+
+    }
+
+
+    function validateHospitalForm() {
+
+        clearHospitalFormErrors();
+
+
+        let valid = true;
+
+
+        const name =
+            get("hospitalName");
+
+        const nameBn =
+            get("hospitalNameBn");
+
+        const type =
+            get("hospitalType");
+
+        const division =
+            get("hospitalDivision");
+
+        const phone =
+            get("hospitalPhone");
+
+        const email =
+            get("hospitalEmail");
+
+        const website =
+            get("hospitalWebsite");
+
+
+        // ---------------------------------------------
+        // Name
+        // ---------------------------------------------
+
+        if (
+            !name ||
+            !String(
+                name.value || ""
+            ).trim()
+        ) {
+
+            setHospitalFieldError(
+                name,
+                "Hospital name আবশ্যক।"
+            );
+
+            valid = false;
+
+        }
+
+
+        // ---------------------------------------------
+        // Bangla name
+        // ---------------------------------------------
+
+        if (
+            !nameBn ||
+            !String(
+                nameBn.value || ""
+            ).trim()
+        ) {
+
+            setHospitalFieldError(
+                nameBn,
+                "বাংলা নাম আবশ্যক।"
+            );
+
+            valid = false;
+
+        }
+
+
+        // ---------------------------------------------
+        // Type
+        // ---------------------------------------------
+
+        const allowedTypes = [
+            "Government",
+            "Private",
+            "Specialized",
+            "Clinic",
+            "Diagnostic"
+        ];
+
+
+        if (
+            !type ||
+            !allowedTypes.includes(
+                type.value
+            )
+        ) {
+
+            setHospitalFieldError(
+                type,
+                "Hospital type নির্বাচন করুন।"
+            );
+
+            valid = false;
+
+        }
+
+
+        // ---------------------------------------------
+        // Division
+        // ---------------------------------------------
+
+        if (
+            !division ||
+            !division.value
+        ) {
+
+            setHospitalFieldError(
+                division,
+                "Division নির্বাচন করুন।"
+            );
+
+            valid = false;
+
+        }
+
+
+        // ---------------------------------------------
+        // Phone
+        // ---------------------------------------------
+
+        if (
+            !phone ||
+            !String(
+                phone.value || ""
+            ).trim()
+        ) {
+
+            setHospitalFieldError(
+                phone,
+                "Phone number আবশ্যক।"
+            );
+
+            valid = false;
+
+        }
+
+
+        // ---------------------------------------------
+        // Email
+        // ---------------------------------------------
+
+        if (
+            email &&
+            String(
+                email.value || ""
+            ).trim() &&
+            !email.validity.valid
+        ) {
+
+            setHospitalFieldError(
+                email,
+                "সঠিক email দিন।"
+            );
+
+            valid = false;
+
+        }
+
+
+        // ---------------------------------------------
+        // Website
+        // ---------------------------------------------
+
+        if (
+            website &&
+            String(
+                website.value || ""
+            ).trim() &&
+            !website.validity.valid
+        ) {
+
+            setHospitalFieldError(
+                website,
+                "সঠিক website URL দিন।"
+            );
+
+            valid = false;
+
+        }
+
+
+        // ---------------------------------------------
+        // Latitude
+        // ---------------------------------------------
+
+        const latitude =
+            get("hospitalLatitude");
+
+        if (
+            latitude &&
+            String(
+                latitude.value || ""
+            ).trim()
+        ) {
+
+            const value =
+                Number(
+                    latitude.value
+                );
+
+            if (
+                !Number.isFinite(value) ||
+                value < -90 ||
+                value > 90
+            ) {
+
+                setHospitalFieldError(
+                    latitude,
+                    "Latitude -90 থেকে 90 এর মধ্যে হতে হবে।"
+                );
+
+                valid = false;
+
+            }
+
+        }
+
+
+        // ---------------------------------------------
+        // Longitude
+        // ---------------------------------------------
+
+        const longitude =
+            get("hospitalLongitude");
+
+        if (
+            longitude &&
+            String(
+                longitude.value || ""
+            ).trim()
+        ) {
+
+            const value =
+                Number(
+                    longitude.value
+                );
+
+            if (
+                !Number.isFinite(value) ||
+                value < -180 ||
+                value > 180
+            ) {
+
+                setHospitalFieldError(
+                    longitude,
+                    "Longitude -180 থেকে 180 এর মধ্যে হতে হবে।"
+                );
+
+                valid = false;
+
+            }
+
+        }
+
+
+        return valid;
+
+    }
+
+
+    // =====================================================
+    // F-8.2 — DUPLICATE CHECK
+    // =====================================================
+
+    function findHospitalDuplicate(
+        name,
+        nameBn
+    ) {
+
+        const normalizedName =
+            String(
+                name || ""
+            )
+                .trim()
+                .toLocaleLowerCase();
+
+
+        const normalizedNameBn =
+            String(
+                nameBn || ""
+            )
+                .trim()
+                .toLocaleLowerCase();
+
+
+        return (
+            state.hospitals.find(
+                function (hospital) {
+
+                    const existingName =
+                        String(
+                            hospital.name || ""
+                        )
+                            .trim()
+                            .toLocaleLowerCase();
+
+
+                    const existingNameBn =
+                        String(
+                            hospital.name_bn || ""
+                        )
+                            .trim()
+                            .toLocaleLowerCase();
+
+
+                    return (
+                        (
+                            normalizedName &&
+                            existingName ===
+                            normalizedName
+                        ) ||
+                        (
+                            normalizedNameBn &&
+                            existingNameBn ===
+                            normalizedNameBn
+                        )
+                    );
+
+                }
+            ) || null
+        );
+
+    }
+
+
+    // =====================================================
+    // F-8.2 — PAYLOAD
+    // =====================================================
+
+    function getHospitalPayload() {
+
+        const getValue =
+            function (id) {
+
+                const element =
+                    get(id);
+
+                return element
+                    ? String(
+                        element.value || ""
+                    ).trim()
+                    : "";
+
+            };
+
+
+        const getNumber =
+            function (id) {
+
+                const value =
+                    getValue(id);
+
+                if (!value) {
+                    return null;
+                }
+
+                const number =
+                    Number(value);
+
+                return Number.isFinite(
+                    number
+                )
+                    ? number
+                    : null;
+
+            };
+
+
+        const active =
+            get("hospitalActive");
+
+        const verified =
+            get("hospitalVerified");
+
+
+        return {
+
+            name:
+                getValue(
+                    "hospitalName"
+                ),
+
+            name_bn:
+                getValue(
+                    "hospitalNameBn"
+                ),
+
+            hospital_type:
+                getValue(
+                    "hospitalType"
+                ),
+
+            division_id:
+                getValue(
+                    "hospitalDivision"
+                ) || null,
+
+            district_id:
+                getValue(
+                    "hospitalDistrict"
+                ) || null,
+
+            upazila_id:
+                getValue(
+                    "hospitalUpazila"
+                ) || null,
+
+            address:
+                getValue(
+                    "hospitalAddress"
+                ) || null,
+
+            phone:
+                getValue(
+                    "hospitalPhone"
+                ),
+
+            emergency_phone:
+                getValue(
+                    "hospitalEmergencyPhone"
+                ) || null,
+
+            email:
+                getValue(
+                    "hospitalEmail"
+                ) || null,
+
+            website:
+                getValue(
+                    "hospitalWebsite"
+                ) || null,
+
+            description:
+                getValue(
+                    "hospitalDescription"
+                ) || null,
+
+            latitude:
+                getNumber(
+                    "hospitalLatitude"
+                ),
+
+            longitude:
+                getNumber(
+                    "hospitalLongitude"
+                ),
+
+            is_verified:
+                verified
+                    ? verified.checked
+                    : false,
+
+            is_active:
+                active
+                    ? active.checked
+                    : true
+
+        };
+
+    }
+
+
+    // =====================================================
+    // F-8.2 — SAVE BUTTON STATE
+    // =====================================================
+
+    function setHospitalSaving(
+        saving
+    ) {
+
+        const button =
+            get("hospitalSaveBtn");
+
+        if (!button) {
+            return;
+        }
+
+
+        button.disabled =
+            saving;
+
+
+        button.textContent =
+            saving
+                ? "Saving..."
+                : "Save Hospital";
+
+    }
+
+
+    // =====================================================
+    // F-8.2 — SAVE HOSPITAL
+    // =====================================================
+
+    async function saveHospital() {
+
+        const button =
+            get("hospitalSaveBtn");
+
+
+        if (
+            button &&
+            button.disabled
+        ) {
+            return;
+        }
+
+
+        if (
+            !validateHospitalForm()
+        ) {
+
+            showToast(
+                "দয়া করে প্রয়োজনীয় তথ্য সঠিকভাবে পূরণ করুন।"
+            );
+
+            return;
+
+        }
+
+
+        const payload =
+            getHospitalPayload();
+
+
+        // ---------------------------------------------
+        // Duplicate
+        // ---------------------------------------------
+
+        const duplicate =
+            findHospitalDuplicate(
+                payload.name,
+                payload.name_bn
+            );
+
+
+        if (duplicate) {
+
+            const sameName =
+                String(
+                    duplicate.name || ""
+                )
+                    .trim()
+                    .toLocaleLowerCase() ===
+                payload.name
+                    .trim()
+                    .toLocaleLowerCase();
+
+
+            if (sameName) {
+
+                setHospitalFieldError(
+                    get("hospitalName"),
+                    "এই Hospital name ইতোমধ্যে আছে।"
+                );
+
+            } else {
+
+                setHospitalFieldError(
+                    get("hospitalNameBn"),
+                    "এই বাংলা নাম ইতোমধ্যে আছে।"
+                );
+
+            }
+
+
+            showToast(
+                "Duplicate Hospital পাওয়া গেছে।"
+            );
+
+            return;
+
+        }
+
+
+        setHospitalSaving(true);
+
+
+        try {
+
+            const {
+                data,
+                error
+            } =
+                await state.supabase
+                    .from("hospitals")
+                    .insert(
+                        payload
+                    )
+                    .select()
+                    .single();
+
+
+            if (error) {
+
+                console.error(
+                    "Hospital Save Error:",
+                    error
+                );
+
+                throw error;
+
+            }
+
+
+            if (!data) {
+
+                throw new Error(
+                    "Hospital insert সফল হয়নি।"
+                );
+
+            }
+
+
+            showToast(
+                "Hospital সফলভাবে যোগ হয়েছে।"
+            );
+
+
+            // Close modal
+            closeModal();
+
+
+            // Refresh list + statistics
+            await loadHospitals();
+
+
+            console.log(
+                "Hospital added successfully:",
+                data
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Hospital Add Error:",
+                error
+            );
+
+
+            if (
+                error &&
+                error.code ===
+                "23505"
+            ) {
+
+                showToast(
+                    "এই Hospital তথ্যটি আগে থেকেই আছে।"
+                );
+
+            } else if (
+                error &&
+                error.code ===
+                "42501"
+            ) {
+
+                showToast(
+                    "Hospital যোগ করার অনুমতি নেই।"
+                );
+
+            } else {
+
+                showToast(
+                    (
+                        error &&
+                        error.message
+                    )
+                        ? error.message
+                        : "Hospital সংরক্ষণ করা যায়নি।"
+                );
+
+            }
+
+
+        } finally {
+
+            setHospitalSaving(
+                false
+            );
+
+        }
+
+    }
 
     // =====================================================
     // LOADING
@@ -133,9 +905,9 @@
         list.innerHTML = `
             <div class="hospital-error">
                 ${escapeHTML(
-                    message ||
-                    "হাসপাতালের তথ্য লোড করা যায়নি।"
-                )}
+            message ||
+            "হাসপাতালের তথ্য লোড করা যায়নি।"
+        )}
             </div>
         `;
 
@@ -234,9 +1006,9 @@
                     `
                     <option value="${escapeHTML(division.id)}">
                         ${escapeHTML(
-                            division.name_bn ||
-                            division.name
-                        )}
+                        division.name_bn ||
+                        division.name
+                    )}
                     </option>
                     `
                 );
@@ -261,9 +1033,9 @@
                     `
                     <option value="${escapeHTML(division.id)}">
                         ${escapeHTML(
-                            division.name_bn ||
-                            division.name
-                        )}
+                        division.name_bn ||
+                        division.name
+                    )}
                     </option>
                     `
                 );
@@ -328,9 +1100,9 @@
                 `
                 <option value="${escapeHTML(district.id)}">
                     ${escapeHTML(
-                        district.name_bn ||
-                        district.name
-                    )}
+                    district.name_bn ||
+                    district.name
+                )}
                 </option>
                 `
             );
@@ -396,9 +1168,9 @@
                 `
                 <option value="${escapeHTML(upazila.id)}">
                     ${escapeHTML(
-                        upazila.name_bn ||
-                        upazila.name
-                    )}
+                    upazila.name_bn ||
+                    upazila.name
+                )}
                 </option>
                 `
             );
@@ -681,64 +1453,61 @@
                         <article
                             class="hospital-card"
                             data-id="${escapeHTML(
-                                hospital.id
-                            )}"
+                        hospital.id
+                    )}"
                         >
 
                             <div class="hospital-card-main">
 
                                 <h3 class="hospital-card-title">
                                     ${escapeHTML(
-                                        hospital.name_bn ||
-                                        hospital.name ||
-                                        "Unnamed Hospital"
-                                    )}
+                        hospital.name_bn ||
+                        hospital.name ||
+                        "Unnamed Hospital"
+                    )}
                                 </h3>
 
-                                ${
-                                    hospital.name &&
-                                    hospital.name_bn &&
-                                    hospital.name !==
-                                        hospital.name_bn
+                                ${hospital.name &&
+                            hospital.name_bn &&
+                            hospital.name !==
+                            hospital.name_bn
 
-                                        ? `
+                            ? `
                                             <div class="hospital-card-subtitle">
                                                 ${escapeHTML(
-                                                    hospital.name
-                                                )}
+                                hospital.name
+                            )}
                                             </div>
                                           `
-                                        : ""
-                                }
+                            : ""
+                        }
 
 
                                 <div class="hospital-card-meta">
 
-                                    ${
-                                        hospital.hospital_type
-                                            ? `
+                                    ${hospital.hospital_type
+                            ? `
                                                 <span class="hospital-badge">
                                                     ${escapeHTML(
-                                                        hospital.hospital_type
-                                                    )}
+                                hospital.hospital_type
+                            )}
                                                 </span>
                                               `
-                                            : ""
-                                    }
+                            : ""
+                        }
 
 
-                                    ${
-                                        locationParts.length
-                                            ? `
+                                    ${locationParts.length
+                            ? `
                                                 <span class="hospital-badge">
                                                     📍
                                                     ${escapeHTML(
-                                                        locationParts.join(" • ")
-                                                    )}
+                                locationParts.join(" • ")
+                            )}
                                                 </span>
                                               `
-                                            : ""
-                                    }
+                            : ""
+                        }
 
 
                                     <span class="hospital-badge">
@@ -753,17 +1522,16 @@
                                 </div>
 
 
-                                ${
-                                    hospital.phone
-                                        ? `
+                                ${hospital.phone
+                            ? `
                                             <div class="hospital-card-subtitle">
                                                 ☎ ${escapeHTML(
-                                                    hospital.phone
-                                                )}
+                                hospital.phone
+                            )}
                                             </div>
                                           `
-                                        : ""
-                                }
+                            : ""
+                        }
 
                             </div>
 
@@ -775,8 +1543,8 @@
                                     class="hospital-card-btn"
                                     data-action="edit"
                                     data-id="${escapeHTML(
-                                        hospital.id
-                                    )}"
+                            hospital.id
+                        )}"
                                 >
                                     Edit
                                 </button>
@@ -996,11 +1764,112 @@
         const modal =
             get("hospitalModal");
 
+        const form =
+            get("hospitalForm");
 
         if (!modal) {
             return;
         }
 
+
+        // ---------------------------------------------
+        // F-8.2 — Reset form for new Hospital
+        // ---------------------------------------------
+
+        if (form) {
+            form.reset();
+        }
+
+
+        const hospitalId =
+            get("hospitalId");
+
+        if (hospitalId) {
+            hospitalId.value = "";
+        }
+
+
+        const hospitalActive =
+            get("hospitalActive");
+
+        if (hospitalActive) {
+            hospitalActive.checked = true;
+        }
+
+
+        const hospitalVerified =
+            get("hospitalVerified");
+
+        if (hospitalVerified) {
+            hospitalVerified.checked = false;
+        }
+
+
+        // ---------------------------------------------
+        // Reset location dependency
+        // ---------------------------------------------
+
+        const district =
+            get("hospitalDistrict");
+
+        if (district) {
+
+            district.innerHTML = `
+            <option value="">
+                Select District
+            </option>
+        `;
+
+            district.disabled = true;
+        }
+
+
+        const upazila =
+            get("hospitalUpazila");
+
+        if (upazila) {
+
+            upazila.innerHTML = `
+            <option value="">
+                Select Upazila
+            </option>
+        `;
+
+            upazila.disabled = true;
+        }
+
+
+        // ---------------------------------------------
+        // Clear previous validation state
+        // ---------------------------------------------
+
+        document
+            .querySelectorAll(
+                ".hospital-field-error"
+            )
+            .forEach(function (element) {
+
+                element.remove();
+
+            });
+
+
+        document
+            .querySelectorAll(
+                ".hospital-input-error"
+            )
+            .forEach(function (element) {
+
+                element.classList.remove(
+                    "hospital-input-error"
+                );
+
+            });
+
+
+        // ---------------------------------------------
+        // Open modal
+        // ---------------------------------------------
 
         modal.classList.add("is-open");
 
@@ -1013,9 +1882,15 @@
             "hidden";
 
 
-        get("hospitalModalTitle")
-            .textContent =
-            "Add Hospital";
+        const title =
+            get("hospitalModalTitle");
+
+        if (title) {
+
+            title.textContent =
+                "Add Hospital";
+
+        }
 
     }
 
@@ -1044,7 +1919,47 @@
             "";
 
     }
+    const form =
+        get("hospitalForm");
 
+    if (form) {
+        form.reset();
+    }
+
+
+    const district =
+        get("hospitalDistrict");
+
+    if (district) {
+
+        district.innerHTML = `
+        <option value="">
+            Select District
+        </option>
+    `;
+
+        district.disabled = true;
+
+    }
+
+
+    const upazila =
+        get("hospitalUpazila");
+
+    if (upazila) {
+
+        upazila.innerHTML = `
+        <option value="">
+            Select Upazila
+        </option>
+    `;
+
+        upazila.disabled = true;
+
+    }
+
+
+    clearHospitalFormErrors();
 
     // =====================================================
     // EVENT BINDINGS
@@ -1361,9 +2276,7 @@
 
                     event.preventDefault();
 
-                    showToast(
-                        "Hospital Save functionality পরবর্তী ধাপে যুক্ত হবে।"
-                    );
+                    saveHospital();
 
                 }
             );
@@ -1426,8 +2339,8 @@
                 if (
                     window.DorkariAdmin &&
                     typeof
-                        window.DorkariAdmin.getProfile ===
-                        "function" &&
+                    window.DorkariAdmin.getProfile ===
+                    "function" &&
                     window.DorkariAdmin.getProfile()
                 ) {
 
@@ -1456,8 +2369,8 @@
             if (
                 !window.DorkariAdmin ||
                 typeof
-                    window.DorkariAdmin.getSupabase !==
-                    "function"
+                window.DorkariAdmin.getSupabase !==
+                "function"
             ) {
 
                 showError(
