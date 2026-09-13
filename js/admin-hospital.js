@@ -318,7 +318,7 @@
 
     const saveHospitalButton =
         getElement(
-            "saveHospitalButton"
+            "hospitalSaveBtn"
         );
 
     const hospitalSearch =
@@ -2209,32 +2209,128 @@
 
     function bindEvents() {
 
-        /*
-         * Add buttons
-         */
+        /* =================================================
+           ADD HOSPITAL
+           ================================================= */
 
-        document
-            .querySelectorAll(
-                "#addHospitalButton, #sectionAddHospitalButton"
-            )
-            .forEach(
-                function (button) {
+        const addButton =
+            getElement("hospitalAddBtn");
 
-                    button.addEventListener(
-                        "click",
-                        openAddForm
-                    );
+        if (addButton) {
+            addButton.addEventListener(
+                "click",
+                openAddForm
+            );
+        }
+
+
+        /* =================================================
+           REFRESH
+           ================================================= */
+
+        const refreshButton =
+            getElement("hospitalRefresh");
+
+        if (refreshButton) {
+
+            refreshButton.addEventListener(
+                "click",
+                async function () {
+
+                    try {
+
+                        await loadHospitals();
+
+                        showToast(
+                            "Hospital list refresh হয়েছে।",
+                            "success"
+                        );
+
+                    } catch (error) {
+
+                        console.error(
+                            "Hospital refresh error:",
+                            error
+                        );
+
+                        showToast(
+                            getErrorMessage(error),
+                            "error"
+                        );
+                    }
                 }
             );
+        }
 
 
-        /*
-         * Close buttons
-         */
+        /* =================================================
+           CLEAR FILTERS
+           ================================================= */
+
+        const clearFiltersButton =
+            getElement("hospitalClearFilters");
+
+        if (clearFiltersButton) {
+
+            clearFiltersButton.addEventListener(
+                "click",
+                function () {
+
+                    if (hospitalSearch) {
+                        hospitalSearch.value = "";
+                    }
+
+                    if (hospitalTypeFilter) {
+                        hospitalTypeFilter.value = "";
+                    }
+
+                    if (hospitalDivisionFilter) {
+                        hospitalDivisionFilter.value = "";
+                    }
+
+                    if (hospitalDistrictFilter) {
+
+                        populateDistrictSelect(
+                            hospitalDistrictFilter,
+                            "সব জেলা",
+                            S.districts
+                        );
+
+                        hospitalDistrictFilter.value = "";
+                    }
+
+                    if (hospitalUpazilaFilter) {
+
+                        populateUpazilaSelect(
+                            hospitalUpazilaFilter,
+                            "সব উপজেলা",
+                            []
+                        );
+
+                        hospitalUpazilaFilter.value = "";
+                    }
+
+                    if (hospitalStatusFilter) {
+                        hospitalStatusFilter.value = "";
+                    }
+
+                    if (hospitalVerificationFilter) {
+                        hospitalVerificationFilter.value = "";
+                    }
+
+                    applyFilters();
+                }
+            );
+        }
+
+
+        /* =================================================
+           CLOSE / CANCEL
+           ================================================= */
 
         document
             .querySelectorAll(
-                "#closeHospitalForm, #cancelHospitalButton"
+                "#hospitalCloseBtn, #hospitalCancelBtn"
             )
             .forEach(
                 function (button) {
@@ -2247,13 +2343,11 @@
             );
 
 
-        /*
-         * Form submit
-         */
+        /* =================================================
+           FORM SUBMIT
+           ================================================= */
 
-        if (
-            hospitalForm
-        ) {
+        if (hospitalForm) {
 
             hospitalForm.addEventListener(
                 "submit",
@@ -2267,13 +2361,11 @@
         }
 
 
-        /*
-         * Location dependency
-         */
+        /* =================================================
+           FORM DIVISION → DISTRICT
+           ================================================= */
 
-        if (
-            hospitalDivision
-        ) {
+        if (hospitalDivision) {
 
             hospitalDivision.addEventListener(
                 "change",
@@ -2282,9 +2374,11 @@
         }
 
 
-        if (
-            hospitalDistrict
-        ) {
+        /* =================================================
+           FORM DISTRICT → UPAZILA
+           ================================================= */
+
+        if (hospitalDistrict) {
 
             hospitalDistrict.addEventListener(
                 "change",
@@ -2293,9 +2387,11 @@
         }
 
 
-        if (
-            hospitalDivisionFilter
-        ) {
+        /* =================================================
+           FILTER DIVISION → DISTRICT
+           ================================================= */
+
+        if (hospitalDivisionFilter) {
 
             hospitalDivisionFilter.addEventListener(
                 "change",
@@ -2304,9 +2400,11 @@
         }
 
 
-        if (
-            hospitalDistrictFilter
-        ) {
+        /* =================================================
+           FILTER DISTRICT → UPAZILA
+           ================================================= */
+
+        if (hospitalDistrictFilter) {
 
             hospitalDistrictFilter.addEventListener(
                 "change",
@@ -2315,9 +2413,11 @@
         }
 
 
-        if (
-            hospitalSearch
-        ) {
+        /* =================================================
+           SEARCH
+           ================================================= */
+
+        if (hospitalSearch) {
 
             hospitalSearch.addEventListener(
                 "input",
@@ -2325,6 +2425,10 @@
             );
         }
 
+
+        /* =================================================
+           OTHER FILTERS
+           ================================================= */
 
         [
             hospitalTypeFilter,
@@ -2344,21 +2448,16 @@
             );
 
 
-        /*
-         * Edit buttons
-         *
-         * F-8.3-তে actual Edit/Update হবে।
-         */
+        /* =================================================
+           EDIT
+           ================================================= */
 
         const tableBody =
             getElement(
                 "hospitalTableBody"
             );
 
-
-        if (
-            tableBody
-        ) {
+        if (tableBody) {
 
             tableBody.addEventListener(
                 "click",
@@ -2369,11 +2468,9 @@
                             "[data-action='edit']"
                         );
 
-
                     if (!button) {
                         return;
                     }
-
 
                     showToast(
                         "Edit/Update পরবর্তী ধাপে যুক্ত হবে।",
@@ -2388,14 +2485,14 @@
     /* =====================================================
        INITIALIZE
        ===================================================== */
-
     async function initialize() {
 
         try {
 
-            /*
-             * Admin Guard ready হওয়া পর্যন্ত অপেক্ষা করি।
-             */
+            /* =================================================
+               WAIT FOR ADMIN AUTH
+               ================================================= */
+
             let attempts = 0;
             const maxAttempts = 100;
 
@@ -2403,58 +2500,70 @@
                 attempts < maxAttempts &&
                 (
                     !window.DorkariAdmin ||
-                    typeof window.DorkariAdmin.getProfile !== "function" ||
-                    !window.DorkariAdmin.getProfile()
+                    typeof window.DorkariAdmin.canManageContent !==
+                    "function"
                 )
             ) {
 
-                await new Promise(function (resolve) {
+                await new Promise(
+                    function (resolve) {
 
-                    setTimeout(
-                        resolve,
-                        50
-                    );
-
-                });
+                        setTimeout(
+                            resolve,
+                            50
+                        );
+                    }
+                );
 
                 attempts++;
             }
 
 
-            /*
-             * Admin পাওয়া না গেলে stop।
-             */
+            /* =================================================
+               ADMIN CHECK
+               ================================================= */
+
             if (
                 !window.DorkariAdmin ||
-                typeof window.DorkariAdmin.getProfile !== "function" ||
-                !window.DorkariAdmin.getProfile()
+                typeof window.DorkariAdmin.canManageContent !==
+                "function"
             ) {
 
                 throw new Error(
-                    "Admin guard ready হয়নি।"
+                    "Admin system ready হয়নি।"
                 );
             }
 
 
-            /*
-             * Supabase initialize
-             */
+            if (
+                !window.DorkariAdmin.canManageContent()
+            ) {
+
+                throw new Error(
+                    "আপনার Hospital Management ব্যবহারের অনুমতি নেই।"
+                );
+            }
+
+
+            /* =================================================
+               SUPABASE
+               ================================================= */
+
             initializeSupabase();
 
 
-            /*
-             * খুব গুরুত্বপূর্ণ:
-             * Database load-এর আগে event bind হবে।
-             *
-             * তাই Add / Division / District
-             * সবসময় কাজ করবে।
-             */
+            /* =================================================
+               IMPORTANT:
+               Events BEFORE database loading
+               ================================================= */
+
             bindEvents();
 
 
-            /*
-             * Location data
-             */
+            /* =================================================
+               LOCATION DATA
+               ================================================= */
+
             await Promise.all([
                 loadDivisions(),
                 loadDistricts(),
@@ -2462,9 +2571,10 @@
             ]);
 
 
-            /*
-             * Hospital data
-             */
+            /* =================================================
+               HOSPITAL DATA
+               ================================================= */
+
             await loadHospitals();
 
 
@@ -2481,17 +2591,20 @@
                     "hospitalErrorMessage"
                 );
 
-
             if (message) {
 
                 message.textContent =
-                    getErrorMessage(
-                        error
-                    );
+                    getErrorMessage(error);
             }
 
 
             showTableState(
+                "error"
+            );
+
+
+            showToast(
+                getErrorMessage(error),
                 "error"
             );
         }
