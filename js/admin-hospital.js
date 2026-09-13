@@ -26,7 +26,9 @@
 
         filteredHospitals: [],
 
-        loading: false
+        loading: false,
+
+        editingHospitalId: null
 
     };
 
@@ -95,6 +97,8 @@
         }, 2500);
 
     }
+
+
     // =====================================================
     // F-8.2 — FORM VALIDATION
     // =====================================================
@@ -473,6 +477,16 @@
             state.hospitals.find(
                 function (hospital) {
 
+                    // Edit করার সময় একই hospital-কে duplicate
+                    // হিসেবে ধরা হবে না
+                    if (
+                        state.editingHospitalId &&
+                        hospital.id === state.editingHospitalId
+                    ) {
+                        return false;
+                    }
+
+
                     const existingName =
                         String(
                             hospital.name || ""
@@ -764,23 +778,51 @@
 
         try {
 
-            const {
-                data,
-                error
-            } =
-                await state.supabase
-                    .from("hospitals")
-                    .insert(
-                        payload
-                    )
-                    .select()
-                    .single();
+
+
+            let result;
+
+
+            if (state.editingHospitalId) {
+
+                result =
+                    await state.supabase
+                        .from("hospitals")
+                        .update(
+                            payload
+                        )
+                        .eq(
+                            "id",
+                            state.editingHospitalId
+                        )
+                        .select()
+                        .single();
+
+            } else {
+
+                result =
+                    await state.supabase
+                        .from("hospitals")
+                        .insert(
+                            payload
+                        )
+                        .select()
+                        .single();
+
+            }
+
+
+            const data =
+                result.data;
+
+            const error =
+                result.error;
 
 
             if (error) {
 
                 console.error(
-                    "Hospital Save Error:",
+                    "Hospital Save/Update Error:",
                     error
                 );
 
@@ -792,19 +834,25 @@
             if (!data) {
 
                 throw new Error(
-                    "Hospital insert সফল হয়নি।"
+                    state.editingHospitalId
+                        ? "Hospital update সফল হয়নি।"
+                        : "Hospital insert সফল হয়নি।"
                 );
 
             }
 
 
-            showToast(
-                "Hospital সফলভাবে যোগ হয়েছে।"
-            );
 
+            showToast(
+                state.editingHospitalId
+                    ? "Hospital সফলভাবে update হয়েছে।"
+                    : "Hospital সফলভাবে যোগ হয়েছে।"
+            );
 
             // Close modal
             closeModal();
+
+            state.editingHospitalId = null;
 
 
             // Refresh list + statistics
@@ -868,6 +916,7 @@
         }
 
     }
+
 
     // =====================================================
     // LOADING
@@ -1760,6 +1809,7 @@
     // =====================================================
 
     function openModal() {
+        state.editingHospitalId = null;
 
         const modal =
             get("hospitalModal");
@@ -1770,6 +1820,7 @@
         if (!modal) {
             return;
         }
+
 
 
         // ---------------------------------------------
@@ -1892,6 +1943,248 @@
 
         }
 
+
+        const saveButton =
+            get("hospitalSaveBtn");
+
+        if (saveButton) {
+
+            saveButton.textContent =
+                "Save Hospital";
+
+        }
+
+    }
+
+
+    function openEditModal(hospitalId) {
+
+        const hospital =
+            state.hospitals.find(
+                function (item) {
+                    return item.id === hospitalId;
+                }
+            );
+
+
+        if (!hospital) {
+
+            showToast(
+                "Hospital তথ্য পাওয়া যায়নি।"
+            );
+
+            return;
+
+        }
+
+
+        state.editingHospitalId =
+            hospital.id;
+
+
+        const form =
+            get("hospitalForm");
+
+        if (form) {
+            form.reset();
+        }
+
+
+        clearHospitalFormErrors();
+
+
+        get("hospitalId").value =
+            hospital.id || "";
+
+
+        get("hospitalName").value =
+            hospital.name || "";
+
+
+        get("hospitalNameBn").value =
+            hospital.name_bn || "";
+
+
+        get("hospitalType").value =
+            hospital.hospital_type || "";
+
+
+        get("hospitalAddress").value =
+            hospital.address || "";
+
+
+        get("hospitalPhone").value =
+            hospital.phone || "";
+
+
+        get("hospitalEmergencyPhone").value =
+            hospital.emergency_phone || "";
+
+
+        get("hospitalEmail").value =
+            hospital.email || "";
+
+
+        get("hospitalWebsite").value =
+            hospital.website || "";
+
+
+        get("hospitalDescription").value =
+            hospital.description || "";
+
+
+        get("hospitalLatitude").value =
+            hospital.latitude ??
+            "";
+
+
+        get("hospitalLongitude").value =
+            hospital.longitude ??
+            "";
+
+
+        const verified =
+            get("hospitalVerified");
+
+        if (verified) {
+
+            verified.checked =
+                hospital.is_verified === true;
+
+        }
+
+
+        const active =
+            get("hospitalActive");
+
+        if (active) {
+
+            active.checked =
+                hospital.is_active === true;
+
+        }
+
+
+        const saveButton =
+            get("hospitalSaveBtn");
+
+        if (saveButton) {
+
+            saveButton.textContent =
+                "Update Hospital";
+
+        }
+
+
+        // ---------------------------------------------
+        // Division
+        // ---------------------------------------------
+
+        const division =
+            get("hospitalDivision");
+
+        if (division) {
+
+            division.value =
+                hospital.division_id || "";
+
+        }
+
+
+        // ---------------------------------------------
+        // District
+        // ---------------------------------------------
+
+        renderDistrictOptions(
+            hospital.division_id || "",
+            "hospitalDistrict",
+            "Select District"
+        );
+
+
+        const district =
+            get("hospitalDistrict");
+
+        if (district) {
+
+            district.value =
+                hospital.district_id || "";
+
+        }
+
+
+        // ---------------------------------------------
+        // Upazila
+        // ---------------------------------------------
+
+        renderUpazilaOptions(
+            hospital.district_id || "",
+            "hospitalUpazila",
+            "Select Upazila"
+        );
+
+
+        const upazila =
+            get("hospitalUpazila");
+
+        if (upazila) {
+
+            upazila.value =
+                hospital.upazila_id || "";
+
+        }
+
+
+        // ---------------------------------------------
+        // Modal title
+        // ---------------------------------------------
+
+        const title =
+            get("hospitalModalTitle");
+
+        if (title) {
+
+            title.textContent =
+                "Edit Hospital";
+
+        }
+
+
+        const modal =
+            get("hospitalModal");
+
+        if (!modal) {
+            return;
+        }
+
+
+        modal.classList.add(
+            "is-open"
+        );
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+
+
+        const nameField =
+            get("hospitalName");
+
+        if (nameField) {
+
+            setTimeout(
+                function () {
+                    nameField.focus();
+                },
+                0
+            );
+
+        }
+
     }
 
 
@@ -1918,48 +2211,53 @@
         document.body.style.overflow =
             "";
 
+
+        const form =
+            get("hospitalForm");
+
+        if (form) {
+            form.reset();
+        }
+
+
+        const district =
+            get("hospitalDistrict");
+
+        if (district) {
+
+            district.innerHTML = `
+                <option value="">
+                    Select District
+                </option>
+            `;
+
+            district.disabled = true;
+
+        }
+
+
+        const upazila =
+            get("hospitalUpazila");
+
+        if (upazila) {
+
+            upazila.innerHTML = `
+                <option value="">
+                    Select Upazila
+                </option>
+            `;
+
+            upazila.disabled = true;
+
+        }
+
+
+        clearHospitalFormErrors();
+
+        state.editingHospitalId = null;
+
     }
-    const form =
-        get("hospitalForm");
 
-    if (form) {
-        form.reset();
-    }
-
-
-    const district =
-        get("hospitalDistrict");
-
-    if (district) {
-
-        district.innerHTML = `
-        <option value="">
-            Select District
-        </option>
-    `;
-
-        district.disabled = true;
-
-    }
-
-
-    const upazila =
-        get("hospitalUpazila");
-
-    if (upazila) {
-
-        upazila.innerHTML = `
-        <option value="">
-            Select Upazila
-        </option>
-    `;
-
-        upazila.disabled = true;
-
-    }
-
-
-    clearHospitalFormErrors();
 
     // =====================================================
     // EVENT BINDINGS
@@ -2305,8 +2603,8 @@
                     }
 
 
-                    showToast(
-                        "Hospital Edit functionality পরবর্তী ধাপে যুক্ত হবে।"
+                    openEditModal(
+                        button.dataset.id
                     );
 
                 }
@@ -2473,4 +2771,4 @@
     }
 
 
-})();
+}) ();
