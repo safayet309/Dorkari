@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dorkari — Hospital Management</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Main Theme -->
+    <link rel="stylesheet" href="../css/variables.css">
+
+    <!-- Admin -->
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin-crud.css">
+
+    <!-- Hospital -->
+    <link rel="stylesheet" href="../css/admin-hospital.css">
+</head>
+
+<body>
+
+<div class="hospital-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="hospital-header">
+
+        <div class="hospital-header-left">
+
+            <a href="./dashboard.html" class="hospital-back">
+                ← Dashboard
+            </a>
+
+            <div>
+                <span class="hospital-eyebrow">
+                    DORKARI ADMIN
+                </span>
+
+                <h1>
+                    Hospital Management
+                </h1>
+
+                <p>
+                    হাসপাতালের তথ্য পরিচালনা করুন
+                </p>
+            </div>
+
+        </div>
+
+        <div class="hospital-header-actions">
+
+            <button
+                type="button"
+                class="hospital-refresh-btn"
+                id="hospitalRefresh"
+            >
+                ↻ Refresh
+            </button>
+
+            <button
+                type="button"
+                class="hospital-add-btn"
+                id="hospitalAddBtn"
+            >
+                + Add Hospital
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <section class="hospital-stats">
+
+        <div class="hospital-stat-card">
+
+            <span class="hospital-stat-icon">
+                🏥
+            </span>
+
+            <div>
+                <span>
+                    Total Hospitals
+                </span>
+
+                <strong id="hospitalTotalCount">
+                    —
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="hospital-stat-card">
+
+            <span class="hospital-stat-icon">
+                ✓
+            </span>
+
+            <div>
+                <span>
+                    Active Hospitals
+                </span>
+
+                <strong id="hospitalActiveCount">
+                    —
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="hospital-stat-card">
+
+            <span class="hospital-stat-icon">
+                ●
+            </span>
+
+            <div>
+                <span>
+                    Verified
+                </span>
+
+                <strong id="hospitalVerifiedCount">
+                    —
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FILTERS
+    ====================================================== -->
+
+    <section class="hospital-panel">
+
+        <div class="hospital-panel-heading">
+
+            <div>
+                <span class="hospital-section-label">
+                    HOSPITALS
+                </span>
+
+                <h2>
+                    Hospital List
+                </h2>
+            </div>
+
+            <span
+                class="hospital-result-count"
+                id="hospitalResultCount"
+            >
+                Loading...
+            </span>
+
+        </div>
+
+
+        <div class="hospital-filters">
+
+            <!-- Search -->
+
+            <div class="hospital-field hospital-search-field">
+
+                <label for="hospitalSearch">
+                    Search
+                </label>
+
+                <input
+                    type="search"
+                    id="hospitalSearch"
+                    placeholder="হাসপাতালের নাম লিখুন..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- Hospital Type -->
+
+            <div class="hospital-field">
+
+                <label for="hospitalTypeFilter">
+                    Hospital Type
+                </label>
+
+                <select id="hospitalTypeFilter">
+
+                    <option value="">
+                        সব ধরনের হাসপাতাল
+                    </option>
+
+                    <option value="Government">
+                        Government
+                    </option>
+
+                    <option value="Private">
+                        Private
+                    </option>
+
+                    <option value="Specialized">
+                        Specialized
+                    </option>
+
+                    <option value="Clinic">
+                        Clinic
+                    </option>
+
+                    <option value="Diagnostic">
+                        Diagnostic
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Division -->
+
+            <div class="hospital-field">
+
+                <label for="hospitalDivisionFilter">
+                    Division
+                </label>
+
+                <select id="hospitalDivisionFilter">
+
+                    <option value="">
+                        সব বিভাগ
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- District -->
+
+            <div class="hospital-field">
+
+                <label for="hospitalDistrictFilter">
+                    District
+                </label>
+
+                <select
+                    id="hospitalDistrictFilter"
+                    disabled
+                >
+
+                    <option value="">
+                        সব জেলা
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Upazila -->
+
+            <div class="hospital-field">
+
+                <label for="hospitalUpazilaFilter">
+                    Upazila
+                </label>
+
+                <select
+                    id="hospitalUpazilaFilter"
+                    disabled
+                >
+
+                    <option value="">
+                        সব উপজেলা
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Status -->
+
+            <div class="hospital-field">
+
+                <label for="hospitalStatusFilter">
+                    Status
+                </label>
+
+                <select id="hospitalStatusFilter">
+
+                    <option value="">
+                        সব Status
+                    </option>
+
+                    <option value="active">
+                        Active
+                    </option>
+
+                    <option value="inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Verification -->
+
+            <div class="hospital-field">
+
+                <label for="hospitalVerificationFilter">
+                    Verification
+                </label>
+
+                <select id="hospitalVerificationFilter">
+
+                    <option value="">
+                        সব
+                    </option>
+
+                    <option value="verified">
+                        Verified
+                    </option>
+
+                    <option value="unverified">
+                        Unverified
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="hospital-filter-actions">
+
+                <button
+                    type="button"
+                    id="hospitalClearFilters"
+                    class="hospital-clear-btn"
+                >
+                    Clear Filters
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LIST
+    ====================================================== -->
+
+    <section class="hospital-panel">
+
+        <div
+            id="hospitalList"
+            class="hospital-list"
+        >
+
+            <div class="hospital-loading">
+                হাসপাতালের তথ্য লোড হচ্ছে...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ADD / EDIT MODAL
+    ====================================================== -->
+
+    <div
+        class="hospital-modal"
+        id="hospitalModal"
+        aria-hidden="true"
+    >
+
+        <div class="hospital-modal-backdrop"></div>
+
+        <div class="hospital-modal-box">
+
+            <div class="hospital-modal-header">
+
+                <div>
+
+                    <span class="hospital-section-label">
+                        HOSPITAL
+                    </span>
+
+                    <h2 id="hospitalModalTitle">
+                        Add Hospital
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    id="hospitalModalClose"
+                    class="hospital-modal-close"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form
+                id="hospitalForm"
+                class="hospital-form"
+                novalidate
+            >
+
+                <input
+                    type="hidden"
+                    id="hospitalId"
+                >
+
+
+                <!-- Name -->
+
+                <div class="hospital-form-grid">
+
+                    <div class="hospital-field">
+
+                        <label for="hospitalName">
+                            Name *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="hospitalName"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="hospital-field">
+
+                        <label for="hospitalNameBn">
+                            নাম *
+                        </label>
+
+                        <input
+                            type="text"
+                            id="hospitalNameBn"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Type -->
+
+                <div class="hospital-form-grid">
+
+                    <div class="hospital-field">
+
+                        <label for="hospitalType">
+                            Hospital Type *
+                        </label>
+
+                        <select id="hospitalType" required>
+
+                            <option value="">
+                                Select Type
+                            </option>
+
+                            <option value="Government">
+                                Government
+                            </option>
+
+                            <option value="Private">
+                                Private
+                            </option>
+
+                            <option value="Specialized">
+                                Specialized
+                            </option>
+
+                            <option value="Clinic">
+                                Clinic
+                            </option>
+
+                            <option value="Diagnostic">
+                                Diagnostic
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Location -->
+
+                <div class="hospital-form-section">
+
+                    <h3>
+                        Location
+                    </h3>
+
+                    <div class="hospital-form-grid">
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalDivision">
+                                Division
+                            </label>
+
+                            <select id="hospitalDivision">
+
+                                <option value="">
+                                    Select Division
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalDistrict">
+                                District
+                            </label>
+
+                            <select
+                                id="hospitalDistrict"
+                                disabled
+                            >
+
+                                <option value="">
+                                    Select District
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalUpazila">
+                                Upazila
+                            </label>
+
+                            <select
+                                id="hospitalUpazila"
+                                disabled
+                            >
+
+                                <option value="">
+                                    Select Upazila
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Contact -->
+
+                <div class="hospital-form-section">
+
+                    <h3>
+                        Contact Information
+                    </h3>
+
+                    <div class="hospital-form-grid">
+
+                        <div class="hospital-field hospital-field-full">
+
+                            <label for="hospitalAddress">
+                                Address
+                            </label>
+
+                            <textarea
+                                id="hospitalAddress"
+                                rows="3"
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalPhone">
+                                Phone
+                            </label>
+
+                            <input
+                                type="text"
+                                id="hospitalPhone"
+                            >
+
+                        </div>
+
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalEmergencyPhone">
+                                Emergency Phone
+                            </label>
+
+                            <input
+                                type="text"
+                                id="hospitalEmergencyPhone"
+                            >
+
+                        </div>
+
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalEmail">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="hospitalEmail"
+                            >
+
+                        </div>
+
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalWebsite">
+                                Website
+                            </label>
+
+                            <input
+                                type="url"
+                                id="hospitalWebsite"
+                                placeholder="https://..."
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Description -->
+
+                <div class="hospital-form-section">
+
+                    <h3>
+                        Additional Information
+                    </h3>
+
+                    <div class="hospital-field">
+
+                        <label for="hospitalDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="hospitalDescription"
+                            rows="4"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Coordinates -->
+
+                <div class="hospital-form-section">
+
+                    <h3>
+                        Coordinates
+                    </h3>
+
+                    <div class="hospital-form-grid">
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalLatitude">
+                                Latitude
+                            </label>
+
+                            <input
+                                type="number"
+                                id="hospitalLatitude"
+                                step="any"
+                            >
+
+                        </div>
+
+
+                        <div class="hospital-field">
+
+                            <label for="hospitalLongitude">
+                                Longitude
+                            </label>
+
+                            <input
+                                type="number"
+                                id="hospitalLongitude"
+                                step="any"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="hospital-form-section">
+
+                    <div class="hospital-check-row">
+
+                        <label class="hospital-checkbox">
+
+                            <input
+                                type="checkbox"
+                                id="hospitalVerified"
+                            >
+
+                            <span>
+                                Verified
+                            </span>
+
+                        </label>
+
+
+                        <label class="hospital-checkbox">
+
+                            <input
+                                type="checkbox"
+                                id="hospitalActive"
+                                checked
+                            >
+
+                            <span>
+                                Active
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Form actions -->
+
+                <div class="hospital-form-actions">
+
+                    <button
+                        type="button"
+                        id="hospitalCancelBtn"
+                        class="hospital-cancel-btn"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        id="hospitalSaveBtn"
+                        class="hospital-save-btn"
+                    >
+                        Save Hospital
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- Toast -->
+
+    <div
+        class="hospital-toast"
+        id="hospitalToast"
+        role="status"
+        aria-live="polite"
+    >
+        <span id="hospitalToastMessage"></span>
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SUPABASE
+====================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/config.js"></script>
+
+<script src="../js/admin-guard.js"></script>
+
+<script src="../js/admin-crud.js"></script>
+
+<script src="../js/admin-hospital.js"></script>
+
+</body>
+
+</html>
