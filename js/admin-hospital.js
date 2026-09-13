@@ -161,7 +161,7 @@
         if (
             window.DorkariAdmin &&
             typeof window.DorkariAdmin.getSupabase ===
-                "function"
+            "function"
         ) {
 
             supabaseClient =
@@ -191,7 +191,7 @@
         if (
             window.supabase &&
             typeof window.supabase.createClient ===
-                "function"
+            "function"
         ) {
 
             const config =
@@ -638,17 +638,16 @@
 
     function handleFormDivisionChange() {
 
-        if (!hospitalDistrict) {
-            return;
-        }
-
-
         const divisionId =
             hospitalDivision
                 ? hospitalDivision.value
                 : "";
 
 
+        /*
+         * Division নির্বাচন করলে
+         * শুধু সেই Division-এর District দেখাবে।
+         */
         populateDistrictSelect(
             hospitalDistrict,
             "জেলা নির্বাচন করুন",
@@ -657,12 +656,28 @@
         );
 
 
+        /*
+         * District reset
+         */
+        if (hospitalDistrict) {
+            hospitalDistrict.value = "";
+        }
+
+
+        /*
+         * Upazila reset
+         */
         populateUpazilaSelect(
             hospitalUpazila,
             "উপজেলা নির্বাচন করুন",
             [],
             ""
         );
+
+
+        if (hospitalUpazila) {
+            hospitalUpazila.value = "";
+        }
     }
 
 
@@ -696,6 +711,10 @@
                 : "";
 
 
+        /*
+         * Selected Division অনুযায়ী
+         * District dropdown populate হবে।
+         */
         populateDistrictSelect(
             hospitalDistrictFilter,
             "সব জেলা",
@@ -704,12 +723,28 @@
         );
 
 
+        /*
+         * District reset
+         */
+        if (hospitalDistrictFilter) {
+            hospitalDistrictFilter.value = "";
+        }
+
+
+        /*
+         * Upazila reset
+         */
         populateUpazilaSelect(
             hospitalUpazilaFilter,
             "সব উপজেলা",
             [],
             ""
         );
+
+
+        if (hospitalUpazilaFilter) {
+            hospitalUpazilaFilter.value = "";
+        }
 
 
         applyFilters();
@@ -940,25 +975,25 @@
                     const matchesType =
                         !type ||
                         hospital.hospital_type ===
-                            type;
+                        type;
 
 
                     const matchesDivision =
                         !division ||
                         hospital.division_id ===
-                            division;
+                        division;
 
 
                     const matchesDistrict =
                         !district ||
                         hospital.district_id ===
-                            district;
+                        district;
 
 
                     const matchesUpazila =
                         !upazila ||
                         hospital.upazila_id ===
-                            upazila;
+                        upazila;
 
 
                     const matchesStatus =
@@ -966,9 +1001,9 @@
                         (
                             status === "active"
                                 ? hospital.is_active ===
-                                    true
+                                true
                                 : hospital.is_active ===
-                                    false
+                                false
                         );
 
 
@@ -978,9 +1013,9 @@
                             verification ===
                                 "verified"
                                 ? hospital.is_verified ===
-                                    true
+                                true
                                 : hospital.is_verified ===
-                                    false
+                                false
                         );
 
 
@@ -1094,8 +1129,8 @@
 
                         return `
                             <tr data-id="${escapeHTML(
-                                hospital.id
-                            )}">
+                            hospital.id
+                        )}">
 
                                 <td>
                                     <div class="hospital-table-name">
@@ -1108,17 +1143,17 @@
 
                                             <span class="hospital-table-name-bn">
                                                 ${escapeHTML(
-                                                    hospital.name_bn ||
-                                                    hospital.name ||
-                                                    "—"
-                                                )}
+                            hospital.name_bn ||
+                            hospital.name ||
+                            "—"
+                        )}
                                             </span>
 
                                             <span class="hospital-table-name-en">
                                                 ${escapeHTML(
-                                                    hospital.name ||
-                                                    "—"
-                                                )}
+                            hospital.name ||
+                            "—"
+                        )}
                                             </span>
 
                                         </div>
@@ -1129,74 +1164,70 @@
 
                                 <td>
                                     ${escapeHTML(
-                                        hospital.hospital_type ||
-                                        "—"
-                                    )}
+                            hospital.hospital_type ||
+                            "—"
+                        )}
                                 </td>
 
 
                                 <td>
                                     ${escapeHTML(
-                                        division
-                                            ? (
-                                                division.name_bn ||
-                                                division.name
-                                            )
-                                            : "—"
-                                    )}
+                            division
+                                ? (
+                                    division.name_bn ||
+                                    division.name
+                                )
+                                : "—"
+                        )}
                                 </td>
 
 
                                 <td>
                                     ${escapeHTML(
-                                        district
-                                            ? (
-                                                district.name_bn ||
-                                                district.name
-                                            )
-                                            : "—"
-                                    )}
+                            district
+                                ? (
+                                    district.name_bn ||
+                                    district.name
+                                )
+                                : "—"
+                        )}
                                 </td>
 
 
                                 <td>
                                     ${escapeHTML(
-                                        upazila
-                                            ? (
-                                                upazila.name_bn ||
-                                                upazila.name
-                                            )
-                                            : "—"
-                                    )}
+                            upazila
+                                ? (
+                                    upazila.name_bn ||
+                                    upazila.name
+                                )
+                                : "—"
+                        )}
                                 </td>
 
 
                                 <td>
-                                    <span class="hospital-status ${
-                                        hospital.is_active
-                                            ? "active"
-                                            : "inactive"
-                                    }">
-                                        ${
-                                            hospital.is_active
-                                                ? "Active"
-                                                : "Inactive"
-                                        }
+                                    <span class="hospital-status ${hospital.is_active
+                                ? "active"
+                                : "inactive"
+                            }">
+                                        ${hospital.is_active
+                                ? "Active"
+                                : "Inactive"
+                            }
                                     </span>
                                 </td>
 
 
                                 <td>
-                                    <span class="hospital-status ${
-                                        hospital.is_verified
-                                            ? "verified"
-                                            : "unverified"
-                                    }">
-                                        ${
-                                            hospital.is_verified
-                                                ? "Verified"
-                                                : "Not verified"
-                                        }
+                                    <span class="hospital-status ${hospital.is_verified
+                                ? "verified"
+                                : "unverified"
+                            }">
+                                        ${hospital.is_verified
+                                ? "Verified"
+                                : "Not verified"
+                            }
                                     </span>
                                 </td>
 
@@ -1204,9 +1235,9 @@
                                 <td>
                                     <span class="hospital-phone">
                                         ${escapeHTML(
-                                            hospital.phone ||
-                                            "—"
-                                        )}
+                                hospital.phone ||
+                                "—"
+                            )}
                                     </span>
                                 </td>
 
@@ -1219,8 +1250,8 @@
                                             class="hospital-action-btn edit"
                                             data-action="edit"
                                             data-id="${escapeHTML(
-                                                hospital.id
-                                            )}"
+                                hospital.id
+                            )}"
                                         >
                                             Edit
                                         </button>
@@ -1369,7 +1400,7 @@
                 const end =
                     Math.min(
                         S.currentPage *
-                            PAGE_SIZE,
+                        PAGE_SIZE,
                         total
                     );
 
@@ -1411,7 +1442,7 @@
                 "hospital-page-btn" +
                 (
                     page ===
-                    S.currentPage
+                        S.currentPage
                         ? " active"
                         : ""
                 );
@@ -1790,18 +1821,18 @@
 
                 return (
                     item.id !==
-                        S.editingHospitalId &&
+                    S.editingHospitalId &&
                     (
                         String(
                             item.name ||
                             ""
                         ).toLowerCase() ===
-                            name.toLowerCase() ||
+                        name.toLowerCase() ||
                         String(
                             item.name_bn ||
                             ""
                         ).toLowerCase() ===
-                            nameBn.toLowerCase()
+                        nameBn.toLowerCase()
                     )
                 );
             }
@@ -1866,19 +1897,19 @@
 
             division_id:
                 hospitalDivision &&
-                hospitalDivision.value
+                    hospitalDivision.value
                     ? hospitalDivision.value
                     : null,
 
             district_id:
                 hospitalDistrict &&
-                hospitalDistrict.value
+                    hospitalDistrict.value
                     ? hospitalDistrict.value
                     : null,
 
             upazila_id:
                 hospitalUpazila &&
-                hospitalUpazila.value
+                    hospitalUpazila.value
                     ? hospitalUpazila.value
                     : null,
 
@@ -2362,9 +2393,68 @@
 
         try {
 
+            /*
+             * Admin Guard ready হওয়া পর্যন্ত অপেক্ষা করি।
+             */
+            let attempts = 0;
+            const maxAttempts = 100;
+
+            while (
+                attempts < maxAttempts &&
+                (
+                    !window.DorkariAdmin ||
+                    typeof window.DorkariAdmin.getProfile !== "function" ||
+                    !window.DorkariAdmin.getProfile()
+                )
+            ) {
+
+                await new Promise(function (resolve) {
+
+                    setTimeout(
+                        resolve,
+                        50
+                    );
+
+                });
+
+                attempts++;
+            }
+
+
+            /*
+             * Admin পাওয়া না গেলে stop।
+             */
+            if (
+                !window.DorkariAdmin ||
+                typeof window.DorkariAdmin.getProfile !== "function" ||
+                !window.DorkariAdmin.getProfile()
+            ) {
+
+                throw new Error(
+                    "Admin guard ready হয়নি।"
+                );
+            }
+
+
+            /*
+             * Supabase initialize
+             */
             initializeSupabase();
 
 
+            /*
+             * খুব গুরুত্বপূর্ণ:
+             * Database load-এর আগে event bind হবে।
+             *
+             * তাই Add / Division / District
+             * সবসময় কাজ করবে।
+             */
+            bindEvents();
+
+
+            /*
+             * Location data
+             */
             await Promise.all([
                 loadDivisions(),
                 loadDistricts(),
@@ -2372,10 +2462,10 @@
             ]);
 
 
+            /*
+             * Hospital data
+             */
             await loadHospitals();
-
-
-            bindEvents();
 
 
         } catch (error) {
