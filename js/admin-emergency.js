@@ -2287,53 +2287,39 @@
     /* =====================================================
        ACTIONS
        ===================================================== */
+    async function action(e) {
 
-    async function action(event) {
-
-        const button =
-            event.target.closest(
-                "[data-a]"
-            );
-
+        const b =
+            e.target.closest("[data-a]");
 
         if (
-            !button ||
+            !b ||
             !S.canManage
         ) {
             return;
         }
 
-
-        const record =
+        const r =
             S.records.find(
-                function (item) {
-                    return (
-                        item.id ===
-                        button.dataset.id
-                    );
+                function (x) {
+                    return x.id === b.dataset.id;
                 }
             );
 
-
-        if (!record) {
+        if (!r) {
             return;
         }
-
 
         if (
-            button.dataset.a ===
-            "edit"
+            b.dataset.a === "edit"
         ) {
-
-            form(record);
-
+            form(r);
             return;
         }
-
 
         if (
             !confirm(
-                record.is_active
+                r.is_active
                     ? "Deactivate করতে চান?"
                     : "Activate করতে চান?"
             )
@@ -2341,48 +2327,116 @@
             return;
         }
 
+        const nextStatus =
+            !r.is_active;
 
         let q;
 
-        if (S.entity === "police") {
+        if (
+            S.entity === "contacts"
+        ) {
 
-            q = await sb.rpc(
-                "set_police_station_status",
-                {
-                    p_id: r.id,
-                    p_is_active: !r.is_active
-                }
-            );
-
-        } else {
-
-            q = await sb
-                .from(T[S.entity])
-                .update({
-                    is_active: !r.is_active
-                })
-                .eq(
-                    "id",
-                    r.id
+            q =
+                await sb.rpc(
+                    "set_emergency_contact_status",
+                    {
+                        p_id: r.id,
+                        p_is_active: nextStatus
+                    }
                 );
 
-        }
+        } else if (
+            S.entity === "ambulances"
+        ) {
 
+            q =
+                await sb.rpc(
+                    "set_ambulance_status",
+                    {
+                        p_id: r.id,
+                        p_is_active: nextStatus
+                    }
+                );
 
-        if (result.error) {
+        } else if (
+            S.entity === "police"
+        ) {
 
-            err(
-                result.error.message
-            );
+            q =
+                await sb.rpc(
+                    "set_police_station_status",
+                    {
+                        p_id: r.id,
+                        p_is_active: nextStatus
+                    }
+                );
+
+        } else if (
+            S.entity === "blood"
+        ) {
+
+            q =
+                await sb.rpc(
+                    "set_blood_bank_status",
+                    {
+                        p_id: r.id,
+                        p_is_active: nextStatus
+                    }
+                );
 
         } else {
 
-            ok(
-                "Status update হয়েছে।"
+            q =
+                await sb
+                    .from(
+                        T[S.entity]
+                    )
+                    .update({
+                        is_active:
+                            nextStatus
+                    })
+                    .eq(
+                        "id",
+                        r.id
+                    );
+        }
+
+        if (q.error) {
+
+            console.error(
+                "Emergency Status Update Error:",
+                q.error
             );
 
-            await records();
+            err(
+                q.error.message
+            );
+
+            return;
         }
+
+        if (
+            q.data !== true &&
+            (
+                S.entity === "contacts" ||
+                S.entity === "ambulances" ||
+                S.entity === "police" ||
+                S.entity === "blood"
+            )
+        ) {
+
+            err(
+                "Status update failed."
+            );
+
+            return;
+        }
+
+        ok(
+            "Status update হয়েছে।"
+        );
+
+        await records();
     }
 
 
