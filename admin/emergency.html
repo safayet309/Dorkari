@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Management — Dorkari Admin</title>
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/admin-emergency.css">
+</head>
+
+<body class="admin-emergency-page">
+    <main class="emergency-page">
+        <header class="emergency-header">
+            <div>
+                <p class="eyebrow">DORKARI ADMIN</p>
+                <h1>Emergency Management</h1>
+                <p class="subtitle">জরুরি সেবার তথ্য যোগ, সম্পাদনা ও পরিচালনা করুন।</p>
+            </div>
+            <div class="header-actions"><a class="secondary-button" href="./dashboard.html">← Dashboard</a><button
+                    id="logoutButton" class="danger-outline-button" type="button">Logout</button></div>
+        </header>
+        <div id="permissionNotice" class="notice warning" hidden></div>
+        <div id="pageError" class="notice error" hidden></div>
+        <div id="pageSuccess" class="notice success" hidden></div>
+        <nav class="emergency-tabs"><button class="emergency-tab is-active" data-entity="contacts">Emergency
+                Contacts</button><button class="emergency-tab" data-entity="ambulances">Ambulances</button><button
+                class="emergency-tab" data-entity="police">Police Stations</button><button class="emergency-tab"
+                data-entity="blood">Blood Banks</button></nav>
+        <section class="emergency-section">
+            <div class="section-heading">
+                <div>
+                    <h2 id="sectionTitle"></h2>
+                    <p id="sectionDescription"></p>
+                </div><button id="addButton" class="primary-button" type="button">+ Add</button>
+            </div>
+            <div class="toolbar">
+                <div class="search-wrap"><label for="searchInput">Search</label><input id="searchInput" type="search">
+                </div>
+                <div class="filter-field"><label for="divisionFilter">Division</label><select id="divisionFilter">
+                        <option value="">সব বিভাগ</option>
+                    </select></div>
+                <div class="filter-field"><label for="districtFilter">District</label><select id="districtFilter"
+                        disabled>
+                        <option value="">সব জেলা</option>
+                    </select></div>
+                <div class="filter-field"><label for="statusFilter">Status</label><select id="statusFilter">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="all">All</option>
+                    </select></div>
+            </div>
+            <div class="summary-row"><span id="recordSummary">লোড হচ্ছে...</span><button id="refreshButton"
+                    class="text-button" type="button">Refresh</button></div>
+            <div class="table-wrap">
+                <table>
+                    <thead id="tableHead"></thead>
+                    <tbody id="tableBody">
+                        <tr>
+                            <td class="state-cell" colspan="8">তথ্য লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="pagination" class="pagination"></div>
+        </section>
+    </main>
+    <div id="modal" class="modal" hidden>
+        <div class="modal-backdrop" data-close-modal></div>
+        <section class="modal-card" role="dialog" aria-modal="true">
+            <div class="modal-header">
+                <div>
+                    <p class="eyebrow">EMERGENCY</p>
+                    <h2 id="modalTitle"></h2>
+                </div><button id="closeModalButton" class="icon-button" type="button">×</button>
+            </div>
+            <form id="recordForm" class="record-form" novalidate>
+                <div id="formFields" class="form-grid"></div>
+                <div class="form-actions"><button id="cancelButton" class="secondary-button"
+                        type="button">Cancel</button><button id="saveButton" class="primary-button"
+                        type="submit">Save</button></div>
+            </form>
+        </section>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/admin-emergency.js"></script>
+</body>
+
+</html>
