@@ -825,17 +825,17 @@
 
                                         <span class="location-table-name-bn">
                                             ${escapeHTML(
-                                                division.name_bn ||
-                                                division.name ||
-                                                "—"
-                                            )}
+                        division.name_bn ||
+                        division.name ||
+                        "—"
+                    )}
                                         </span>
 
                                         <span class="location-table-name-en">
                                             ${escapeHTML(
-                                                division.name ||
-                                                "—"
-                                            )}
+                        division.name ||
+                        "—"
+                    )}
                                         </span>
 
                                     </div>
@@ -847,32 +847,30 @@
                             <td>
                                 <span class="location-table-slug">
                                     ${escapeHTML(
-                                        division.slug ||
-                                        "—"
-                                    )}
+                        division.slug ||
+                        "—"
+                    )}
                                 </span>
                             </td>
 
 
                             <td>
-                                <span class="location-status ${
-                                    isActive
-                                        ? "active"
-                                        : "inactive"
-                                }">
-                                    ${
-                                        isActive
-                                            ? "Active"
-                                            : "Inactive"
-                                    }
+                                <span class="location-status ${isActive
+                            ? "active"
+                            : "inactive"
+                        }">
+                                    ${isActive
+                            ? "Active"
+                            : "Inactive"
+                        }
                                 </span>
                             </td>
 
 
                             <td>
                                 ${formatDate(
-                                    division.created_at
-                                )}
+                            division.created_at
+                        )}
                             </td>
 
 
@@ -880,9 +878,8 @@
 
                                 <div class="location-table-actions">
 
-                                    ${
-                                        canManageLocation()
-                                            ? `
+                                    ${canManageLocation()
+                            ? `
                                                 <button
                                                     type="button"
                                                     class="location-action-btn edit"
@@ -892,9 +889,8 @@
                                                     Edit
                                                 </button>
 
-                                                ${
-                                                    isActive
-                                                        ? `
+                                                ${isActive
+                                ? `
                                                             <button
                                                                 type="button"
                                                                 class="location-action-btn delete"
@@ -904,7 +900,7 @@
                                                                 Delete
                                                             </button>
                                                         `
-                                                        : `
+                                : `
                                                             <button
                                                                 type="button"
                                                                 class="location-action-btn activate"
@@ -914,14 +910,14 @@
                                                                 Activate
                                                             </button>
                                                         `
-                                                }
+                            }
                                             `
-                                            : `
+                            : `
                                                 <span>
                                                     —
                                                 </span>
                                             `
-                                    }
+                        }
 
                                 </div>
 
@@ -1017,11 +1013,10 @@
             html += `
                 <button
                     type="button"
-                    class="location-page-btn ${
-                        page === currentPage
-                            ? "active"
-                            : ""
-                    }"
+                    class="location-page-btn ${page === currentPage
+                    ? "active"
+                    : ""
+                }"
                     data-page="${page}"
                 >
                     ${page}
@@ -1035,11 +1030,10 @@
                 type="button"
                 class="location-page-btn"
                 data-page-action="next"
-                ${
-                    currentPage >= totalPages
-                        ? "disabled"
-                        : ""
-                }
+                ${currentPage >= totalPages
+                ? "disabled"
+                : ""
+            }
             >
                 →
             </button>
@@ -1487,22 +1481,18 @@
 
         try {
 
-            const {
-                error
-            } =
-                await supabaseClient
-                    .from(TABLE)
-                    .update({
-                        is_active: active
-                    })
-                    .eq(
-                        "id",
-                        id
-                    );
+            const { data, error } = await supabaseClient.rpc(
+                "set_division_status",
+                {
+                    p_id: id,
+                    p_is_active: active
+                }
+            );
 
+            if (error) throw error;
 
-            if (error) {
-                throw error;
+            if (data !== true) {
+                throw new Error("Division not found or status update failed.");
             }
 
 
@@ -2152,68 +2142,68 @@
     };
 
 
- /* =====================================================
-   WAIT FOR ADMIN GUARD
-   ===================================================== */
+    /* =====================================================
+      WAIT FOR ADMIN GUARD
+      ===================================================== */
 
-function waitForAdmin() {
+    function waitForAdmin() {
 
-    const admin =
-        window.DorkariAdmin;
-
-    /*
-     * DorkariAdmin object তৈরি হলেই যথেষ্ট নয়।
-     *
-     * Admin Guard-এর Supabase session এবং
-     * admin_profiles verification সম্পূর্ণ হওয়া পর্যন্ত
-     * Location Management অপেক্ষা করবে।
-     */
-
-    if (
-        admin &&
-        typeof admin.getSupabase === "function" &&
-        typeof admin.getProfile === "function"
-    ) {
-
-        const profile =
-            admin.getProfile();
+        const admin =
+            window.DorkariAdmin;
 
         /*
-         * Profile এখনো verify না হলে অপেক্ষা করবে।
+         * DorkariAdmin object তৈরি হলেই যথেষ্ট নয়।
+         *
+         * Admin Guard-এর Supabase session এবং
+         * admin_profiles verification সম্পূর্ণ হওয়া পর্যন্ত
+         * Location Management অপেক্ষা করবে।
          */
 
-        if (!profile) {
+        if (
+            admin &&
+            typeof admin.getSupabase === "function" &&
+            typeof admin.getProfile === "function"
+        ) {
 
-            window.setTimeout(
-                waitForAdmin,
-                100
-            );
+            const profile =
+                admin.getProfile();
+
+            /*
+             * Profile এখনো verify না হলে অপেক্ষা করবে।
+             */
+
+            if (!profile) {
+
+                window.setTimeout(
+                    waitForAdmin,
+                    100
+                );
+
+                return;
+            }
+
+            /*
+             * Verified admin profile পাওয়া গেছে।
+             * এখন Location Management initialize হবে।
+             */
+
+            initializeLocationPage();
 
             return;
         }
 
+
         /*
-         * Verified admin profile পাওয়া গেছে।
-         * এখন Location Management initialize হবে।
+         * Admin Guard এখনো তৈরি হয়নি।
          */
 
-        initializeLocationPage();
-
-        return;
+        window.setTimeout(
+            waitForAdmin,
+            100
+        );
     }
 
 
-    /*
-     * Admin Guard এখনো তৈরি হয়নি।
-     */
-
-    window.setTimeout(
-        waitForAdmin,
-        100
-    );
-}
-
-
-waitForAdmin();
+    waitForAdmin();
 
 })();
