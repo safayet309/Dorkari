@@ -1274,10 +1274,42 @@
 
             if (editingDivisionId) {
 
+                if (isActive !== (allDivisions.find(
+                    function (item) {
+                        return item.id === editingDivisionId;
+                    }
+                )?.is_active === true)) {
+
+                    const statusResult =
+                        await supabaseClient.rpc(
+                            "set_division_status",
+                            {
+                                p_id: editingDivisionId,
+                                p_is_active: isActive
+                            }
+                        );
+
+                    if (statusResult.error) {
+                        throw statusResult.error;
+                    }
+
+                    if (statusResult.data !== true) {
+                        throw new Error(
+                            "Division status update failed."
+                        );
+                    }
+                }
+
+                const updatePayload = {
+                    name: name,
+                    name_bn: nameBn,
+                    slug: slug
+                };
+
                 result =
                     await supabaseClient
                         .from(TABLE)
-                        .update(payload)
+                        .update(updatePayload)
                         .eq(
                             "id",
                             editingDivisionId
