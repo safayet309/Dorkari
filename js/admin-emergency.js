@@ -474,9 +474,9 @@
                         return `
                             <option value="${esc(item.id)}">
                                 ${esc(
-                                    item.name_bn ||
-                                    item.name
-                                )}
+                            item.name_bn ||
+                            item.name
+                        )}
                             </option>
                         `;
                     }
@@ -507,7 +507,7 @@
                         (
                             !divisionId ||
                             item.division_id ===
-                                divisionId
+                            divisionId
                         )
                     );
                 }
@@ -532,9 +532,9 @@
                         return `
                             <option value="${esc(item.id)}">
                                 ${esc(
-                                    item.name_bn ||
-                                    item.name
-                                )}
+                            item.name_bn ||
+                            item.name
+                        )}
                             </option>
                         `;
                     }
@@ -712,16 +712,16 @@
 
                         (
                             statusValue ===
-                                "active" &&
+                            "active" &&
                             record.is_active ===
-                                true
+                            true
                         ) ||
 
                         (
                             statusValue ===
-                                "inactive" &&
+                            "inactive" &&
                             record.is_active ===
-                                false
+                            false
                         );
 
 
@@ -729,7 +729,7 @@
                         (
                             !divisionId ||
                             record.division_id ===
-                                divisionId
+                            divisionId
                         );
 
 
@@ -737,7 +737,7 @@
                         (
                             !districtId ||
                             record.district_id ===
-                                districtId
+                            districtId
                         );
 
 
@@ -886,11 +886,10 @@
                             data-a="status"
                             data-id="${esc(record.id)}"
                         >
-                            ${
-                                record.is_active
-                                    ? "Deactivate"
-                                    : "Activate"
-                            }
+                            ${record.is_active
+                    ? "Deactivate"
+                    : "Activate"
+                }
                         </button>
 
                     </div>
@@ -909,60 +908,60 @@
                     <td>
                         <b>
                             ${esc(
-                                record.name_bn ||
-                                record.name
-                            )}
+                record.name_bn ||
+                record.name
+            )}
                         </b>
 
                         <br>
 
                         <span class="muted">
                             ${esc(
-                                record.name || ""
-                            )}
+                record.name || ""
+            )}
                         </span>
                     </td>
 
                     <td>
                         ${esc(
-                            record.phone
-                        )}
+                record.phone
+            )}
                     </td>
 
                     <td>
                         ${esc(
-                            cat(
-                                record.category_id
-                            ) ||
-                            "অনির্ধারিত"
-                        )}
+                cat(
+                    record.category_id
+                ) ||
+                "অনির্ধারিত"
+            )}
                     </td>
 
                     <td>
                         ${esc(
-                            loc(record)
-                        )}
+                loc(record)
+            )}
                     </td>
 
                     <td>
                         ${ver(
-                            record.is_verified
-                        )}
+                record.is_verified
+            )}
                     </td>
 
                     <td>
                         ${status(
-                            record.is_active
-                        )}
+                record.is_active
+            )}
                     </td>
 
                     <td>
                         ${esc(
-                            date(
-                                record.last_updated ||
-                                record.created_at
-                            )
-                        )}
+                date(
+                    record.last_updated ||
+                    record.created_at
+                )
+            )}
                     </td>
 
                     <td>
@@ -984,47 +983,46 @@
                     <td>
                         <b>
                             ${esc(
-                                record.name
-                            )}
+                record.name
+            )}
                         </b>
                     </td>
 
                     <td>
                         ${esc(
-                            record.provider_type
-                        )}
+                record.provider_type
+            )}
                     </td>
 
                     <td>
                         ${esc(
-                            record.phone
-                        )}
+                record.phone
+            )}
                     </td>
 
                     <td>
                         ${esc(
-                            loc(record)
-                        )}
+                loc(record)
+            )}
                     </td>
 
                     <td>
-                        ${
-                            record.is_24_hours
-                                ? "Yes"
-                                : "No"
-                        }
+                        ${record.is_24_hours
+                    ? "Yes"
+                    : "No"
+                }
                     </td>
 
                     <td>
                         ${ver(
-                            record.is_verified
-                        )}
+                    record.is_verified
+                )}
                     </td>
 
                     <td>
                         ${status(
-                            record.is_active
-                        )}
+                    record.is_active
+                )}
                     </td>
 
                     <td>
@@ -1046,61 +1044,61 @@
                     <td>
                         <b>
                             ${esc(
-                                record.name_bn ||
-                                record.name
-                            )}
+                record.name_bn ||
+                record.name
+            )}
                         </b>
                     </td>
 
                     <td>
                         ${esc(
-                            record.emergency_phone ||
-                            record.phone ||
-                            "—"
-                        )}
+                record.emergency_phone ||
+                record.phone ||
+                "—"
+            )}
                     </td>
 
                     <td>
                         ${esc(
-                            S.zm[
-                                record.district_id
-                            ]?.name_bn ||
-                            S.zm[
-                                record.district_id
-                            ]?.name ||
-                            "—"
-                        )}
+                S.zm[
+                    record.district_id
+                ]?.name_bn ||
+                S.zm[
+                    record.district_id
+                ]?.name ||
+                "—"
+            )}
                     </td>
 
                     <td>
                         ${esc(
-                            S.um[
-                                record.upazila_id
-                            ]?.name_bn ||
-                            S.um[
-                                record.upazila_id
-                            ]?.name ||
-                            "—"
-                        )}
+                S.um[
+                    record.upazila_id
+                ]?.name_bn ||
+                S.um[
+                    record.upazila_id
+                ]?.name ||
+                "—"
+            )}
                     </td>
 
                     <td>
                         ${esc(
-                            record.officer_name ||
-                            "—"
-                        )}
+                record.officer_name ||
+                "—"
+            )}
                     </td>
 
                     <td>
                         ${ver(
-                            record.is_verified
-                        )}
+                record.is_verified
+            )}
                     </td>
 
                     <td>
                         ${status(
-                            record.is_active
-                        )}
+                record.is_active
+            )}
                     </td>
 
                     <td>
@@ -1118,50 +1116,50 @@
                 <td>
                     <b>
                         ${esc(
-                            record.name
-                        )}
+            record.name
+        )}
                     </b>
                 </td>
 
                 <td>
                     ${esc(
-                        record.phone ||
-                        "—"
-                    )}
+            record.phone ||
+            "—"
+        )}
                 </td>
 
                 <td>
                     ${esc(
-                        loc(record)
-                    )}
+            loc(record)
+        )}
                 </td>
 
                 <td>
                     ${esc(
-                        record.blood_groups ||
-                        "—"
-                    )}
+            record.blood_groups ||
+            "—"
+        )}
                 </td>
 
                 <td>
                     ${ver(
-                        record.is_verified
-                    )}
+            record.is_verified
+        )}
                 </td>
 
                 <td>
                     ${status(
-                        record.is_active
-                    )}
+            record.is_active
+        )}
                 </td>
 
                 <td>
                     ${esc(
-                        date(
-                            record.updated_at ||
-                            record.created_at
-                        )
-                    )}
+            date(
+                record.updated_at ||
+                record.created_at
+            )
+        )}
                 </td>
 
                 <td>
@@ -1229,56 +1227,56 @@
         const locationFields =
             `
                 ${sel(
-                    "division_id",
-                    "Division",
-                    S.divisions.filter(
-                        function (item) {
-                            return item.is_active;
-                        }
-                    ),
-                    record.division_id,
-                    false
-                )}
+                "division_id",
+                "Division",
+                S.divisions.filter(
+                    function (item) {
+                        return item.is_active;
+                    }
+                ),
+                record.division_id,
+                false
+            )}
 
                 ${sel(
-                    "district_id",
-                    "District",
-                    S.districts.filter(
-                        function (item) {
+                "district_id",
+                "District",
+                S.districts.filter(
+                    function (item) {
 
-                            return (
-                                item.is_active &&
-                                (
-                                    !record.division_id ||
-                                    item.division_id ===
-                                        record.division_id
-                                )
-                            );
-                        }
-                    ),
-                    record.district_id,
-                    false
-                )}
+                        return (
+                            item.is_active &&
+                            (
+                                !record.division_id ||
+                                item.division_id ===
+                                record.division_id
+                            )
+                        );
+                    }
+                ),
+                record.district_id,
+                false
+            )}
 
                 ${sel(
-                    "upazila_id",
-                    "Upazila",
-                    S.upazilas.filter(
-                        function (item) {
+                "upazila_id",
+                "Upazila",
+                S.upazilas.filter(
+                    function (item) {
 
-                            return (
-                                item.is_active &&
-                                (
-                                    !record.district_id ||
-                                    item.district_id ===
-                                        record.district_id
-                                )
-                            );
-                        }
-                    ),
-                    record.upazila_id,
-                    false
-                )}
+                        return (
+                            item.is_active &&
+                            (
+                                !record.district_id ||
+                                item.district_id ===
+                                record.district_id
+                            )
+                        );
+                    }
+                ),
+                record.upazila_id,
+                false
+            )}
             `;
 
 
@@ -1309,11 +1307,7 @@
                 sel(
                     "category_id",
                     "Category",
-                    S.categories.filter(
-                        function (item) {
-                            return item.is_active;
-                        }
-                    ),
+                    S.categories,
                     record.category_id,
                     true
                 ) +
@@ -1642,7 +1636,7 @@
                                 return (
                                     item.is_active &&
                                     item.division_id ===
-                                        division.value
+                                    division.value
                                 );
                             }
                         );
@@ -1690,7 +1684,7 @@
                                 return (
                                     item.is_active &&
                                     item.district_id ===
-                                        district.value
+                                    district.value
                                 );
                             }
                         );
@@ -1839,9 +1833,9 @@
                         return `
                             <option value="${esc(item.id)}">
                                 ${esc(
-                                    item.name_bn ||
-                                    item.name
-                                )}
+                            item.name_bn ||
+                            item.name
+                        )}
                             </option>
                         `;
                     }
@@ -2030,14 +2024,14 @@
 
                 const district =
                     S.zm[
-                        payload.district_id
+                    payload.district_id
                     ];
 
 
                 if (
                     !district ||
                     district.division_id !==
-                        payload.division_id
+                    payload.division_id
                 ) {
 
                     err(
@@ -2060,14 +2054,14 @@
 
                     const upazila =
                         S.um[
-                            payload.upazila_id
+                        payload.upazila_id
                         ];
 
 
                     if (
                         !upazila ||
                         upazila.district_id !==
-                            payload.district_id
+                        payload.district_id
                     ) {
 
                         err(
@@ -2173,14 +2167,14 @@
 
             const district =
                 S.zm[
-                    payload.district_id
+                payload.district_id
                 ];
 
 
             if (
                 !district ||
                 district.division_id !==
-                    payload.division_id
+                payload.division_id
             ) {
 
                 err(
@@ -2197,14 +2191,14 @@
 
                 const upazila =
                     S.um[
-                        payload.upazila_id
+                    payload.upazila_id
                     ];
 
 
                 if (
                     !upazila ||
                     upazila.district_id !==
-                        payload.district_id
+                    payload.district_id
                 ) {
 
                     err(
@@ -2401,19 +2395,16 @@
 
                             return `
                                 <button
-                                    class="page-button ${
-                                        index + 1 ===
-                                        S.page
-                                            ? "is-active"
-                                            : ""
-                                    }"
-                                    data-page="${
-                                        index + 1
-                                    }"
+                                    class="page-button ${index + 1 ===
+                                    S.page
+                                    ? "is-active"
+                                    : ""
+                                }"
+                                    data-page="${index + 1
+                                }"
                                 >
-                                    ${
-                                        index + 1
-                                    }
+                                    ${index + 1
+                                }
                                 </button>
                             `;
                         }
@@ -2484,15 +2475,15 @@
 
         return [
             S.dm[
-                record.division_id
+            record.division_id
             ],
 
             S.zm[
-                record.district_id
+            record.district_id
             ],
 
             S.um[
-                record.upazila_id
+            record.upazila_id
             ]
 
         ]
@@ -2523,17 +2514,15 @@
 
         return `
             <span
-                class="status-badge ${
-                    active
-                        ? "status-active"
-                        : "status-inactive"
-                }"
+                class="status-badge ${active
+                ? "status-active"
+                : "status-inactive"
+            }"
             >
-                ${
-                    active
-                        ? "Active"
-                        : "Inactive"
-                }
+                ${active
+                ? "Active"
+                : "Inactive"
+            }
             </span>
         `;
     }
@@ -2547,17 +2536,15 @@
 
         return `
             <span
-                class="verify-badge ${
-                    verified
-                        ? "verify-yes"
-                        : "verify-no"
-                }"
+                class="verify-badge ${verified
+                ? "verify-yes"
+                : "verify-no"
+            }"
             >
-                ${
-                    verified
-                        ? "Verified"
-                        : "Unverified"
-                }
+                ${verified
+                ? "Verified"
+                : "Unverified"
+            }
             </span>
         `;
     }
@@ -2597,34 +2584,31 @@
 
         return `
             <div
-                class="form-field ${
-                    full
-                        ? "full"
-                        : ""
-                }"
+                class="form-field ${full
+                ? "full"
+                : ""
+            }"
             >
 
                 <label>
                     ${label}
 
-                    ${
-                        required
-                            ? " *"
-                            : ""
-                    }
+                    ${required
+                ? " *"
+                : ""
+            }
                 </label>
 
                 <input
                     id="field_${name}"
                     name="${name}"
                     value="${esc(
-                        value || ""
-                    )}"
-                    ${
-                        required
-                            ? "required"
-                            : ""
-                    }
+                value || ""
+            )}"
+                    ${required
+                ? "required"
+                : ""
+            }
                 >
 
             </div>
@@ -2655,8 +2639,8 @@
                     id="field_${name}"
                     name="${name}"
                 >${esc(
-                    value || ""
-                )}</textarea>
+            value || ""
+        )}</textarea>
 
             </div>
         `;
@@ -2683,54 +2667,50 @@
                 <label>
                     ${label}
 
-                    ${
-                        required
-                            ? " *"
-                            : ""
-                    }
+                    ${required
+                ? " *"
+                : ""
+            }
                 </label>
 
                 <select
                     id="field_${name}"
                     name="${name}"
-                    ${
-                        required
-                            ? "required"
-                            : ""
-                    }
+                    ${required
+                ? "required"
+                : ""
+            }
                 >
 
                     <option value="">
                         নির্বাচন করুন
                     </option>
 
-                    ${
-                        array
-                            .map(
-                                function (item) {
+                    ${array
+                .map(
+                    function (item) {
 
-                                    return `
+                        return `
                                         <option
                                             value="${esc(
-                                                item.id
-                                            )}"
-                                            ${
-                                                item.id ===
-                                                value
-                                                    ? "selected"
-                                                    : ""
-                                            }
+                            item.id
+                        )}"
+                                            ${item.id ===
+                                value
+                                ? "selected"
+                                : ""
+                            }
                                         >
                                             ${esc(
-                                                item.name_bn ||
-                                                item.name
-                                            )}
+                                item.name_bn ||
+                                item.name
+                            )}
                                         </option>
                                     `;
-                                }
-                            )
-                            .join("")
                     }
+                )
+                .join("")
+            }
 
                 </select>
 
@@ -2764,27 +2744,25 @@
                     name="${name}"
                 >
 
-                    ${
-                        array
-                            .map(
-                                function (item) {
+                    ${array
+                .map(
+                    function (item) {
 
-                                    return `
+                        return `
                                         <option
-                                            ${
-                                                item ===
-                                                value
-                                                    ? "selected"
-                                                    : ""
-                                            }
+                                            ${item ===
+                                value
+                                ? "selected"
+                                : ""
+                            }
                                         >
                                             ${esc(item)}
                                         </option>
                                     `;
-                                }
-                            )
-                            .join("")
                     }
+                )
+                .join("")
+            }
 
                 </select>
 
@@ -2816,11 +2794,10 @@
                         id="field_${name}"
                         name="${name}"
                         type="checkbox"
-                        ${
-                            value
-                                ? "checked"
-                                : ""
-                        }
+                        ${value
+                ? "checked"
+                : ""
+            }
                     >
 
                     <span>
