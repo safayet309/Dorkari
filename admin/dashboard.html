@@ -1,43 +1,26 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dorkari Admin Dashboard</title>
 
     <!-- Google Font -->
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
-    >
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
 
     <!-- Main Theme -->
-    <link
-        rel="stylesheet"
-        href="../css/variables.css"
-    >
+    <link rel="stylesheet" href="../css/variables.css">
 
     <!-- Admin Dashboard -->
-    <link
-        rel="stylesheet"
-        href="../css/admin-dashboard.css"
-    >
+    <link rel="stylesheet" href="../css/admin-dashboard.css">
     <link rel="stylesheet" href="../css/admin-crud.css">
 </head>
 
@@ -55,18 +38,12 @@
              SIDEBAR
         ================================================== -->
 
-        <aside
-            class="admin-sidebar"
-            id="adminSidebar"
-        >
+        <aside class="admin-sidebar" id="adminSidebar">
 
             <!-- Brand -->
             <div class="admin-sidebar-brand">
 
-                <a
-                    href="./dashboard.html"
-                    class="admin-brand"
-                >
+                <a href="./dashboard.html" class="admin-brand">
 
                     <span class="admin-brand-main">
                         Dorkari
@@ -79,12 +56,7 @@
                 </a>
 
 
-                <button
-                    type="button"
-                    class="sidebar-close"
-                    id="sidebarClose"
-                    aria-label="Close menu"
-                >
+                <button type="button" class="sidebar-close" id="sidebarClose" aria-label="Close menu">
                     ×
                 </button>
 
@@ -94,10 +66,7 @@
             <!-- Admin Profile -->
             <div class="admin-profile-mini">
 
-                <div
-                    class="admin-avatar"
-                    id="adminAvatar"
-                >
+                <div class="admin-avatar" id="adminAvatar">
                     A
                 </div>
 
@@ -125,10 +94,7 @@
                 </p>
 
 
-                <a
-                    href="./dashboard.html"
-                    class="admin-nav-item active"
-                >
+                <a href="./dashboard.html" class="admin-nav-item active">
 
                     <span class="nav-icon">
                         ⌂
@@ -146,12 +112,8 @@
                 </p>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="emergency"
-                >
 
+                <a href="./emergency.html?entity=contacts" class="admin-nav-item">
                     <span class="nav-icon">
                         🚨
                     </span>
@@ -159,19 +121,10 @@
                     <span>
                         Emergency
                     </span>
-
-                    <small>
-                        Soon
-                    </small>
-
-                </button>
+                </a>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="hospitals"
-                >
+                <button type="button" class="admin-nav-item module-item" data-module="hospitals">
 
                     <span class="nav-icon">
                         🏥
@@ -188,11 +141,7 @@
                 </button>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="doctors"
-                >
+                <button type="button" class="admin-nav-item module-item" data-module="doctors">
 
                     <span class="nav-icon">
                         👨‍⚕️
@@ -209,11 +158,7 @@
                 </button>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="tests"
-                >
+                <button type="button" class="admin-nav-item module-item" data-module="tests">
 
                     <span class="nav-icon">
                         🧪
@@ -230,12 +175,7 @@
                 </button>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="ambulance"
-                >
-
+                <a href="./emergency.html?entity=ambulances" class="admin-nav-item">
                     <span class="nav-icon">
                         🚑
                     </span>
@@ -243,20 +183,10 @@
                     <span>
                         Ambulance
                     </span>
-
-                    <small>
-                        Soon
-                    </small>
-
-                </button>
+                </a>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="police"
-                >
-
+                <a href="./emergency.html?entity=police" class="admin-nav-item">
                     <span class="nav-icon">
                         👮
                     </span>
@@ -264,19 +194,10 @@
                     <span>
                         Police
                     </span>
-
-                    <small>
-                        Soon
-                    </small>
-
-                </button>
+                </a>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="government"
-                >
+                <button type="button" class="admin-nav-item module-item" data-module="government">
 
                     <span class="nav-icon">
                         🏛️
@@ -293,12 +214,7 @@
                 </button>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="blood-banks"
-                >
-
+                <a href="./emergency.html?entity=blood" class="admin-nav-item">
                     <span class="nav-icon">
                         🩸
                     </span>
@@ -306,19 +222,10 @@
                     <span>
                         Blood Banks
                     </span>
-
-                    <small>
-                        Soon
-                    </small>
-
-                </button>
+                </a>
 
 
-                <button
-                    type="button"
-                    class="admin-nav-item module-item"
-                    data-module="pharmacies"
-                >
+                <button type="button" class="admin-nav-item module-item" data-module="pharmacies">
 
                     <span class="nav-icon">
                         💊
@@ -340,10 +247,7 @@
             <!-- Sidebar Bottom -->
             <div class="admin-sidebar-bottom">
 
-                <a
-                    href="../index.html"
-                    class="sidebar-public-link"
-                >
+                <a href="../index.html" class="sidebar-public-link">
 
                     <span>
                         ↗
@@ -353,11 +257,7 @@
 
                 </a>
 
-                <button
-                    type="button"
-                    class="sidebar-logout"
-                    id="sidebarLogout"
-                >
+                <button type="button" class="sidebar-logout" id="sidebarLogout">
 
                     <span>
                         ↪
@@ -376,10 +276,7 @@
              OVERLAY
         ================================================== -->
 
-        <div
-            class="sidebar-overlay"
-            id="sidebarOverlay"
-        ></div>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 
         <!-- =================================================
@@ -395,12 +292,7 @@
 
             <header class="admin-topbar">
 
-                <button
-                    type="button"
-                    class="sidebar-toggle"
-                    id="sidebarToggle"
-                    aria-label="Open menu"
-                >
+                <button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Open menu">
                     ☰
                 </button>
 
@@ -422,10 +314,7 @@
 
                     <div class="topbar-admin">
 
-                        <div
-                            class="topbar-avatar"
-                            id="topbarAvatar"
-                        >
+                        <div class="topbar-avatar" id="topbarAvatar">
                             A
                         </div>
 
@@ -445,11 +334,7 @@
                     </div>
 
 
-                    <button
-                        type="button"
-                        class="topbar-logout"
-                        id="topbarLogout"
-                    >
+                    <button type="button" class="topbar-logout" id="topbarLogout">
                         Logout
                     </button>
 
@@ -499,10 +384,7 @@
                     </div>
 
 
-                    <div
-                        class="role-badge"
-                        id="roleBadge"
-                    >
+                    <div class="role-badge" id="roleBadge">
                         Admin
                     </div>
 
@@ -521,20 +403,12 @@
                         Live database statistics
                     </span>
 
-                    <span
-                        class="last-refresh"
-                        id="lastRefresh"
-                    >
+                    <span class="last-refresh" id="lastRefresh">
                         Updating...
                     </span>
 
 
-                    <button
-                        type="button"
-                        class="refresh-dashboard"
-                        id="refreshDashboard"
-                        title="Refresh statistics"
-                    >
+                    <button type="button" class="refresh-dashboard" id="refreshDashboard" title="Refresh statistics">
                         ↻ Refresh
                     </button>
 
@@ -563,17 +437,12 @@
                             </span>
 
 
-                            <strong
-                                id="statTotalRecords"
-                                class="stat-number-live"
-                            >
+                            <strong id="statTotalRecords" class="stat-number-live">
                                 —
                             </strong>
 
 
-                            <small
-                                id="statTotalStatus"
-                            >
+                            <small id="statTotalStatus">
                                 Loading...
                             </small>
 
@@ -597,10 +466,7 @@
                             </span>
 
 
-                            <strong
-                                id="statHospitals"
-                                class="stat-number-live"
-                            >
+                            <strong id="statHospitals" class="stat-number-live">
                                 —
                             </strong>
 
@@ -629,10 +495,7 @@
                             </span>
 
 
-                            <strong
-                                id="statDoctors"
-                                class="stat-number-live"
-                            >
+                            <strong id="statDoctors" class="stat-number-live">
                                 —
                             </strong>
 
@@ -661,10 +524,7 @@
                             </span>
 
 
-                            <strong
-                                id="statEmergency"
-                                class="stat-number-live"
-                            >
+                            <strong id="statEmergency" class="stat-number-live">
                                 —
                             </strong>
 
@@ -693,10 +553,7 @@
                             </span>
 
 
-                            <strong
-                                id="statAmbulances"
-                                class="stat-number-live"
-                            >
+                            <strong id="statAmbulances" class="stat-number-live">
                                 —
                             </strong>
 
@@ -758,10 +615,7 @@
                         </div>
 
 
-                        <strong
-                            id="statDivisions"
-                            class="overview-number"
-                        >
+                        <strong id="statDivisions" class="overview-number">
                             —
                         </strong>
 
@@ -789,10 +643,7 @@
                         </div>
 
 
-                        <strong
-                            id="statDistricts"
-                            class="overview-number"
-                        >
+                        <strong id="statDistricts" class="overview-number">
                             —
                         </strong>
 
@@ -820,10 +671,7 @@
                         </div>
 
 
-                        <strong
-                            id="statUpazilas"
-                            class="overview-number"
-                        >
+                        <strong id="statUpazilas" class="overview-number">
                             —
                         </strong>
 
@@ -840,41 +688,38 @@
      DIVISION OVERVIEW
      ===================================================== -->
 
-<section class="dashboard-section division-overview-section">
+                <section class="dashboard-section division-overview-section">
 
-    <div class="section-heading">
+                    <div class="section-heading">
 
-        <div>
-            <span class="section-eyebrow">
-                LOCATION
-            </span>
+                        <div>
+                            <span class="section-eyebrow">
+                                LOCATION
+                            </span>
 
-            <h2>
-                Division Overview
-            </h2>
+                            <h2>
+                                Division Overview
+                            </h2>
 
-            <p>
-                বিভাগ অনুযায়ী হাসপাতালের সংখ্যা
-            </p>
-        </div>
+                            <p>
+                                বিভাগ অনুযায়ী হাসপাতালের সংখ্যা
+                            </p>
+                        </div>
 
-    </div>
+                    </div>
 
 
-    <div
-        id="divisionOverview"
-        class="division-overview-grid"
-    >
+                    <div id="divisionOverview" class="division-overview-grid">
 
-        <!-- Division cards will be rendered by JavaScript -->
+                        <!-- Division cards will be rendered by JavaScript -->
 
-        <div class="category-loading">
-            বিভাগভিত্তিক তথ্য লোড হচ্ছে...
-        </div>
+                        <div class="category-loading">
+                            বিভাগভিত্তিক তথ্য লোড হচ্ছে...
+                        </div>
 
-    </div>
+                    </div>
 
-</section>
+                </section>
                 <!-- =====================================================
                      DISTRICT OVERVIEW
                      F-4.1
@@ -903,10 +748,7 @@
                     </div>
 
 
-                    <div
-                        id="districtOverview"
-                        class="district-overview-grid"
-                    >
+                    <div id="districtOverview" class="district-overview-grid">
 
                         <!-- District cards will be rendered by JavaScript -->
 
@@ -918,7 +760,7 @@
 
                 </section>
 
-               <!-- =====================================================
+                <!-- =====================================================
                      UPAZILA OVERVIEW
                      F-5.1
                 ====================================================== -->
@@ -946,10 +788,7 @@
                     </div>
 
 
-                    <div
-                        id="upazilaOverview"
-                        class="upazila-overview-grid"
-                    >
+                    <div id="upazilaOverview" class="upazila-overview-grid">
 
                         <!-- Upazila cards will be rendered by JavaScript -->
 
@@ -988,10 +827,7 @@
                 </div>
 
 
-                <div
-                    class="category-overview"
-                    id="categoryOverview"
-                >
+                <div class="category-overview" id="categoryOverview">
 
                     <!-- Loading -->
                     <div class="category-loading">
@@ -1041,12 +877,7 @@
          TOAST
     ====================================================== -->
 
-    <div
-        class="admin-toast"
-        id="adminToast"
-        role="status"
-        aria-live="polite"
-    >
+    <div class="admin-toast" id="adminToast" role="status" aria-live="polite">
 
         <span id="adminToastMessage"></span>
 
@@ -1074,4 +905,5 @@
     <script src="../js/admin-dashboard.js"></script>
 
 </body>
+
 </html>
