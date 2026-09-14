@@ -28,6 +28,12 @@
 
         filteredDoctors: [],
 
+        divisions: [],
+
+        districts: [],
+
+        upazilas: [],
+
         currentPage: 1,
 
         editingDoctorId: null,
@@ -66,15 +72,10 @@
     function escapeHTML(value) {
 
         return String(value ?? "")
-
             .replace(/&/g, "&amp;")
-
             .replace(/</g, "&lt;")
-
             .replace(/>/g, "&gt;")
-
             .replace(/"/g, "&quot;")
-
             .replace(/'/g, "&#039;");
 
     }
@@ -98,8 +99,7 @@
 
     function showToast(message) {
 
-        const toast =
-            get("doctorToast");
+        const toast = get("doctorToast");
 
         const messageElement =
             get("doctorToastMessage");
@@ -111,7 +111,13 @@
         messageElement.textContent =
             message;
 
-        toast.classList.add("show");
+        toast.hidden = false;
+
+        requestAnimationFrame(function () {
+
+            toast.classList.add("show");
+
+        });
 
         clearTimeout(showToast.timer);
 
@@ -119,6 +125,12 @@
             setTimeout(function () {
 
                 toast.classList.remove("show");
+
+                setTimeout(function () {
+
+                    toast.hidden = true;
+
+                }, 200);
 
             }, 2500);
 
@@ -152,7 +164,7 @@
 
 
     /* =====================================================
-       LOADING STATE
+       LOADING
     ===================================================== */
 
     function showLoadingState() {
@@ -174,7 +186,7 @@
 
 
     /* =====================================================
-       ERROR STATE
+       ERROR
     ===================================================== */
 
     function showErrorState(message) {
@@ -195,6 +207,30 @@
             </div>
         `;
 
+        renderPagination();
+
+    }
+
+
+    /* =====================================================
+       EMPTY
+    ===================================================== */
+
+    function showEmptyState() {
+
+        const list =
+            get("doctorList");
+
+        if (!list) {
+            return;
+        }
+
+        list.innerHTML = `
+            <div class="doctor-empty">
+                কোনো Doctor পাওয়া যায়নি।
+            </div>
+        `;
+
     }
 
 
@@ -211,9 +247,7 @@
             state.doctors.filter(
                 function (doctor) {
 
-                    return (
-                        doctor.is_active === true
-                    );
+                    return doctor.is_active === true;
 
                 }
             ).length;
@@ -222,9 +256,7 @@
             state.doctors.filter(
                 function (doctor) {
 
-                    return (
-                        doctor.is_verified === true
-                    );
+                    return doctor.is_verified === true;
 
                 }
             ).length;
@@ -239,6 +271,7 @@
         const verifiedElement =
             get("doctorVerifiedCount");
 
+
         if (totalElement) {
 
             totalElement.textContent =
@@ -246,12 +279,14 @@
 
         }
 
+
         if (activeElement) {
 
             activeElement.textContent =
                 formatNumber(active);
 
         }
+
 
         if (verifiedElement) {
 
@@ -285,6 +320,546 @@
 
 
     /* =====================================================
+       LOCATION LOAD
+    ===================================================== */
+
+    async function loadLocations() {
+
+        if (!state.supabase) {
+            initializeSupabase();
+        }
+
+
+        const [
+            divisionResult,
+            districtResult,
+            upazilaResult
+        ] = await Promise.all([
+
+            state.supabase
+                .from("divisions")
+                .select(
+                    "id,name,name_bn"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order(
+                    "name_bn",
+                    {
+                        ascending: true
+                    }
+                ),
+
+            state.supabase
+                .from("districts")
+                .select(
+                    "id,name,name_bn,division_id"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order(
+                    "name_bn",
+                    {
+                        ascending: true
+                    }
+                ),
+
+            state.supabase
+                .from("upazilas")
+                .select(
+                    "id,name,name_bn,district_id"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order(
+                    "name_bn",
+                    {
+                        ascending: true
+                    }
+                )
+
+        ]);
+
+
+        if (divisionResult.error) {
+            throw divisionResult.error;
+        }
+
+        if (districtResult.error) {
+            throw districtResult.error;
+        }
+
+        if (upazilaResult.error) {
+            throw upazilaResult.error;
+        }
+
+
+        state.divisions =
+            divisionResult.data || [];
+
+        state.districts =
+            districtResult.data || [];
+
+        state.upazilas =
+            upazilaResult.data || [];
+
+
+        renderDivisionOptions();
+
+        renderSpecializationOptions();
+
+        renderDepartmentOptions();
+
+    }
+
+
+    /* =====================================================
+       DIVISION OPTIONS
+    ===================================================== */
+
+    function renderDivisionOptions() {
+
+        const formDivision =
+            get("doctorDivision");
+
+        const filterDivision =
+            get("doctorDivisionFilter");
+
+
+        if (formDivision) {
+
+            formDivision.innerHTML = `
+                <option value="">
+                    বিভাগ নির্বাচন করুন
+                </option>
+            `;
+
+            state.divisions.forEach(
+                function (division) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        division.id;
+
+                    option.textContent =
+                        division.name_bn ||
+                        division.name ||
+                        "";
+
+                    formDivision.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+        }
+
+
+        if (filterDivision) {
+
+            filterDivision.innerHTML = `
+                <option value="">
+                    সব বিভাগ
+                </option>
+            `;
+
+            state.divisions.forEach(
+                function (division) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        division.id;
+
+                    option.textContent =
+                        division.name_bn ||
+                        division.name ||
+                        "";
+
+                    filterDivision.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       DISTRICT OPTIONS
+    ===================================================== */
+
+    function renderDistrictOptions(
+        divisionId,
+        targetId,
+        placeholder
+    ) {
+
+        const select =
+            get(targetId);
+
+        if (!select) {
+            return;
+        }
+
+
+        select.innerHTML = `
+            <option value="">
+                ${escapeHTML(placeholder)}
+            </option>
+        `;
+
+
+        if (!divisionId) {
+
+            select.disabled = true;
+
+            return;
+
+        }
+
+
+        const districts =
+            state.districts.filter(
+                function (district) {
+
+                    return (
+                        district.division_id ===
+                        divisionId
+                    );
+
+                }
+            );
+
+
+        districts.forEach(
+            function (district) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    district.id;
+
+                option.textContent =
+                    district.name_bn ||
+                    district.name ||
+                    "";
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        select.disabled =
+            false;
+
+    }
+
+
+    /* =====================================================
+       UPAZILA OPTIONS
+    ===================================================== */
+
+    function renderUpazilaOptions(
+        districtId,
+        targetId,
+        placeholder
+    ) {
+
+        const select =
+            get(targetId);
+
+        if (!select) {
+            return;
+        }
+
+
+        select.innerHTML = `
+            <option value="">
+                ${escapeHTML(placeholder)}
+            </option>
+        `;
+
+
+        if (!districtId) {
+
+            select.disabled = true;
+
+            return;
+
+        }
+
+
+        const upazilas =
+            state.upazilas.filter(
+                function (upazila) {
+
+                    return (
+                        upazila.district_id ===
+                        districtId
+                    );
+
+                }
+            );
+
+
+        upazilas.forEach(
+            function (upazila) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    upazila.id;
+
+                option.textContent =
+                    upazila.name_bn ||
+                    upazila.name ||
+                    "";
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        select.disabled =
+            false;
+
+    }
+
+
+    /* =====================================================
+       SPECIALIZATION OPTIONS
+    ===================================================== */
+
+    function renderSpecializationOptions() {
+
+        const select =
+            get("doctorSpecializationFilter");
+
+        if (!select) {
+            return;
+        }
+
+
+        const values = [
+            ...new Set(
+                state.doctors
+                    .map(
+                        function (doctor) {
+                            return cleanText(
+                                doctor.specialization
+                            );
+                        }
+                    )
+                    .filter(Boolean)
+            )
+        ].sort(
+            function (a, b) {
+                return a.localeCompare(
+                    b,
+                    undefined,
+                    {
+                        sensitivity: "base"
+                    }
+                );
+            }
+        );
+
+
+        select.innerHTML = `
+            <option value="">
+                সব Specialization
+            </option>
+        `;
+
+
+        values.forEach(
+            function (value) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value = value;
+
+                option.textContent =
+                    value;
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       DEPARTMENT OPTIONS
+    ===================================================== */
+
+    function renderDepartmentOptions() {
+
+        const select =
+            get("doctorDepartmentFilter");
+
+        if (!select) {
+            return;
+        }
+
+
+        const values = [
+            ...new Set(
+                state.doctors
+                    .map(
+                        function (doctor) {
+                            return cleanText(
+                                doctor.department
+                            );
+                        }
+                    )
+                    .filter(Boolean)
+            )
+        ].sort(
+            function (a, b) {
+                return a.localeCompare(
+                    b,
+                    undefined,
+                    {
+                        sensitivity: "base"
+                    }
+                );
+            }
+        );
+
+
+        select.innerHTML = `
+            <option value="">
+                সব Department
+            </option>
+        `;
+
+
+        values.forEach(
+            function (value) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    value;
+
+                option.textContent =
+                    value;
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       LOCATION NAME HELPERS
+    ===================================================== */
+
+    function getDivisionName(id) {
+
+        const item =
+            state.divisions.find(
+                function (division) {
+                    return division.id === id;
+                }
+            );
+
+        return item
+            ? (
+                item.name_bn ||
+                item.name ||
+                ""
+            )
+            : "";
+
+    }
+
+
+    function getDistrictName(id) {
+
+        const item =
+            state.districts.find(
+                function (district) {
+                    return district.id === id;
+                }
+            );
+
+        return item
+            ? (
+                item.name_bn ||
+                item.name ||
+                ""
+            )
+            : "";
+
+    }
+
+
+    function getUpazilaName(id) {
+
+        const item =
+            state.upazilas.find(
+                function (upazila) {
+                    return upazila.id === id;
+                }
+            );
+
+        return item
+            ? (
+                item.name_bn ||
+                item.name ||
+                ""
+            )
+            : "";
+
+    }
+
+
+    /* =====================================================
        DATA LOAD
     ===================================================== */
 
@@ -292,10 +867,9 @@
 
         showLoadingState();
 
+
         if (!state.supabase) {
-
             initializeSupabase();
-
         }
 
 
@@ -304,9 +878,7 @@
             error
         } =
             await state.supabase
-
                 .from(TABLE)
-
                 .select(`
                     id,
                     name,
@@ -318,12 +890,14 @@
                     email,
                     chamber_info,
                     visiting_hours,
+                    division_id,
+                    district_id,
+                    upazila_id,
                     is_verified,
                     is_active,
                     created_at,
                     updated_at
                 `)
-
                 .order(
                     "created_at",
                     {
@@ -333,25 +907,28 @@
 
 
         if (error) {
-
             throw error;
-
         }
 
 
         state.doctors =
             data || [];
 
-        state.filteredDoctors =
-            [
-                ...state.doctors
-            ];
+
+        state.filteredDoctors = [
+            ...state.doctors
+        ];
+
 
         state.currentPage =
             1;
 
 
         updateSummary();
+
+        renderSpecializationOptions();
+
+        renderDepartmentOptions();
 
         updateResultCount();
 
@@ -361,7 +938,325 @@
 
 
     /* =====================================================
-       CARD
+       FILTER LOGIC
+    ===================================================== */
+
+    function applyFilters() {
+
+        const search =
+            cleanText(
+                get("doctorSearch")
+                    ? get("doctorSearch").value
+                    : ""
+            ).toLocaleLowerCase(
+                "bn-BD"
+            );
+
+
+        const divisionId =
+            get("doctorDivisionFilter")
+                ? get("doctorDivisionFilter").value
+                : "";
+
+
+        const districtId =
+            get("doctorDistrictFilter")
+                ? get("doctorDistrictFilter").value
+                : "";
+
+
+        const upazilaId =
+            get("doctorUpazilaFilter")
+                ? get("doctorUpazilaFilter").value
+                : "";
+
+
+        const specialization =
+            cleanText(
+                get("doctorSpecializationFilter")
+                    ? get("doctorSpecializationFilter").value
+                    : ""
+            );
+
+
+        const department =
+            cleanText(
+                get("doctorDepartmentFilter")
+                    ? get("doctorDepartmentFilter").value
+                    : ""
+            );
+
+
+        const status =
+            get("doctorStatusFilter")
+                ? get("doctorStatusFilter").value
+                : "";
+
+
+        const verification =
+            get("doctorVerificationFilter")
+                ? get("doctorVerificationFilter").value
+                : "";
+
+
+        state.filteredDoctors =
+            state.doctors.filter(
+                function (doctor) {
+
+                    const searchableText = [
+
+                        doctor.name,
+
+                        doctor.name_bn,
+
+                        doctor.degree,
+
+                        doctor.specialization,
+
+                        doctor.department,
+
+                        doctor.phone,
+
+                        doctor.email,
+
+                        doctor.chamber_info,
+
+                        doctor.visiting_hours,
+
+                        getDivisionName(
+                            doctor.division_id
+                        ),
+
+                        getDistrictName(
+                            doctor.district_id
+                        ),
+
+                        getUpazilaName(
+                            doctor.upazila_id
+                        )
+
+                    ]
+                        .filter(Boolean)
+                        .join(" ")
+                        .toLocaleLowerCase(
+                            "bn-BD"
+                        );
+
+
+                    if (
+                        search &&
+                        !searchableText.includes(
+                            search
+                        )
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        divisionId &&
+                        doctor.division_id !==
+                        divisionId
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        districtId &&
+                        doctor.district_id !==
+                        districtId
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        upazilaId &&
+                        doctor.upazila_id !==
+                        upazilaId
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        specialization &&
+                        doctor.specialization !==
+                        specialization
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        department &&
+                        doctor.department !==
+                        department
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        status === "active" &&
+                        doctor.is_active !== true
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        status === "inactive" &&
+                        doctor.is_active !== false
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        verification === "verified" &&
+                        doctor.is_verified !== true
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    if (
+                        verification === "unverified" &&
+                        doctor.is_verified !== false
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    return true;
+
+                }
+            );
+
+
+        state.currentPage =
+            1;
+
+
+        updateResultCount();
+
+        renderList();
+
+    }
+
+
+    /* =====================================================
+       RESET FILTERS
+    ===================================================== */
+
+    function clearFilters() {
+
+        const search =
+            get("doctorSearch");
+
+        const division =
+            get("doctorDivisionFilter");
+
+        const district =
+            get("doctorDistrictFilter");
+
+        const upazila =
+            get("doctorUpazilaFilter");
+
+        const specialization =
+            get("doctorSpecializationFilter");
+
+        const department =
+            get("doctorDepartmentFilter");
+
+        const status =
+            get("doctorStatusFilter");
+
+        const verification =
+            get("doctorVerificationFilter");
+
+
+        if (search) {
+            search.value = "";
+        }
+
+        if (division) {
+            division.value = "";
+        }
+
+        if (district) {
+            district.value = "";
+        }
+
+        if (district) {
+            district.innerHTML = `
+                <option value="">
+                    সব জেলা
+                </option>
+            `;
+            district.disabled = true;
+        }
+
+        if (upazila) {
+            upazila.value = "";
+            upazila.innerHTML = `
+                <option value="">
+                    সব উপজেলা
+                </option>
+            `;
+            upazila.disabled = true;
+        }
+
+        if (specialization) {
+            specialization.value = "";
+        }
+
+        if (department) {
+            department.value = "";
+        }
+
+        if (status) {
+            status.value = "";
+        }
+
+        if (verification) {
+            verification.value = "";
+        }
+
+
+        state.currentPage =
+            1;
+
+
+        applyFilters();
+
+    }
+
+
+    /* =====================================================
+       DOCTOR CARD
     ===================================================== */
 
     function renderDoctorCard(doctor) {
@@ -371,10 +1266,29 @@
                 ? "Active"
                 : "Inactive";
 
+
         const verification =
             doctor.is_verified
                 ? "Verified"
                 : "Unverified";
+
+
+        const divisionName =
+            getDivisionName(
+                doctor.division_id
+            );
+
+
+        const districtName =
+            getDistrictName(
+                doctor.district_id
+            );
+
+
+        const upazilaName =
+            getUpazilaName(
+                doctor.upazila_id
+            );
 
 
         return `
@@ -466,6 +1380,28 @@
 
 
                     ${
+                        divisionName ||
+                        districtName ||
+                        upazilaName
+                            ? `
+                                <div class="doctor-card-subtitle">
+                                    📍
+                                    ${escapeHTML(
+                                        [
+                                            divisionName,
+                                            districtName,
+                                            upazilaName
+                                        ]
+                                            .filter(Boolean)
+                                            .join(" → ")
+                                    )}
+                                </div>
+                              `
+                            : ""
+                    }
+
+
+                    ${
                         doctor.phone
                             ? `
                                 <div class="doctor-card-subtitle">
@@ -520,11 +1456,7 @@
             state.filteredDoctors.length === 0
         ) {
 
-            list.innerHTML = `
-                <div class="doctor-empty">
-                    কোনো Doctor পাওয়া যায়নি।
-                </div>
-            `;
+            showEmptyState();
 
             renderPagination();
 
@@ -620,11 +1552,9 @@
             pagination.hidden =
                 true;
 
-            info.textContent =
-                "";
+            info.textContent = "";
 
-            buttons.innerHTML =
-                "";
+            buttons.innerHTML = "";
 
             return;
 
@@ -670,25 +1600,28 @@
 
 
         info.textContent =
-            `Showing ${formatNumber(start)}–${formatNumber(end)} of ${formatNumber(total)} doctors`;
+            `Showing ${formatNumber(
+                start
+            )}–${formatNumber(
+                end
+            )} of ${formatNumber(
+                total
+            )} doctors`;
 
 
-        buttons.innerHTML =
-            "";
+        buttons.innerHTML = "";
 
 
         if (totalPages <= 1) {
 
-            pagination.hidden =
-                true;
+            pagination.hidden = true;
 
             return;
 
         }
 
 
-        pagination.hidden =
-            false;
+        pagination.hidden = false;
 
 
         const previous =
@@ -733,7 +1666,8 @@
             button.className =
                 "doctor-pagination-btn" +
                 (
-                    page === state.currentPage
+                    page ===
+                    state.currentPage
                         ? " is-active"
                         : ""
                 );
@@ -783,29 +1717,18 @@
        MODAL
     ===================================================== */
 
-    function openModal() {
-
-        const modal =
-            get("doctorModal");
+    function resetForm() {
 
         const form =
             get("doctorForm");
 
-        if (!modal) {
-            return;
-        }
-
-
-        state.editingDoctorId =
-            null;
-
-
         if (form) {
-
             form.reset();
-
         }
 
+
+        const id =
+            get("doctorId");
 
         const active =
             get("doctorActive");
@@ -813,8 +1736,14 @@
         const verified =
             get("doctorVerified");
 
-        const id =
-            get("doctorId");
+        const division =
+            get("doctorDivision");
+
+        const district =
+            get("doctorDistrict");
+
+        const upazila =
+            get("doctorUpazila");
 
         const title =
             get("doctorModalTitle");
@@ -824,18 +1753,43 @@
 
 
         if (id) {
-            id.value =
-                "";
+            id.value = "";
         }
 
         if (active) {
-            active.checked =
-                true;
+            active.checked = true;
         }
 
         if (verified) {
-            verified.checked =
-                false;
+            verified.checked = false;
+        }
+
+        if (division) {
+            division.value = "";
+        }
+
+        if (district) {
+
+            district.innerHTML = `
+                <option value="">
+                    জেলা নির্বাচন করুন
+                </option>
+            `;
+
+            district.disabled = true;
+
+        }
+
+        if (upazila) {
+
+            upazila.innerHTML = `
+                <option value="">
+                    উপজেলা নির্বাচন করুন
+                </option>
+            `;
+
+            upazila.disabled = true;
+
         }
 
         if (title) {
@@ -847,6 +1801,24 @@
             saveButton.textContent =
                 "Save Doctor";
         }
+
+        state.editingDoctorId =
+            null;
+
+    }
+
+
+    function openModal() {
+
+        const modal =
+            get("doctorModal");
+
+        if (!modal) {
+            return;
+        }
+
+
+        resetForm();
 
 
         modal.classList.add(
@@ -861,6 +1833,23 @@
         document.body.style.overflow =
             "hidden";
 
+
+        const name =
+            get("doctorName");
+
+        if (name) {
+
+            setTimeout(
+                function () {
+
+                    name.focus();
+
+                },
+                0
+            );
+
+        }
+
     }
 
 
@@ -869,21 +1858,9 @@
         const modal =
             get("doctorModal");
 
-        const form =
-            get("doctorForm");
-
         if (!modal) {
             return;
         }
-
-
-        if (form) {
-            form.reset();
-        }
-
-
-        state.editingDoctorId =
-            null;
 
 
         modal.classList.remove(
@@ -898,6 +1875,8 @@
         document.body.style.overflow =
             "";
 
+        resetForm();
+
     }
 
 
@@ -907,8 +1886,13 @@
 
     function bindEvents() {
 
+        /* -------------------------------------------------
+           REFRESH
+        ------------------------------------------------- */
+
         const refreshButton =
             get("doctorRefresh");
+
 
         if (refreshButton) {
 
@@ -917,6 +1901,8 @@
                 async function () {
 
                     try {
+
+                        await loadLocations();
 
                         await loadDoctors();
 
@@ -943,8 +1929,13 @@
         }
 
 
+        /* -------------------------------------------------
+           ADD DOCTOR
+        ------------------------------------------------- */
+
         const addButton =
             get("doctorAddBtn");
+
 
         if (addButton) {
 
@@ -956,8 +1947,13 @@
         }
 
 
+        /* -------------------------------------------------
+           CLOSE
+        ------------------------------------------------- */
+
         const closeButton =
             get("doctorModalClose");
+
 
         if (closeButton) {
 
@@ -972,6 +1968,7 @@
         const cancelButton =
             get("doctorCancelBtn");
 
+
         if (cancelButton) {
 
             cancelButton.addEventListener(
@@ -982,14 +1979,15 @@
         }
 
 
-        const backdrop =
+        const modalOverlay =
             document.querySelector(
-                ".doctor-modal-backdrop"
+                ".doctor-modal-overlay"
             );
 
-        if (backdrop) {
 
-            backdrop.addEventListener(
+        if (modalOverlay) {
+
+            modalOverlay.addEventListener(
                 "click",
                 closeModal
             );
@@ -997,8 +1995,238 @@
         }
 
 
+        /* -------------------------------------------------
+           FORM DIVISION → DISTRICT
+        ------------------------------------------------- */
+
+        const formDivision =
+            get("doctorDivision");
+
+
+        if (formDivision) {
+
+            formDivision.addEventListener(
+                "change",
+                function () {
+
+                    const divisionId =
+                        formDivision.value;
+
+                    renderDistrictOptions(
+                        divisionId,
+                        "doctorDistrict",
+                        "জেলা নির্বাচন করুন"
+                    );
+
+
+                    const upazila =
+                        get("doctorUpazila");
+
+                    if (upazila) {
+
+                        upazila.innerHTML = `
+                            <option value="">
+                                উপজেলা নির্বাচন করুন
+                            </option>
+                        `;
+
+                        upazila.disabled =
+                            true;
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           FORM DISTRICT → UPAZILA
+        ------------------------------------------------- */
+
+        const formDistrict =
+            get("doctorDistrict");
+
+
+        if (formDistrict) {
+
+            formDistrict.addEventListener(
+                "change",
+                function () {
+
+                    const districtId =
+                        formDistrict.value;
+
+                    renderUpazilaOptions(
+                        districtId,
+                        "doctorUpazila",
+                        "উপজেলা নির্বাচন করুন"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           FILTER DIVISION → DISTRICT
+        ------------------------------------------------- */
+
+        const filterDivision =
+            get("doctorDivisionFilter");
+
+
+        if (filterDivision) {
+
+            filterDivision.addEventListener(
+                "change",
+                function () {
+
+                    const divisionId =
+                        filterDivision.value;
+
+
+                    renderDistrictOptions(
+                        divisionId,
+                        "doctorDistrictFilter",
+                        "সব জেলা"
+                    );
+
+
+                    const upazila =
+                        get("doctorUpazilaFilter");
+
+
+                    if (upazila) {
+
+                        upazila.innerHTML = `
+                            <option value="">
+                                সব উপজেলা
+                            </option>
+                        `;
+
+                        upazila.disabled =
+                            true;
+
+                    }
+
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           FILTER DISTRICT → UPAZILA
+        ------------------------------------------------- */
+
+        const filterDistrict =
+            get("doctorDistrictFilter");
+
+
+        if (filterDistrict) {
+
+            filterDistrict.addEventListener(
+                "change",
+                function () {
+
+                    const districtId =
+                        filterDistrict.value;
+
+
+                    renderUpazilaOptions(
+                        districtId,
+                        "doctorUpazilaFilter",
+                        "সব উপজেলা"
+                    );
+
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           SEARCH
+        ------------------------------------------------- */
+
+        const search =
+            get("doctorSearch");
+
+
+        if (search) {
+
+            search.addEventListener(
+                "input",
+                applyFilters
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           OTHER FILTERS
+        ------------------------------------------------- */
+
+        [
+
+            get("doctorUpazilaFilter"),
+
+            get("doctorSpecializationFilter"),
+
+            get("doctorDepartmentFilter"),
+
+            get("doctorStatusFilter"),
+
+            get("doctorVerificationFilter")
+
+        ]
+            .filter(Boolean)
+            .forEach(
+                function (element) {
+
+                    element.addEventListener(
+                        "change",
+                        applyFilters
+                    );
+
+                }
+            );
+
+
+        /* -------------------------------------------------
+           CLEAR FILTERS
+        ------------------------------------------------- */
+
+        const clearButton =
+            get("doctorClearFilters");
+
+
+        if (clearButton) {
+
+            clearButton.addEventListener(
+                "click",
+                clearFilters
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           LIST ACTION
+        ------------------------------------------------- */
+
         const list =
             get("doctorList");
+
 
         if (list) {
 
@@ -1011,9 +2239,11 @@
                             "[data-action='edit']"
                         );
 
+
                     if (!button) {
                         return;
                     }
+
 
                     showToast(
                         "Edit/Update পরবর্তী ধাপে যুক্ত হবে।"
@@ -1025,8 +2255,13 @@
         }
 
 
+        /* -------------------------------------------------
+           PAGINATION
+        ------------------------------------------------- */
+
         const paginationButtons =
             get("doctorPaginationButtons");
+
 
         if (paginationButtons) {
 
@@ -1038,6 +2273,7 @@
                         event.target.closest(
                             "[data-page]"
                         );
+
 
                     if (
                         !button ||
@@ -1061,12 +2297,11 @@
                         button.dataset.page;
 
 
-                    if (
-                        page === "prev"
-                    ) {
+                    if (page === "prev") {
 
                         if (
-                            state.currentPage > 1
+                            state.currentPage >
+                            1
                         ) {
 
                             state.currentPage--;
@@ -1090,6 +2325,7 @@
 
                         const pageNumber =
                             Number(page);
+
 
                         if (
                             Number.isInteger(
@@ -1115,8 +2351,13 @@
         }
 
 
+        /* -------------------------------------------------
+           FORM SUBMIT
+        ------------------------------------------------- */
+
         const form =
             get("doctorForm");
+
 
         if (form) {
 
@@ -1126,6 +2367,7 @@
 
                     event.preventDefault();
 
+
                     showToast(
                         "Doctor Save পরবর্তী ধাপে যুক্ত হবে।"
                     );
@@ -1134,6 +2376,39 @@
             );
 
         }
+
+
+        /* -------------------------------------------------
+           ESC KEY
+        ------------------------------------------------- */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    const modal =
+                        get("doctorModal");
+
+
+                    if (
+                        modal &&
+                        modal.classList.contains(
+                            "is-open"
+                        )
+                    ) {
+
+                        closeModal();
+
+                    }
+
+                }
+
+            }
+        );
 
     }
 
@@ -1146,11 +2421,9 @@
 
         try {
 
-            let attempts =
-                0;
+            let attempts = 0;
 
-            const maxAttempts =
-                100;
+            const maxAttempts = 100;
 
 
             while (
@@ -1204,6 +2477,8 @@
 
             bindEvents();
 
+            await loadLocations();
+
             await loadDoctors();
 
 
@@ -1211,12 +2486,14 @@
                 "Dorkari Doctor Foundation ready."
             );
 
+
         } catch (error) {
 
             console.error(
                 "Doctor initialization failed:",
                 error
             );
+
 
             showErrorState(
                 error.message ||
@@ -1256,7 +2533,14 @@
     window.DorkariDoctor = {
 
         refresh:
-            loadDoctors,
+            async function () {
+
+                await loadLocations();
+
+                await loadDoctors();
+
+            },
+
 
         getDoctors:
             function () {
