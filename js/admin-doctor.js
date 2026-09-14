@@ -779,8 +779,7 @@
                         "option"
                     );
 
-                option.value =
-                    value;
+                option.value = value;
 
                 option.textContent =
                     value;
@@ -1429,6 +1428,35 @@
                         Edit
                     </button>
 
+
+                    ${
+                        doctor.is_active
+                            ? `
+                                <button
+                                    type="button"
+                                    class="doctor-card-btn"
+                                    data-action="deactivate"
+                                    data-id="${escapeHTML(
+                                        doctor.id
+                                    )}"
+                                >
+                                    Deactivate
+                                </button>
+                              `
+                            : `
+                                <button
+                                    type="button"
+                                    class="doctor-card-btn"
+                                    data-action="activate"
+                                    data-id="${escapeHTML(
+                                        doctor.id
+                                    )}"
+                                >
+                                    Activate
+                                </button>
+                              `
+                    }
+
                 </div>
 
             </article>
@@ -1938,6 +1966,7 @@
 
     }
 
+
     function resetForm() {
 
         const form =
@@ -2097,6 +2126,107 @@
             "";
 
         resetForm();
+
+    }
+
+
+    /* =====================================================
+       TOGGLE DOCTOR STATUS
+    ===================================================== */
+
+    async function toggleDoctorStatus(
+        doctorId,
+        isActive
+    ) {
+
+        if (!state.supabase) {
+
+            try {
+
+                initializeSupabase();
+
+            } catch (error) {
+
+                console.error(
+                    "Doctor Supabase error:",
+                    error
+                );
+
+                showToast(
+                    "Supabase client পাওয়া যায়নি।"
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        try {
+
+            const {
+                error
+            } =
+                await state.supabase
+                    .from(TABLE)
+                    .update({
+                        is_active:
+                            isActive,
+                        updated_at:
+                            new Date().toISOString()
+                    })
+                    .eq(
+                        "id",
+                        doctorId
+                    );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            await loadDoctors();
+
+
+            showToast(
+                isActive
+                    ? "Doctor সফলভাবে Activate হয়েছে।"
+                    : "Doctor সফলভাবে Deactivate হয়েছে।"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Doctor status update error:",
+                error
+            );
+
+
+            if (
+                error &&
+                error.code === "42501"
+            ) {
+
+                showToast(
+                    isActive
+                        ? "Doctor Activate করার অনুমতি নেই।"
+                        : "Doctor Deactivate করার অনুমতি নেই।"
+                );
+
+            } else {
+
+                showToast(
+                    isActive
+                        ? "Doctor Activate করা যায়নি।"
+                        : "Doctor Deactivate করা যায়নি।"
+                );
+
+            }
+
+        }
 
     }
 
@@ -2862,11 +2992,11 @@
 
             list.addEventListener(
                 "click",
-                function (event) {
+                async function (event) {
 
                     const button =
                         event.target.closest(
-                            "[data-action='edit']"
+                            "[data-action]"
                         );
 
 
@@ -2884,9 +3014,41 @@
                     }
 
 
-                    openEditModal(
-                        doctorId
-                    );
+                    const action =
+                        button.dataset.action;
+
+
+                    if (action === "edit") {
+
+                        openEditModal(
+                            doctorId
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (action === "deactivate") {
+
+                        await toggleDoctorStatus(
+                            doctorId,
+                            false
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (action === "activate") {
+
+                        await toggleDoctorStatus(
+                            doctorId,
+                            true
+                        );
+
+                    }
 
                 }
             );
