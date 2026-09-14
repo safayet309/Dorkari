@@ -2250,6 +2250,106 @@
 
     }
 
+    /* =====================================================
+   TOGGLE DOCTOR VERIFICATION
+===================================================== */
+
+    async function toggleDoctorVerification(
+        doctorId,
+        isVerified
+    ) {
+
+        if (!state.supabase) {
+
+            try {
+
+                initializeSupabase();
+
+            } catch (error) {
+
+                console.error(
+                    "Doctor Supabase error:",
+                    error
+                );
+
+                showToast(
+                    "Supabase client পাওয়া যায়নি।"
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        try {
+
+            const {
+                error
+            } =
+                await state.supabase
+                    .from(TABLE)
+                    .update({
+                        is_verified:
+                            isVerified,
+                        updated_at:
+                            new Date().toISOString()
+                    })
+                    .eq(
+                        "id",
+                        doctorId
+                    );
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            await loadDoctors();
+
+
+            showToast(
+                isVerified
+                    ? "Doctor সফলভাবে Verify হয়েছে।"
+                    : "Doctor সফলভাবে Unverify হয়েছে।"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Doctor verification update error:",
+                error
+            );
+
+
+            if (
+                error &&
+                error.code === "42501"
+            ) {
+
+                showToast(
+                    isVerified
+                        ? "Doctor Verify করার অনুমতি নেই।"
+                        : "Doctor Unverify করার অনুমতি নেই।"
+                );
+
+            } else {
+
+                showToast(
+                    isVerified
+                        ? "Doctor Verify করা যায়নি।"
+                        : "Doctor Unverify করা যায়নি।"
+                );
+
+            }
+
+        }
+
+    }
+
 
     /* =====================================================
        VALIDATE DOCTOR FORM
@@ -3004,6 +3104,7 @@
            LIST ACTION
         ------------------------------------------------- */
 
+
         const list =
             get("doctorList");
 
@@ -3068,12 +3169,38 @@
                             true
                         );
 
+                        return;
+
+                    }
+
+
+                    if (action === "verify") {
+
+                        await toggleDoctorVerification(
+                            doctorId,
+                            true
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (action === "unverify") {
+
+                        await toggleDoctorVerification(
+                            doctorId,
+                            false
+                        );
+
                     }
 
                 }
             );
 
         }
+
+
 
 
         /* -------------------------------------------------
