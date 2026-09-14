@@ -1717,6 +1717,227 @@
        MODAL
     ===================================================== */
 
+    /* =====================================================
+       OPEN EDIT MODAL
+    ===================================================== */
+
+    function openEditModal(doctorId) {
+
+        const doctor =
+            state.doctors.find(
+                function (item) {
+                    return item.id === doctorId;
+                }
+            );
+
+        if (!doctor) {
+
+            showToast(
+                "Doctor তথ্য পাওয়া যায়নি।"
+            );
+
+            return;
+
+        }
+
+
+        const modal =
+            get("doctorModal");
+
+        if (!modal) {
+            return;
+        }
+
+
+        resetForm();
+
+
+        state.editingDoctorId =
+            doctor.id;
+
+
+        const id =
+            get("doctorId");
+
+        const name =
+            get("doctorName");
+
+        const nameBn =
+            get("doctorNameBn");
+
+        const degree =
+            get("doctorDegree");
+
+        const specialization =
+            get("doctorSpecialization");
+
+        const department =
+            get("doctorDepartment");
+
+
+        if (id) {
+            id.value = doctor.id || "";
+        }
+
+        if (name) {
+            name.value = doctor.name || "";
+        }
+
+        if (nameBn) {
+            nameBn.value = doctor.name_bn || "";
+        }
+
+        if (degree) {
+            degree.value = doctor.degree || "";
+        }
+
+        if (specialization) {
+            specialization.value =
+                doctor.specialization || "";
+        }
+
+        if (department) {
+            department.value =
+                doctor.department || "";
+        }
+
+
+        const division =
+            get("doctorDivision");
+
+        const district =
+            get("doctorDistrict");
+
+        const upazila =
+            get("doctorUpazila");
+
+
+        if (division) {
+            division.value =
+                doctor.division_id || "";
+        }
+
+
+        renderDistrictOptions(
+            doctor.division_id || "",
+            "doctorDistrict",
+            "জেলা নির্বাচন করুন"
+        );
+
+
+        if (district) {
+            district.value =
+                doctor.district_id || "";
+        }
+
+
+        renderUpazilaOptions(
+            doctor.district_id || "",
+            "doctorUpazila",
+            "উপজেলা নির্বাচন করুন"
+        );
+
+
+        if (upazila) {
+            upazila.value =
+                doctor.upazila_id || "";
+        }
+
+
+        const phone =
+            get("doctorPhone");
+
+        const email =
+            get("doctorEmail");
+
+        const chamberInfo =
+            get("doctorChamberInfo");
+
+        const visitingHours =
+            get("doctorVisitingHours");
+
+
+        if (phone) {
+            phone.value = doctor.phone || "";
+        }
+
+        if (email) {
+            email.value = doctor.email || "";
+        }
+
+        if (chamberInfo) {
+            chamberInfo.value =
+                doctor.chamber_info || "";
+        }
+
+        if (visitingHours) {
+            visitingHours.value =
+                doctor.visiting_hours || "";
+        }
+
+
+        const verified =
+            get("doctorVerified");
+
+        const active =
+            get("doctorActive");
+
+
+        if (verified) {
+            verified.checked =
+                doctor.is_verified === true;
+        }
+
+        if (active) {
+            active.checked =
+                doctor.is_active === true;
+        }
+
+
+        const title =
+            get("doctorModalTitle");
+
+        if (title) {
+            title.textContent =
+                "Edit Doctor";
+        }
+
+
+        const saveButton =
+            get("doctorSaveBtn");
+
+        if (saveButton) {
+            saveButton.textContent =
+                "Update Doctor";
+        }
+
+
+        modal.classList.add(
+            "is-open"
+        );
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.style.overflow =
+            "hidden";
+
+
+        if (name) {
+
+            setTimeout(
+                function () {
+                    name.focus();
+                },
+                0
+            );
+
+        }
+
+    }
+
     function resetForm() {
 
         const form =
@@ -2022,6 +2243,10 @@
         const saveButton =
             get("doctorSaveBtn");
 
+        // Keep the mode available in success, catch, and finally.
+        const editingDoctorId =
+            state.editingDoctorId;
+
 
         state.isSaving = true;
 
@@ -2154,17 +2379,53 @@
             };
 
 
+            let query;
+
+
+            if (editingDoctorId) {
+
+                const updatePayload = {
+
+                    ...payload,
+
+                    updated_at:
+                        new Date().toISOString()
+
+                };
+
+
+                query =
+                    state.supabase
+                        .from(TABLE)
+                        .update(
+                            updatePayload
+                        )
+                        .eq(
+                            "id",
+                            editingDoctorId
+                        )
+                        .select()
+                        .single();
+
+            } else {
+
+                query =
+                    state.supabase
+                        .from(TABLE)
+                        .insert(
+                            payload
+                        )
+                        .select()
+                        .single();
+
+            }
+
+
             const {
                 data,
                 error
             } =
-                await state.supabase
-                    .from(TABLE)
-                    .insert(
-                        payload
-                    )
-                    .select()
-                    .single();
+                await query;
 
 
             if (error) {
@@ -2173,7 +2434,9 @@
 
 
             console.log(
-                "Doctor added successfully:",
+                editingDoctorId
+                    ? "Doctor updated successfully:"
+                    : "Doctor added successfully:",
                 data
             );
 
@@ -2183,7 +2446,9 @@
             await loadDoctors();
 
             showToast(
-                "Doctor সফলভাবে যোগ হয়েছে।"
+                editingDoctorId
+                    ? "Doctor সফলভাবে update হয়েছে।"
+                    : "Doctor সফলভাবে যোগ হয়েছে।"
             );
 
 
@@ -2201,7 +2466,9 @@
             ) {
 
                 showToast(
-                    "Doctor যোগ করার অনুমতি নেই।"
+                    editingDoctorId
+                        ? "Doctor update করার অনুমতি নেই।"
+                        : "Doctor যোগ করার অনুমতি নেই।"
                 );
 
             } else {
@@ -2212,7 +2479,11 @@
                         error.message
                     )
                         ? error.message
-                        : "Doctor সংরক্ষণ করা যায়নি।"
+                        : (
+                            editingDoctorId
+                                ? "Doctor update করা যায়নি।"
+                                : "Doctor সংরক্ষণ করা যায়নি।"
+                        )
                 );
 
             }
@@ -2604,8 +2875,17 @@
                     }
 
 
-                    showToast(
-                        "Edit/Update পরবর্তী ধাপে যুক্ত হবে।"
+                    const doctorId =
+                        button.dataset.id;
+
+
+                    if (!doctorId) {
+                        return;
+                    }
+
+
+                    openEditModal(
+                        doctorId
                     );
 
                 }
