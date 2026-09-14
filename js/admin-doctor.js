@@ -1254,6 +1254,104 @@
 
 
     /* =====================================================
+       COLLECT HOSPITAL ASSIGNMENTS
+    ===================================================== */
+
+    function collectHospitalAssignments() {
+
+        const container =
+            get("doctorHospitalAssignments");
+
+        if (!container) {
+            return [];
+        }
+
+        const rows =
+            container.querySelectorAll(
+                "[data-assignment]"
+            );
+
+        const assignments = [];
+
+        rows.forEach(function (row) {
+
+            const hospitalField =
+                row.querySelector(
+                    '[data-field="hospital_id"]'
+                );
+
+            const departmentField =
+                row.querySelector(
+                    '[data-field="department"]'
+                );
+
+            const designationField =
+                row.querySelector(
+                    '[data-field="designation"]'
+                );
+
+            const visitingDaysField =
+                row.querySelector(
+                    '[data-field="visiting_days"]'
+                );
+
+            const visitingHoursField =
+                row.querySelector(
+                    '[data-field="visiting_hours"]'
+                );
+
+            const hospitalId =
+                hospitalField
+                    ? cleanText(hospitalField.value)
+                    : "";
+
+            /*
+             * Empty hospital row ignore করা হবে।
+             * এতে Add Doctor form-এর default blank row
+             * Doctor save আটকাবে না।
+             */
+            if (!hospitalId) {
+                return;
+            }
+
+            assignments.push({
+                hospital_id: hospitalId,
+                department:
+                    departmentField
+                        ? cleanText(
+                            departmentField.value
+                        ) || null
+                        : null,
+
+                designation:
+                    designationField
+                        ? cleanText(
+                            designationField.value
+                        ) || null
+                        : null,
+
+                visiting_days:
+                    visitingDaysField
+                        ? cleanText(
+                            visitingDaysField.value
+                        ) || null
+                        : null,
+
+                visiting_hours:
+                    visitingHoursField
+                        ? cleanText(
+                            visitingHoursField.value
+                        ) || null
+                        : null
+            });
+
+        });
+
+        return assignments;
+    }
+
+
+    /* =====================================================
        DATA LOAD
     ===================================================== */
 
@@ -3205,6 +3303,74 @@
 
             if (error) {
                 throw error;
+            }
+
+            /*
+             * =====================================================
+             * F-9.7.3 — SAVE DOCTOR ↔ HOSPITAL RELATIONSHIPS
+             * =====================================================
+             *
+             * বর্তমানে নতুন Doctor create করার সময়
+             * doctor_hospitals persistence করা হবে।
+             *
+             * Edit/update relationship F-9.7.4/F-9.7.5-এ
+             * আলাদাভাবে handle করা হবে।
+             */
+
+            if (!editingDoctorId && data && data.id) {
+
+                const hospitalAssignments =
+                    collectHospitalAssignments();
+
+                if (
+                    hospitalAssignments.length > 0
+                ) {
+
+                    const relationshipPayload =
+                        hospitalAssignments.map(
+                            function (assignment) {
+
+                                return {
+                                    doctor_id: data.id,
+                                    hospital_id:
+                                        assignment.hospital_id,
+                                    department:
+                                        assignment.department,
+                                    designation:
+                                        assignment.designation,
+                                    visiting_days:
+                                        assignment.visiting_days,
+                                    visiting_hours:
+                                        assignment.visiting_hours
+                                };
+
+                            }
+                        );
+
+                    const {
+                        error: relationshipError
+                    } =
+                        await state.supabase
+                            .from("doctor_hospitals")
+                            .insert(
+                                relationshipPayload
+                            );
+
+                    if (relationshipError) {
+
+                        console.error(
+                            "Doctor-Hospital relationship save error:",
+                            relationshipError
+                        );
+
+                        throw relationshipError;
+                    }
+
+                    console.log(
+                        "Doctor-Hospital relationships saved:",
+                        relationshipPayload
+                    );
+                }
             }
 
 
