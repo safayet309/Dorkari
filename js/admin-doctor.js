@@ -34,6 +34,10 @@
 
         upazilas: [],
 
+        hospitals: [],
+
+        doctorHospitalAssignments: [],
+
         currentPage: 1,
 
         editingDoctorId: null,
@@ -854,6 +858,107 @@
                 ""
             )
             : "";
+
+    }
+
+
+    /* =====================================================
+       HOSPITAL LOAD
+    ===================================================== */
+
+    async function loadHospitals() {
+
+        if (!state.supabase) {
+            initializeSupabase();
+        }
+
+
+        const {
+            data,
+            error
+        } = await state.supabase
+            .from("hospitals")
+            .select(`
+                id,
+                name,
+                name_bn
+            `)
+            .eq(
+                "is_active",
+                true
+            )
+            .order(
+                "name_bn",
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        state.hospitals =
+            data || [];
+
+
+        renderHospitalOptions();
+
+    }
+
+
+    /* =====================================================
+       HOSPITAL OPTIONS
+    ===================================================== */
+
+    function renderHospitalOptions() {
+
+        const select =
+            get("doctorHospital");
+
+        if (!select) {
+            return;
+        }
+
+
+        select.innerHTML = `
+            <option value="">
+                হাসপাতাল নির্বাচন করুন
+            </option>
+        `;
+
+
+        state.hospitals.forEach(
+            function (hospital) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    hospital.id;
+
+
+                option.textContent =
+                    hospital.name_bn ||
+                    hospital.name ||
+                    "";
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        select.disabled =
+            state.hospitals.length === 0;
 
     }
 
@@ -2784,6 +2889,8 @@
 
                         await loadLocations();
 
+                        await loadHospitals();
+
                         await loadDoctors();
 
                         showToast(
@@ -3424,6 +3531,8 @@
 
             await loadLocations();
 
+            await loadHospitals();
+
             await loadDoctors();
 
 
@@ -3481,6 +3590,8 @@
             async function () {
 
                 await loadLocations();
+
+                await loadHospitals();
 
                 await loadDoctors();
 
