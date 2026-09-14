@@ -269,6 +269,78 @@
     color: #b91c1c;
 }
 
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.hospital-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 20px;
+    border-top: 1px solid #eef0f2;
+    background: #ffffff;
+}
+
+.hospital-pagination-info {
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.hospital-pagination-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.hospital-pagination-btn {
+    min-width: 38px;
+    height: 38px;
+    padding: 0 11px;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background: #ffffff;
+    color: #374151;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease,
+        color 0.18s ease,
+        transform 0.18s ease;
+}
+
+.hospital-pagination-btn:hover:not(:disabled) {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+    transform: translateY(-1px);
+}
+
+.hospital-pagination-btn.is-active {
+    background: #111827;
+    border-color: #111827;
+    color: #ffffff;
+}
+
+.hospital-pagination-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: #f9fafb;
+}
+
+.hospital-pagination-btn:focus-visible {
+    outline: 2px solid #6b7280;
+    outline-offset: 2px;
+}
+
 .hospital-card {
     display: flex;
     justify-content: space-between;
@@ -554,6 +626,26 @@
         width: calc(100% - 20px);
         margin: 10px auto;
         max-height: calc(100vh - 20px);
+    }
+
+    .hospital-pagination {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .hospital-pagination-info {
+        text-align: center;
+    }
+
+    .hospital-pagination-buttons {
+        justify-content: center;
+    }
+
+    .hospital-pagination-btn {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 9px;
     }
 
 }
