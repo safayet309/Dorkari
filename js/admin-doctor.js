@@ -915,50 +915,340 @@
 
     function renderHospitalOptions() {
 
-        const select =
-            get("doctorHospital");
+        initializeHospitalAssignments();
 
-        if (!select) {
+    }
+
+
+    /* =====================================================
+       HOSPITAL ASSIGNMENT ROW
+    ===================================================== */
+
+    function createHospitalAssignmentRow() {
+
+        const wrapper =
+            document.createElement("div");
+
+
+        wrapper.className =
+            "doctor-hospital-assignment";
+
+
+        wrapper.dataset.assignment =
+            "true";
+
+
+        wrapper.innerHTML = `
+
+        <div class="doctor-form-group doctor-form-group-full">
+
+            <label>
+                Hospital
+            </label>
+
+            <select
+                class="doctor-hospital-field"
+                data-field="hospital_id"
+            >
+
+                <option value="">
+                    হাসপাতাল নির্বাচন করুন
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="doctor-form-group">
+
+            <label>
+                Department
+            </label>
+
+            <input
+                type="text"
+                class="doctor-hospital-field"
+                data-field="department"
+                placeholder="যেমন: Cardiology"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="doctor-form-group">
+
+            <label>
+                Designation
+            </label>
+
+            <input
+                type="text"
+                class="doctor-hospital-field"
+                data-field="designation"
+                placeholder="যেমন: Consultant"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="doctor-form-group">
+
+            <label>
+                Visiting Days
+            </label>
+
+            <input
+                type="text"
+                class="doctor-hospital-field"
+                data-field="visiting_days"
+                placeholder="যেমন: শনি, সোম, বুধ"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="doctor-form-group">
+
+            <label>
+                Visiting Hours
+            </label>
+
+            <input
+                type="text"
+                class="doctor-hospital-field"
+                data-field="visiting_hours"
+                placeholder="যেমন: বিকেল ৪টা–৮টা"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div
+            class="doctor-form-group doctor-form-group-full"
+            style="
+                display: flex;
+                justify-content: flex-end;
+            "
+        >
+
+            <button
+                type="button"
+                class="doctor-card-btn doctor-remove-hospital-btn"
+                data-action="remove-hospital"
+            >
+                Remove Hospital
+            </button>
+
+        </div>
+
+    `;
+
+
+        const select =
+            wrapper.querySelector(
+                '[data-field="hospital_id"]'
+            );
+
+
+        if (select) {
+
+            state.hospitals.forEach(
+                function (hospital) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        hospital.id;
+
+
+                    option.textContent =
+                        hospital.name_bn ||
+                        hospital.name ||
+                        "";
+
+
+                    select.appendChild(option);
+
+                }
+            );
+
+        }
+
+
+        return wrapper;
+
+    }
+
+
+    /* =====================================================
+       INITIAL HOSPITAL ASSIGNMENT
+    ===================================================== */
+
+    function initializeHospitalAssignments() {
+
+        const container =
+            get("doctorHospitalAssignments");
+
+        if (!container) {
             return;
         }
 
 
-        select.innerHTML = `
+        const firstRow =
+            container.querySelector(
+                "[data-assignment]"
+            );
+
+
+        if (!firstRow) {
+            return;
+        }
+
+
+        const select =
+            firstRow.querySelector(
+                '[data-field="hospital_id"]'
+            );
+
+
+        if (select) {
+
+            select.innerHTML = `
             <option value="">
                 হাসপাতাল নির্বাচন করুন
             </option>
         `;
 
 
-        state.hospitals.forEach(
-            function (hospital) {
+            state.hospitals.forEach(
+                function (hospital) {
 
-                const option =
-                    document.createElement(
-                        "option"
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        hospital.id;
+
+
+                    option.textContent =
+                        hospital.name_bn ||
+                        hospital.name ||
+                        "";
+
+
+                    select.appendChild(
+                        option
                     );
 
+                }
+            );
 
-                option.value =
-                    hospital.id;
+        }
 
-
-                option.textContent =
-                    hospital.name_bn ||
-                    hospital.name ||
-                    "";
+    }
 
 
-                select.appendChild(
-                    option
+    /* =====================================================
+       ADD HOSPITAL ASSIGNMENT
+    ===================================================== */
+
+    function addHospitalAssignment() {
+
+        const container =
+            get("doctorHospitalAssignments");
+
+        if (!container) {
+            return;
+        }
+
+
+        const row =
+            createHospitalAssignmentRow();
+
+
+        container.appendChild(row);
+
+    }
+
+
+    /* =====================================================
+       REMOVE HOSPITAL ASSIGNMENT
+    ===================================================== */
+
+    function removeHospitalAssignment(button) {
+
+        const row =
+            button.closest(
+                "[data-assignment]"
+            );
+
+
+        if (!row) {
+            return;
+        }
+
+
+        const container =
+            get("doctorHospitalAssignments");
+
+
+        if (!container) {
+            return;
+        }
+
+
+        const rows =
+            container.querySelectorAll(
+                "[data-assignment]"
+            );
+
+
+        if (rows.length <= 1) {
+
+            const fields =
+                row.querySelectorAll(
+                    ".doctor-hospital-field"
                 );
 
-            }
-        );
+
+            fields.forEach(
+                function (field) {
+
+                    if (
+                        field.tagName ===
+                        "SELECT"
+                    ) {
+
+                        field.value = "";
+
+                    } else {
+
+                        field.value = "";
+
+                    }
+
+                }
+            );
 
 
-        select.disabled =
-            state.hospitals.length === 0;
+            return;
+
+        }
+
+
+        row.remove();
 
     }
 
@@ -2167,6 +2457,135 @@
 
         }
 
+
+        const hospitalAssignments =
+            get("doctorHospitalAssignments");
+
+
+        if (hospitalAssignments) {
+
+            hospitalAssignments.innerHTML = `
+
+        <div
+            class="doctor-hospital-assignment"
+            data-assignment
+        >
+
+            <div class="doctor-form-group doctor-form-group-full">
+
+                <label>
+                    Hospital
+                </label>
+
+                <select
+                    class="doctor-hospital-field"
+                    data-field="hospital_id"
+                >
+
+                    <option value="">
+                        হাসপাতাল নির্বাচন করুন
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="doctor-form-group">
+
+                <label>
+                    Department
+                </label>
+
+                <input
+                    type="text"
+                    class="doctor-hospital-field"
+                    data-field="department"
+                    placeholder="যেমন: Cardiology"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="doctor-form-group">
+
+                <label>
+                    Designation
+                </label>
+
+                <input
+                    type="text"
+                    class="doctor-hospital-field"
+                    data-field="designation"
+                    placeholder="যেমন: Consultant"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="doctor-form-group">
+
+                <label>
+                    Visiting Days
+                </label>
+
+                <input
+                    type="text"
+                    class="doctor-hospital-field"
+                    data-field="visiting_days"
+                    placeholder="যেমন: শনি, সোম, বুধ"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="doctor-form-group">
+
+                <label>
+                    Visiting Hours
+                </label>
+
+                <input
+                    type="text"
+                    class="doctor-hospital-field"
+                    data-field="visiting_hours"
+                    placeholder="যেমন: বিকেল ৪টা–৮টা"
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div
+                class="doctor-form-group doctor-form-group-full"
+                style="
+                    display: flex;
+                    justify-content: flex-end;
+                "
+            >
+
+                <button
+                    type="button"
+                    class="doctor-card-btn doctor-remove-hospital-btn"
+                    data-action="remove-hospital"
+                >
+                    Remove Hospital
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+            initializeHospitalAssignments();
+
+        }
+
+
         if (title) {
             title.textContent =
                 "Add Doctor";
@@ -2355,9 +2774,10 @@
 
     }
 
+
     /* =====================================================
-   TOGGLE DOCTOR VERIFICATION
-===================================================== */
+       TOGGLE DOCTOR VERIFICATION
+    ===================================================== */
 
     async function toggleDoctorVerification(
         doctorId,
@@ -2935,6 +3355,55 @@
 
 
         /* -------------------------------------------------
+           HOSPITAL ASSIGNMENTS
+        ------------------------------------------------- */
+
+        const addHospitalButton =
+            get("doctorAddHospitalBtn");
+
+
+        if (addHospitalButton) {
+
+            addHospitalButton.addEventListener(
+                "click",
+                addHospitalAssignment
+            );
+
+        }
+
+
+        const hospitalAssignments =
+            get("doctorHospitalAssignments");
+
+
+        if (hospitalAssignments) {
+
+            hospitalAssignments.addEventListener(
+                "click",
+                function (event) {
+
+                    const button =
+                        event.target.closest(
+                            '[data-action="remove-hospital"]'
+                        );
+
+
+                    if (!button) {
+                        return;
+                    }
+
+
+                    removeHospitalAssignment(
+                        button
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
            CLOSE
         ------------------------------------------------- */
 
@@ -3211,7 +3680,6 @@
            LIST ACTION
         ------------------------------------------------- */
 
-
         const list =
             get("doctorList");
 
@@ -3306,8 +3774,6 @@
             );
 
         }
-
-
 
 
         /* -------------------------------------------------
