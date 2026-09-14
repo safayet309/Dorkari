@@ -28,7 +28,11 @@
 
         loading: false,
 
-        editingHospitalId: null
+        editingHospitalId: null,
+
+        currentPage: 1,
+
+        pageSize: 10
 
     };
 
@@ -1460,13 +1464,60 @@
 
             updateResultCount();
 
+
+            const pagination =
+                get("hospitalPagination");
+
+            if (pagination) {
+
+                pagination.innerHTML = "";
+
+                pagination.style.display =
+                    "none";
+
+            }
+
             return;
 
         }
 
 
+        const totalPages =
+            Math.ceil(
+                state.filteredHospitals.length /
+                state.pageSize
+            );
+
+
+        if (
+            state.currentPage >
+            totalPages
+        ) {
+
+            state.currentPage =
+                totalPages;
+
+        }
+
+
+        const startIndex =
+            (
+                state.currentPage -
+                1
+            ) *
+            state.pageSize;
+
+
+        const paginatedHospitals =
+            state.filteredHospitals.slice(
+                startIndex,
+                startIndex +
+                state.pageSize
+            );
+
+
         list.innerHTML =
-            state.filteredHospitals
+            paginatedHospitals
                 .map(function (hospital) {
 
                     const locationParts = [
@@ -1609,6 +1660,8 @@
 
         updateResultCount();
 
+        renderPagination();
+
     }
 
 
@@ -1655,6 +1708,9 @@
         const verification =
             get("hospitalVerificationFilter")?.value ||
             "";
+
+
+        state.currentPage = 1;
 
 
         state.filteredHospitals =
@@ -1800,6 +1856,183 @@
                 state.filteredHospitals.length
             ) +
             "টি হাসপাতাল";
+
+    }
+
+
+    // =====================================================
+    // PAGINATION
+    // =====================================================
+
+    function renderPagination() {
+
+        const list =
+            get("hospitalList");
+
+
+        if (!list) {
+            return;
+        }
+
+
+        let pagination =
+            get("hospitalPagination");
+
+
+        if (!pagination) {
+
+            pagination =
+                document.createElement("div");
+
+            pagination.id =
+                "hospitalPagination";
+
+            pagination.className =
+                "hospital-pagination";
+
+            list.insertAdjacentElement(
+                "afterend",
+                pagination
+            );
+
+        }
+
+
+        const total =
+            state.filteredHospitals.length;
+
+        const totalPages =
+            Math.ceil(
+                total /
+                state.pageSize
+            );
+
+
+        if (
+            totalPages <= 1
+        ) {
+
+            pagination.innerHTML = "";
+
+            pagination.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        if (
+            state.currentPage >
+            totalPages
+        ) {
+
+            state.currentPage =
+                totalPages;
+
+        }
+
+
+        const start =
+            (
+                state.currentPage -
+                1
+            ) *
+            state.pageSize +
+            1;
+
+        const end =
+            Math.min(
+                start +
+                state.pageSize -
+                1,
+                total
+            );
+
+
+        let html = `
+
+            <div class="hospital-pagination-info">
+                ${formatNumber(start)}
+                -
+                ${formatNumber(end)}
+                / ${formatNumber(total)}
+            </div>
+
+            <div class="hospital-pagination-buttons">
+
+        `;
+
+
+        html += `
+
+            <button
+                type="button"
+                class="hospital-pagination-btn"
+                data-page="prev"
+                ${state.currentPage === 1 ? "disabled" : ""}
+            >
+                Previous
+            </button>
+
+        `;
+
+
+        for (
+            let page = 1;
+            page <= totalPages;
+            page++
+        ) {
+
+            html += `
+
+                <button
+                    type="button"
+                    class="hospital-pagination-btn ${
+                        page === state.currentPage
+                            ? "is-active"
+                            : ""
+                    }"
+                    data-page="${page}"
+                >
+                    ${formatNumber(page)}
+                </button>
+
+            `;
+
+        }
+
+
+        html += `
+
+            <button
+                type="button"
+                class="hospital-pagination-btn"
+                data-page="next"
+                ${
+                    state.currentPage === totalPages
+                        ? "disabled"
+                        : ""
+                }
+            >
+                Next
+            </button>
+
+        `;
+
+
+        html += `
+
+            </div>
+
+        `;
+
+
+        pagination.innerHTML =
+            html;
+
+        pagination.style.display =
+            "";
 
     }
 
@@ -2606,6 +2839,113 @@
                     openEditModal(
                         button.dataset.id
                     );
+
+                }
+            );
+
+        }
+
+
+        let pagination =
+            get("hospitalPagination");
+
+
+        if (!pagination) {
+
+            pagination =
+                document.createElement("div");
+
+            pagination.id =
+                "hospitalPagination";
+
+            pagination.className =
+                "hospital-pagination";
+
+            if (list) {
+
+                list.insertAdjacentElement(
+                    "afterend",
+                    pagination
+                );
+
+            }
+
+        }
+
+
+        if (pagination) {
+
+            pagination.addEventListener(
+                "click",
+                function (event) {
+
+                    const button =
+                        event.target.closest(
+                            "[data-page]"
+                        );
+
+
+                    if (
+                        !button ||
+                        button.disabled
+                    ) {
+                        return;
+                    }
+
+
+                    const totalPages =
+                        Math.ceil(
+                            state.filteredHospitals.length /
+                            state.pageSize
+                        );
+
+                    const page =
+                        button.dataset.page;
+
+
+                    if (page === "prev") {
+
+                        if (
+                            state.currentPage > 1
+                        ) {
+
+                            state.currentPage--;
+
+                        }
+
+                    } else if (
+                        page === "next"
+                    ) {
+
+                        if (
+                            state.currentPage <
+                            totalPages
+                        ) {
+
+                            state.currentPage++;
+
+                        }
+
+                    } else {
+
+                        const pageNumber =
+                            Number(page);
+
+                        if (
+                            Number.isInteger(pageNumber) &&
+                            pageNumber >= 1 &&
+                            pageNumber <= totalPages
+                        ) {
+
+                            state.currentPage =
+                                pageNumber;
+
+                        }
+
+                    }
+
+
+                    renderList();
 
                 }
             );
