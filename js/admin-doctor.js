@@ -146,7 +146,7 @@
         if (
             window.DorkariAdmin &&
             typeof window.DorkariAdmin.getSupabase ===
-                "function"
+            "function"
         ) {
 
             state.supabase =
@@ -201,9 +201,9 @@
         list.innerHTML = `
             <div class="doctor-error">
                 ${escapeHTML(
-                    message ||
-                    "Doctor data লোড করা যায়নি।"
-                )}
+            message ||
+            "Doctor data লোড করা যায়নি।"
+        )}
             </div>
         `;
 
@@ -1295,75 +1295,71 @@
             <article
                 class="doctor-card"
                 data-id="${escapeHTML(
-                    doctor.id
-                )}"
+            doctor.id
+        )}"
             >
 
                 <div class="doctor-card-main">
 
                     <h3 class="doctor-card-title">
                         ${escapeHTML(
-                            doctor.name_bn ||
-                            doctor.name ||
-                            "Unnamed Doctor"
-                        )}
+            doctor.name_bn ||
+            doctor.name ||
+            "Unnamed Doctor"
+        )}
                     </h3>
 
 
-                    ${
-                        doctor.name &&
-                        doctor.name_bn &&
-                        doctor.name !== doctor.name_bn
-                            ? `
+                    ${doctor.name &&
+                doctor.name_bn &&
+                doctor.name !== doctor.name_bn
+                ? `
                                 <div class="doctor-card-subtitle">
                                     ${escapeHTML(
-                                        doctor.name
-                                    )}
+                    doctor.name
+                )}
                                 </div>
                               `
-                            : ""
-                    }
+                : ""
+            }
 
 
                     <div class="doctor-card-meta">
 
-                        ${
-                            doctor.degree
-                                ? `
+                        ${doctor.degree
+                ? `
                                     <span class="doctor-badge">
                                         ${escapeHTML(
-                                            doctor.degree
-                                        )}
+                    doctor.degree
+                )}
                                     </span>
                                   `
-                                : ""
-                        }
+                : ""
+            }
 
 
-                        ${
-                            doctor.specialization
-                                ? `
+                        ${doctor.specialization
+                ? `
                                     <span class="doctor-badge">
                                         ${escapeHTML(
-                                            doctor.specialization
-                                        )}
+                    doctor.specialization
+                )}
                                     </span>
                                   `
-                                : ""
-                        }
+                : ""
+            }
 
 
-                        ${
-                            doctor.department
-                                ? `
+                        ${doctor.department
+                ? `
                                     <span class="doctor-badge">
                                         ${escapeHTML(
-                                            doctor.department
-                                        )}
+                    doctor.department
+                )}
                                     </span>
                                   `
-                                : ""
-                        }
+                : ""
+            }
 
 
                         <span class="doctor-badge">
@@ -1378,86 +1374,110 @@
                     </div>
 
 
-                    ${
-                        divisionName ||
-                        districtName ||
-                        upazilaName
-                            ? `
+                    ${divisionName ||
+                districtName ||
+                upazilaName
+                ? `
                                 <div class="doctor-card-subtitle">
                                     📍
                                     ${escapeHTML(
-                                        [
-                                            divisionName,
-                                            districtName,
-                                            upazilaName
-                                        ]
-                                            .filter(Boolean)
-                                            .join(" → ")
-                                    )}
+                    [
+                        divisionName,
+                        districtName,
+                        upazilaName
+                    ]
+                        .filter(Boolean)
+                        .join(" → ")
+                )}
                                 </div>
                               `
-                            : ""
-                    }
+                : ""
+            }
 
 
-                    ${
-                        doctor.phone
-                            ? `
+                    ${doctor.phone
+                ? `
                                 <div class="doctor-card-subtitle">
                                     ☎ ${escapeHTML(
-                                        doctor.phone
-                                    )}
+                    doctor.phone
+                )}
                                 </div>
                               `
-                            : ""
-                    }
+                : ""
+            }
 
                 </div>
-
 
                 <div class="doctor-card-actions">
 
-                    <button
-                        type="button"
-                        class="doctor-card-btn"
-                        data-action="edit"
-                        data-id="${escapeHTML(
-                            doctor.id
-                        )}"
-                    >
-                        Edit
-                    </button>
+    <button
+        type="button"
+        class="doctor-card-btn"
+        data-action="edit"
+        data-id="${escapeHTML(
+                doctor.id
+            )}"
+    >
+        Edit
+    </button>
 
 
-                    ${
-                        doctor.is_active
-                            ? `
-                                <button
-                                    type="button"
-                                    class="doctor-card-btn"
-                                    data-action="deactivate"
-                                    data-id="${escapeHTML(
-                                        doctor.id
-                                    )}"
-                                >
-                                    Deactivate
-                                </button>
-                              `
-                            : `
-                                <button
-                                    type="button"
-                                    class="doctor-card-btn"
-                                    data-action="activate"
-                                    data-id="${escapeHTML(
-                                        doctor.id
-                                    )}"
-                                >
-                                    Activate
-                                </button>
-                              `
-                    }
+    ${doctor.is_active
+                ? `
+                <button
+                    type="button"
+                    class="doctor-card-btn"
+                    data-action="deactivate"
+                    data-id="${escapeHTML(
+                    doctor.id
+                )}"
+                >
+                    Deactivate
+                </button>
+              `
+                : `
+                <button
+                    type="button"
+                    class="doctor-card-btn"
+                    data-action="activate"
+                    data-id="${escapeHTML(
+                    doctor.id
+                )}"
+                >
+                    Activate
+                </button>
+              `
+            }
 
-                </div>
+
+    ${doctor.is_verified
+                ? `
+                <button
+                    type="button"
+                    class="doctor-card-btn"
+                    data-action="unverify"
+                    data-id="${escapeHTML(
+                    doctor.id
+                )}"
+                >
+                    Unverify
+                </button>
+              `
+                : `
+                <button
+                    type="button"
+                    class="doctor-card-btn"
+                    data-action="verify"
+                    data-id="${escapeHTML(
+                    doctor.id
+                )}"
+                >
+                    Verify
+                </button>
+              `
+            }
+
+</div>
 
             </article>
 
@@ -1695,7 +1715,7 @@
                 "doctor-pagination-btn" +
                 (
                     page ===
-                    state.currentPage
+                        state.currentPage
                         ? " is-active"
                         : ""
                 );
@@ -3232,7 +3252,7 @@
                 if (
                     window.DorkariAdmin &&
                     typeof window.DorkariAdmin.getProfile ===
-                        "function" &&
+                    "function" &&
                     window.DorkariAdmin.getProfile()
                 ) {
 
@@ -3261,7 +3281,7 @@
             if (
                 !window.DorkariAdmin ||
                 typeof window.DorkariAdmin.getSupabase !==
-                    "function"
+                "function"
             ) {
 
                 throw new Error(
