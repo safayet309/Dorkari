@@ -1881,6 +1881,365 @@
 
 
     /* =====================================================
+       VALIDATE DOCTOR FORM
+    ===================================================== */
+
+    function validateDoctorForm() {
+
+        const name =
+            cleanText(
+                get("doctorName")
+                    ? get("doctorName").value
+                    : ""
+            );
+
+        const nameBn =
+            cleanText(
+                get("doctorNameBn")
+                    ? get("doctorNameBn").value
+                    : ""
+            );
+
+        const divisionId =
+            get("doctorDivision")
+                ? get("doctorDivision").value
+                : "";
+
+        const districtId =
+            get("doctorDistrict")
+                ? get("doctorDistrict").value
+                : "";
+
+        const upazilaId =
+            get("doctorUpazila")
+                ? get("doctorUpazila").value
+                : "";
+
+
+        if (!name) {
+
+            showToast(
+                "Doctor-এর Name দিতে হবে।"
+            );
+
+            const field =
+                get("doctorName");
+
+            if (field) {
+                field.focus();
+            }
+
+            return false;
+
+        }
+
+
+        if (!nameBn) {
+
+            showToast(
+                "Doctor-এর বাংলা নাম দিতে হবে।"
+            );
+
+            const field =
+                get("doctorNameBn");
+
+            if (field) {
+                field.focus();
+            }
+
+            return false;
+
+        }
+
+
+        if (districtId && !divisionId) {
+
+            showToast(
+                "জেলা নির্বাচন করার আগে বিভাগ নির্বাচন করুন।"
+            );
+
+            return false;
+
+        }
+
+
+        if (upazilaId && !districtId) {
+
+            showToast(
+                "উপজেলা নির্বাচন করার আগে জেলা নির্বাচন করুন।"
+            );
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+    /* =====================================================
+       SAVE DOCTOR
+    ===================================================== */
+
+    async function saveDoctor() {
+
+        if (state.isSaving) {
+            return;
+        }
+
+
+        if (!validateDoctorForm()) {
+            return;
+        }
+
+
+        if (!state.supabase) {
+
+            try {
+
+                initializeSupabase();
+
+            } catch (error) {
+
+                console.error(
+                    "Doctor Supabase error:",
+                    error
+                );
+
+                showToast(
+                    "Supabase client পাওয়া যায়নি।"
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        const saveButton =
+            get("doctorSaveBtn");
+
+
+        state.isSaving = true;
+
+
+        if (saveButton) {
+
+            saveButton.disabled = true;
+
+            saveButton.textContent =
+                "Saving...";
+
+        }
+
+
+        try {
+
+            const name =
+                cleanText(
+                    get("doctorName").value
+                );
+
+            const nameBn =
+                cleanText(
+                    get("doctorNameBn").value
+                );
+
+            const degree =
+                cleanText(
+                    get("doctorDegree").value
+                );
+
+            const specialization =
+                cleanText(
+                    get("doctorSpecialization").value
+                );
+
+            const department =
+                cleanText(
+                    get("doctorDepartment").value
+                );
+
+            const phone =
+                cleanText(
+                    get("doctorPhone").value
+                );
+
+            const email =
+                cleanText(
+                    get("doctorEmail").value
+                );
+
+            const chamberInfo =
+                cleanText(
+                    get("doctorChamberInfo").value
+                );
+
+            const visitingHours =
+                cleanText(
+                    get("doctorVisitingHours").value
+                );
+
+            const divisionId =
+                get("doctorDivision")
+                    ? get("doctorDivision").value
+                    : "";
+
+            const districtId =
+                get("doctorDistrict")
+                    ? get("doctorDistrict").value
+                    : "";
+
+            const upazilaId =
+                get("doctorUpazila")
+                    ? get("doctorUpazila").value
+                    : "";
+
+            const isVerified =
+                get("doctorVerified")
+                    ? get("doctorVerified").checked
+                    : false;
+
+            const isActive =
+                get("doctorActive")
+                    ? get("doctorActive").checked
+                    : true;
+
+
+            const payload = {
+
+                name: name,
+
+                name_bn: nameBn,
+
+                degree:
+                    degree || null,
+
+                specialization:
+                    specialization || null,
+
+                department:
+                    department || null,
+
+                phone:
+                    phone || null,
+
+                email:
+                    email || null,
+
+                chamber_info:
+                    chamberInfo || null,
+
+                visiting_hours:
+                    visitingHours || null,
+
+                division_id:
+                    divisionId || null,
+
+                district_id:
+                    districtId || null,
+
+                upazila_id:
+                    upazilaId || null,
+
+                is_verified:
+                    isVerified,
+
+                is_active:
+                    isActive
+
+            };
+
+
+            const {
+                data,
+                error
+            } =
+                await state.supabase
+                    .from(TABLE)
+                    .insert(
+                        payload
+                    )
+                    .select()
+                    .single();
+
+
+            if (error) {
+                throw error;
+            }
+
+
+            console.log(
+                "Doctor added successfully:",
+                data
+            );
+
+
+            closeModal();
+
+            await loadDoctors();
+
+            showToast(
+                "Doctor সফলভাবে যোগ হয়েছে।"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Doctor Add Error:",
+                error
+            );
+
+
+            if (
+                error &&
+                error.code === "42501"
+            ) {
+
+                showToast(
+                    "Doctor যোগ করার অনুমতি নেই।"
+                );
+
+            } else {
+
+                showToast(
+                    (
+                        error &&
+                        error.message
+                    )
+                        ? error.message
+                        : "Doctor সংরক্ষণ করা যায়নি।"
+                );
+
+            }
+
+
+        } finally {
+
+            state.isSaving =
+                false;
+
+
+            if (saveButton) {
+
+                saveButton.disabled =
+                    false;
+
+                saveButton.textContent =
+                    "Save Doctor";
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
        EVENTS
     ===================================================== */
 
@@ -2363,14 +2722,11 @@
 
             form.addEventListener(
                 "submit",
-                function (event) {
+                async function (event) {
 
                     event.preventDefault();
 
-
-                    showToast(
-                        "Doctor Save পরবর্তী ধাপে যুক্ত হবে।"
-                    );
+                    await saveDoctor();
 
                 }
             );
