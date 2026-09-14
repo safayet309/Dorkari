@@ -1,14 +1,19 @@
 <!DOCTYPE html>
+
 <html lang="bn">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dorkari — Doctor Management</title>
 
     <!-- Google Font -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
@@ -17,14 +22,19 @@
     >
 
     <!-- Main Theme -->
+
     <link rel="stylesheet" href="../css/variables.css">
 
     <!-- Admin -->
+
     <link rel="stylesheet" href="../css/admin.css">
+
     <link rel="stylesheet" href="../css/admin-crud.css">
 
     <!-- Doctor -->
+
     <link rel="stylesheet" href="../css/admin-doctor.css">
+
 </head>
 
 <body>
@@ -43,21 +53,29 @@
                 href="./dashboard.html"
                 class="doctor-back"
             >
+
                 ← Dashboard
+
             </a>
 
             <div>
 
                 <span class="doctor-eyebrow">
+
                     DORKARI ADMIN
+
                 </span>
 
                 <h1>
+
                     Doctor Management
+
                 </h1>
 
                 <p>
+
                     ডাক্তারদের তথ্য ও অবস্থান পরিচালনা করুন
+
                 </p>
 
             </div>
@@ -72,7 +90,9 @@
                 class="doctor-refresh-btn"
                 id="doctorRefresh"
             >
+
                 ↻ Refresh
+
             </button>
 
             <button
@@ -80,7 +100,9 @@
                 class="doctor-add-btn"
                 id="doctorAddBtn"
             >
+
                 + Add Doctor
+
             </button>
 
         </div>
@@ -97,17 +119,23 @@
         <div class="doctor-stat-card">
 
             <span class="doctor-stat-icon">
+
                 👨‍⚕️
+
             </span>
 
             <div>
 
                 <span>
+
                     Total Doctors
+
                 </span>
 
                 <strong id="doctorTotalCount">
+
                     —
+
                 </strong>
 
             </div>
@@ -118,17 +146,23 @@
         <div class="doctor-stat-card">
 
             <span class="doctor-stat-icon">
+
                 ✓
+
             </span>
 
             <div>
 
                 <span>
+
                     Active Doctors
+
                 </span>
 
                 <strong id="doctorActiveCount">
+
                     —
+
                 </strong>
 
             </div>
@@ -139,17 +173,23 @@
         <div class="doctor-stat-card">
 
             <span class="doctor-stat-icon">
+
                 ●
+
             </span>
 
             <div>
 
                 <span>
+
                     Verified
+
                 </span>
 
                 <strong id="doctorVerifiedCount">
+
                     —
+
                 </strong>
 
             </div>
@@ -170,15 +210,21 @@
             <div>
 
                 <span class="doctor-section-label">
+
                     DOCTORS
+
                 </span>
 
                 <h2>
+
                     Doctor List
+
                 </h2>
 
                 <p>
+
                     ডাক্তারদের তালিকা, specialization ও অবস্থান দেখুন।
+
                 </p>
 
             </div>
@@ -187,11 +233,15 @@
             <div class="doctor-result-count">
 
                 <span id="doctorResultCount">
+
                     0
+
                 </span>
 
                 <span>
+
                     Doctors
+
                 </span>
 
             </div>
@@ -209,14 +259,18 @@
                 for="doctorSearch"
                 class="doctor-search-label"
             >
+
                 Search Doctor
+
             </label>
 
 
             <div class="doctor-search-box">
 
                 <span class="doctor-search-icon">
+
                     🔎
+
                 </span>
 
                 <input
@@ -242,13 +296,17 @@
             <div class="doctor-filter-group">
 
                 <label for="doctorDivisionFilter">
+
                     Division
+
                 </label>
 
                 <select id="doctorDivisionFilter">
 
                     <option value="">
+
                         সব বিভাগ
+
                     </option>
 
                 </select>
@@ -261,7 +319,9 @@
             <div class="doctor-filter-group">
 
                 <label for="doctorDistrictFilter">
+
                     District
+
                 </label>
 
                 <select
@@ -270,7 +330,9 @@
                 >
 
                     <option value="">
+
                         সব জেলা
+
                     </option>
 
                 </select>
@@ -283,7 +345,9 @@
             <div class="doctor-filter-group">
 
                 <label for="doctorUpazilaFilter">
+
                     Upazila
+
                 </label>
 
                 <select
@@ -292,7 +356,9 @@
                 >
 
                     <option value="">
+
                         সব উপজেলা
+
                     </option>
 
                 </select>
@@ -305,13 +371,17 @@
             <div class="doctor-filter-group">
 
                 <label for="doctorSpecializationFilter">
+
                     Specialization
+
                 </label>
 
                 <select id="doctorSpecializationFilter">
 
                     <option value="">
+
                         সব Specialization
+
                     </option>
 
                 </select>
@@ -324,13 +394,17 @@
             <div class="doctor-filter-group">
 
                 <label for="doctorDepartmentFilter">
+
                     Department
+
                 </label>
 
                 <select id="doctorDepartmentFilter">
 
                     <option value="">
+
                         সব Department
+
                     </option>
 
                 </select>
@@ -343,21 +417,29 @@
             <div class="doctor-filter-group">
 
                 <label for="doctorStatusFilter">
+
                     Status
+
                 </label>
 
                 <select id="doctorStatusFilter">
 
                     <option value="">
+
                         সব Status
+
                     </option>
 
                     <option value="active">
+
                         Active
+
                     </option>
 
                     <option value="inactive">
+
                         Inactive
+
                     </option>
 
                 </select>
@@ -370,21 +452,29 @@
             <div class="doctor-filter-group">
 
                 <label for="doctorVerificationFilter">
+
                     Verification
+
                 </label>
 
                 <select id="doctorVerificationFilter">
 
                     <option value="">
+
                         সব Verification
+
                     </option>
 
                     <option value="verified">
+
                         Verified
+
                     </option>
 
                     <option value="unverified">
+
                         Unverified
+
                     </option>
 
                 </select>
@@ -401,7 +491,9 @@
                     class="doctor-clear-filters-btn"
                     id="doctorClearFilters"
                 >
+
                     Clear Filters
+
                 </button>
 
             </div>
@@ -419,7 +511,9 @@
         >
 
             <div class="doctor-loading">
+
                 ডাক্তারদের তথ্য লোড হচ্ছে...
+
             </div>
 
         </div>
@@ -439,7 +533,9 @@
                 id="doctorPaginationInfo"
                 class="doctor-pagination-info"
             >
+
                 Showing 0–0 of 0 doctors
+
             </div>
 
 
@@ -447,6 +543,7 @@
                 id="doctorPaginationButtons"
                 class="doctor-pagination-buttons"
             >
+
             </div>
 
         </div>
@@ -481,11 +578,15 @@
                 <div>
 
                     <span class="doctor-section-label">
+
                         DOCTOR
+
                     </span>
 
                     <h2 id="doctorModalTitle">
+
                         Add Doctor
+
                     </h2>
 
                 </div>
@@ -497,7 +598,9 @@
                     id="doctorModalClose"
                     aria-label="Close"
                 >
+
                     ×
+
                 </button>
 
             </div>
@@ -529,11 +632,15 @@
                     <div class="doctor-form-section-heading">
 
                         <h3>
+
                             Basic Information
+
                         </h3>
 
                         <p>
+
                             নামের তথ্য আবশ্যক।
+
                         </p>
 
                     </div>
@@ -550,7 +657,9 @@
                                 Name
 
                                 <span class="required">
+
                                     *
+
                                 </span>
 
                             </label>
@@ -575,7 +684,9 @@
                                 বাংলা নাম
 
                                 <span class="required">
+
                                     *
+
                                 </span>
 
                             </label>
@@ -596,7 +707,9 @@
                         <div class="doctor-form-group">
 
                             <label for="doctorDegree">
+
                                 Degree
+
                             </label>
 
                             <input
@@ -615,7 +728,9 @@
                         <div class="doctor-form-group">
 
                             <label for="doctorSpecialization">
+
                                 Specialization
+
                             </label>
 
                             <input
@@ -634,7 +749,9 @@
                         <div class="doctor-form-group doctor-form-group-full">
 
                             <label for="doctorDepartment">
+
                                 Department
+
                             </label>
 
                             <input
@@ -661,11 +778,15 @@
                     <div class="doctor-form-section-heading">
 
                         <h3>
+
                             Location
+
                         </h3>
 
                         <p>
+
                             বিভাগ → জেলা → উপজেলা অনুযায়ী অবস্থান নির্বাচন করুন।
+
                         </p>
 
                     </div>
@@ -678,13 +799,17 @@
                         <div class="doctor-form-group">
 
                             <label for="doctorDivision">
+
                                 Division
+
                             </label>
 
                             <select id="doctorDivision">
 
                                 <option value="">
+
                                     বিভাগ নির্বাচন করুন
+
                                 </option>
 
                             </select>
@@ -697,7 +822,9 @@
                         <div class="doctor-form-group">
 
                             <label for="doctorDistrict">
+
                                 District
+
                             </label>
 
                             <select
@@ -706,7 +833,9 @@
                             >
 
                                 <option value="">
+
                                     জেলা নির্বাচন করুন
+
                                 </option>
 
                             </select>
@@ -719,7 +848,9 @@
                         <div class="doctor-form-group">
 
                             <label for="doctorUpazila">
+
                                 Upazila
+
                             </label>
 
                             <select
@@ -728,7 +859,9 @@
                             >
 
                                 <option value="">
+
                                     উপজেলা নির্বাচন করুন
+
                                 </option>
 
                             </select>
@@ -749,11 +882,15 @@
                     <div class="doctor-form-section-heading">
 
                         <h3>
+
                             Contact Information
+
                         </h3>
 
                         <p>
+
                             সবগুলো optional।
+
                         </p>
 
                     </div>
@@ -766,7 +903,9 @@
                         <div class="doctor-form-group">
 
                             <label for="doctorPhone">
+
                                 Phone
+
                             </label>
 
                             <input
@@ -785,7 +924,9 @@
                         <div class="doctor-form-group">
 
                             <label for="doctorEmail">
+
                                 Email
+
                             </label>
 
                             <input
@@ -804,7 +945,9 @@
                         <div class="doctor-form-group doctor-form-group-full">
 
                             <label for="doctorChamberInfo">
+
                                 Chamber Info
+
                             </label>
 
                             <textarea
@@ -822,7 +965,9 @@
                         <div class="doctor-form-group doctor-form-group-full">
 
                             <label for="doctorVisitingHours">
+
                                 Visiting Hours
+
                             </label>
 
                             <textarea
@@ -840,6 +985,164 @@
 
 
                 <!-- =================================================
+                     ASSOCIATED HOSPITALS
+                ================================================== -->
+
+                <div class="doctor-form-section">
+
+                    <div class="doctor-form-section-heading">
+
+                        <h3>
+
+                            Associated Hospitals
+
+                        </h3>
+
+                        <p>
+
+                            এই ডাক্তার কোন কোন হাসপাতালে যুক্ত আছেন তা নির্ধারণ করুন।
+
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        id="doctorHospitalAssignments"
+                        class="doctor-form-grid"
+                    >
+
+                        <!-- Hospital Assignment Row -->
+
+                        <div
+                            class="doctor-form-group doctor-form-group-full"
+                        >
+
+                            <label for="doctorHospital">
+
+                                Hospital
+
+                            </label>
+
+                            <select
+                                id="doctorHospital"
+                                name="hospital_id"
+                                disabled
+                            >
+
+                                <option value="">
+
+                                    হাসপাতাল নির্বাচন করুন
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorHospitalDepartment">
+
+                                Department
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="doctorHospitalDepartment"
+                                name="hospital_department"
+                                placeholder="যেমন: Cardiology"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorHospitalDesignation">
+
+                                Designation
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="doctorHospitalDesignation"
+                                name="hospital_designation"
+                                placeholder="যেমন: Consultant"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorHospitalVisitingDays">
+
+                                Visiting Days
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="doctorHospitalVisitingDays"
+                                name="hospital_visiting_days"
+                                placeholder="যেমন: শনি, সোম, বুধ"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorHospitalVisitingHours">
+
+                                Visiting Hours
+
+                            </label>
+
+                            <input
+                                type="text"
+                                id="doctorHospitalVisitingHours"
+                                name="hospital_visiting_hours"
+                                placeholder="যেমন: বিকেল ৪টা–৮টা"
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            margin-top: 16px;
+                            display: flex;
+                            justify-content: flex-start;
+                        "
+                    >
+
+                        <button
+                            type="button"
+                            class="doctor-card-btn"
+                            id="doctorAddHospitalBtn"
+                        >
+
+                            + Add Hospital
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
                      STATUS
                 ================================================== -->
 
@@ -848,7 +1151,9 @@
                     <div class="doctor-form-section-heading">
 
                         <h3>
+
                             Status
+
                         </h3>
 
                     </div>
@@ -865,7 +1170,9 @@
                             >
 
                             <span>
+
                                 Verified
+
                             </span>
 
                         </label>
@@ -881,7 +1188,9 @@
                             >
 
                             <span>
+
                                 Active
+
                             </span>
 
                         </label>
@@ -902,7 +1211,9 @@
                         class="doctor-cancel-btn"
                         id="doctorCancelBtn"
                     >
+
                         Cancel
+
                     </button>
 
 
@@ -911,7 +1222,9 @@
                         class="doctor-save-btn"
                         id="doctorSaveBtn"
                     >
+
                         Save Doctor
+
                     </button>
 
                 </div>
@@ -954,10 +1267,13 @@
 ====================================================== -->
 
 <script src="../js/config.js"></script>
+
 <script src="../js/admin-guard.js"></script>
+
 <script src="../js/admin-crud.js"></script>
 
 <!-- Doctor -->
+
 <script src="../js/admin-doctor.js"></script>
 
 </body>
