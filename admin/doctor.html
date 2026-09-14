@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Dorkari — Doctor Management</title>
+
+    <!-- Google Font -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Main Theme -->
+    <link
+        rel="stylesheet"
+        href="../css/variables.css"
+    >
+
+    <!-- Admin -->
+    <link
+        rel="stylesheet"
+        href="../css/admin.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="../css/admin-crud.css"
+    >
+
+    <!-- Doctor -->
+    <link
+        rel="stylesheet"
+        href="../css/admin-doctor.css"
+    >
+</head>
+
+<body>
+
+<div class="doctor-page">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="doctor-header">
+
+        <div class="doctor-header-left">
+
+            <a
+                href="./dashboard.html"
+                class="doctor-back"
+            >
+                ← Dashboard
+            </a>
+
+            <div>
+
+                <span class="doctor-eyebrow">
+                    DORKARI ADMIN
+                </span>
+
+                <h1>
+                    Doctor Management
+                </h1>
+
+                <p>
+                    ডাক্তারদের তথ্য পরিচালনা করুন
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="doctor-header-actions">
+
+            <button
+                type="button"
+                class="doctor-refresh-btn"
+                id="doctorRefresh"
+            >
+                ↻ Refresh
+            </button>
+
+            <button
+                type="button"
+                class="doctor-add-btn"
+                id="doctorAddBtn"
+            >
+                + Add Doctor
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         STATISTICS
+    ====================================================== -->
+
+    <section class="doctor-stats">
+
+        <div class="doctor-stat-card">
+
+            <span class="doctor-stat-icon">
+                👨‍⚕️
+            </span>
+
+            <div>
+
+                <span>
+                    Total Doctors
+                </span>
+
+                <strong id="doctorTotalCount">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="doctor-stat-card">
+
+            <span class="doctor-stat-icon">
+                ✓
+            </span>
+
+            <div>
+
+                <span>
+                    Active Doctors
+                </span>
+
+                <strong id="doctorActiveCount">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="doctor-stat-card">
+
+            <span class="doctor-stat-icon">
+                ●
+            </span>
+
+            <div>
+
+                <span>
+                    Verified
+                </span>
+
+                <strong id="doctorVerifiedCount">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DOCTOR LIST PANEL
+    ====================================================== -->
+
+    <section class="doctor-panel">
+
+        <div class="doctor-panel-heading">
+
+            <div>
+
+                <span class="doctor-section-label">
+                    DOCTORS
+                </span>
+
+                <h2>
+                    Doctor List
+                </h2>
+
+            </div>
+
+            <span
+                id="doctorResultCount"
+                class="doctor-result-count"
+            >
+                Loading...
+            </span>
+
+        </div>
+
+
+        <!-- =================================================
+             SEARCH / FILTER AREA
+        ================================================== -->
+
+        <div
+            class="doctor-filters"
+            id="doctorFilters"
+        >
+
+            <div class="doctor-field doctor-search-field">
+
+                <label for="doctorSearch">
+                    Search
+                </label>
+
+                <input
+                    type="search"
+                    id="doctorSearch"
+                    placeholder="নাম, specialization, department..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="doctor-field">
+
+                <label for="doctorSpecializationFilter">
+                    Specialization
+                </label>
+
+                <select id="doctorSpecializationFilter">
+
+                    <option value="">
+                        সব Specialization
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="doctor-field">
+
+                <label for="doctorDepartmentFilter">
+                    Department
+                </label>
+
+                <select id="doctorDepartmentFilter">
+
+                    <option value="">
+                        সব Department
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="doctor-field">
+
+                <label for="doctorStatusFilter">
+                    Status
+                </label>
+
+                <select id="doctorStatusFilter">
+
+                    <option value="">
+                        সব Status
+                    </option>
+
+                    <option value="active">
+                        Active
+                    </option>
+
+                    <option value="inactive">
+                        Inactive
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="doctor-field">
+
+                <label for="doctorVerificationFilter">
+                    Verification
+                </label>
+
+                <select id="doctorVerificationFilter">
+
+                    <option value="">
+                        সব
+                    </option>
+
+                    <option value="verified">
+                        Verified
+                    </option>
+
+                    <option value="unverified">
+                        Unverified
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="doctor-filter-actions">
+
+                <button
+                    type="button"
+                    class="doctor-clear-btn"
+                    id="doctorClearFilters"
+                >
+                    Clear Filters
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             LIST
+        ================================================== -->
+
+        <div
+            id="doctorList"
+            class="doctor-list"
+        >
+
+            <div class="doctor-loading">
+                ডাক্তারদের তথ্য লোড হচ্ছে...
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PAGINATION
+        ================================================== -->
+
+        <div
+            id="doctorPagination"
+            class="doctor-pagination"
+            hidden
+        >
+
+            <div
+                id="doctorPaginationInfo"
+                class="doctor-pagination-info"
+            ></div>
+
+            <div
+                id="doctorPaginationButtons"
+                class="doctor-pagination-buttons"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         DOCTOR MODAL
+    ====================================================== -->
+
+    <div
+        id="doctorModal"
+        class="doctor-modal"
+        aria-hidden="true"
+    >
+
+        <div
+            class="doctor-modal-backdrop"
+            data-action="close-modal"
+        ></div>
+
+        <div class="doctor-modal-box">
+
+            <div class="doctor-modal-header">
+
+                <div>
+
+                    <span class="doctor-section-label">
+                        DOCTOR
+                    </span>
+
+                    <h2 id="doctorModalTitle">
+                        Add Doctor
+                    </h2>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="doctor-modal-close"
+                    id="doctorModalClose"
+                    aria-label="Close"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form
+                id="doctorForm"
+                class="doctor-form"
+                novalidate
+            >
+
+                <input
+                    type="hidden"
+                    id="doctorId"
+                >
+
+
+                <div class="doctor-form-grid">
+
+                    <div class="doctor-field">
+
+                        <label for="doctorName">
+                            Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="doctorName"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="doctor-field">
+
+                        <label for="doctorNameBn">
+                            বাংলা নাম
+                        </label>
+
+                        <input
+                            type="text"
+                            id="doctorNameBn"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="doctor-field">
+
+                        <label for="doctorDegree">
+                            Degree
+                        </label>
+
+                        <input
+                            type="text"
+                            id="doctorDegree"
+                        >
+
+                    </div>
+
+
+                    <div class="doctor-field">
+
+                        <label for="doctorSpecialization">
+                            Specialization
+                        </label>
+
+                        <input
+                            type="text"
+                            id="doctorSpecialization"
+                        >
+
+                    </div>
+
+
+                    <div class="doctor-field">
+
+                        <label for="doctorDepartment">
+                            Department
+                        </label>
+
+                        <input
+                            type="text"
+                            id="doctorDepartment"
+                        >
+
+                    </div>
+
+
+                    <div class="doctor-field">
+
+                        <label for="doctorPhone">
+                            Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            id="doctorPhone"
+                        >
+
+                    </div>
+
+
+                    <div class="doctor-field">
+
+                        <label for="doctorEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="doctorEmail"
+                        >
+
+                    </div>
+
+
+                    <div class="doctor-field doctor-field-full">
+
+                        <label for="doctorChamberInfo">
+                            Chamber Info
+                        </label>
+
+                        <textarea
+                            id="doctorChamberInfo"
+                            rows="3"
+                        ></textarea>
+
+                    </div>
+
+
+                    <div class="doctor-field doctor-field-full">
+
+                        <label for="doctorVisitingHours">
+                            Visiting Hours
+                        </label>
+
+                        <textarea
+                            id="doctorVisitingHours"
+                            rows="3"
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <div class="doctor-form-section">
+
+                    <h3>
+                        Status
+                    </h3>
+
+                    <div class="doctor-check-row">
+
+                        <label class="doctor-checkbox">
+
+                            <input
+                                type="checkbox"
+                                id="doctorVerified"
+                            >
+
+                            <span>
+                                Verified
+                            </span>
+
+                        </label>
+
+
+                        <label class="doctor-checkbox">
+
+                            <input
+                                type="checkbox"
+                                id="doctorActive"
+                                checked
+                            >
+
+                            <span>
+                                Active
+                            </span>
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <div class="doctor-form-actions">
+
+                    <button
+                        type="button"
+                        class="doctor-cancel-btn"
+                        id="doctorCancelBtn"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="doctor-save-btn"
+                        id="doctorSaveBtn"
+                    >
+                        Save Doctor
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         TOAST
+    ====================================================== -->
+
+    <div
+        id="doctorToast"
+        class="doctor-toast"
+        role="status"
+        aria-live="polite"
+    >
+
+        <span id="doctorToastMessage"></span>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SCRIPTS
+====================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="../js/config.js"></script>
+
+<script src="../js/admin-guard.js"></script>
+
+<script src="../js/admin-crud.js"></script>
+
+<script src="../js/admin-doctor.js"></script>
+
+</body>
+
+</html>
