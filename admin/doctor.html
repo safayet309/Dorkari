@@ -3,25 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Dorkari — Doctor Management</title>
 
     <!-- Google Font -->
-    <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-    >
-
-    <link
-        rel="preconnect"
-        href="https://fonts.gstatic.com"
-        crossorigin
-    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800&display=swap"
@@ -29,27 +17,14 @@
     >
 
     <!-- Main Theme -->
-    <link
-        rel="stylesheet"
-        href="../css/variables.css"
-    >
+    <link rel="stylesheet" href="../css/variables.css">
 
     <!-- Admin -->
-    <link
-        rel="stylesheet"
-        href="../css/admin.css"
-    >
-
-    <link
-        rel="stylesheet"
-        href="../css/admin-crud.css"
-    >
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin-crud.css">
 
     <!-- Doctor -->
-    <link
-        rel="stylesheet"
-        href="../css/admin-doctor.css"
-    >
+    <link rel="stylesheet" href="../css/admin-doctor.css">
 </head>
 
 <body>
@@ -82,12 +57,13 @@
                 </h1>
 
                 <p>
-                    ডাক্তারদের তথ্য পরিচালনা করুন
+                    ডাক্তারদের তথ্য ও অবস্থান পরিচালনা করুন
                 </p>
 
             </div>
 
         </div>
+
 
         <div class="doctor-header-actions">
 
@@ -184,7 +160,7 @@
 
 
     <!-- =====================================================
-         DOCTOR LIST PANEL
+         DOCTOR LIST
     ====================================================== -->
 
     <section class="doctor-panel">
@@ -201,32 +177,47 @@
                     Doctor List
                 </h2>
 
+                <p>
+                    ডাক্তারদের তালিকা, specialization ও অবস্থান দেখুন।
+                </p>
+
             </div>
 
-            <span
-                id="doctorResultCount"
-                class="doctor-result-count"
-            >
-                Loading...
-            </span>
+
+            <div class="doctor-result-count">
+
+                <span id="doctorResultCount">
+                    0
+                </span>
+
+                <span>
+                    Doctors
+                </span>
+
+            </div>
 
         </div>
 
 
         <!-- =================================================
-             SEARCH / FILTER AREA
+             SEARCH
         ================================================== -->
 
-        <div
-            class="doctor-filters"
-            id="doctorFilters"
-        >
+        <div class="doctor-search-row">
 
-            <div class="doctor-field doctor-search-field">
+            <label
+                for="doctorSearch"
+                class="doctor-search-label"
+            >
+                Search Doctor
+            </label>
 
-                <label for="doctorSearch">
-                    Search
-                </label>
+
+            <div class="doctor-search-box">
+
+                <span class="doctor-search-icon">
+                    🔎
+                </span>
 
                 <input
                     type="search"
@@ -237,8 +228,81 @@
 
             </div>
 
+        </div>
 
-            <div class="doctor-field">
+
+        <!-- =================================================
+             FILTERS
+        ================================================== -->
+
+        <div class="doctor-filters">
+
+            <!-- Division -->
+
+            <div class="doctor-filter-group">
+
+                <label for="doctorDivisionFilter">
+                    Division
+                </label>
+
+                <select id="doctorDivisionFilter">
+
+                    <option value="">
+                        সব বিভাগ
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- District -->
+
+            <div class="doctor-filter-group">
+
+                <label for="doctorDistrictFilter">
+                    District
+                </label>
+
+                <select
+                    id="doctorDistrictFilter"
+                    disabled
+                >
+
+                    <option value="">
+                        সব জেলা
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Upazila -->
+
+            <div class="doctor-filter-group">
+
+                <label for="doctorUpazilaFilter">
+                    Upazila
+                </label>
+
+                <select
+                    id="doctorUpazilaFilter"
+                    disabled
+                >
+
+                    <option value="">
+                        সব উপজেলা
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Specialization -->
+
+            <div class="doctor-filter-group">
 
                 <label for="doctorSpecializationFilter">
                     Specialization
@@ -255,7 +319,9 @@
             </div>
 
 
-            <div class="doctor-field">
+            <!-- Department -->
+
+            <div class="doctor-filter-group">
 
                 <label for="doctorDepartmentFilter">
                     Department
@@ -272,7 +338,9 @@
             </div>
 
 
-            <div class="doctor-field">
+            <!-- Status -->
+
+            <div class="doctor-filter-group">
 
                 <label for="doctorStatusFilter">
                     Status
@@ -297,7 +365,9 @@
             </div>
 
 
-            <div class="doctor-field">
+            <!-- Verification -->
+
+            <div class="doctor-filter-group">
 
                 <label for="doctorVerificationFilter">
                     Verification
@@ -306,7 +376,7 @@
                 <select id="doctorVerificationFilter">
 
                     <option value="">
-                        সব
+                        সব Verification
                     </option>
 
                     <option value="verified">
@@ -322,11 +392,13 @@
             </div>
 
 
-            <div class="doctor-filter-actions">
+            <!-- Clear -->
+
+            <div class="doctor-filter-action">
 
                 <button
                     type="button"
-                    class="doctor-clear-btn"
+                    class="doctor-clear-filters-btn"
                     id="doctorClearFilters"
                 >
                     Clear Filters
@@ -338,7 +410,7 @@
 
 
         <!-- =================================================
-             LIST
+             DOCTOR LIST AREA
         ================================================== -->
 
         <div
@@ -366,12 +438,16 @@
             <div
                 id="doctorPaginationInfo"
                 class="doctor-pagination-info"
-            ></div>
+            >
+                Showing 0–0 of 0 doctors
+            </div>
+
 
             <div
                 id="doctorPaginationButtons"
                 class="doctor-pagination-buttons"
-            ></div>
+            >
+            </div>
 
         </div>
 
@@ -383,17 +459,22 @@
     ====================================================== -->
 
     <div
-        id="doctorModal"
         class="doctor-modal"
+        id="doctorModal"
         aria-hidden="true"
     >
 
-        <div
-            class="doctor-modal-backdrop"
-            data-action="close-modal"
-        ></div>
+        <div class="doctor-modal-overlay"></div>
 
-        <div class="doctor-modal-box">
+
+        <div
+            class="doctor-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="doctorModalTitle"
+        >
+
+            <!-- Modal Header -->
 
             <div class="doctor-modal-header">
 
@@ -409,6 +490,7 @@
 
                 </div>
 
+
                 <button
                     type="button"
                     class="doctor-modal-close"
@@ -421,163 +503,365 @@
             </div>
 
 
+            <!-- Modal Form -->
+
             <form
                 id="doctorForm"
                 class="doctor-form"
                 novalidate
             >
 
+                <!-- Hidden ID -->
+
                 <input
                     type="hidden"
                     id="doctorId"
+                    name="doctorId"
                 >
 
 
-                <div class="doctor-form-grid">
+                <!-- =================================================
+                     BASIC INFORMATION
+                ================================================== -->
 
-                    <div class="doctor-field">
+                <div class="doctor-form-section">
 
-                        <label for="doctorName">
-                            Name
-                        </label>
+                    <div class="doctor-form-section-heading">
 
-                        <input
-                            type="text"
-                            id="doctorName"
-                            required
-                        >
+                        <h3>
+                            Basic Information
+                        </h3>
 
-                    </div>
-
-
-                    <div class="doctor-field">
-
-                        <label for="doctorNameBn">
-                            বাংলা নাম
-                        </label>
-
-                        <input
-                            type="text"
-                            id="doctorNameBn"
-                            required
-                        >
+                        <p>
+                            নামের তথ্য আবশ্যক।
+                        </p>
 
                     </div>
 
 
-                    <div class="doctor-field">
+                    <div class="doctor-form-grid">
 
-                        <label for="doctorDegree">
-                            Degree
-                        </label>
+                        <!-- Name -->
 
-                        <input
-                            type="text"
-                            id="doctorDegree"
-                        >
+                        <div class="doctor-form-group">
 
-                    </div>
+                            <label for="doctorName">
 
+                                Name
 
-                    <div class="doctor-field">
+                                <span class="required">
+                                    *
+                                </span>
 
-                        <label for="doctorSpecialization">
-                            Specialization
-                        </label>
+                            </label>
 
-                        <input
-                            type="text"
-                            id="doctorSpecialization"
-                        >
+                            <input
+                                type="text"
+                                id="doctorName"
+                                name="name"
+                                placeholder="Doctor name"
+                                autocomplete="off"
+                            >
 
-                    </div>
-
-
-                    <div class="doctor-field">
-
-                        <label for="doctorDepartment">
-                            Department
-                        </label>
-
-                        <input
-                            type="text"
-                            id="doctorDepartment"
-                        >
-
-                    </div>
+                        </div>
 
 
-                    <div class="doctor-field">
+                        <!-- Bangla Name -->
 
-                        <label for="doctorPhone">
-                            Phone
-                        </label>
+                        <div class="doctor-form-group">
 
-                        <input
-                            type="text"
-                            id="doctorPhone"
-                        >
+                            <label for="doctorNameBn">
 
-                    </div>
+                                বাংলা নাম
 
+                                <span class="required">
+                                    *
+                                </span>
 
-                    <div class="doctor-field">
+                            </label>
 
-                        <label for="doctorEmail">
-                            Email
-                        </label>
+                            <input
+                                type="text"
+                                id="doctorNameBn"
+                                name="name_bn"
+                                placeholder="ডাক্তারের বাংলা নাম"
+                                autocomplete="off"
+                            >
 
-                        <input
-                            type="email"
-                            id="doctorEmail"
-                        >
-
-                    </div>
+                        </div>
 
 
-                    <div class="doctor-field doctor-field-full">
+                        <!-- Degree -->
 
-                        <label for="doctorChamberInfo">
-                            Chamber Info
-                        </label>
+                        <div class="doctor-form-group">
 
-                        <textarea
-                            id="doctorChamberInfo"
-                            rows="3"
-                        ></textarea>
+                            <label for="doctorDegree">
+                                Degree
+                            </label>
 
-                    </div>
+                            <input
+                                type="text"
+                                id="doctorDegree"
+                                name="degree"
+                                placeholder="MBBS, FCPS, MD..."
+                                autocomplete="off"
+                            >
+
+                        </div>
 
 
-                    <div class="doctor-field doctor-field-full">
+                        <!-- Specialization -->
 
-                        <label for="doctorVisitingHours">
-                            Visiting Hours
-                        </label>
+                        <div class="doctor-form-group">
 
-                        <textarea
-                            id="doctorVisitingHours"
-                            rows="3"
-                        ></textarea>
+                            <label for="doctorSpecialization">
+                                Specialization
+                            </label>
+
+                            <input
+                                type="text"
+                                id="doctorSpecialization"
+                                name="specialization"
+                                placeholder="Cardiology, Medicine..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <!-- Department -->
+
+                        <div class="doctor-form-group doctor-form-group-full">
+
+                            <label for="doctorDepartment">
+                                Department
+                            </label>
+
+                            <input
+                                type="text"
+                                id="doctorDepartment"
+                                name="department"
+                                placeholder="Department name"
+                                autocomplete="off"
+                            >
+
+                        </div>
 
                     </div>
 
                 </div>
 
 
+                <!-- =================================================
+                     LOCATION
+                ================================================== -->
+
                 <div class="doctor-form-section">
 
-                    <h3>
-                        Status
-                    </h3>
+                    <div class="doctor-form-section-heading">
 
-                    <div class="doctor-check-row">
+                        <h3>
+                            Location
+                        </h3>
 
-                        <label class="doctor-checkbox">
+                        <p>
+                            বিভাগ → জেলা → উপজেলা অনুযায়ী অবস্থান নির্বাচন করুন।
+                        </p>
+
+                    </div>
+
+
+                    <div class="doctor-form-grid">
+
+                        <!-- Division -->
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorDivision">
+                                Division
+                            </label>
+
+                            <select id="doctorDivision">
+
+                                <option value="">
+                                    বিভাগ নির্বাচন করুন
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- District -->
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorDistrict">
+                                District
+                            </label>
+
+                            <select
+                                id="doctorDistrict"
+                                disabled
+                            >
+
+                                <option value="">
+                                    জেলা নির্বাচন করুন
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Upazila -->
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorUpazila">
+                                Upazila
+                            </label>
+
+                            <select
+                                id="doctorUpazila"
+                                disabled
+                            >
+
+                                <option value="">
+                                    উপজেলা নির্বাচন করুন
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     CONTACT
+                ================================================== -->
+
+                <div class="doctor-form-section">
+
+                    <div class="doctor-form-section-heading">
+
+                        <h3>
+                            Contact Information
+                        </h3>
+
+                        <p>
+                            সবগুলো optional।
+                        </p>
+
+                    </div>
+
+
+                    <div class="doctor-form-grid">
+
+                        <!-- Phone -->
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorPhone">
+                                Phone
+                            </label>
+
+                            <input
+                                type="text"
+                                id="doctorPhone"
+                                name="phone"
+                                placeholder="01XXXXXXXXX"
+                                autocomplete="tel"
+                            >
+
+                        </div>
+
+
+                        <!-- Email -->
+
+                        <div class="doctor-form-group">
+
+                            <label for="doctorEmail">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                id="doctorEmail"
+                                name="email"
+                                placeholder="doctor@example.com"
+                                autocomplete="email"
+                            >
+
+                        </div>
+
+
+                        <!-- Chamber -->
+
+                        <div class="doctor-form-group doctor-form-group-full">
+
+                            <label for="doctorChamberInfo">
+                                Chamber Info
+                            </label>
+
+                            <textarea
+                                id="doctorChamberInfo"
+                                name="chamber_info"
+                                rows="3"
+                                placeholder="চেম্বারের তথ্য"
+                            ></textarea>
+
+                        </div>
+
+
+                        <!-- Visiting Hours -->
+
+                        <div class="doctor-form-group doctor-form-group-full">
+
+                            <label for="doctorVisitingHours">
+                                Visiting Hours
+                            </label>
+
+                            <textarea
+                                id="doctorVisitingHours"
+                                name="visiting_hours"
+                                rows="3"
+                                placeholder="যেমন: শনিবার–বৃহস্পতিবার, বিকেল ৫টা–৮টা"
+                            ></textarea>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     STATUS
+                ================================================== -->
+
+                <div class="doctor-form-section">
+
+                    <div class="doctor-form-section-heading">
+
+                        <h3>
+                            Status
+                        </h3>
+
+                    </div>
+
+
+                    <div class="doctor-status-options">
+
+                        <label class="doctor-check-option">
 
                             <input
                                 type="checkbox"
                                 id="doctorVerified"
+                                name="is_verified"
                             >
 
                             <span>
@@ -587,11 +871,12 @@
                         </label>
 
 
-                        <label class="doctor-checkbox">
+                        <label class="doctor-check-option">
 
                             <input
                                 type="checkbox"
                                 id="doctorActive"
+                                name="is_active"
                                 checked
                             >
 
@@ -606,7 +891,11 @@
                 </div>
 
 
-                <div class="doctor-form-actions">
+                <!-- =================================================
+                     ACTIONS
+                ================================================== -->
+
+                <div class="doctor-modal-actions">
 
                     <button
                         type="button"
@@ -615,6 +904,7 @@
                     >
                         Cancel
                     </button>
+
 
                     <button
                         type="submit"
@@ -638,10 +928,11 @@
     ====================================================== -->
 
     <div
-        id="doctorToast"
         class="doctor-toast"
+        id="doctorToast"
         role="status"
         aria-live="polite"
+        hidden
     >
 
         <span id="doctorToastMessage"></span>
@@ -652,17 +943,21 @@
 
 
 <!-- =====================================================
-     SCRIPTS
+     SUPABASE
 ====================================================== -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+
+<!-- =====================================================
+     PROJECT SCRIPTS
+====================================================== -->
+
 <script src="../js/config.js"></script>
-
 <script src="../js/admin-guard.js"></script>
-
 <script src="../js/admin-crud.js"></script>
 
+<!-- Doctor -->
 <script src="../js/admin-doctor.js"></script>
 
 </body>
