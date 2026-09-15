@@ -3217,6 +3217,85 @@
 
     }
 
+     
+     /* =====================================================
+       F-9.7.5 — UPDATE DOCTOR ↔ HOSPITAL RELATIONSHIPS
+    ===================================================== */
+
+    async function updateDoctorHospitalAssignments(
+        doctorId
+    ) {
+
+        const hospitalAssignments =
+            collectHospitalAssignments();
+
+        /*
+         * পুরোনো relationship প্রথমে delete করা হবে।
+         */
+        const {
+            error: deleteError
+        } =
+            await state.supabase
+                .from("doctor_hospitals")
+                .delete()
+                .eq(
+                    "doctor_id",
+                    doctorId
+                );
+
+        if (deleteError) {
+            throw deleteError;
+        }
+
+        /*
+         * নতুন assignment না থাকলে
+         * আর insert করার দরকার নেই।
+         */
+        if (
+            hospitalAssignments.length === 0
+        ) {
+            return;
+        }
+
+        const relationshipPayload =
+            hospitalAssignments.map(
+                function (assignment) {
+
+                    return {
+                        doctor_id: doctorId,
+                        hospital_id:
+                            assignment.hospital_id,
+                        department:
+                            assignment.department,
+                        designation:
+                            assignment.designation,
+                        visiting_days:
+                            assignment.visiting_days,
+                        visiting_hours:
+                            assignment.visiting_hours
+                    };
+
+                }
+            );
+
+        const {
+            error: insertError
+        } =
+            await state.supabase
+                .from("doctor_hospitals")
+                .insert(
+                    relationshipPayload
+                );
+
+        if (insertError) {
+            throw insertError;
+        }
+
+        console.log(
+            "Doctor-Hospital relationships updated:",
+            relationshipPayload
+        );
+    }
 
     /* =====================================================
        SAVE DOCTOR
@@ -3448,6 +3527,13 @@
 
             if (error) {
                 throw error;
+            }
+            if (editingDoctorId) {
+
+                await updateDoctorHospitalAssignments(
+                    editingDoctorId
+                );
+
             }
 
             /*
