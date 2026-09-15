@@ -2253,16 +2253,143 @@
 
     }
 
+    /* ===================================================== 
+   MODAL 
+===================================================== */
 
     /* =====================================================
-       MODAL
+       LOAD DOCTOR HOSPITAL ASSIGNMENTS
     ===================================================== */
+
+    async function loadDoctorHospitalAssignments(doctorId) {
+
+        const container =
+            get("doctorHospitalAssignments");
+
+        if (!container) {
+            return;
+        }
+
+        if (!state.supabase) {
+            initializeSupabase();
+        }
+
+        const {
+            data,
+            error
+        } =
+            await state.supabase
+                .from("doctor_hospitals")
+                .select(`
+                    id,
+                    hospital_id,
+                    department,
+                    designation,
+                    visiting_days,
+                    visiting_hours
+                `)
+                .eq(
+                    "doctor_id",
+                    doctorId
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                );
+
+        if (error) {
+            throw error;
+        }
+
+        const assignments =
+            data || [];
+
+        container.innerHTML = "";
+
+        if (assignments.length === 0) {
+
+            container.appendChild(
+                createHospitalAssignmentRow()
+            );
+
+            return;
+        }
+
+        assignments.forEach(
+            function (assignment) {
+
+                const row =
+                    createHospitalAssignmentRow();
+
+                const hospitalField =
+                    row.querySelector(
+                        '[data-field="hospital_id"]'
+                    );
+
+                const departmentField =
+                    row.querySelector(
+                        '[data-field="department"]'
+                    );
+
+                const designationField =
+                    row.querySelector(
+                        '[data-field="designation"]'
+                    );
+
+                const visitingDaysField =
+                    row.querySelector(
+                        '[data-field="visiting_days"]'
+                    );
+
+                const visitingHoursField =
+                    row.querySelector(
+                        '[data-field="visiting_hours"]'
+                    );
+
+                if (hospitalField) {
+                    hospitalField.value =
+                        assignment.hospital_id ||
+                        "";
+                }
+
+                if (departmentField) {
+                    departmentField.value =
+                        assignment.department ||
+                        "";
+                }
+
+                if (designationField) {
+                    designationField.value =
+                        assignment.designation ||
+                        "";
+                }
+
+                if (visitingDaysField) {
+                    visitingDaysField.value =
+                        assignment.visiting_days ||
+                        "";
+                }
+
+                if (visitingHoursField) {
+                    visitingHoursField.value =
+                        assignment.visiting_hours ||
+                        "";
+                }
+
+                container.appendChild(row);
+            }
+        );
+    }
+
+
 
     /* =====================================================
        OPEN EDIT MODAL
     ===================================================== */
 
-    function openEditModal(doctorId) {
+    async function openEditModal(doctorId) {
 
         const doctor =
             state.doctors.find(
@@ -2464,6 +2591,24 @@
 
         document.body.style.overflow =
             "hidden";
+        try {
+
+            await loadDoctorHospitalAssignments(
+                doctor.id
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Doctor-Hospital assignment load error:",
+                error
+            );
+
+            showToast(
+                "Doctor-এর Hospital তথ্য load করা যায়নি।"
+            );
+
+        }
 
 
         if (name) {
@@ -3882,7 +4027,7 @@
 
                     if (action === "edit") {
 
-                        openEditModal(
+                        await openEditModal(
                             doctorId
                         );
 
