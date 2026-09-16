@@ -258,9 +258,9 @@
                     class="government-state-cell"
                 >
                     ${escapeHTML(
-                        message ||
-                        "তথ্য লোড করা যায়নি।"
-                    )}
+            message ||
+            "তথ্য লোড করা যায়নি।"
+        )}
                 </td>
             </tr>
         `;
@@ -419,11 +419,10 @@
 
         select.innerHTML = `
             <option value="">
-                ${
-                    selectId === "governmentDistrict"
-                        ? "জেলা নির্বাচন করুন"
-                        : "সব জেলা"
-                }
+                ${selectId === "governmentDistrict"
+                ? "জেলা নির্বাচন করুন"
+                : "সব জেলা"
+            }
             </option>
         `;
 
@@ -441,11 +440,10 @@
 
         select.innerHTML = `
             <option value="">
-                ${
-                    selectId === "governmentUpazila"
-                        ? "উপজেলা নির্বাচন করুন"
-                        : "সব উপজেলা"
-                }
+                ${selectId === "governmentUpazila"
+                ? "উপজেলা নির্বাচন করুন"
+                : "সব উপজেলা"
+            }
             </option>
         `;
 
@@ -609,17 +607,18 @@
                     true
                 )
                 .order("name"),
-
             state.supabase
                 .from(UPAZILA_TABLE)
                 .select(
-                    "id,name,name_bn,district_id,division_id"
+                    "id,name,name_bn,district_id"
                 )
                 .eq(
                     "is_active",
                     true
                 )
                 .order("name")
+
+
         ]);
 
 
@@ -1296,21 +1295,20 @@
 
                                     <strong>
                                         ${escapeHTML(
-                                            name
-                                        )}
+                        name
+                    )}
                                     </strong>
 
-                                    ${
-                                        nameBn
-                                            ? `
+                                    ${nameBn
+                            ? `
                                                 <span>
                                                     ${escapeHTML(
-                                                        nameBn
-                                                    )}
+                                nameBn
+                            )}
                                                 </span>
                                               `
-                                            : ""
-                                    }
+                            : ""
+                        }
 
                                 </div>
 
@@ -1329,44 +1327,43 @@
 
                             <td>
 
-                                ${
-                                    phone
-                                        ? `
+                                ${phone
+                            ? `
                                             <a
                                                 href="tel:${escapeHTML(
-                                                    phone
-                                                )}"
+                                phone
+                            )}"
                                                 class="government-phone-link"
                                             >
                                                 ${escapeHTML(
-                                                    phone
-                                                )}
+                                phone
+                            )}
                                             </a>
                                           `
-                                        : "—"
-                                }
+                            : "—"
+                        }
 
                             </td>
 
 
                             <td>
                                 ${verificationBadge(
-                                    office.is_verified
-                                )}
+                            office.is_verified
+                        )}
                             </td>
 
 
                             <td>
                                 ${statusBadge(
-                                    office.is_active
-                                )}
+                            office.is_active
+                        )}
                             </td>
 
 
                             <td>
                                 ${renderRowActions(
-                                    office
-                                )}
+                            office
+                        )}
                             </td>
 
                         </tr>
@@ -1390,8 +1387,8 @@
                     class="government-row-btn"
                     data-action="edit"
                     data-id="${escapeHTML(
-                        office.id
-                    )}"
+            office.id
+        )}"
                 >
                     Edit
                 </button>
@@ -1402,14 +1399,13 @@
                     class="government-row-btn"
                     data-action="status"
                     data-id="${escapeHTML(
-                        office.id
-                    )}"
+            office.id
+        )}"
                 >
-                    ${
-                        office.is_active
-                            ? "Deactivate"
-                            : "Activate"
-                    }
+                    ${office.is_active
+                ? "Deactivate"
+                : "Activate"
+            }
                 </button>
 
 
@@ -1418,14 +1414,13 @@
                     class="government-row-btn"
                     data-action="verify"
                     data-id="${escapeHTML(
-                        office.id
-                    )}"
+                office.id
+            )}"
                 >
-                    ${
-                        office.is_verified
-                            ? "Unverify"
-                            : "Verify"
-                    }
+                    ${office.is_verified
+                ? "Unverify"
+                : "Verify"
+            }
                 </button>
 
 
@@ -1434,8 +1429,8 @@
                     class="government-row-btn government-row-btn-danger"
                     data-action="delete"
                     data-id="${escapeHTML(
-                        office.id
-                    )}"
+                office.id
+            )}"
                 >
                     Delete
                 </button>
@@ -1486,14 +1481,12 @@
         html += `
             <button
                 type="button"
-                data-page="${
-                    state.currentPage - 1
-                }"
-                ${
-                    state.currentPage <= 1
-                        ? "disabled"
-                        : ""
-                }
+                data-page="${state.currentPage - 1
+            }"
+                ${state.currentPage <= 1
+                ? "disabled"
+                : ""
+            }
             >
                 ‹
             </button>
@@ -1524,12 +1517,11 @@
                 <button
                     type="button"
                     data-page="${page}"
-                    class="${
-                        page ===
-                        state.currentPage
-                            ? "active"
-                            : ""
-                    }"
+                    class="${page ===
+                    state.currentPage
+                    ? "active"
+                    : ""
+                }"
                 >
                     ${page}
                 </button>
@@ -1540,14 +1532,12 @@
         html += `
             <button
                 type="button"
-                data-page="${
-                    state.currentPage + 1
-                }"
-                ${
-                    state.currentPage >= totalPages
-                        ? "disabled"
-                        : ""
-                }
+                data-page="${state.currentPage + 1
+            }"
+                ${state.currentPage >= totalPages
+                ? "disabled"
+                : ""
+            }
             >
                 ›
             </button>
