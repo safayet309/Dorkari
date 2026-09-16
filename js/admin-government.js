@@ -1,27 +1,6 @@
-```javascript
 /* =========================================================
    DORKARI — GOVERNMENT MANAGEMENT
    File: js/admin-government.js
-
-   Purpose:
-   - Government office CRUD
-   - Search
-   - Office type filter
-   - Division / District / Upazila filtering
-   - Status filter
-   - Verification filter
-   - Pagination
-   - Add / Edit
-   - Active / Inactive
-   - Verified / Unverified
-   - Location cascade
-   - Admin permission protection
-
-   Database:
-   government_offices
-   divisions
-   districts
-   upazilas
 ========================================================= */
 
 (function () {
@@ -33,20 +12,12 @@
        CONFIG
     ===================================================== */
 
-    const GOVERNMENT_TABLE =
-        "government_offices";
+    const GOVERNMENT_TABLE = "government_offices";
+    const DIVISION_TABLE = "divisions";
+    const DISTRICT_TABLE = "districts";
+    const UPAZILA_TABLE = "upazilas";
 
-    const DIVISION_TABLE =
-        "divisions";
-
-    const DISTRICT_TABLE =
-        "districts";
-
-    const UPAZILA_TABLE =
-        "upazilas";
-
-    const PAGE_SIZE =
-        10;
+    const PAGE_SIZE = 10;
 
 
     /* =====================================================
@@ -55,58 +26,37 @@
 
     const state = {
 
-        supabase:
-            null,
+        supabase: null,
+        profile: null,
 
-        profile:
-            null,
+        offices: [],
+        filteredOffices: [],
 
-        offices:
-            [],
+        divisions: [],
+        districts: [],
+        upazilas: [],
 
-        filteredOffices:
-            [],
+        currentPage: 1,
+        editingId: null,
 
-        divisions:
-            [],
-
-        districts:
-            [],
-
-        upazilas:
-            [],
-
-        currentPage:
-            1,
-
-        editingId:
-            null,
-
-        initialized:
-            false,
-
-        isSaving:
-            false,
-
-        isLoading:
-            false
+        initialized: false,
+        isSaving: false,
+        isLoading: false
 
     };
 
 
     /* =====================================================
-       DOM HELPER
+       DOM
     ===================================================== */
 
     function get(id) {
-
         return document.getElementById(id);
-
     }
 
 
     /* =====================================================
-       TEXT HELPERS
+       HELPERS
     ===================================================== */
 
     function cleanText(value) {
@@ -123,26 +73,11 @@
         return String(
             value ?? ""
         )
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
 
     }
 
@@ -159,9 +94,7 @@
     function getErrorMessage(error) {
 
         if (!error) {
-
             return "অজানা সমস্যা হয়েছে।";
-
         }
 
         return (
@@ -186,26 +119,7 @@
     }
 
 
-    function canManageGovernment() {
-
-        const admin =
-            getAdmin();
-
-        return Boolean(
-
-            admin &&
-
-            typeof admin.canManageContent ===
-            "function" &&
-
-            admin.canManageContent()
-
-        );
-
-    }
-
-
-    function initializeSupabase() {
+    function getSupabase() {
 
         const admin =
             getAdmin();
@@ -217,15 +131,15 @@
         ) {
 
             throw new Error(
-                "Admin security system পাওয়া যায়নি।"
+                "Dorkari Admin system পাওয়া যায়নি।"
             );
 
         }
 
-        state.supabase =
+        const client =
             admin.getSupabase();
 
-        if (!state.supabase) {
+        if (!client) {
 
             throw new Error(
                 "Supabase client পাওয়া যায়নি।"
@@ -233,11 +147,22 @@
 
         }
 
-        state.profile =
-            typeof admin.getProfile ===
-            "function"
-                ? admin.getProfile()
-                : null;
+        return client;
+
+    }
+
+
+    function canManageGovernment() {
+
+        const admin =
+            getAdmin();
+
+        return Boolean(
+            admin &&
+            typeof admin.canManageContent ===
+                "function" &&
+            admin.canManageContent()
+        );
 
     }
 
@@ -251,17 +176,17 @@
         const toast =
             get("governmentToast");
 
-        const toastMessage =
+        const messageEl =
             get("governmentToastMessage");
 
         if (
             !toast ||
-            !toastMessage
+            !messageEl
         ) {
             return;
         }
 
-        toastMessage.textContent =
+        messageEl.textContent =
             cleanText(message);
 
         toast.hidden =
@@ -286,83 +211,15 @@
 
 
     /* =====================================================
-       LOADING
-    ===================================================== */
-
-    function renderLoading() {
-
-        const body =
-            get("governmentTableBody");
-
-        if (!body) {
-            return;
-        }
-
-        body.innerHTML = `
-            <tr>
-                <td
-                    colspan="7"
-                    class="government-state-cell"
-                >
-                    সরকারি অফিসের তথ্য লোড হচ্ছে...
-                </td>
-            </tr>
-        `;
-
-    }
-
-
-    function renderError(message) {
-
-        const body =
-            get("governmentTableBody");
-
-        if (!body) {
-            return;
-        }
-
-        body.innerHTML = `
-            <tr>
-                <td
-                    colspan="7"
-                    class="government-state-cell"
-                >
-                    ${escapeHTML(
-                        message ||
-                        "তথ্য লোড করা যায়নি।"
-                    )}
-                </td>
-            </tr>
-        `;
-
-        const resultCount =
-            get("governmentResultCount");
-
-        if (resultCount) {
-
-            resultCount.textContent =
-                "0 results";
-
-        }
-
-        renderPagination();
-
-    }
-
-
-    /* =====================================================
-       FIND BY ID
+       LOCATION HELPERS
     ===================================================== */
 
     function findDivision(id) {
 
         return state.divisions.find(
-            function (item) {
-
-                return String(item.id) ===
-                    String(id);
-
-            }
+            item =>
+                String(item.id) ===
+                String(id)
         ) || null;
 
     }
@@ -371,12 +228,9 @@
     function findDistrict(id) {
 
         return state.districts.find(
-            function (item) {
-
-                return String(item.id) ===
-                    String(id);
-
-            }
+            item =>
+                String(item.id) ===
+                String(id)
         ) || null;
 
     }
@@ -385,20 +239,13 @@
     function findUpazila(id) {
 
         return state.upazilas.find(
-            function (item) {
-
-                return String(item.id) ===
-                    String(id);
-
-            }
+            item =>
+                String(item.id) ===
+                String(id)
         ) || null;
 
     }
 
-
-    /* =====================================================
-       LOCATION NAME
-    ===================================================== */
 
     function getLocationText(office) {
 
@@ -416,6 +263,7 @@
             findUpazila(
                 office.upazila_id
             );
+
 
         const parts = [];
 
@@ -456,9 +304,17 @@
         }
 
 
+        if (parts.length) {
+
+            return parts.join(", ");
+
+        }
+
+
         if (
-            !parts.length &&
-            cleanText(office.address)
+            cleanText(
+                office.address
+            )
         ) {
 
             return cleanText(
@@ -468,18 +324,16 @@
         }
 
 
-        return parts.length
-            ? parts.join(", ")
-            : "—";
+        return "—";
 
     }
 
 
     /* =====================================================
-       POPULATE SELECT
+       SELECT HELPERS
     ===================================================== */
 
-    function populateSelect(
+    function fillSelect(
         select,
         items,
         placeholder
@@ -489,30 +343,21 @@
             return;
         }
 
-        const currentValue =
-            select.value;
-
-        select.innerHTML = "";
-
-        const defaultOption =
-            document.createElement("option");
-
-        defaultOption.value =
-            "";
-
-        defaultOption.textContent =
-            placeholder;
-
-        select.appendChild(
-            defaultOption
-        );
+        select.innerHTML =
+            `<option value="">${
+                escapeHTML(
+                    placeholder
+                )
+            }</option>`;
 
 
         items.forEach(
             function (item) {
 
                 const option =
-                    document.createElement("option");
+                    document.createElement(
+                        "option"
+                    );
 
                 option.value =
                     item.id;
@@ -530,136 +375,15 @@
             }
         );
 
-
-        if (
-            currentValue &&
-            items.some(
-                function (item) {
-
-                    return String(item.id) ===
-                        String(currentValue);
-
-                }
-            )
-        ) {
-
-            select.value =
-                currentValue;
-
-        }
-
     }
 
 
-    /* =====================================================
-       LOCATION LOADING
-    ===================================================== */
-
-    async function loadDivisions() {
-
-        const {
-            data,
-            error
-        } =
-            await state.supabase
-                .from(DIVISION_TABLE)
-                .select(
-                    "id,name,name_bn"
-                )
-                .eq(
-                    "is_active",
-                    true
-                )
-                .order(
-                    "name"
-                );
-
-        if (error) {
-
-            throw error;
-
-        }
-
-        state.divisions =
-            Array.isArray(data)
-                ? data
-                : [];
-
-    }
-
-
-    async function loadDistricts() {
-
-        const {
-            data,
-            error
-        } =
-            await state.supabase
-                .from(DISTRICT_TABLE)
-                .select(
-                    "id,name,name_bn,division_id"
-                )
-                .eq(
-                    "is_active",
-                    true
-                )
-                .order(
-                    "name"
-                );
-
-        if (error) {
-
-            throw error;
-
-        }
-
-        state.districts =
-            Array.isArray(data)
-                ? data
-                : [];
-
-    }
-
-
-    async function loadUpazilas() {
-
-        const {
-            data,
-            error
-        } =
-            await state.supabase
-                .from(UPAZILA_TABLE)
-                .select(
-                    "id,name,name_bn,district_id,division_id"
-                )
-                .eq(
-                    "is_active",
-                    true
-                )
-                .order(
-                    "name"
-                );
-
-        if (error) {
-
-            throw error;
-
-        }
-
-        state.upazilas =
-            Array.isArray(data)
-                ? data
-                : [];
-
-    }
-
-
-    function resetDistrictSelect(
-        selectId
+    function resetDistrict(
+        id
     ) {
 
         const select =
-            get(selectId);
+            get(id);
 
         if (!select) {
             return;
@@ -667,7 +391,9 @@
 
         select.innerHTML = `
             <option value="">
-                সব জেলা
+                ${id === "governmentDistrict"
+                    ? "জেলা নির্বাচন করুন"
+                    : "সব জেলা"}
             </option>
         `;
 
@@ -677,12 +403,12 @@
     }
 
 
-    function resetUpazilaSelect(
-        selectId
+    function resetUpazila(
+        id
     ) {
 
         const select =
-            get(selectId);
+            get(id);
 
         if (!select) {
             return;
@@ -690,7 +416,9 @@
 
         select.innerHTML = `
             <option value="">
-                সব উপজেলা
+                ${id === "governmentUpazila"
+                    ? "উপজেলা নির্বাচন করুন"
+                    : "সব উপজেলা"}
             </option>
         `;
 
@@ -700,7 +428,7 @@
     }
 
 
-    function updateDistrictOptions(
+    function updateDistrictSelect(
         divisionId,
         selectId
     ) {
@@ -712,9 +440,10 @@
             return;
         }
 
+
         if (!divisionId) {
 
-            resetDistrictSelect(
+            resetDistrict(
                 selectId
             );
 
@@ -722,27 +451,27 @@
 
         }
 
+
         const districts =
             state.districts.filter(
-                function (district) {
-
-                    return String(
+                district =>
+                    String(
                         district.division_id
                     ) === String(
                         divisionId
-                    );
-
-                }
+                    )
             );
 
-        populateSelect(
+
+        fillSelect(
             select,
             districts,
             selectId ===
-                "governmentDistrictFilter"
-                ? "সব জেলা"
-                : "জেলা নির্বাচন করুন"
+                "governmentDistrict"
+                ? "জেলা নির্বাচন করুন"
+                : "সব জেলা"
         );
+
 
         select.disabled =
             districts.length === 0;
@@ -750,7 +479,7 @@
     }
 
 
-    function updateUpazilaOptions(
+    function updateUpazilaSelect(
         districtId,
         selectId
     ) {
@@ -762,9 +491,10 @@
             return;
         }
 
+
         if (!districtId) {
 
-            resetUpazilaSelect(
+            resetUpazila(
                 selectId
             );
 
@@ -772,27 +502,27 @@
 
         }
 
+
         const upazilas =
             state.upazilas.filter(
-                function (upazila) {
-
-                    return String(
+                upazila =>
+                    String(
                         upazila.district_id
                     ) === String(
                         districtId
-                    );
-
-                }
+                    )
             );
 
-        populateSelect(
+
+        fillSelect(
             select,
             upazilas,
             selectId ===
-                "governmentUpazilaFilter"
-                ? "সব উপজেলা"
-                : "উপজেলা নির্বাচন করুন"
+                "governmentUpazila"
+                ? "উপজেলা নির্বাচন করুন"
+                : "সব উপজেলা"
         );
+
 
         select.disabled =
             upazilas.length === 0;
@@ -800,33 +530,39 @@
     }
 
 
-    function initializeLocationSelects() {
+    function loadLocationOptions() {
 
-        populateSelect(
-            get("governmentDivisionFilter"),
+        fillSelect(
+            get(
+                "governmentDivisionFilter"
+            ),
             state.divisions,
             "সব বিভাগ"
         );
 
-        populateSelect(
-            get("governmentDivision"),
+
+        fillSelect(
+            get(
+                "governmentDivision"
+            ),
             state.divisions,
             "বিভাগ নির্বাচন করুন"
         );
 
-        resetDistrictSelect(
+
+        resetDistrict(
             "governmentDistrictFilter"
         );
 
-        resetUpazilaSelect(
+        resetUpazila(
             "governmentUpazilaFilter"
         );
 
-        resetDistrictSelect(
+        resetDistrict(
             "governmentDistrict"
         );
 
-        resetUpazilaSelect(
+        resetUpazila(
             "governmentUpazila"
         );
 
@@ -834,7 +570,110 @@
 
 
     /* =====================================================
-       DATA LOAD
+       LOAD LOCATIONS
+    ===================================================== */
+
+    async function loadLocations() {
+
+        const [
+            divisionsResult,
+            districtsResult,
+            upazilasResult
+        ] =
+            await Promise.all(
+                [
+
+                    state.supabase
+                        .from(
+                            DIVISION_TABLE
+                        )
+                        .select(
+                            "id,name,name_bn"
+                        )
+                        .eq(
+                            "is_active",
+                            true
+                        )
+                        .order(
+                            "name"
+                        ),
+
+                    state.supabase
+                        .from(
+                            DISTRICT_TABLE
+                        )
+                        .select(
+                            "id,name,name_bn,division_id"
+                        )
+                        .eq(
+                            "is_active",
+                            true
+                        )
+                        .order(
+                            "name"
+                        ),
+
+                    state.supabase
+                        .from(
+                            UPAZILA_TABLE
+                        )
+                        .select(
+                            "id,name,name_bn,district_id,division_id"
+                        )
+                        .eq(
+                            "is_active",
+                            true
+                        )
+                        .order(
+                            "name"
+                        )
+
+                ]
+            );
+
+
+        if (
+            divisionsResult.error
+        ) {
+
+            throw divisionsResult.error;
+
+        }
+
+        if (
+            districtsResult.error
+        ) {
+
+            throw districtsResult.error;
+
+        }
+
+        if (
+            upazilasResult.error
+        ) {
+
+            throw upazilasResult.error;
+
+        }
+
+
+        state.divisions =
+            divisionsResult.data || [];
+
+        state.districts =
+            districtsResult.data || [];
+
+        state.upazilas =
+            upazilasResult.data || [];
+
+
+        loadLocationOptions();
+
+    }
+
+
+    /* =====================================================
+       LOAD OFFICES
     ===================================================== */
 
     async function loadOffices() {
@@ -842,7 +681,9 @@
         state.isLoading =
             true;
 
+
         renderLoading();
+
 
         try {
 
@@ -881,19 +722,26 @@
                         }
                     );
 
+
             if (error) {
 
                 throw error;
 
             }
 
+
             state.offices =
                 Array.isArray(data)
                     ? data
                     : [];
 
+
+            loadOfficeTypes();
+
+
             state.currentPage =
                 1;
+
 
             applyFilters();
 
@@ -904,14 +752,18 @@
                 error
             );
 
+
             state.offices =
                 [];
 
             state.filteredOffices =
                 [];
 
+
             renderError(
-                getErrorMessage(error)
+                getErrorMessage(
+                    error
+                )
             );
 
         } finally {
@@ -925,12 +777,24 @@
 
 
     /* =====================================================
-       OFFICE TYPE OPTIONS
+       OFFICE TYPES
     ===================================================== */
 
     function loadOfficeTypes() {
 
-        const types = [];
+        const select =
+            get(
+                "governmentTypeFilter"
+            );
+
+        if (!select) {
+            return;
+        }
+
+
+        const uniqueTypes =
+            new Map();
+
 
         state.offices.forEach(
             function (office) {
@@ -940,43 +804,30 @@
                         office.office_type
                     );
 
-                if (
-                    type &&
-                    !types.some(
-                        function (item) {
 
-                            return item.toLowerCase() ===
-                                type.toLowerCase();
+                if (type) {
 
-                        }
-                    )
-                ) {
-
-                    types.push(type);
+                    uniqueTypes.set(
+                        type.toLowerCase(),
+                        type
+                    );
 
                 }
 
             }
         );
 
-        types.sort(
-            function (a, b) {
 
-                return a.localeCompare(
-                    b,
-                    "en"
-                );
+        const types =
+            Array.from(
+                uniqueTypes.values()
+            ).sort(
+                (a, b) =>
+                    a.localeCompare(
+                        b
+                    )
+            );
 
-            }
-        );
-
-
-        const select =
-            get("governmentTypeFilter");
-
-        if (!select) {
-            return;
-        }
 
         select.innerHTML = `
             <option value="">
@@ -989,7 +840,9 @@
             function (type) {
 
                 const option =
-                    document.createElement("option");
+                    document.createElement(
+                        "option"
+                    );
 
                 option.value =
                     type;
@@ -1008,46 +861,58 @@
 
 
     /* =====================================================
-       FILTERING
+       FILTERS
     ===================================================== */
 
     function applyFilters() {
 
         const search =
             cleanText(
-                get("governmentSearch")
-                    ?.value
+                get(
+                    "governmentSearch"
+                )?.value
             ).toLowerCase();
+
 
         const type =
             cleanText(
-                get("governmentTypeFilter")
-                    ?.value
+                get(
+                    "governmentTypeFilter"
+                )?.value
             ).toLowerCase();
+
 
         const divisionId =
             cleanText(
-                get("governmentDivisionFilter")
-                    ?.value
+                get(
+                    "governmentDivisionFilter"
+                )?.value
             );
+
 
         const districtId =
             cleanText(
-                get("governmentDistrictFilter")
-                    ?.value
+                get(
+                    "governmentDistrictFilter"
+                )?.value
             );
+
 
         const upazilaId =
             cleanText(
-                get("governmentUpazilaFilter")
-                    ?.value
+                get(
+                    "governmentUpazilaFilter"
+                )?.value
             );
+
 
         const status =
             cleanText(
-                get("governmentStatusFilter")
-                    ?.value
+                get(
+                    "governmentStatusFilter"
+                )?.value
             );
+
 
         const verification =
             cleanText(
@@ -1069,6 +934,7 @@
                             office.address,
                             office.phone,
                             office.email,
+                            office.website,
                             office.description
                         ]
                             .map(cleanText)
@@ -1092,8 +958,7 @@
                         type &&
                         cleanText(
                             office.office_type
-                        ).toLowerCase() !==
-                        type
+                        ).toLowerCase() !== type
                     ) {
 
                         return false;
@@ -1105,8 +970,7 @@
                         divisionId &&
                         String(
                             office.division_id
-                        ) !==
-                        String(
+                        ) !== String(
                             divisionId
                         )
                     ) {
@@ -1120,8 +984,7 @@
                         districtId &&
                         String(
                             office.district_id
-                        ) !==
-                        String(
+                        ) !== String(
                             districtId
                         )
                     ) {
@@ -1135,8 +998,7 @@
                         upazilaId &&
                         String(
                             office.upazila_id
-                        ) !==
-                        String(
+                        ) !== String(
                             upazilaId
                         )
                     ) {
@@ -1147,8 +1009,7 @@
 
 
                     if (
-                        status ===
-                        "active" &&
+                        status === "active" &&
                         office.is_active !== true
                     ) {
 
@@ -1158,8 +1019,7 @@
 
 
                     if (
-                        status ===
-                        "inactive" &&
+                        status === "inactive" &&
                         office.is_active !== false
                     ) {
 
@@ -1170,7 +1030,7 @@
 
                     if (
                         verification ===
-                        "verified" &&
+                            "verified" &&
                         office.is_verified !== true
                     ) {
 
@@ -1181,7 +1041,7 @@
 
                     if (
                         verification ===
-                        "unverified" &&
+                            "unverified" &&
                         office.is_verified !== false
                     ) {
 
@@ -1217,19 +1077,17 @@
         }
 
 
-        renderOfficeTable();
-
-        renderPagination();
-
         updateStatistics();
-
         updateResultCount();
+
+        renderOfficeTable();
+        renderPagination();
 
     }
 
 
     /* =====================================================
-       STATISTICS
+       STATS
     ===================================================== */
 
     function updateStatistics() {
@@ -1237,60 +1095,56 @@
         const total =
             state.offices.length;
 
+
         const active =
             state.offices.filter(
-                function (office) {
-
-                    return office.is_active ===
-                        true;
-
-                }
+                office =>
+                    office.is_active === true
             ).length;
+
 
         const verified =
             state.offices.filter(
-                function (office) {
-
-                    return office.is_verified ===
-                        true;
-
-                }
+                office =>
+                    office.is_verified === true
             ).length;
 
 
-        const totalElement =
+        const totalEl =
             get(
                 "governmentTotalCount"
             );
 
-        const activeElement =
+        const activeEl =
             get(
                 "governmentActiveCount"
             );
 
-        const verifiedElement =
+        const verifiedEl =
             get(
                 "governmentVerifiedCount"
             );
 
 
-        if (totalElement) {
+        if (totalEl) {
 
-            totalElement.textContent =
+            totalEl.textContent =
                 formatNumber(total);
 
         }
 
-        if (activeElement) {
 
-            activeElement.textContent =
+        if (activeEl) {
+
+            activeEl.textContent =
                 formatNumber(active);
 
         }
 
-        if (verifiedElement) {
 
-            verifiedElement.textContent =
+        if (verifiedEl) {
+
+            verifiedEl.textContent =
                 formatNumber(verified);
 
         }
@@ -1309,149 +1163,131 @@
             return;
         }
 
-        const total =
-            state.filteredOffices.length;
-
 
         element.textContent =
-            `${formatNumber(total)} results`;
+            `${formatNumber(
+                state.filteredOffices.length
+            )} results`;
 
     }
 
 
     /* =====================================================
-       BADGES
+       TABLE RENDER
     ===================================================== */
 
+    function renderLoading() {
+
+        const body =
+            get(
+                "governmentTableBody"
+            );
+
+        if (!body) {
+            return;
+        }
+
+
+        body.innerHTML = `
+            <tr>
+                <td
+                    colspan="7"
+                    class="government-state-cell"
+                >
+                    সরকারি অফিসের তথ্য লোড হচ্ছে...
+                </td>
+            </tr>
+        `;
+
+    }
+
+
+    function renderError(message) {
+
+        const body =
+            get(
+                "governmentTableBody"
+            );
+
+        if (!body) {
+            return;
+        }
+
+
+        body.innerHTML = `
+            <tr>
+                <td
+                    colspan="7"
+                    class="government-state-cell"
+                >
+                    ${escapeHTML(
+                        message
+                    )}
+                </td>
+            </tr>
+        `;
+
+
+        const resultCount =
+            get(
+                "governmentResultCount"
+            );
+
+        if (resultCount) {
+
+            resultCount.textContent =
+                "0 results";
+
+        }
+
+    }
+
+
     function verificationBadge(
-        verified
+        value
     ) {
 
-        if (verified) {
-
-            return `
+        return value
+            ? `
                 <span
                     class="government-status-badge government-status-verified"
                 >
                     Verified
                 </span>
-            `;
-
-        }
-
-        return `
-            <span
-                class="government-status-badge government-status-unverified"
-            >
-                Unverified
-            </span>
-        `;
+              `
+            : `
+                <span
+                    class="government-status-badge government-status-unverified"
+                >
+                    Unverified
+                </span>
+              `;
 
     }
 
 
-    function activeBadge(
-        active
+    function statusBadge(
+        value
     ) {
 
-        if (active) {
-
-            return `
+        return value
+            ? `
                 <span
                     class="government-status-badge government-status-active"
                 >
                     Active
                 </span>
-            `;
-
-        }
-
-        return `
-            <span
-                class="government-status-badge government-status-inactive"
-            >
-                Inactive
-            </span>
-        `;
+              `
+            : `
+                <span
+                    class="government-status-badge government-status-inactive"
+                >
+                    Inactive
+                </span>
+              `;
 
     }
 
-
-    /* =====================================================
-       TABLE ACTIONS
-    ===================================================== */
-
-    function actionMenu(
-        office
-    ) {
-
-        const toggleLabel =
-            office.is_active
-                ? "Deactivate"
-                : "Activate";
-
-        const verificationLabel =
-            office.is_verified
-                ? "Mark Unverified"
-                : "Mark Verified";
-
-
-        return `
-            <div class="government-row-actions">
-
-                <button
-                    type="button"
-                    class="government-row-btn"
-                    data-action="edit"
-                    data-id="${escapeHTML(
-                        office.id
-                    )}"
-                >
-                    Edit
-                </button>
-
-                <button
-                    type="button"
-                    class="government-row-btn"
-                    data-action="toggle"
-                    data-id="${escapeHTML(
-                        office.id
-                    )}"
-                >
-                    ${toggleLabel}
-                </button>
-
-                <button
-                    type="button"
-                    class="government-row-btn"
-                    data-action="verify"
-                    data-id="${escapeHTML(
-                        office.id
-                    )}"
-                >
-                    ${verificationLabel}
-                </button>
-
-                <button
-                    type="button"
-                    class="government-row-btn government-row-btn-danger"
-                    data-action="delete"
-                    data-id="${escapeHTML(
-                        office.id
-                    )}"
-                >
-                    Delete
-                </button>
-
-            </div>
-        `;
-
-    }
-
-
-    /* =====================================================
-       TABLE
-    ===================================================== */
 
     function renderOfficeTable() {
 
@@ -1465,11 +1301,10 @@
         }
 
 
-        const total =
-            state.filteredOffices.length;
-
-
-        if (!total) {
+        if (
+            state.filteredOffices.length ===
+            0
+        ) {
 
             body.innerHTML = `
                 <tr>
@@ -1477,7 +1312,7 @@
                         colspan="7"
                         class="government-state-cell"
                     >
-                        কোনো সরকারি অফিস পাওয়া যায়নি।
+                        কোনো Government Office পাওয়া যায়নি।
                     </td>
                 </tr>
             `;
@@ -1494,14 +1329,12 @@
             ) *
             PAGE_SIZE;
 
-        const end =
-            start +
-            PAGE_SIZE;
 
         const items =
             state.filteredOffices.slice(
                 start,
-                end
+                start +
+                PAGE_SIZE
             );
 
 
@@ -1514,20 +1347,24 @@
                             office.name
                         ) || "—";
 
+
                     const nameBn =
                         cleanText(
                             office.name_bn
                         );
+
 
                     const type =
                         cleanText(
                             office.office_type
                         ) || "—";
 
+
                     const location =
                         getLocationText(
                             office
                         );
+
 
                     const phone =
                         cleanText(
@@ -1540,7 +1377,9 @@
 
                             <td>
 
-                                <div class="government-office-cell">
+                                <div
+                                    class="government-office-cell"
+                                >
 
                                     <strong>
                                         ${escapeHTML(
@@ -1580,21 +1419,24 @@
 
 
                             <td>
-                                ${phone
-                                    ? `
-                                        <a
-                                            href="tel:${escapeHTML(
-                                                phone
-                                            )}"
-                                            class="government-phone-link"
-                                        >
-                                            ${escapeHTML(
-                                                phone
-                                            )}
-                                        </a>
-                                      `
-                                    : "—"
+
+                                ${
+                                    phone
+                                        ? `
+                                            <a
+                                                href="tel:${escapeHTML(
+                                                    phone
+                                                )}"
+                                                class="government-phone-link"
+                                            >
+                                                ${escapeHTML(
+                                                    phone
+                                                )}
+                                            </a>
+                                          `
+                                        : "—"
                                 }
+
                             </td>
 
 
@@ -1606,14 +1448,14 @@
 
 
                             <td>
-                                ${activeBadge(
+                                ${statusBadge(
                                     office.is_active
                                 )}
                             </td>
 
 
                             <td>
-                                ${actionMenu(
+                                ${renderRowActions(
                                     office
                                 )}
                             </td>
@@ -1623,6 +1465,77 @@
 
                 }
             ).join("");
+
+    }
+
+
+    function renderRowActions(
+        office
+    ) {
+
+        const toggleLabel =
+            office.is_active
+                ? "Deactivate"
+                : "Activate";
+
+
+        const verificationLabel =
+            office.is_verified
+                ? "Unverify"
+                : "Verify";
+
+
+        return `
+            <div
+                class="government-row-actions"
+            >
+
+                <button
+                    type="button"
+                    class="government-row-btn"
+                    data-action="edit"
+                    data-id="${escapeHTML(
+                        office.id
+                    )}"
+                >
+                    Edit
+                </button>
+
+                <button
+                    type="button"
+                    class="government-row-btn"
+                    data-action="status"
+                    data-id="${escapeHTML(
+                        office.id
+                    )}"
+                >
+                    ${toggleLabel}
+                </button>
+
+                <button
+                    type="button"
+                    class="government-row-btn"
+                    data-action="verify"
+                    data-id="${escapeHTML(
+                        office.id
+                    )}"
+                >
+                    ${verificationLabel}
+                </button>
+
+                <button
+                    type="button"
+                    class="government-row-btn government-row-btn-danger"
+                    data-action="delete"
+                    data-id="${escapeHTML(
+                        office.id
+                    )}"
+                >
+                    Delete
+                </button>
+
+            </div>
+        `;
 
     }
 
@@ -1643,12 +1556,15 @@
         }
 
 
-        const total =
-            state.filteredOffices.length;
+        const totalPages =
+            Math.ceil(
+                state.filteredOffices.length /
+                PAGE_SIZE
+            );
 
 
         if (
-            total <= PAGE_SIZE
+            totalPages <= 1
         ) {
 
             container.innerHTML =
@@ -1659,69 +1575,38 @@
         }
 
 
-        const totalPages =
-            Math.ceil(
-                total /
-                PAGE_SIZE
-            );
-
-
-        const current =
-            state.currentPage;
-
-
-        let html =
-            "";
+        let html = "";
 
 
         html += `
             <button
                 type="button"
-                data-page="${current - 1}"
-                ${current <= 1 ? "disabled" : ""}
+                data-page="${
+                    state.currentPage - 1
+                }"
+                ${
+                    state.currentPage <= 1
+                        ? "disabled"
+                        : ""
+                }
             >
                 ‹
             </button>
         `;
 
 
-        const maxVisible =
-            5;
-
-        let startPage =
+        const startPage =
             Math.max(
                 1,
-                current -
-                Math.floor(
-                    maxVisible / 2
-                )
+                state.currentPage - 2
             );
 
-        let endPage =
+
+        const endPage =
             Math.min(
                 totalPages,
-                startPage +
-                maxVisible -
-                1
+                startPage + 4
             );
-
-
-        if (
-            endPage -
-            startPage +
-            1 <
-            maxVisible
-        ) {
-
-            startPage =
-                Math.max(
-                    1,
-                    endPage -
-                    maxVisible +
-                    1
-                );
-
-        }
 
 
         for (
@@ -1735,7 +1620,8 @@
                     type="button"
                     data-page="${page}"
                     class="${
-                        page === current
+                        page ===
+                        state.currentPage
                             ? "active"
                             : ""
                     }"
@@ -1750,9 +1636,12 @@
         html += `
             <button
                 type="button"
-                data-page="${current + 1}"
+                data-page="${
+                    state.currentPage + 1
+                }"
                 ${
-                    current >= totalPages
+                    state.currentPage >=
+                    totalPages
                         ? "disabled"
                         : ""
                 }
@@ -1764,52 +1653,6 @@
 
         container.innerHTML =
             html;
-
-    }
-
-
-    function goToPage(
-        page
-    ) {
-
-        const totalPages =
-            Math.max(
-                1,
-                Math.ceil(
-                    state.filteredOffices.length /
-                    PAGE_SIZE
-                )
-            );
-
-
-        const nextPage =
-            Number(page);
-
-
-        if (
-            !Number.isInteger(
-                nextPage
-            )
-        ) {
-            return;
-        }
-
-
-        if (
-            nextPage < 1 ||
-            nextPage > totalPages
-        ) {
-            return;
-        }
-
-
-        state.currentPage =
-            nextPage;
-
-
-        renderOfficeTable();
-
-        renderPagination();
 
     }
 
@@ -1827,12 +1670,7 @@
                 "governmentModal"
             );
 
-        const title =
-            get(
-                "governmentModalTitle"
-            );
-
-        if (!modal || !title) {
+        if (!modal) {
             return;
         }
 
@@ -1846,64 +1684,55 @@
         get(
             "governmentId"
         ).value =
-            office?.id ||
-            "";
+            office?.id || "";
 
 
         get(
             "governmentName"
         ).value =
-            office?.name ||
-            "";
+            office?.name || "";
 
 
         get(
             "governmentNameBn"
         ).value =
-            office?.name_bn ||
-            "";
+            office?.name_bn || "";
 
 
         get(
             "governmentOfficeType"
         ).value =
-            office?.office_type ||
-            "";
+            office?.office_type || "";
 
 
         get(
             "governmentDescription"
         ).value =
-            office?.description ||
-            "";
+            office?.description || "";
 
 
         get(
             "governmentPhone"
         ).value =
-            office?.phone ||
-            "";
+            office?.phone || "";
 
 
         get(
             "governmentEmail"
         ).value =
-            office?.email ||
-            "";
+            office?.email || "";
 
 
         get(
             "governmentWebsite"
         ).value =
-            office?.website ||
-            "";
+            office?.website || "";
 
 
         get(
             "governmentAddress"
         ).value =
-            office?.address ||
-            "";
+            office?.address || "";
 
 
         get(
@@ -1922,68 +1751,78 @@
                 : false;
 
 
-        const divisionSelect =
+        loadLocationOptions();
+
+
+        const division =
             get(
                 "governmentDivision"
             );
 
-        const districtSelect =
+        const district =
             get(
                 "governmentDistrict"
             );
 
-        const upazilaSelect =
+        const upazila =
             get(
                 "governmentUpazila"
             );
-
-
-        initializeLocationSelects();
 
 
         if (
             office?.division_id
         ) {
 
-            divisionSelect.value =
+            division.value =
                 office.division_id;
 
-            updateDistrictOptions(
+            updateDistrictSelect(
                 office.division_id,
                 "governmentDistrict"
             );
 
-            if (
-                office.district_id
-            ) {
-
-                districtSelect.value =
-                    office.district_id;
-
-                updateUpazilaOptions(
-                    office.district_id,
-                    "governmentUpazila"
-                );
-
-            }
+        }
 
 
-            if (
-                office.upazila_id
-            ) {
+        if (
+            office?.district_id
+        ) {
 
-                upazilaSelect.value =
-                    office.upazila_id;
+            district.value =
+                office.district_id;
 
-            }
+            updateUpazilaSelect(
+                office.district_id,
+                "governmentUpazila"
+            );
 
         }
 
 
-        title.textContent =
-            office
-                ? "Edit Government Office"
-                : "Add Government Office";
+        if (
+            office?.upazila_id
+        ) {
+
+            upazila.value =
+                office.upazila_id;
+
+        }
+
+
+        const title =
+            get(
+                "governmentModalTitle"
+            );
+
+        if (title) {
+
+            title.textContent =
+                office
+                    ? "Edit Government Office"
+                    : "Add Government Office";
+
+        }
 
 
         const saveButton =
@@ -2010,27 +1849,16 @@
         );
 
 
-        document.body.classList.add(
-            "government-modal-open"
+        setTimeout(
+            function () {
+
+                get(
+                    "governmentName"
+                )?.focus();
+
+            },
+            50
         );
-
-        const firstInput =
-            get(
-                "governmentName"
-            );
-
-        if (firstInput) {
-
-            setTimeout(
-                function () {
-
-                    firstInput.focus();
-
-                },
-                50
-            );
-
-        }
 
     }
 
@@ -2067,29 +1895,12 @@
             null;
 
 
-        const form =
-            get(
-                "governmentForm"
-            );
-
-        if (form) {
-
-            form.reset();
-
-        }
-
-
-        initializeLocationSelects();
-
-
         get(
-            "governmentId"
-        ).value =
-            "";
+            "governmentForm"
+        )?.reset();
 
-        document.body.classList.remove(
-            "government-modal-open"
-        );
+
+        loadLocationOptions();
 
     }
 
@@ -2098,30 +1909,42 @@
        VALIDATION
     ===================================================== */
 
-    function validateURL(
+    function validateEmail(
         value
     ) {
 
-        const text =
-            cleanText(value);
+        if (!value) {
+            return true;
+        }
 
-        if (!text) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+            value
+        );
+
+    }
+
+
+    function validateWebsite(
+        value
+    ) {
+
+        if (!value) {
             return true;
         }
 
         try {
 
             const url =
-                new URL(text);
+                new URL(
+                    value
+                );
 
             return (
-                url.protocol ===
-                "http:" ||
-                url.protocol ===
-                "https:"
+                url.protocol === "http:" ||
+                url.protocol === "https:"
             );
 
-        } catch (error) {
+        } catch {
 
             return false;
 
@@ -2129,241 +1952,6 @@
 
     }
 
-
-    function validateEmail(
-        value
-    ) {
-
-        const text =
-            cleanText(value);
-
-        if (!text) {
-            return true;
-        }
-
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-            text
-        );
-
-    }
-
-
-    function validateGovernmentForm() {
-
-        const name =
-            cleanText(
-                get(
-                    "governmentName"
-                )?.value
-            );
-
-        const nameBn =
-            cleanText(
-                get(
-                    "governmentNameBn"
-                )?.value
-            );
-
-        const email =
-            cleanText(
-                get(
-                    "governmentEmail"
-                )?.value
-            );
-
-        const website =
-            cleanText(
-                get(
-                    "governmentWebsite"
-                )?.value
-            );
-
-        const divisionId =
-            cleanText(
-                get(
-                    "governmentDivision"
-                )?.value
-            );
-
-        const districtId =
-            cleanText(
-                get(
-                    "governmentDistrict"
-                )?.value
-            );
-
-
-        if (!name) {
-
-            showToast(
-                "Office Name আবশ্যক।"
-            );
-
-            get(
-                "governmentName"
-            )?.focus();
-
-            return false;
-
-        }
-
-
-        if (!nameBn) {
-
-            showToast(
-                "বাংলা নাম আবশ্যক।"
-            );
-
-            get(
-                "governmentNameBn"
-            )?.focus();
-
-            return false;
-
-        }
-
-
-        if (!divisionId) {
-
-            showToast(
-                "Division নির্বাচন করুন।"
-            );
-
-            get(
-                "governmentDivision"
-            )?.focus();
-
-            return false;
-
-        }
-
-
-        if (!districtId) {
-
-            showToast(
-                "District নির্বাচন করুন।"
-            );
-
-            get(
-                "governmentDistrict"
-            )?.focus();
-
-            return false;
-
-        }
-
-
-        if (
-            email &&
-            !validateEmail(email)
-        ) {
-
-            showToast(
-                "সঠিক email address দিন।"
-            );
-
-            get(
-                "governmentEmail"
-            )?.focus();
-
-            return false;
-
-        }
-
-
-        if (
-            website &&
-            !validateURL(
-                website
-            )
-        ) {
-
-            showToast(
-                "Website URL সঠিক নয়।"
-            );
-
-            get(
-                "governmentWebsite"
-            )?.focus();
-
-            return false;
-
-        }
-
-
-        return true;
-
-    }
-
-
-    /* =====================================================
-       DUPLICATE CHECK
-    ===================================================== */
-
-    async function checkDuplicate(
-        name,
-        nameBn,
-        excludeId = null
-    ) {
-
-        const normalizedName =
-            cleanText(name)
-                .toLowerCase();
-
-        const normalizedNameBn =
-            cleanText(nameBn)
-                .toLowerCase();
-
-
-        const duplicate =
-            state.offices.find(
-                function (office) {
-
-                    if (
-                        excludeId &&
-                        String(
-                            office.id
-                        ) === String(
-                            excludeId
-                        )
-                    ) {
-
-                        return false;
-
-                    }
-
-
-                    const existingName =
-                        cleanText(
-                            office.name
-                        ).toLowerCase();
-
-                    const existingNameBn =
-                        cleanText(
-                            office.name_bn
-                        ).toLowerCase();
-
-
-                    return (
-                        existingName ===
-                        normalizedName ||
-
-                        existingNameBn ===
-                        normalizedNameBn
-                    );
-
-                }
-            );
-
-
-        return duplicate || null;
-
-    }
-
-
-    /* =====================================================
-       FORM DATA
-    ===================================================== */
 
     function getFormData() {
 
@@ -2465,8 +2053,144 @@
     }
 
 
+    function validateForm(
+        data
+    ) {
+
+        if (!data.name) {
+
+            showToast(
+                "Office Name আবশ্যক।"
+            );
+
+            get(
+                "governmentName"
+            )?.focus();
+
+            return false;
+
+        }
+
+
+        if (!data.name_bn) {
+
+            showToast(
+                "বাংলা নাম আবশ্যক।"
+            );
+
+            get(
+                "governmentNameBn"
+            )?.focus();
+
+            return false;
+
+        }
+
+
+        if (
+            data.email &&
+            !validateEmail(
+                data.email
+            )
+        ) {
+
+            showToast(
+                "সঠিক email address দিন।"
+            );
+
+            get(
+                "governmentEmail"
+            )?.focus();
+
+            return false;
+
+        }
+
+
+        if (
+            data.website &&
+            !validateWebsite(
+                data.website
+            )
+        ) {
+
+            showToast(
+                "Website URL সঠিক নয়।"
+            );
+
+            get(
+                "governmentWebsite"
+            )?.focus();
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
     /* =====================================================
-       SAVE
+       DUPLICATE
+    ===================================================== */
+
+    function findDuplicate(
+        name,
+        nameBn,
+        excludeId = null
+    ) {
+
+        const normalizedName =
+            cleanText(
+                name
+            ).toLowerCase();
+
+
+        const normalizedNameBn =
+            cleanText(
+                nameBn
+            ).toLowerCase();
+
+
+        return state.offices.find(
+            function (office) {
+
+                if (
+                    excludeId &&
+                    String(
+                        office.id
+                    ) === String(
+                        excludeId
+                    )
+                ) {
+
+                    return false;
+
+                }
+
+
+                return (
+                    cleanText(
+                        office.name
+                    ).toLowerCase() ===
+                    normalizedName ||
+
+                    cleanText(
+                        office.name_bn
+                    ).toLowerCase() ===
+                    normalizedNameBn
+                );
+
+            }
+        ) || null;
+
+    }
+
+
+    /* =====================================================
+       CREATE / UPDATE
     ===================================================== */
 
     async function saveGovernmentOffice() {
@@ -2483,17 +2207,8 @@
         ) {
 
             showToast(
-                "আপনার এই তথ্য পরিবর্তন করার অনুমতি নেই।"
+                "আপনার এই তথ্য পরিবর্তনের অনুমতি নেই।"
             );
-
-            return;
-
-        }
-
-
-        if (
-            !validateGovernmentForm()
-        ) {
 
             return;
 
@@ -2504,8 +2219,19 @@
             getFormData();
 
 
+        if (
+            !validateForm(
+                data
+            )
+        ) {
+
+            return;
+
+        }
+
+
         const duplicate =
-            await checkDuplicate(
+            findDuplicate(
                 data.name,
                 data.name_bn,
                 state.editingId
@@ -2523,22 +2249,22 @@
         }
 
 
-        const saveButton =
+        state.isSaving =
+            true;
+
+
+        const button =
             get(
                 "governmentSaveBtn"
             );
 
 
-        state.isSaving =
-            true;
+        if (button) {
 
-
-        if (saveButton) {
-
-            saveButton.disabled =
+            button.disabled =
                 true;
 
-            saveButton.textContent =
+            button.textContent =
                 state.editingId
                     ? "Updating..."
                     : "Saving...";
@@ -2572,6 +2298,7 @@
                             state.editingId
                         );
 
+
                 if (error) {
 
                     throw error;
@@ -2580,7 +2307,7 @@
 
 
                 showToast(
-                    "Government Office সফলভাবে update হয়েছে।"
+                    "Government Office update হয়েছে।"
                 );
 
             } else {
@@ -2596,6 +2323,7 @@
                             data
                         );
 
+
                 if (error) {
 
                     throw error;
@@ -2604,7 +2332,7 @@
 
 
                 showToast(
-                    "Government Office সফলভাবে যোগ হয়েছে।"
+                    "Government Office যোগ হয়েছে।"
                 );
 
             }
@@ -2632,12 +2360,13 @@
             state.isSaving =
                 false;
 
-            if (saveButton) {
 
-                saveButton.disabled =
+            if (button) {
+
+                button.disabled =
                     false;
 
-                saveButton.textContent =
+                button.textContent =
                     state.editingId
                         ? "Update Government Office"
                         : "Save Government Office";
@@ -2650,10 +2379,10 @@
 
 
     /* =====================================================
-       STATUS CHANGE
+       STATUS
     ===================================================== */
 
-    async function updateStatus(
+    async function toggleStatus(
         id
     ) {
 
@@ -2672,13 +2401,9 @@
 
         const office =
             state.offices.find(
-                function (item) {
-
-                    return String(
-                        item.id
-                    ) === String(id);
-
-                }
+                item =>
+                    String(item.id) ===
+                    String(id)
             );
 
 
@@ -2693,7 +2418,7 @@
         }
 
 
-        const nextActive =
+        const nextStatus =
             office.is_active !== true;
 
 
@@ -2709,7 +2434,7 @@
                     .update(
                         {
                             is_active:
-                                nextActive,
+                                nextStatus,
 
                             updated_at:
                                 new Date()
@@ -2730,7 +2455,7 @@
 
 
             showToast(
-                nextActive
+                nextStatus
                     ? "Office active হয়েছে।"
                     : "Office inactive হয়েছে।"
             );
@@ -2741,7 +2466,7 @@
         } catch (error) {
 
             console.error(
-                "Government status update error:",
+                "Government status error:",
                 error
             );
 
@@ -2757,10 +2482,10 @@
 
 
     /* =====================================================
-       VERIFICATION CHANGE
+       VERIFICATION
     ===================================================== */
 
-    async function updateVerification(
+    async function toggleVerification(
         id
     ) {
 
@@ -2779,13 +2504,9 @@
 
         const office =
             state.offices.find(
-                function (item) {
-
-                    return String(
-                        item.id
-                    ) === String(id);
-
-                }
+                item =>
+                    String(item.id) ===
+                    String(id)
             );
 
 
@@ -2800,7 +2521,7 @@
         }
 
 
-        const nextVerified =
+        const nextValue =
             office.is_verified !== true;
 
 
@@ -2816,7 +2537,7 @@
                     .update(
                         {
                             is_verified:
-                                nextVerified,
+                                nextValue,
 
                             updated_at:
                                 new Date()
@@ -2837,7 +2558,7 @@
 
 
             showToast(
-                nextVerified
+                nextValue
                     ? "Office verified হয়েছে।"
                     : "Office unverified করা হয়েছে।"
             );
@@ -2848,7 +2569,7 @@
         } catch (error) {
 
             console.error(
-                "Government verification update error:",
+                "Government verification error:",
                 error
             );
 
@@ -2886,13 +2607,9 @@
 
         const office =
             state.offices.find(
-                function (item) {
-
-                    return String(
-                        item.id
-                    ) === String(id);
-
-                }
+                item =>
+                    String(item.id) ===
+                    String(id)
             );
 
 
@@ -2907,16 +2624,18 @@
         }
 
 
-        const confirmed =
-            window.confirm(
-                `“${cleanText(
-                    office.name_bn ||
-                    office.name
-                )}” delete করতে চান?`
+        const label =
+            cleanText(
+                office.name_bn ||
+                office.name
             );
 
 
-        if (!confirmed) {
+        if (
+            !window.confirm(
+                `“${label}” স্থায়ীভাবে delete করতে চান?`
+            )
+        ) {
 
             return;
 
@@ -2972,573 +2691,435 @@
 
 
     /* =====================================================
-       EDIT
-    ===================================================== */
-
-    function editOffice(
-        id
-    ) {
-
-        const office =
-            state.offices.find(
-                function (item) {
-
-                    return String(
-                        item.id
-                    ) === String(id);
-
-                }
-            );
-
-
-        if (!office) {
-
-            showToast(
-                "Office পাওয়া যায়নি।"
-            );
-
-            return;
-
-        }
-
-
-        openModal(
-            office
-        );
-
-    }
-
-
-    /* =====================================================
        EVENTS
     ===================================================== */
 
     function bindEvents() {
 
-        const addButton =
-            get(
-                "governmentAddBtn"
-            );
-
-        if (addButton) {
-
-            addButton.addEventListener(
-                "click",
-                function () {
-
-                    if (
-                        !canManageGovernment()
-                    ) {
-
-                        showToast(
-                            "আপনার এই কাজের অনুমতি নেই।"
-                        );
-
-                        return;
-
-                    }
-
-                    openModal();
-
-                }
-            );
-
-        }
-
-
-        const refreshButton =
-            get(
-                "governmentRefresh"
-            );
-
-        if (refreshButton) {
-
-            refreshButton.addEventListener(
-                "click",
-                function () {
-
-                    loadOfficeTypes();
-
-                    loadOffices();
-
-                }
-            );
-
-        }
-
-
-        const cancelButton =
-            get(
-                "governmentCancelBtn"
-            );
-
-        if (cancelButton) {
-
-            cancelButton.addEventListener(
-                "click",
-                closeModal
-            );
-
-        }
-
-
-        const modalClose =
-            get(
-                "governmentModalClose"
-            );
-
-        if (modalClose) {
-
-            modalClose.addEventListener(
-                "click",
-                closeModal
-            );
-
-        }
-
-
-        const modal =
-            get(
-                "governmentModal"
-            );
-
-        if (modal) {
-
-            modal.addEventListener(
-                "click",
-                function (event) {
-
-                    if (
-                        event.target
-                            .dataset
-                            .closeModal ===
-                        "true"
-                    ) {
-
-                        closeModal();
-
-                    }
-
-                }
-            );
-
-        }
-
-
-        const form =
-            get(
-                "governmentForm"
-            );
-
-        if (form) {
-
-            form.addEventListener(
-                "submit",
-                function (event) {
-
-                    event.preventDefault();
-
-                    saveGovernmentOffice();
-
-                }
-            );
-
-        }
-
-
-        const search =
-            get(
-                "governmentSearch"
-            );
-
-        if (search) {
-
-            search.addEventListener(
-                "input",
-                function () {
-
-                    state.currentPage =
-                        1;
-
-                    applyFilters();
-
-                }
-            );
-
-        }
-
-
-        const typeFilter =
-            get(
-                "governmentTypeFilter"
-            );
-
-        if (typeFilter) {
-
-            typeFilter.addEventListener(
-                "change",
-                function () {
-
-                    state.currentPage =
-                        1;
-
-                    applyFilters();
-
-                }
-            );
-
-        }
-
-
-        const divisionFilter =
-            get(
-                "governmentDivisionFilter"
-            );
-
-        if (divisionFilter) {
-
-            divisionFilter.addEventListener(
-                "change",
-                function () {
-
-                    state.currentPage =
-                        1;
-
-                    updateDistrictOptions(
-                        this.value,
-                        "governmentDistrictFilter"
+        get(
+            "governmentAddBtn"
+        )?.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    !canManageGovernment()
+                ) {
+
+                    showToast(
+                        "আপনার এই কাজের অনুমতি নেই।"
                     );
 
-                    resetUpazilaSelect(
-                        "governmentUpazilaFilter"
+                    return;
+
+                }
+
+
+                openModal();
+
+            }
+        );
+
+
+        get(
+            "governmentRefresh"
+        )?.addEventListener(
+            "click",
+            function () {
+
+                loadOffices();
+
+            }
+        );
+
+
+        get(
+            "governmentCancelBtn"
+        )?.addEventListener(
+            "click",
+            closeModal
+        );
+
+
+        get(
+            "governmentModalClose"
+        )?.addEventListener(
+            "click",
+            closeModal
+        );
+
+
+        get(
+            "governmentModal"
+        )?.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target.dataset.closeModal ===
+                    "true"
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+
+        get(
+            "governmentForm"
+        )?.addEventListener(
+            "submit",
+            function (event) {
+
+                event.preventDefault();
+
+                saveGovernmentOffice();
+
+            }
+        );
+
+
+        get(
+            "governmentSearch"
+        )?.addEventListener(
+            "input",
+            function () {
+
+                state.currentPage =
+                    1;
+
+                applyFilters();
+
+            }
+        );
+
+
+        get(
+            "governmentTypeFilter"
+        )?.addEventListener(
+            "change",
+            function () {
+
+                state.currentPage =
+                    1;
+
+                applyFilters();
+
+            }
+        );
+
+
+        get(
+            "governmentDivisionFilter"
+        )?.addEventListener(
+            "change",
+            function () {
+
+                state.currentPage =
+                    1;
+
+                updateDistrictSelect(
+                    this.value,
+                    "governmentDistrictFilter"
+                );
+
+                resetUpazila(
+                    "governmentUpazilaFilter"
+                );
+
+                applyFilters();
+
+            }
+        );
+
+
+        get(
+            "governmentDistrictFilter"
+        )?.addEventListener(
+            "change",
+            function () {
+
+                state.currentPage =
+                    1;
+
+                updateUpazilaSelect(
+                    this.value,
+                    "governmentUpazilaFilter"
+                );
+
+                applyFilters();
+
+            }
+        );
+
+
+        get(
+            "governmentUpazilaFilter"
+        )?.addEventListener(
+            "change",
+            function () {
+
+                state.currentPage =
+                    1;
+
+                applyFilters();
+
+            }
+        );
+
+
+        get(
+            "governmentStatusFilter"
+        )?.addEventListener(
+            "change",
+            function () {
+
+                state.currentPage =
+                    1;
+
+                applyFilters();
+
+            }
+        );
+
+
+        get(
+            "governmentVerificationFilter"
+        )?.addEventListener(
+            "change",
+            function () {
+
+                state.currentPage =
+                    1;
+
+                applyFilters();
+
+            }
+        );
+
+
+        get(
+            "governmentDivision"
+        )?.addEventListener(
+            "change",
+            function () {
+
+                updateDistrictSelect(
+                    this.value,
+                    "governmentDistrict"
+                );
+
+                resetUpazila(
+                    "governmentUpazila"
+                );
+
+            }
+        );
+
+
+        get(
+            "governmentDistrict"
+        )?.addEventListener(
+            "change",
+            function () {
+
+                updateUpazilaSelect(
+                    this.value,
+                    "governmentUpazila"
+                );
+
+            }
+        );
+
+
+        get(
+            "governmentPagination"
+        )?.addEventListener(
+            "click",
+            function (event) {
+
+                const button =
+                    event.target.closest(
+                        "button[data-page]"
                     );
 
-                    applyFilters();
-
+                if (!button) {
+                    return;
                 }
-            );
-
-        }
 
 
-        const districtFilter =
-            get(
-                "governmentDistrictFilter"
-            );
-
-        if (districtFilter) {
-
-            districtFilter.addEventListener(
-                "change",
-                function () {
-
-                    state.currentPage =
-                        1;
-
-                    updateUpazilaOptions(
-                        this.value,
-                        "governmentUpazilaFilter"
+                const page =
+                    Number(
+                        button.dataset.page
                     );
 
-                    applyFilters();
+
+                if (
+                    !Number.isInteger(
+                        page
+                    )
+                ) {
+
+                    return;
 
                 }
-            );
-
-        }
 
 
-        const upazilaFilter =
-            get(
-                "governmentUpazilaFilter"
-            );
-
-        if (upazilaFilter) {
-
-            upazilaFilter.addEventListener(
-                "change",
-                function () {
-
-                    state.currentPage =
-                        1;
-
-                    applyFilters();
-
-                }
-            );
-
-        }
-
-
-        const statusFilter =
-            get(
-                "governmentStatusFilter"
-            );
-
-        if (statusFilter) {
-
-            statusFilter.addEventListener(
-                "change",
-                function () {
-
-                    state.currentPage =
-                        1;
-
-                    applyFilters();
-
-                }
-            );
-
-        }
-
-
-        const verificationFilter =
-            get(
-                "governmentVerificationFilter"
-            );
-
-        if (verificationFilter) {
-
-            verificationFilter.addEventListener(
-                "change",
-                function () {
-
-                    state.currentPage =
-                        1;
-
-                    applyFilters();
-
-                }
-            );
-
-        }
-
-
-        const formDivision =
-            get(
-                "governmentDivision"
-            );
-
-        if (formDivision) {
-
-            formDivision.addEventListener(
-                "change",
-                function () {
-
-                    updateDistrictOptions(
-                        this.value,
-                        "governmentDistrict"
-                    );
-
-                    resetUpazilaSelect(
-                        "governmentUpazila"
-                    );
-
-                }
-            );
-
-        }
-
-
-        const formDistrict =
-            get(
-                "governmentDistrict"
-            );
-
-        if (formDistrict) {
-
-            formDistrict.addEventListener(
-                "change",
-                function () {
-
-                    updateUpazilaOptions(
-                        this.value,
-                        "governmentUpazila"
-                    );
-
-                }
-            );
-
-        }
-
-
-        const pagination =
-            get(
-                "governmentPagination"
-            );
-
-        if (pagination) {
-
-            pagination.addEventListener(
-                "click",
-                function (event) {
-
-                    const button =
-                        event.target.closest(
-                            "button[data-page]"
-                        );
-
-                    if (!button) {
-                        return;
-                    }
-
-                    goToPage(
-                        Number(
-                            button.dataset.page
+                const totalPages =
+                    Math.max(
+                        1,
+                        Math.ceil(
+                            state.filteredOffices.length /
+                            PAGE_SIZE
                         )
                     );
 
-                }
-            );
 
-        }
+                if (
+                    page < 1 ||
+                    page > totalPages
+                ) {
 
-
-        const tableBody =
-            get(
-                "governmentTableBody"
-            );
-
-        if (tableBody) {
-
-            tableBody.addEventListener(
-                "click",
-                function (event) {
-
-                    const button =
-                        event.target.closest(
-                            "button[data-action]"
-                        );
-
-                    if (!button) {
-                        return;
-                    }
-
-
-                    const id =
-                        button.dataset.id;
-
-                    const action =
-                        button.dataset.action;
-
-
-                    if (
-                        action ===
-                        "edit"
-                    ) {
-
-                        editOffice(
-                            id
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (
-                        action ===
-                        "toggle"
-                    ) {
-
-                        updateStatus(
-                            id
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (
-                        action ===
-                        "verify"
-                    ) {
-
-                        updateVerification(
-                            id
-                        );
-
-                        return;
-
-                    }
-
-
-                    if (
-                        action ===
-                        "delete"
-                    ) {
-
-                        deleteOffice(
-                            id
-                        );
-
-                    }
+                    return;
 
                 }
-            );
-
-        }
 
 
-        const sidebarToggle =
-            get(
-                "sidebarToggle"
-            );
-
-        if (sidebarToggle) {
-
-            sidebarToggle.addEventListener(
-                "click",
-                openSidebar
-            );
-
-        }
+                state.currentPage =
+                    page;
 
 
-        const sidebarClose =
-            get(
-                "sidebarClose"
-            );
+                renderOfficeTable();
+                renderPagination();
 
-        if (sidebarClose) {
-
-            sidebarClose.addEventListener(
-                "click",
-                closeSidebar
-            );
-
-        }
+            }
+        );
 
 
-        const sidebarOverlay =
-            get(
-                "sidebarOverlay"
-            );
+        get(
+            "governmentTableBody"
+        )?.addEventListener(
+            "click",
+            function (event) {
 
-        if (sidebarOverlay) {
+                const button =
+                    event.target.closest(
+                        "button[data-action]"
+                    );
 
-            sidebarOverlay.addEventListener(
-                "click",
-                closeSidebar
-            );
-
-        }
+                if (!button) {
+                    return;
+                }
 
 
-        const logout =
-            get(
-                "sidebarLogout"
-            );
+                const id =
+                    button.dataset.id;
 
-        if (logout) {
+                const action =
+                    button.dataset.action;
 
-            logout.addEventListener(
-                "click",
-                handleLogout
-            );
 
-        }
+                if (
+                    action === "edit"
+                ) {
+
+                    const office =
+                        state.offices.find(
+                            item =>
+                                String(
+                                    item.id
+                                ) ===
+                                String(id)
+                        );
+
+
+                    if (office) {
+
+                        openModal(
+                            office
+                        );
+
+                    }
+
+
+                    return;
+
+                }
+
+
+                if (
+                    action === "status"
+                ) {
+
+                    toggleStatus(
+                        id
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    action === "verify"
+                ) {
+
+                    toggleVerification(
+                        id
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    action === "delete"
+                ) {
+
+                    deleteOffice(
+                        id
+                    );
+
+                }
+
+            }
+        );
+
+
+        get(
+            "sidebarToggle"
+        )?.addEventListener(
+            "click",
+            openSidebar
+        );
+
+
+        get(
+            "sidebarClose"
+        )?.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+
+        get(
+            "sidebarOverlay"
+        )?.addEventListener(
+            "click",
+            closeSidebar
+        );
+
+
+        get(
+            "sidebarLogout"
+        )?.addEventListener(
+            "click",
+            handleLogout
+        );
 
 
         document.addEventListener(
@@ -3546,30 +3127,31 @@
             function (event) {
 
                 if (
-                    event.key ===
-                    "Escape"
+                    event.key !== "Escape"
+                ) {
+                    return;
+                }
+
+
+                const modal =
+                    get(
+                        "governmentModal"
+                    );
+
+
+                if (
+                    modal &&
+                    !modal.hidden
                 ) {
 
-                    const modal =
-                        get(
-                            "governmentModal"
-                        );
+                    closeModal();
 
-                    if (
-                        modal &&
-                        !modal.hidden
-                    ) {
-
-                        closeModal();
-
-                        return;
-
-                    }
-
-
-                    closeSidebar();
+                    return;
 
                 }
+
+
+                closeSidebar();
 
             }
         );
@@ -3583,62 +3165,34 @@
 
     function openSidebar() {
 
-        const sidebar =
-            get(
-                "adminSidebar"
-            );
+        get(
+            "adminSidebar"
+        )?.classList.add(
+            "open"
+        );
 
-        const overlay =
-            get(
-                "sidebarOverlay"
-            );
-
-        if (sidebar) {
-
-            sidebar.classList.add(
-                "open"
-            );
-
-        }
-
-        if (overlay) {
-
-            overlay.classList.add(
-                "active"
-            );
-
-        }
+        get(
+            "sidebarOverlay"
+        )?.classList.add(
+            "active"
+        );
 
     }
 
 
     function closeSidebar() {
 
-        const sidebar =
-            get(
-                "adminSidebar"
-            );
+        get(
+            "adminSidebar"
+        )?.classList.remove(
+            "open"
+        );
 
-        const overlay =
-            get(
-                "sidebarOverlay"
-            );
-
-        if (sidebar) {
-
-            sidebar.classList.remove(
-                "open"
-            );
-
-        }
-
-        if (overlay) {
-
-            overlay.classList.remove(
-                "active"
-            );
-
-        }
+        get(
+            "sidebarOverlay"
+        )?.classList.remove(
+            "active"
+        );
 
     }
 
@@ -3654,86 +3208,31 @@
 
 
         if (
-            !admin ||
-            typeof admin.logout !==
+            admin &&
+            typeof admin.logout ===
             "function"
         ) {
 
-            window.location.href =
-                "./index.html";
+            try {
 
-            return;
+                await admin.logout();
 
-        }
+                return;
 
+            } catch (error) {
 
-        try {
-
-            await admin.logout();
-
-        } catch (error) {
-
-            console.error(
-                "Logout error:",
-                error
-            );
-
-            window.location.href =
-                "./index.html";
-
-        }
-
-    }
-
-
-    /* =====================================================
-       ADMIN WAIT
-    ===================================================== */
-
-    async function waitForAdminSystem() {
-
-        let attempts =
-            0;
-
-        const maxAttempts =
-            200;
-
-
-        while (
-            attempts <
-            maxAttempts
-        ) {
-
-            if (
-                window.DorkariAdmin &&
-                typeof
-                    window.DorkariAdmin.getSupabase ===
-                    "function"
-            ) {
-
-                return true;
+                console.error(
+                    "Logout error:",
+                    error
+                );
 
             }
 
-
-            await new Promise(
-                function (resolve) {
-
-                    setTimeout(
-                        resolve,
-                        50
-                    );
-
-                }
-            );
-
-
-            attempts++;
-
         }
 
 
-        return false;
+        window.location.href =
+            "./index.html";
 
     }
 
@@ -3744,78 +3243,33 @@
 
     async function initialize() {
 
-        if (
-            state.initialized
-        ) {
-
-            return;
-
-        }
-
-
         try {
 
-            const ready =
-                await waitForAdminSystem();
+            state.supabase =
+                getSupabase();
 
 
-            if (!ready) {
-
-                throw new Error(
-                    "Admin security system initialize হয়নি।"
-                );
-
-            }
+            const admin =
+                getAdmin();
 
 
-            initializeSupabase();
+            state.profile =
+                admin &&
+                typeof admin.getProfile ===
+                    "function"
+                    ? admin.getProfile()
+                    : null;
 
-
-            if (
-                !canManageGovernment()
-            ) {
-
-                const addButton =
-                    get(
-                        "governmentAddBtn"
-                    );
-
-                if (addButton) {
-
-                    addButton.disabled =
-                        true;
-
-                }
-
-            }
-
-
-            renderLoading();
 
             bindEvents();
 
 
-            await Promise.all(
-                [
-                    loadDivisions(),
-                    loadDistricts(),
-                    loadUpazilas()
-                ]
-            );
+            renderLoading();
 
 
-            initializeLocationSelects();
-
+            await loadLocations();
 
             await loadOffices();
-
-
-            loadOfficeTypes();
-
-
-            updateStatistics();
-
-            updateResultCount();
 
 
             state.initialized =
@@ -3829,6 +3283,7 @@
                 error
             );
 
+
             renderError(
                 getErrorMessage(
                     error
@@ -3841,44 +3296,42 @@
 
 
     /* =====================================================
-       PUBLIC DEBUG HELPERS
-       ===================================================== */
+       DEBUG API
+    ===================================================== */
 
-    window.DorkariGovernment =
-        {
+    window.DorkariGovernment = {
 
-            refresh:
-                function () {
+        refresh:
+            function () {
 
-                    return loadOffices();
+                return loadOffices();
 
-                },
+            },
 
-            getState:
-                function () {
+        getState:
+            function () {
 
-                    return {
-                        offices:
-                            [
-                                ...state.offices
-                            ],
+                return {
+                    initialized:
+                        state.initialized,
 
-                        filteredOffices:
-                            [
-                                ...state.filteredOffices
-                            ],
+                    offices:
+                        [
+                            ...state.offices
+                        ],
 
-                        currentPage:
-                            state.currentPage,
+                    filteredOffices:
+                        [
+                            ...state.filteredOffices
+                        ],
 
-                        initialized:
-                            state.initialized
+                    currentPage:
+                        state.currentPage
+                };
 
-                    };
+            }
 
-                }
-
-        };
+    };
 
 
     /* =====================================================
@@ -3902,4 +3355,3 @@
     }
 
 })();
-```
