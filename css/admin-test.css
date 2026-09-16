@@ -64,8 +64,30 @@
     padding: 16px 28px;
     background: #ffffff;
     border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
 }
 
+.admin-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.admin-header-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    flex: 0 0 auto;
+    min-width: 0;
+}
+
+.admin-header-btn {
+    box-sizing: border-box;
+    white-space: nowrap;
+}
 .admin-header-left {
     display: flex;
     align-items: center;
