@@ -6,213 +6,268 @@
 
     <title>Dorkari — Tests & Fees Management</title>
 
-<link rel="stylesheet" href="../css/variables.css">
-<link rel="stylesheet" href="../css/admin.css">
-<link rel="stylesheet" href="../css/admin-crud.css">
-<link rel="stylesheet" href="../css/admin-test.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/admin-crud.css">
+    <link rel="stylesheet" href="../css/admin-test.css">
 </head>
 
 <body>
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    <div class="test-page">
 
-    <header class="admin-header">
+        <!-- =====================================================
+             HEADER
+        ====================================================== -->
 
-        <div class="admin-header-left">
+        <header class="test-header">
 
-            <button
-                type="button"
-                class="admin-sidebar-toggle"
-                id="sidebarToggle"
-                aria-label="Open sidebar"
-            >
-                ☰
-            </button>
-
-            <div class="admin-header-title">
-
-                <h1>
-                    Tests &amp; Fees Management
-                </h1>
-
-                <p>
-                    মেডিকেল টেস্ট ও ফি পরিচালনা করুন
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <div class="admin-header-right">
-
-            <button
-                type="button"
-                class="admin-header-btn"
-                id="testRefresh"
-            >
-                Refresh
-            </button>
-
-            <button
-                type="button"
-                class="admin-header-btn admin-primary-btn"
-                id="testAddBtn"
-            >
-                + Add Test
-            </button>
-
-        </div>
-
-    </header>
-
-
-
-    <!-- =====================================================
-         ADMIN LAYOUT
-    ====================================================== -->
-
-    <div class="admin-layout">
-
-
-        <!-- =================================================
-             SIDEBAR
-        ================================================== -->
-
-        <aside
-            class="admin-sidebar"
-            id="adminSidebar"
-        >
-
-            <div class="admin-sidebar-header">
-
-                <div class="admin-brand">
-
-                    <div class="admin-brand-icon">
-                        D
-                    </div>
-
-                    <div>
-
-                        <div class="admin-brand-title">
-                            দরকারি
-                        </div>
-
-                        <div class="admin-brand-subtitle">
-                            Admin Panel
-                        </div>
-
-                    </div>
-
-                </div>
-
+            <div class="test-header-left">
 
                 <button
                     type="button"
-                    class="admin-sidebar-close"
-                    id="sidebarClose"
-                    aria-label="Close sidebar"
+                    class="test-sidebar-toggle"
+                    id="sidebarToggle"
+                    aria-label="Open sidebar"
                 >
-                    ×
+                    ☰
+                </button>
+
+                <div class="test-header-title">
+
+                    <span class="test-eyebrow">
+                        DORKARI ADMIN
+                    </span>
+
+                    <h1>
+                        Tests &amp; Fees Management
+                    </h1>
+
+                    <p>
+                        মেডিকেল টেস্ট ও হাসপাতালের ফি পরিচালনা করুন
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="test-header-actions">
+
+                <button
+                    type="button"
+                    class="test-secondary-btn"
+                    id="testRefresh"
+                >
+                    ↻ Refresh
+                </button>
+
+                <button
+                    type="button"
+                    class="test-primary-btn"
+                    id="testAddBtn"
+                >
+                    + Add Test
                 </button>
 
             </div>
 
+        </header>
 
 
-            <!-- Admin Profile -->
+        <!-- =====================================================
+             SHELL
+        ====================================================== -->
 
-            <div class="admin-profile-card">
+        <div class="test-shell">
 
-                <div
-                    class="admin-avatar"
-                    id="adminAvatar"
-                >
-                    A
+
+            <!-- =================================================
+                 SIDEBAR
+            ================================================== -->
+
+            <aside
+                class="test-sidebar"
+                id="adminSidebar"
+                aria-label="Admin navigation"
+            >
+
+                <div class="test-sidebar-brand">
+
+                    <a
+                        href="./dashboard.html"
+                        class="test-brand-link"
+                    >
+                        <span class="test-brand-main">
+                            Dorkari
+                        </span>
+
+                        <span class="test-brand-bn">
+                            দরকারি
+                        </span>
+                    </a>
+
+
+                    <button
+                        type="button"
+                        class="test-sidebar-close"
+                        id="sidebarClose"
+                        aria-label="Close sidebar"
+                    >
+                        ×
+                    </button>
+
                 </div>
 
-                <div class="admin-profile-info">
 
-                    <strong id="sidebarAdminName">
-                        Admin
-                    </strong>
+                <!-- Profile -->
 
-                    <span id="sidebarAdminRole">
-                        Admin
-                    </span>
+                <div class="test-profile-card">
+
+                    <div
+                        class="test-avatar"
+                        id="adminAvatar"
+                    >
+                        A
+                    </div>
+
+                    <div class="test-profile-info">
+
+                        <strong id="sidebarAdminName">
+                            Admin
+                        </strong>
+
+                        <span id="sidebarAdminRole">
+                            Admin
+                        </span>
+
+                    </div>
 
                 </div>
 
-            </div>
+
+                <!-- Navigation -->
+
+                <nav class="test-nav">
+
+                    <p class="test-nav-label">
+                        MAIN
+                    </p>
+
+                    <a
+                        href="./dashboard.html"
+                        class="test-nav-item"
+                    >
+                        <span>⌂</span>
+                        <span>Dashboard</span>
+                    </a>
 
 
+                    <p class="test-nav-label">
+                        MANAGEMENT
+                    </p>
 
-            <!-- Navigation -->
+                    <a
+                        href="./location.html"
+                        class="test-nav-item"
+                    >
+                        <span>📍</span>
+                        <span>Location</span>
+                    </a>
 
-            <nav class="admin-sidebar-nav">
+                    <a
+                        href="./emergency.html?entity=contacts"
+                        class="test-nav-item"
+                    >
+                        <span>🚨</span>
+                        <span>Emergency</span>
+                    </a>
 
-                <a href="./dashboard.html">
-                    Dashboard
-                </a>
+                    <a
+                        href="./hospital.html"
+                        class="test-nav-item"
+                    >
+                        <span>🏥</span>
+                        <span>Hospitals</span>
+                    </a>
 
-                <a href="./location.html">
-                    Location Management
-                </a>
+                    <a
+                        href="./doctor.html"
+                        class="test-nav-item"
+                    >
+                        <span>👨‍⚕️</span>
+                        <span>Doctors</span>
+                    </a>
 
-                <a href="./emergency.html?entity=contacts">
-                    Emergency
-                </a>
+                    <a
+                        href="./test.html"
+                        class="test-nav-item active"
+                        aria-current="page"
+                    >
+                        <span>🧪</span>
+                        <span>Tests &amp; Fees</span>
+                    </a>
 
-                <a href="./hospital.html">
-                    Hospitals
-                </a>
-
-                <a href="./doctor.html">
-                    Doctors
-                </a>
-
-                <a
-                    href="./test.html"
-                    class="active"
-                >
-                    Tests &amp; Fees
-                </a>
-
-            </nav>
-
-        </aside>
+                </nav>
 
 
+                <!-- Sidebar bottom -->
 
-        <!-- =================================================
-             MAIN
-        ================================================== -->
+                <div class="test-sidebar-bottom">
 
-        <main class="admin-main">
+                    <a
+                        href="../index.html"
+                        class="test-public-link"
+                    >
+                        ↗ Public Website
+                    </a>
 
-            <section class="test-content">
+                    <button
+                        type="button"
+                        class="test-logout-link"
+                        id="sidebarLogout"
+                    >
+                        ↪ Logout
+                    </button>
+
+                </div>
+
+            </aside>
+
+
+            <div
+                class="test-sidebar-overlay"
+                id="sidebarOverlay"
+            ></div>
+
+
+            <!-- =================================================
+                 MAIN
+            ================================================== -->
+
+            <main class="test-main">
 
 
                 <!-- =================================================
-                     STATS
+                     STATISTICS
                 ================================================== -->
 
-                <div class="test-stats">
-
+                <section
+                    class="test-stats"
+                    aria-label="Test statistics"
+                >
 
                     <div class="test-stat-card">
 
-                        <span>
+                        <div class="test-stat-icon">
                             🧪
-                        </span>
+                        </div>
 
                         <div>
 
-                            <small>
+                            <span>
                                 Total Tests
-                            </small>
+                            </span>
 
                             <strong id="testTotalCount">
                                 —
@@ -223,18 +278,17 @@
                     </div>
 
 
-
                     <div class="test-stat-card">
 
-                        <span>
+                        <div class="test-stat-icon">
                             ✓
-                        </span>
+                        </div>
 
                         <div>
 
-                            <small>
+                            <span>
                                 Active Tests
-                            </small>
+                            </span>
 
                             <strong id="testActiveCount">
                                 —
@@ -245,18 +299,17 @@
                     </div>
 
 
-
                     <div class="test-stat-card">
 
-                        <span>
+                        <div class="test-stat-icon">
                             🏥
-                        </span>
+                        </div>
 
                         <div>
 
-                            <small>
+                            <span>
                                 Assigned Tests
-                            </small>
+                            </span>
 
                             <strong id="testAssignedCount">
                                 —
@@ -266,22 +319,20 @@
 
                     </div>
 
-                </div>
-
+                </section>
 
 
                 <!-- =================================================
-                     TEST PANEL
+                     TEST LIST PANEL
                 ================================================== -->
 
                 <section class="test-panel">
 
-
-                    <div class="test-panel-heading">
+                    <div class="test-panel-header">
 
                         <div>
 
-                            <span>
+                            <span class="test-section-label">
                                 TESTS &amp; FEES
                             </span>
 
@@ -289,21 +340,26 @@
                                 Test List
                             </h2>
 
+                            <p>
+                                Test master data এবং hospital-wise fee assignment এক জায়গা থেকে পরিচালনা করুন।
+                            </p>
+
                         </div>
 
 
-                        <strong id="testResultCount">
+                        <strong
+                            class="test-result-count"
+                            id="testResultCount"
+                        >
                             Loading...
                         </strong>
 
                     </div>
 
 
-
                     <!-- Filters -->
 
                     <div class="test-filters">
-
 
                         <div class="test-field">
 
@@ -314,12 +370,11 @@
                             <input
                                 type="search"
                                 id="testSearch"
-                                placeholder="টেস্টের নাম লিখুন..."
+                                placeholder="Test name বা বাংলা নাম লিখুন..."
                                 autocomplete="off"
                             >
 
                         </div>
-
 
 
                         <div class="test-field">
@@ -328,9 +383,7 @@
                                 Category
                             </label>
 
-                            <select
-                                id="testCategoryFilter"
-                            >
+                            <select id="testCategoryFilter">
 
                                 <option value="">
                                     সব category
@@ -341,16 +394,13 @@
                         </div>
 
 
-
                         <div class="test-field">
 
                             <label for="testStatusFilter">
                                 Status
                             </label>
 
-                            <select
-                                id="testStatusFilter"
-                            >
+                            <select id="testStatusFilter">
 
                                 <option value="">
                                     সব status
@@ -369,7 +419,6 @@
                         </div>
 
                     </div>
-
 
 
                     <!-- Table -->
@@ -391,7 +440,7 @@
                                     </th>
 
                                     <th>
-                                        Description
+                                        Hospitals
                                     </th>
 
                                     <th>
@@ -413,7 +462,7 @@
 
                                     <td
                                         colspan="5"
-                                        class="test-empty"
+                                        class="test-state-cell"
                                     >
                                         Loading tests...
                                     </td>
@@ -427,42 +476,53 @@
                     </div>
 
 
-
                     <!-- Pagination -->
 
                     <div
                         class="test-pagination"
                         id="testPagination"
+                        aria-label="Pagination"
                     ></div>
 
                 </section>
 
-            </section>
+            </main>
 
-        </main>
+        </div>
 
     </div>
 
 
-
-    <!-- =====================================================
-         TEST MODAL
-    ====================================================== -->
+    <!-- =========================================================
+         ADD / EDIT TEST MODAL
+    ========================================================== -->
 
     <div
         class="test-modal"
         id="testModal"
         hidden
+        aria-hidden="true"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="testModalTitle"
     >
+
+        <div
+            class="test-modal-backdrop"
+            data-close-modal="true"
+        ></div>
+
 
         <div class="test-modal-card">
 
+
+            <!-- Modal header -->
 
             <div class="test-modal-header">
 
                 <div>
 
-                    <span>
+                    <span class="test-section-label">
                         TEST
                     </span>
 
@@ -470,19 +530,23 @@
                         Add Test
                     </h2>
 
+                    <p>
+                        Test তথ্য এবং hospital-wise fee তথ্য পরিচালনা করুন।
+                    </p>
+
                 </div>
 
 
                 <button
                     type="button"
+                    class="test-modal-close"
                     id="testModalClose"
-                    aria-label="Close"
+                    aria-label="Close modal"
                 >
                     ×
                 </button>
 
             </div>
-
 
 
             <!-- Form -->
@@ -498,107 +562,157 @@
                 >
 
 
-                <div class="test-form-grid">
+                <!-- =================================================
+                     TEST MASTER DATA
+                ================================================== -->
+
+                <section class="test-form-section">
+
+                    <div class="test-form-grid">
+
+                        <div class="test-field">
+
+                            <label for="testName">
+                                English Name *
+                            </label>
+
+                            <input
+                                id="testName"
+                                type="text"
+                                maxlength="160"
+                                required
+                            >
+
+                        </div>
 
 
-                    <!-- Name -->
+                        <div class="test-field">
 
-                    <div class="test-field">
+                            <label for="testNameBn">
+                                বাংলা নাম *
+                            </label>
 
-                        <label for="testName">
-                            Name *
+                            <input
+                                id="testNameBn"
+                                type="text"
+                                maxlength="160"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="test-field test-field-full">
+
+                            <label for="testCategory">
+                                Category
+                            </label>
+
+                            <input
+                                id="testCategory"
+                                type="text"
+                                maxlength="100"
+                                placeholder="যেমন: Blood, Imaging, Cardiology"
+                            >
+
+                        </div>
+
+
+                        <div class="test-field test-field-full">
+
+                            <label for="testDescription">
+                                Description
+                            </label>
+
+                            <textarea
+                                id="testDescription"
+                                rows="4"
+                            ></textarea>
+
+                        </div>
+
+
+                        <label class="test-check test-field-full">
+
+                            <input
+                                id="testIsActive"
+                                type="checkbox"
+                                checked
+                            >
+
+                            <span>
+                                Active test
+                            </span>
+
                         </label>
 
-                        <input
-                            id="testName"
-                            type="text"
-                            required
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     HOSPITAL FEE ASSIGNMENT
+                ================================================== -->
+
+                <section class="test-assignment-section">
+
+                    <div class="test-assignment-header">
+
+                        <div>
+
+                            <span class="test-section-label">
+                                HOSPITAL FEES
+                            </span>
+
+                            <h3>
+                                Hospital-wise Test Assignment
+                            </h3>
+
+                            <p>
+                                একই test বিভিন্ন hospital-এ আলাদা price, discount ও availability নিয়ে রাখা যাবে।
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="test-secondary-btn test-add-assignment-btn"
+                            id="testAddAssignmentBtn"
                         >
+                            + Add Hospital Fee
+                        </button>
 
                     </div>
 
 
+                    <div
+                        id="testAssignments"
+                        class="test-assignments"
+                    >
 
-                    <!-- Bangla Name -->
-
-                    <div class="test-field">
-
-                        <label for="testNameBn">
-                            বাংলা নাম *
-                        </label>
-
-                        <input
-                            id="testNameBn"
-                            type="text"
-                            required
+                        <div
+                            class="test-assignment-empty"
+                            id="testAssignmentEmpty"
                         >
+                            এখনো কোনো hospital assignment যোগ করা হয়নি।
+                        </div>
 
                     </div>
 
+                </section>
 
 
-                    <!-- Category -->
-
-                    <div class="test-field">
-
-                        <label for="testCategory">
-                            Category
-                        </label>
-
-                        <input
-                            id="testCategory"
-                            type="text"
-                            placeholder="যেমন: Blood, Imaging"
-                        >
-
-                    </div>
-
-
-
-                    <!-- Description -->
-
-                    <div class="test-field test-field-full">
-
-                        <label for="testDescription">
-                            Description
-                        </label>
-
-                        <textarea
-                            id="testDescription"
-                            rows="4"
-                        ></textarea>
-
-                    </div>
-
-
-
-                    <!-- Active -->
-
-                    <label class="test-check test-field-full">
-
-                        <input
-                            id="testIsActive"
-                            type="checkbox"
-                            checked
-                        >
-
-                        <span>
-                            Active test
-                        </span>
-
-                    </label>
-
-                </div>
-
-
-
-                <!-- Actions -->
+                <!-- =================================================
+                     ACTIONS
+                ================================================== -->
 
                 <div class="test-modal-actions">
 
                     <button
                         type="button"
-                        class="admin-header-btn"
+                        class="test-secondary-btn"
                         id="testCancelBtn"
                     >
                         Cancel
@@ -607,7 +721,7 @@
 
                     <button
                         type="submit"
-                        class="admin-header-btn admin-primary-btn"
+                        class="test-primary-btn"
                         id="testSaveBtn"
                     >
                         Save Test
@@ -622,26 +736,24 @@
     </div>
 
 
-
-    <!-- =====================================================
+    <!-- =========================================================
          TOAST
-    ====================================================== -->
+    ========================================================== -->
 
     <div
         class="test-toast"
         id="testToast"
         hidden
+        role="status"
+        aria-live="polite"
     >
-
-        <div id="testToastMessage"></div>
-
+        <span id="testToastMessage"></span>
     </div>
 
 
-
-    <!-- =====================================================
+    <!-- =========================================================
          SCRIPTS
-    ====================================================== -->
+    ========================================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
