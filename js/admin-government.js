@@ -2,29 +2,7 @@
    DORKARI — GOVERNMENT MANAGEMENT
    File: js/admin-government.js
 
-   PURPOSE
-   ---------------------------------------------------------
-   1. Government office listing.
-   2. Search.
-   3. Office type filter.
-   4. Division / District / Upazila filter.
-   5. Active / Inactive filter.
-   6. Verified / Unverified filter.
-   7. Pagination.
-   8. Add Government Office.
-   9. Edit Government Office.
-   10. Activate / Deactivate.
-   11. Verify / Unverify.
-   12. Delete.
-   13. Location cascade.
-   14. Admin permission protection.
-
-   DATABASE
-   ---------------------------------------------------------
-   government_offices
-   divisions
-   districts
-   upazilas
+   Government Office Admin
 ========================================================= */
 
 (function () {
@@ -36,20 +14,12 @@
        CONFIG
     ===================================================== */
 
-    const GOVERNMENT_TABLE =
-        "government_offices";
+    const GOVERNMENT_TABLE = "government_offices";
+    const DIVISION_TABLE = "divisions";
+    const DISTRICT_TABLE = "districts";
+    const UPAZILA_TABLE = "upazilas";
 
-    const DIVISION_TABLE =
-        "divisions";
-
-    const DISTRICT_TABLE =
-        "districts";
-
-    const UPAZILA_TABLE =
-        "upazilas";
-
-    const PAGE_SIZE =
-        10;
+    const PAGE_SIZE = 10;
 
 
     /* =====================================================
@@ -57,40 +27,21 @@
     ===================================================== */
 
     const state = {
+        supabase: null,
+        profile: null,
 
-        supabase:
-            null,
+        offices: [],
+        filteredOffices: [],
 
-        profile:
-            null,
+        divisions: [],
+        districts: [],
+        upazilas: [],
 
-        offices:
-            [],
+        currentPage: 1,
+        editingId: null,
 
-        filteredOffices:
-            [],
-
-        divisions:
-            [],
-
-        districts:
-            [],
-
-        upazilas:
-            [],
-
-        currentPage:
-            1,
-
-        editingId:
-            null,
-
-        isSaving:
-            false,
-
-        initialized:
-            false
-
+        isSaving: false,
+        initialized: false
     };
 
 
@@ -99,89 +50,47 @@
     ===================================================== */
 
     function get(id) {
-
         return document.getElementById(id);
-
     }
 
 
     /* =====================================================
-       TEXT HELPERS
+       HELPERS
     ===================================================== */
 
     function cleanText(value) {
-
-        return String(
-            value ?? ""
-        ).trim();
-
+        return String(value ?? "").trim();
     }
 
 
     function escapeHTML(value) {
-
-        return String(
-            value ?? ""
-        )
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-
+        return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
 
 
     function formatNumber(value) {
-
-        return Number(
-            value || 0
-        ).toLocaleString(
-            "bn-BD"
-        );
-
+        return Number(value || 0).toLocaleString("bn-BD");
     }
 
 
     function getErrorMessage(error) {
 
         if (!error) {
-
             return "অজানা সমস্যা হয়েছে।";
-
         }
 
         return (
-            cleanText(
-                error.message
-            ) ||
-            cleanText(
-                error.error_description
-            ) ||
-            cleanText(
-                error.details
-            ) ||
-            cleanText(
-                error.hint
-            ) ||
+            cleanText(error.message) ||
+            cleanText(error.error_description) ||
+            cleanText(error.details) ||
+            cleanText(error.hint) ||
             "অজানা সমস্যা হয়েছে।"
         );
-
     }
 
 
@@ -190,109 +99,57 @@
     ===================================================== */
 
     function getAdmin() {
-
         return window.DorkariAdmin || null;
-
     }
 
 
     function canManageGovernment() {
 
-        const admin =
-            getAdmin();
+        const admin = getAdmin();
 
         return Boolean(
-
             admin &&
-
-            typeof admin.canManageContent ===
-                "function" &&
-
+            typeof admin.canManageContent === "function" &&
             admin.canManageContent()
-
         );
-
     }
 
 
     /* =====================================================
-       WAIT FOR ADMIN SECURITY SYSTEM
+       WAIT FOR ADMIN
     ===================================================== */
 
     async function waitForAdminSystem() {
 
-        let attempts =
-            0;
+        let attempts = 0;
+        const maxAttempts = 200;
 
-        const maxAttempts =
-            200;
+        while (attempts < maxAttempts) {
 
-
-        while (
-            attempts <
-            maxAttempts
-        ) {
-
-            const admin =
-                getAdmin();
-
+            const admin = getAdmin();
 
             if (
-
                 admin &&
-
-                typeof admin.getProfile ===
-                    "function" &&
-
-                typeof admin.getSupabase ===
-                    "function" &&
-
-                typeof admin.canManageContent ===
-                    "function"
-
+                typeof admin.getSupabase === "function" &&
+                typeof admin.getProfile === "function"
             ) {
 
-                const profile =
-                    admin.getProfile();
+                const profile = admin.getProfile();
+                const supabase = admin.getSupabase();
 
-                const supabase =
-                    admin.getSupabase();
-
-
-                if (
-                    profile &&
-                    supabase
-                ) {
-
-                    return;
-
+                if (profile && supabase) {
+                    return true;
                 }
-
             }
 
+            await new Promise(function (resolve) {
+                setTimeout(resolve, 50);
+            });
 
-            await new Promise(
-                function (resolve) {
-
-                    setTimeout(
-                        resolve,
-                        50
-                    );
-
-                }
-            );
-
-
-            attempts +=
-                1;
-
+            attempts++;
         }
 
-
-        throw new Error(
-            "Admin security system ready হয়নি।"
-        );
-
+        return false;
     }
 
 
@@ -302,35 +159,29 @@
 
     function initializeSupabase() {
 
-        const admin =
-            getAdmin();
-
+        const admin = getAdmin();
 
         if (
             !admin ||
-            typeof admin.getSupabase !==
-                "function"
+            typeof admin.getSupabase !== "function"
         ) {
-
             throw new Error(
-                "DorkariAdmin Supabase access পাওয়া যায়নি।"
+                "Dorkari Admin Supabase access পাওয়া যায়নি।"
             );
-
         }
 
-
-        state.supabase =
-            admin.getSupabase();
-
+        state.supabase = admin.getSupabase();
 
         if (!state.supabase) {
-
             throw new Error(
                 "Supabase client পাওয়া যায়নি।"
             );
-
         }
 
+        state.profile =
+            typeof admin.getProfile === "function"
+                ? admin.getProfile()
+                : null;
     }
 
 
@@ -340,74 +191,44 @@
 
     function showToast(message) {
 
-        const toast =
-            get(
-                "governmentToast"
-            );
-
+        const toast = get("governmentToast");
         const messageElement =
-            get(
-                "governmentToastMessage"
-            );
-
+            get("governmentToastMessage");
 
         if (
             !toast ||
             !messageElement
         ) {
-
             return;
-
         }
 
-
         messageElement.textContent =
-            cleanText(
-                message
-            );
+            cleanText(message);
 
+        toast.hidden = false;
 
-        toast.hidden =
-            false;
+        clearTimeout(showToast.timer);
 
-
-        clearTimeout(
-            showToast.timer
+        showToast.timer = setTimeout(
+            function () {
+                toast.hidden = true;
+            },
+            2800
         );
-
-
-        showToast.timer =
-            setTimeout(
-                function () {
-
-                    toast.hidden =
-                        true;
-
-                },
-                2800
-            );
-
     }
 
 
     /* =====================================================
-       STATE MESSAGE
+       TABLE STATE
     ===================================================== */
 
     function renderLoading() {
 
-        const body =
-            get(
-                "governmentTableBody"
-            );
-
+        const body = get("governmentTableBody");
 
         if (!body) {
-
             return;
-
         }
-
 
         body.innerHTML = `
             <tr>
@@ -419,24 +240,16 @@
                 </td>
             </tr>
         `;
-
     }
 
 
     function renderError(message) {
 
-        const body =
-            get(
-                "governmentTableBody"
-            );
-
+        const body = get("governmentTableBody");
 
         if (!body) {
-
             return;
-
         }
-
 
         body.innerHTML = `
             <tr>
@@ -452,44 +265,28 @@
             </tr>
         `;
 
+        const resultCount =
+            get("governmentResultCount");
 
-        const resultElement =
-            get(
-                "governmentResultCount"
-            );
-
-
-        if (resultElement) {
-
-            resultElement.textContent =
-                "0 results";
-
+        if (resultCount) {
+            resultCount.textContent = "0 results";
         }
 
-
         renderPagination();
-
     }
 
 
     /* =====================================================
-       LOCATION HELPERS
+       LOCATION
     ===================================================== */
 
     function findDivision(id) {
 
         return state.divisions.find(
             function (item) {
-
-                return String(
-                    item.id
-                ) === String(
-                    id
-                );
-
+                return String(item.id) === String(id);
             }
         ) || null;
-
     }
 
 
@@ -497,16 +294,9 @@
 
         return state.districts.find(
             function (item) {
-
-                return String(
-                    item.id
-                ) === String(
-                    id
-                );
-
+                return String(item.id) === String(id);
             }
         ) || null;
-
     }
 
 
@@ -514,107 +304,69 @@
 
         return state.upazilas.find(
             function (item) {
-
-                return String(
-                    item.id
-                ) === String(
-                    id
-                );
-
+                return String(item.id) === String(id);
             }
         ) || null;
-
     }
 
 
     function getLocationText(office) {
 
         const division =
-            findDivision(
-                office.division_id
-            );
+            findDivision(office.division_id);
 
         const district =
-            findDistrict(
-                office.district_id
-            );
+            findDistrict(office.district_id);
 
         const upazila =
-            findUpazila(
-                office.upazila_id
-            );
+            findUpazila(office.upazila_id);
 
-
-        const parts =
-            [];
+        const parts = [];
 
 
         if (upazila) {
-
             parts.push(
                 cleanText(
                     upazila.name_bn ||
                     upazila.name
                 )
             );
-
         }
 
 
         if (district) {
-
             parts.push(
                 cleanText(
                     district.name_bn ||
                     district.name
                 )
             );
-
         }
 
 
         if (division) {
-
             parts.push(
                 cleanText(
                     division.name_bn ||
                     division.name
                 )
             );
-
         }
 
 
         if (parts.length) {
-
-            return parts.join(
-                ", "
-            );
-
+            return parts.join(", ");
         }
 
 
-        if (
-            cleanText(
-                office.address
-            )
-        ) {
-
-            return cleanText(
-                office.address
-            );
-
+        if (cleanText(office.address)) {
+            return cleanText(office.address);
         }
 
 
         return "—";
-
     }
 
-
-    /* =====================================================
-       SELECT HELPERS
-    ===================================================== */
 
     function fillSelect(
         select,
@@ -623,45 +375,27 @@
     ) {
 
         if (!select) {
-
             return;
-
         }
-
 
         select.innerHTML = "";
 
-
         const defaultOption =
-            document.createElement(
-                "option"
-            );
+            document.createElement("option");
 
+        defaultOption.value = "";
+        defaultOption.textContent = placeholder;
 
-        defaultOption.value =
-            "";
-
-        defaultOption.textContent =
-            placeholder;
-
-
-        select.appendChild(
-            defaultOption
-        );
+        select.appendChild(defaultOption);
 
 
         items.forEach(
             function (item) {
 
                 const option =
-                    document.createElement(
-                        "option"
-                    );
+                    document.createElement("option");
 
-
-                option.value =
-                    item.id;
-
+                option.value = item.id;
 
                 option.textContent =
                     cleanText(
@@ -669,84 +403,53 @@
                         item.name
                     );
 
-
-                select.appendChild(
-                    option
-                );
-
+                select.appendChild(option);
             }
         );
-
     }
 
 
-    function resetDistrictSelect(
-        selectId
-    ) {
+    function resetDistrictSelect(selectId) {
 
-        const select =
-            get(
-                selectId
-            );
-
+        const select = get(selectId);
 
         if (!select) {
-
             return;
-
         }
-
 
         select.innerHTML = `
             <option value="">
                 ${
-                    selectId ===
-                    "governmentDistrict"
+                    selectId === "governmentDistrict"
                         ? "জেলা নির্বাচন করুন"
                         : "সব জেলা"
                 }
             </option>
         `;
 
-
-        select.disabled =
-            true;
-
+        select.disabled = true;
     }
 
 
-    function resetUpazilaSelect(
-        selectId
-    ) {
+    function resetUpazilaSelect(selectId) {
 
-        const select =
-            get(
-                selectId
-            );
-
+        const select = get(selectId);
 
         if (!select) {
-
             return;
-
         }
-
 
         select.innerHTML = `
             <option value="">
                 ${
-                    selectId ===
-                    "governmentUpazila"
+                    selectId === "governmentUpazila"
                         ? "উপজেলা নির্বাচন করুন"
                         : "সব উপজেলা"
                 }
             </option>
         `;
 
-
-        select.disabled =
-            true;
-
+        select.disabled = true;
     }
 
 
@@ -755,40 +458,28 @@
         selectId
     ) {
 
-        const select =
-            get(
-                selectId
-            );
-
+        const select = get(selectId);
 
         if (!select) {
-
             return;
-
         }
 
 
         if (!divisionId) {
 
-            resetDistrictSelect(
-                selectId
-            );
-
+            resetDistrictSelect(selectId);
             return;
-
         }
 
 
         const districts =
             state.districts.filter(
                 function (district) {
-
                     return String(
                         district.division_id
                     ) === String(
                         divisionId
                     );
-
                 }
             );
 
@@ -796,17 +487,14 @@
         fillSelect(
             select,
             districts,
-            selectId ===
-                "governmentDistrict"
-                    ? "জেলা নির্বাচন করুন"
-                    : "সব জেলা"
+            selectId === "governmentDistrict"
+                ? "জেলা নির্বাচন করুন"
+                : "সব জেলা"
         );
 
 
         select.disabled =
-            districts.length ===
-            0;
-
+            districts.length === 0;
     }
 
 
@@ -815,40 +503,28 @@
         selectId
     ) {
 
-        const select =
-            get(
-                selectId
-            );
-
+        const select = get(selectId);
 
         if (!select) {
-
             return;
-
         }
 
 
         if (!districtId) {
 
-            resetUpazilaSelect(
-                selectId
-            );
-
+            resetUpazilaSelect(selectId);
             return;
-
         }
 
 
         const upazilas =
             state.upazilas.filter(
                 function (upazila) {
-
                     return String(
                         upazila.district_id
                     ) === String(
                         districtId
                     );
-
                 }
             );
 
@@ -856,35 +532,28 @@
         fillSelect(
             select,
             upazilas,
-            selectId ===
-                "governmentUpazila"
-                    ? "উপজেলা নির্বাচন করুন"
-                    : "সব উপজেলা"
+            selectId === "governmentUpazila"
+                ? "উপজেলা নির্বাচন করুন"
+                : "সব উপজেলা"
         );
 
 
         select.disabled =
-            upazilas.length ===
-            0;
-
+            upazilas.length === 0;
     }
 
 
     function populateLocationSelects() {
 
         fillSelect(
-            get(
-                "governmentDivisionFilter"
-            ),
+            get("governmentDivisionFilter"),
             state.divisions,
             "সব বিভাগ"
         );
 
 
         fillSelect(
-            get(
-                "governmentDivision"
-            ),
+            get("governmentDivision"),
             state.divisions,
             "বিভাগ নির্বাচন করুন"
         );
@@ -905,7 +574,6 @@
         resetUpazilaSelect(
             "governmentUpazila"
         );
-
     }
 
 
@@ -919,83 +587,52 @@
             divisionsResult,
             districtsResult,
             upazilasResult
-        ] =
-            await Promise.all(
-                [
+        ] = await Promise.all([
+            state.supabase
+                .from(DIVISION_TABLE)
+                .select(
+                    "id,name,name_bn"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order("name"),
 
-                    state.supabase
-                        .from(
-                            DIVISION_TABLE
-                        )
-                        .select(
-                            "id,name,name_bn"
-                        )
-                        .eq(
-                            "is_active",
-                            true
-                        )
-                        .order(
-                            "name"
-                        ),
+            state.supabase
+                .from(DISTRICT_TABLE)
+                .select(
+                    "id,name,name_bn,division_id"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order("name"),
 
-                    state.supabase
-                        .from(
-                            DISTRICT_TABLE
-                        )
-                        .select(
-                            "id,name,name_bn,division_id"
-                        )
-                        .eq(
-                            "is_active",
-                            true
-                        )
-                        .order(
-                            "name"
-                        ),
-
-                    state.supabase
-                        .from(
-                            UPAZILA_TABLE
-                        )
-                        .select(
-                            "id,name,name_bn,district_id,division_id"
-                        )
-                        .eq(
-                            "is_active",
-                            true
-                        )
-                        .order(
-                            "name"
-                        )
-
-                ]
-            );
+            state.supabase
+                .from(UPAZILA_TABLE)
+                .select(
+                    "id,name,name_bn,district_id,division_id"
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order("name")
+        ]);
 
 
-        if (
-            divisionsResult.error
-        ) {
-
+        if (divisionsResult.error) {
             throw divisionsResult.error;
-
         }
 
-
-        if (
-            districtsResult.error
-        ) {
-
+        if (districtsResult.error) {
             throw districtsResult.error;
-
         }
 
-
-        if (
-            upazilasResult.error
-        ) {
-
+        if (upazilasResult.error) {
             throw upazilasResult.error;
-
         }
 
 
@@ -1011,6 +648,20 @@
 
         populateLocationSelects();
 
+
+        console.log(
+            "Government locations loaded:",
+            {
+                divisions:
+                    state.divisions.length,
+
+                districts:
+                    state.districts.length,
+
+                upazilas:
+                    state.upazilas.length
+            }
+        );
     }
 
 
@@ -1056,16 +707,13 @@
                     .order(
                         "created_at",
                         {
-                            ascending:
-                                false
+                            ascending: false
                         }
                     );
 
 
             if (error) {
-
                 throw error;
-
             }
 
 
@@ -1075,13 +723,10 @@
                     : [];
 
 
+            state.currentPage = 1;
+
+
             loadOfficeTypes();
-
-
-            state.currentPage =
-                1;
-
-
             applyFilters();
 
 
@@ -1093,21 +738,60 @@
             );
 
 
-            state.offices =
-                [];
-
-            state.filteredOffices =
-                [];
+            state.offices = [];
+            state.filteredOffices = [];
 
 
             renderError(
-                getErrorMessage(
-                    error
-                )
+                getErrorMessage(error)
             );
+        }
+    }
 
+
+    /* =====================================================
+       REFRESH
+    ===================================================== */
+
+    async function refreshAll() {
+
+        const button =
+            get("governmentRefresh");
+
+
+        if (button) {
+            button.disabled = true;
+            button.textContent = "Refreshing...";
         }
 
+
+        try {
+
+            await loadLocations();
+            await loadOffices();
+
+            showToast(
+                "Government data refresh হয়েছে।"
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Government refresh error:",
+                error
+            );
+
+            showToast(
+                getErrorMessage(error)
+            );
+
+        } finally {
+
+            if (button) {
+                button.disabled = false;
+                button.textContent = "↻ Refresh";
+            }
+        }
     }
 
 
@@ -1118,15 +802,11 @@
     function loadOfficeTypes() {
 
         const select =
-            get(
-                "governmentTypeFilter"
-            );
+            get("governmentTypeFilter");
 
 
         if (!select) {
-
             return;
-
         }
 
 
@@ -1149,9 +829,7 @@
                         type.toLowerCase(),
                         type
                     );
-
                 }
-
             }
         );
 
@@ -1161,11 +839,7 @@
                 typeMap.values()
             ).sort(
                 function (a, b) {
-
-                    return a.localeCompare(
-                        b
-                    );
-
+                    return a.localeCompare(b);
                 }
             );
 
@@ -1185,27 +859,17 @@
                         "option"
                     );
 
+                option.value = type;
+                option.textContent = type;
 
-                option.value =
-                    type;
-
-
-                option.textContent =
-                    type;
-
-
-                select.appendChild(
-                    option
-                );
-
+                select.appendChild(option);
             }
         );
-
     }
 
 
     /* =====================================================
-       FILTERS
+       FILTERING
     ===================================================== */
 
     function applyFilters() {
@@ -1288,13 +952,10 @@
 
                     if (
                         search &&
-                        !searchable.includes(
-                            search
-                        )
+                        !searchable.includes(search)
                     ) {
 
                         return false;
-
                     }
 
 
@@ -1302,12 +963,10 @@
                         type &&
                         cleanText(
                             office.office_type
-                        ).toLowerCase() !==
-                        type
+                        ).toLowerCase() !== type
                     ) {
 
                         return false;
-
                     }
 
 
@@ -1321,7 +980,6 @@
                     ) {
 
                         return false;
-
                     }
 
 
@@ -1335,7 +993,6 @@
                     ) {
 
                         return false;
-
                     }
 
 
@@ -1349,7 +1006,6 @@
                     ) {
 
                         return false;
-
                     }
 
 
@@ -1359,7 +1015,6 @@
                     ) {
 
                         return false;
-
                     }
 
 
@@ -1369,34 +1024,28 @@
                     ) {
 
                         return false;
-
                     }
 
 
                     if (
-                        verification ===
-                            "verified" &&
+                        verification === "verified" &&
                         office.is_verified !== true
                     ) {
 
                         return false;
-
                     }
 
 
                     if (
-                        verification ===
-                            "unverified" &&
+                        verification === "unverified" &&
                         office.is_verified !== false
                     ) {
 
                         return false;
-
                     }
 
 
                     return true;
-
                 }
             );
 
@@ -1418,7 +1067,6 @@
 
             state.currentPage =
                 totalPages;
-
         }
 
 
@@ -1427,7 +1075,6 @@
 
         renderOfficeTable();
         renderPagination();
-
     }
 
 
@@ -1444,10 +1091,7 @@
         const active =
             state.offices.filter(
                 function (office) {
-
-                    return office.is_active ===
-                        true;
-
+                    return office.is_active === true;
                 }
             ).length;
 
@@ -1455,74 +1099,48 @@
         const verified =
             state.offices.filter(
                 function (office) {
-
-                    return office.is_verified ===
-                        true;
-
+                    return office.is_verified === true;
                 }
             ).length;
 
 
         const totalElement =
-            get(
-                "governmentTotalCount"
-            );
+            get("governmentTotalCount");
 
         const activeElement =
-            get(
-                "governmentActiveCount"
-            );
+            get("governmentActiveCount");
 
         const verifiedElement =
-            get(
-                "governmentVerifiedCount"
-            );
+            get("governmentVerifiedCount");
 
 
         if (totalElement) {
-
             totalElement.textContent =
-                formatNumber(
-                    total
-                );
-
+                formatNumber(total);
         }
 
 
         if (activeElement) {
-
             activeElement.textContent =
-                formatNumber(
-                    active
-                );
-
+                formatNumber(active);
         }
 
 
         if (verifiedElement) {
-
             verifiedElement.textContent =
-                formatNumber(
-                    verified
-                );
-
+                formatNumber(verified);
         }
-
     }
 
 
     function updateResultCount() {
 
         const element =
-            get(
-                "governmentResultCount"
-            );
+            get("governmentResultCount");
 
 
         if (!element) {
-
             return;
-
         }
 
 
@@ -1530,7 +1148,6 @@
             `${formatNumber(
                 state.filteredOffices.length
             )} results`;
-
     }
 
 
@@ -1542,27 +1159,21 @@
         verified
     ) {
 
-        if (verified) {
-
-            return `
+        return verified
+            ? `
                 <span
                     class="government-status-badge government-status-verified"
                 >
                     Verified
                 </span>
-            `;
-
-        }
-
-
-        return `
-            <span
-                class="government-status-badge government-status-unverified"
-            >
-                Unverified
-            </span>
-        `;
-
+              `
+            : `
+                <span
+                    class="government-status-badge government-status-unverified"
+                >
+                    Unverified
+                </span>
+              `;
     }
 
 
@@ -1570,27 +1181,21 @@
         active
     ) {
 
-        if (active) {
-
-            return `
+        return active
+            ? `
                 <span
                     class="government-status-badge government-status-active"
                 >
                     Active
                 </span>
-            `;
-
-        }
-
-
-        return `
-            <span
-                class="government-status-badge government-status-inactive"
-            >
-                Inactive
-            </span>
-        `;
-
+              `
+            : `
+                <span
+                    class="government-status-badge government-status-inactive"
+                >
+                    Inactive
+                </span>
+              `;
     }
 
 
@@ -1607,17 +1212,14 @@
 
 
         if (!body) {
-
             return;
-
         }
 
 
-        const total =
-            state.filteredOffices.length;
-
-
-        if (!total) {
+        if (
+            state.filteredOffices.length ===
+            0
+        ) {
 
             body.innerHTML = `
                 <tr>
@@ -1631,7 +1233,6 @@
             `;
 
             return;
-
         }
 
 
@@ -1646,8 +1247,7 @@
         const items =
             state.filteredOffices.slice(
                 start,
-                start +
-                PAGE_SIZE
+                start + PAGE_SIZE
             );
 
 
@@ -1718,16 +1318,12 @@
 
 
                             <td>
-                                ${escapeHTML(
-                                    type
-                                )}
+                                ${escapeHTML(type)}
                             </td>
 
 
                             <td>
-                                ${escapeHTML(
-                                    location
-                                )}
+                                ${escapeHTML(location)}
                             </td>
 
 
@@ -1775,28 +1371,14 @@
 
                         </tr>
                     `;
-
                 }
             ).join("");
-
     }
 
 
     function renderRowActions(
         office
     ) {
-
-        const statusLabel =
-            office.is_active
-                ? "Deactivate"
-                : "Activate";
-
-
-        const verifyLabel =
-            office.is_verified
-                ? "Unverify"
-                : "Verify";
-
 
         return `
             <div
@@ -1823,7 +1405,11 @@
                         office.id
                     )}"
                 >
-                    ${statusLabel}
+                    ${
+                        office.is_active
+                            ? "Deactivate"
+                            : "Activate"
+                    }
                 </button>
 
 
@@ -1835,7 +1421,11 @@
                         office.id
                     )}"
                 >
-                    ${verifyLabel}
+                    ${
+                        office.is_verified
+                            ? "Unverify"
+                            : "Verify"
+                    }
                 </button>
 
 
@@ -1852,7 +1442,6 @@
 
             </div>
         `;
-
     }
 
 
@@ -1869,9 +1458,7 @@
 
 
         if (!container) {
-
             return;
-
         }
 
 
@@ -1890,26 +1477,20 @@
                 "";
 
             return;
-
         }
 
 
-        const currentPage =
-            state.currentPage;
-
-
-        let html =
-            "";
+        let html = "";
 
 
         html += `
             <button
                 type="button"
                 data-page="${
-                    currentPage - 1
+                    state.currentPage - 1
                 }"
                 ${
-                    currentPage <= 1
+                    state.currentPage <= 1
                         ? "disabled"
                         : ""
                 }
@@ -1922,7 +1503,7 @@
         const startPage =
             Math.max(
                 1,
-                currentPage - 2
+                state.currentPage - 2
             );
 
 
@@ -1944,7 +1525,8 @@
                     type="button"
                     data-page="${page}"
                     class="${
-                        page === currentPage
+                        page ===
+                        state.currentPage
                             ? "active"
                             : ""
                     }"
@@ -1952,7 +1534,6 @@
                     ${page}
                 </button>
             `;
-
         }
 
 
@@ -1960,10 +1541,10 @@
             <button
                 type="button"
                 data-page="${
-                    currentPage + 1
+                    state.currentPage + 1
                 }"
                 ${
-                    currentPage >= totalPages
+                    state.currentPage >= totalPages
                         ? "disabled"
                         : ""
                 }
@@ -1975,7 +1556,6 @@
 
         container.innerHTML =
             html;
-
     }
 
 
@@ -1994,9 +1574,7 @@
 
 
         if (!modal) {
-
             return;
-
         }
 
 
@@ -2149,7 +1727,6 @@
                 office
                     ? "Edit Government Office"
                     : "Add Government Office";
-
         }
 
 
@@ -2165,7 +1742,6 @@
                 office
                     ? "Update Government Office"
                     : "Save Government Office";
-
         }
 
 
@@ -2189,11 +1765,17 @@
             },
             50
         );
-
     }
 
 
-    function closeModal() {
+    /*
+     * forceClose allows save flow to close the modal
+     * while a save request has just completed.
+     */
+
+    function closeModal(
+        forceClose = false
+    ) {
 
         const modal =
             get(
@@ -2202,18 +1784,16 @@
 
 
         if (!modal) {
-
             return;
-
         }
 
 
         if (
-            state.isSaving
+            state.isSaving &&
+            !forceClose
         ) {
 
             return;
-
         }
 
 
@@ -2250,16 +1830,12 @@
     ) {
 
         if (!value) {
-
             return true;
-
         }
-
 
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
             value
         );
-
     }
 
 
@@ -2268,11 +1844,8 @@
     ) {
 
         if (!value) {
-
             return true;
-
         }
-
 
         try {
 
@@ -2281,13 +1854,9 @@
                     value
                 );
 
-
             return (
-                url.protocol ===
-                    "http:" ||
-
-                url.protocol ===
-                    "https:"
+                url.protocol === "http:" ||
+                url.protocol === "https:"
             );
 
         } catch {
@@ -2295,7 +1864,6 @@
             return false;
 
         }
-
     }
 
 
@@ -2393,9 +1961,7 @@
                         "governmentIsActive"
                     ).checked
                 )
-
         };
-
     }
 
 
@@ -2414,7 +1980,6 @@
             )?.focus();
 
             return false;
-
         }
 
 
@@ -2429,7 +1994,6 @@
             )?.focus();
 
             return false;
-
         }
 
 
@@ -2449,7 +2013,6 @@
             )?.focus();
 
             return false;
-
         }
 
 
@@ -2469,17 +2032,15 @@
             )?.focus();
 
             return false;
-
         }
 
 
         return true;
-
     }
 
 
     /* =====================================================
-       DUPLICATE CHECK
+       DUPLICATE
     ===================================================== */
 
     function findDuplicate(
@@ -2513,33 +2074,22 @@
                 ) {
 
                     return false;
-
                 }
 
 
-                const existingName =
+                return (
                     cleanText(
                         office.name
-                    ).toLowerCase();
+                    ).toLowerCase() ===
+                    normalizedName ||
 
-
-                const existingNameBn =
                     cleanText(
                         office.name_bn
-                    ).toLowerCase();
-
-
-                return (
-                    existingName ===
-                        normalizedName ||
-
-                    existingNameBn ===
-                        normalizedNameBn
+                    ).toLowerCase() ===
+                    normalizedNameBn
                 );
-
             }
         ) || null;
-
     }
 
 
@@ -2554,7 +2104,6 @@
         ) {
 
             return;
-
         }
 
 
@@ -2567,7 +2116,6 @@
             );
 
             return;
-
         }
 
 
@@ -2582,7 +2130,6 @@
         ) {
 
             return;
-
         }
 
 
@@ -2601,8 +2148,11 @@
             );
 
             return;
-
         }
+
+
+        const editingId =
+            state.editingId;
 
 
         const button =
@@ -2620,19 +2170,17 @@
             button.disabled =
                 true;
 
+
             button.textContent =
-                state.editingId
+                editingId
                     ? "Updating..."
                     : "Saving...";
-
         }
 
 
         try {
 
-            if (
-                state.editingId
-            ) {
+            if (editingId) {
 
                 const {
                     error
@@ -2652,14 +2200,12 @@
                         )
                         .eq(
                             "id",
-                            state.editingId
+                            editingId
                         );
 
 
                 if (error) {
-
                     throw error;
-
                 }
 
 
@@ -2682,20 +2228,30 @@
 
 
                 if (error) {
-
                     throw error;
-
                 }
 
 
                 showToast(
                     "Government Office যোগ হয়েছে।"
                 );
-
             }
 
 
-            closeModal();
+            /*
+             * IMPORTANT:
+             * Saving is finished here.
+             * Allow the modal to close before
+             * loading the refreshed table.
+             */
+
+            state.isSaving =
+                false;
+
+
+            closeModal(
+                true
+            );
 
 
             await loadOffices();
@@ -2715,6 +2271,7 @@
                 )
             );
 
+
         } finally {
 
             state.isSaving =
@@ -2727,14 +2284,9 @@
                     false;
 
                 button.textContent =
-                    state.editingId
-                        ? "Update Government Office"
-                        : "Save Government Office";
-
+                    "Save Government Office";
             }
-
         }
-
     }
 
 
@@ -2755,7 +2307,6 @@
             );
 
             return;
-
         }
 
 
@@ -2768,7 +2319,6 @@
                     ) === String(
                         id
                     );
-
                 }
             );
 
@@ -2780,13 +2330,11 @@
             );
 
             return;
-
         }
 
 
         const nextStatus =
-            office.is_active !==
-            true;
+            office.is_active !== true;
 
 
         try {
@@ -2815,9 +2363,7 @@
 
 
             if (error) {
-
                 throw error;
-
             }
 
 
@@ -2829,7 +2375,6 @@
 
 
             await loadOffices();
-
 
         } catch (error) {
 
@@ -2844,9 +2389,7 @@
                     error
                 )
             );
-
         }
-
     }
 
 
@@ -2867,7 +2410,6 @@
             );
 
             return;
-
         }
 
 
@@ -2880,7 +2422,6 @@
                     ) === String(
                         id
                     );
-
                 }
             );
 
@@ -2892,13 +2433,11 @@
             );
 
             return;
-
         }
 
 
         const nextValue =
-            office.is_verified !==
-            true;
+            office.is_verified !== true;
 
 
         try {
@@ -2927,9 +2466,7 @@
 
 
             if (error) {
-
                 throw error;
-
             }
 
 
@@ -2941,7 +2478,6 @@
 
 
             await loadOffices();
-
 
         } catch (error) {
 
@@ -2956,9 +2492,7 @@
                     error
                 )
             );
-
         }
-
     }
 
 
@@ -2979,7 +2513,6 @@
             );
 
             return;
-
         }
 
 
@@ -2992,7 +2525,6 @@
                     ) === String(
                         id
                     );
-
                 }
             );
 
@@ -3004,7 +2536,6 @@
             );
 
             return;
-
         }
 
 
@@ -3022,9 +2553,7 @@
 
 
         if (!confirmed) {
-
             return;
-
         }
 
 
@@ -3045,9 +2574,7 @@
 
 
             if (error) {
-
                 throw error;
-
             }
 
 
@@ -3057,7 +2584,6 @@
 
 
             await loadOffices();
-
 
         } catch (error) {
 
@@ -3072,9 +2598,7 @@
                     error
                 )
             );
-
         }
-
     }
 
 
@@ -3099,12 +2623,10 @@
                     );
 
                     return;
-
                 }
 
 
                 openModal();
-
             }
         );
 
@@ -3113,30 +2635,7 @@
             "governmentRefresh"
         )?.addEventListener(
             "click",
-            function () {
-
-                loadLocations()
-                    .then(
-                        loadOffices
-                    )
-                    .catch(
-                        function (error) {
-
-                            console.error(
-                                "Government refresh error:",
-                                error
-                            );
-
-                            showToast(
-                                getErrorMessage(
-                                    error
-                                )
-                            );
-
-                        }
-                    );
-
-            }
+            refreshAll
         );
 
 
@@ -3144,7 +2643,9 @@
             "governmentCancelBtn"
         )?.addEventListener(
             "click",
-            closeModal
+            function () {
+                closeModal();
+            }
         );
 
 
@@ -3152,7 +2653,9 @@
             "governmentModalClose"
         )?.addEventListener(
             "click",
-            closeModal
+            function () {
+                closeModal();
+            }
         );
 
 
@@ -3168,9 +2671,7 @@
                 ) {
 
                     closeModal();
-
                 }
-
             }
         );
 
@@ -3184,7 +2685,6 @@
                 event.preventDefault();
 
                 saveGovernmentOffice();
-
             }
         );
 
@@ -3195,11 +2695,9 @@
             "input",
             function () {
 
-                state.currentPage =
-                    1;
+                state.currentPage = 1;
 
                 applyFilters();
-
             }
         );
 
@@ -3210,11 +2708,9 @@
             "change",
             function () {
 
-                state.currentPage =
-                    1;
+                state.currentPage = 1;
 
                 applyFilters();
-
             }
         );
 
@@ -3225,23 +2721,18 @@
             "change",
             function () {
 
-                state.currentPage =
-                    1;
-
+                state.currentPage = 1;
 
                 updateDistrictOptions(
                     this.value,
                     "governmentDistrictFilter"
                 );
 
-
                 resetUpazilaSelect(
                     "governmentUpazilaFilter"
                 );
 
-
                 applyFilters();
-
             }
         );
 
@@ -3252,18 +2743,14 @@
             "change",
             function () {
 
-                state.currentPage =
-                    1;
-
+                state.currentPage = 1;
 
                 updateUpazilaOptions(
                     this.value,
                     "governmentUpazilaFilter"
                 );
 
-
                 applyFilters();
-
             }
         );
 
@@ -3274,11 +2761,9 @@
             "change",
             function () {
 
-                state.currentPage =
-                    1;
+                state.currentPage = 1;
 
                 applyFilters();
-
             }
         );
 
@@ -3289,11 +2774,9 @@
             "change",
             function () {
 
-                state.currentPage =
-                    1;
+                state.currentPage = 1;
 
                 applyFilters();
-
             }
         );
 
@@ -3304,11 +2787,9 @@
             "change",
             function () {
 
-                state.currentPage =
-                    1;
+                state.currentPage = 1;
 
                 applyFilters();
-
             }
         );
 
@@ -3324,11 +2805,9 @@
                     "governmentDistrict"
                 );
 
-
                 resetUpazilaSelect(
                     "governmentUpazila"
                 );
-
             }
         );
 
@@ -3343,7 +2822,6 @@
                     this.value,
                     "governmentUpazila"
                 );
-
             }
         );
 
@@ -3361,9 +2839,7 @@
 
 
                 if (!button) {
-
                     return;
-
                 }
 
 
@@ -3384,15 +2860,12 @@
 
 
                 if (
-                    !Number.isInteger(
-                        page
-                    ) ||
+                    !Number.isInteger(page) ||
                     page < 1 ||
                     page > totalPages
                 ) {
 
                     return;
-
                 }
 
 
@@ -3402,7 +2875,6 @@
 
                 renderOfficeTable();
                 renderPagination();
-
             }
         );
 
@@ -3420,22 +2892,20 @@
 
 
                 if (!button) {
-
                     return;
-
                 }
 
 
                 const id =
                     button.dataset.id;
 
+
                 const action =
                     button.dataset.action;
 
 
                 if (
-                    action ===
-                    "edit"
+                    action === "edit"
                 ) {
 
                     const office =
@@ -3447,28 +2917,23 @@
                                 ) === String(
                                     id
                                 );
-
                             }
                         );
 
 
                     if (office) {
-
                         openModal(
                             office
                         );
-
                     }
 
 
                     return;
-
                 }
 
 
                 if (
-                    action ===
-                    "status"
+                    action === "status"
                 ) {
 
                     toggleStatus(
@@ -3476,13 +2941,11 @@
                     );
 
                     return;
-
                 }
 
 
                 if (
-                    action ===
-                    "verify"
+                    action === "verify"
                 ) {
 
                     toggleVerification(
@@ -3490,21 +2953,17 @@
                     );
 
                     return;
-
                 }
 
 
                 if (
-                    action ===
-                    "delete"
+                    action === "delete"
                 ) {
 
                     deleteOffice(
                         id
                     );
-
                 }
-
             }
         );
 
@@ -3546,12 +3005,9 @@
             function (event) {
 
                 if (
-                    event.key !==
-                    "Escape"
+                    event.key !== "Escape"
                 ) {
-
                     return;
-
                 }
 
 
@@ -3569,15 +3025,12 @@
                     closeModal();
 
                     return;
-
                 }
 
 
                 closeSidebar();
-
             }
         );
-
     }
 
 
@@ -3599,7 +3052,6 @@
         )?.classList.add(
             "active"
         );
-
     }
 
 
@@ -3617,7 +3069,6 @@
         )?.classList.remove(
             "active"
         );
-
     }
 
 
@@ -3632,36 +3083,28 @@
 
 
         if (
-            !admin ||
-            typeof admin.logout !==
-                "function"
+            admin &&
+            typeof admin.logout === "function"
         ) {
 
-            window.location.href =
-                "./index.html";
+            try {
 
-            return;
+                await admin.logout();
 
+                return;
+
+            } catch (error) {
+
+                console.error(
+                    "Logout error:",
+                    error
+                );
+            }
         }
 
 
-        try {
-
-            await admin.logout();
-
-        } catch (error) {
-
-            console.error(
-                "Logout error:",
-                error
-            );
-
-
-            window.location.href =
-                "./index.html";
-
-        }
-
+        window.location.href =
+            "./index.html";
     }
 
 
@@ -3676,60 +3119,38 @@
         ) {
 
             return;
-
         }
 
 
         try {
 
-            /*
-             * Wait until the existing
-             * Admin Guard has completed
-             * authentication + profile verification.
-             */
-
-            await waitForAdminSystem();
+            const ready =
+                await waitForAdminSystem();
 
 
-            state.profile =
-                getAdmin().getProfile();
+            if (!ready) {
 
+                throw new Error(
+                    "Admin security system ready হয়নি।"
+                );
+            }
 
-            /*
-             * Use existing verified
-             * Supabase client.
-             */
 
             initializeSupabase();
 
 
-            /*
-             * Attach events before
-             * loading data.
-             */
-
             bindEvents();
 
-
-            /*
-             * Keep page safe while
-             * data is loading.
-             */
 
             renderLoading();
 
 
             /*
-             * Load location master data
-             * first.
+             * Location first.
+             * Government office data second.
              */
 
             await loadLocations();
-
-
-            /*
-             * Then load government offices.
-             */
 
             await loadOffices();
 
@@ -3746,69 +3167,28 @@
         } catch (error) {
 
             console.error(
-                "Government initialization failed:",
+                "Government initialization error:",
                 error
             );
 
 
             renderError(
-                getErrorMessage(
-                    error
-                )
+                getErrorMessage(error)
             );
-
         }
-
     }
 
 
     /* =====================================================
-       PUBLIC API
+       DEBUG API
     ===================================================== */
 
     window.DorkariGovernment = {
 
         refresh:
             function () {
-
-                return loadOffices();
-
+                return refreshAll();
             },
-
-
-        getOffices:
-            function () {
-
-                return [
-                    ...state.offices
-                ];
-
-            },
-
-
-        getFilteredOffices:
-            function () {
-
-                return [
-                    ...state.filteredOffices
-                ];
-
-            },
-
-
-        openAddForm:
-            function () {
-
-                openModal(
-                    null
-                );
-
-            },
-
-
-        closeForm:
-            closeModal,
-
 
         getState:
             function () {
@@ -3823,6 +3203,21 @@
                             ...state.offices
                         ],
 
+                    divisions:
+                        [
+                            ...state.divisions
+                        ],
+
+                    districts:
+                        [
+                            ...state.districts
+                        ],
+
+                    upazilas:
+                        [
+                            ...state.upazilas
+                        ],
+
                     filteredOffices:
                         [
                             ...state.filteredOffices
@@ -3830,11 +3225,8 @@
 
                     currentPage:
                         state.currentPage
-
                 };
-
             }
-
     };
 
 
@@ -3842,28 +3234,19 @@
        START
     ===================================================== */
 
-    function start() {
+    if (
+        document.readyState ===
+        "loading"
+    ) {
 
-        if (
-            document.readyState ===
-            "loading"
-        ) {
+        document.addEventListener(
+            "DOMContentLoaded",
+            initialize
+        );
 
-            document.addEventListener(
-                "DOMContentLoaded",
-                initialize
-            );
+    } else {
 
-        } else {
-
-            initialize();
-
-        }
-
+        initialize();
     }
-
-
-    start();
-
 
 })();
