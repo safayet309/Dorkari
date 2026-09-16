@@ -232,7 +232,7 @@
             admin &&
 
             typeof admin.canManageContent ===
-                "function" &&
+            "function" &&
 
             admin.canManageContent()
 
@@ -268,13 +268,13 @@
                 admin &&
 
                 typeof admin.getProfile ===
-                    "function" &&
+                "function" &&
 
                 typeof admin.getSupabase ===
-                    "function" &&
+                "function" &&
 
                 typeof admin.canManageContent ===
-                    "function"
+                "function"
 
             ) {
 
@@ -335,7 +335,7 @@
         if (
             !admin ||
             typeof admin.getSupabase !==
-                "function"
+            "function"
         ) {
 
             throw new Error(
@@ -831,18 +831,18 @@
 
                         (
                             status ===
-                                "active" &&
+                            "active" &&
 
                             test.is_active ===
-                                true
+                            true
                         ) ||
 
                         (
                             status ===
-                                "inactive" &&
+                            "inactive" &&
 
                             test.is_active !==
-                                true
+                            true
                         );
 
 
@@ -1001,7 +1001,7 @@
 
                     const statusClass =
                         test.is_active ===
-                        true
+                            true
 
                             ? "active"
                             : "inactive";
@@ -1009,7 +1009,7 @@
 
                     const statusText =
                         test.is_active ===
-                        true
+                            true
 
                             ? "Active"
                             : "Inactive";
@@ -1017,7 +1017,7 @@
 
                     const toggleText =
                         test.is_active ===
-                        true
+                            true
 
                             ? "Deactivate"
                             : "Activate";
@@ -1036,38 +1036,37 @@
 
                                 <div class="test-name-main">
                                     ${escapeHTML(
-                                        test.name ||
-                                        "—"
-                                    )}
+                        test.name ||
+                        "—"
+                    )}
                                 </div>
 
                                 <div class="test-name-bn">
                                     ${escapeHTML(
-                                        test.name_bn ||
-                                        "—"
-                                    )}
+                        test.name_bn ||
+                        "—"
+                    )}
                                 </div>
 
-                                ${
-                                    description
-                                        ? `
+                                ${description
+                            ? `
                                             <div class="test-description">
                                                 ${escapeHTML(
-                                                    description
-                                                )}
+                                description
+                            )}
                                             </div>
                                         `
-                                        : ""
-                                }
+                            : ""
+                        }
 
                             </td>
 
 
                             <td>
                                 ${escapeHTML(
-                                    test.category ||
-                                    "—"
-                                )}
+                            test.category ||
+                            "—"
+                        )}
                             </td>
 
 
@@ -1075,22 +1074,21 @@
 
                                 <span class="test-hospital-count">
 
-                                    ${
-                                        assignmentCount ===
-                                        0
+                                    ${assignmentCount ===
+                            0
 
-                                            ? "Not assigned"
+                            ? "Not assigned"
 
-                                            : assignmentCount +
-                                              (
-                                                  assignmentCount ===
-                                                  1
+                            : assignmentCount +
+                            (
+                                assignmentCount ===
+                                    1
 
-                                                      ? " hospital"
+                                    ? " hospital"
 
-                                                      : " hospitals"
-                                              )
-                                    }
+                                    : " hospitals"
+                            )
+                        }
 
                                 </span>
 
@@ -1108,35 +1106,53 @@
 
                             <td>
 
-                                <div class="test-actions">
 
-                                    <button
-                                        type="button"
-                                        data-test-action="edit"
-                                        data-test-id="${escapeHTML(
-                                            test.id
-                                        )}"
-                                    >
-                                        Edit
-                                    </button>
+                            <div class="test-actions">
+
+    <button
+        type="button"
+        data-test-action="edit"
+        data-test-id="${escapeHTML(
+                            test.id
+                        )}"
+    >
+        Edit
+    </button>
 
 
-                                    <button
-                                        type="button"
-                                        data-test-action="toggle"
-                                        data-test-id="${escapeHTML(
-                                            test.id
-                                        )}"
-                                        ${
-                                            canManageTests()
-                                                ? ""
-                                                : "disabled"
-                                        }
-                                    >
-                                        ${toggleText}
-                                    </button>
+    <button
+        type="button"
+        data-test-action="toggle"
+        data-test-id="${escapeHTML(
+                            test.id
+                        )}"
+        ${canManageTests()
+                            ? ""
+                            : "disabled"
+                        }
+    >
+        ${toggleText}
+    </button>
 
-                                </div>
+
+    <button
+        type="button"
+        class="test-danger"
+        data-test-action="delete"
+        data-test-id="${escapeHTML(
+                            test.id
+                        )}"
+        ${canManageTests()
+                            ? ""
+                            : "disabled"
+                        }
+    >
+        Delete
+    </button>
+
+</div>
+
+                            
 
                             </td>
 
@@ -1194,11 +1210,10 @@
             <button
                 type="button"
                 data-page="prev"
-                ${
-                    state.currentPage === 1
-                        ? "disabled"
-                        : ""
-                }
+                ${state.currentPage === 1
+                ? "disabled"
+                : ""
+            }
             >
                 ←
             </button>
@@ -1215,12 +1230,11 @@
                 `
                 <button
                     type="button"
-                    class="${
-                        page ===
-                        state.currentPage
-                            ? "active"
-                            : ""
-                    }"
+                    class="${page ===
+                    state.currentPage
+                    ? "active"
+                    : ""
+                }"
                     data-page="${page}"
                 >
                     ${page}
@@ -1235,11 +1249,10 @@
             <button
                 type="button"
                 data-page="next"
-                ${
-                    state.currentPage === totalPages
-                        ? "disabled"
-                        : ""
-                }
+                ${state.currentPage === totalPages
+                ? "disabled"
+                : ""
+            }
             >
                 →
             </button>
@@ -1562,7 +1575,7 @@
 
                         const inactive =
                             hospital.is_active ===
-                            true
+                                true
 
                                 ? ""
 
@@ -1571,7 +1584,7 @@
 
                         const text =
                             english &&
-                            label !== english
+                                label !== english
 
                                 ? (
                                     english +
@@ -1588,7 +1601,7 @@
 
                         const selectedAttr =
                             hospital.id ===
-                            selected
+                                selected
 
                                 ? " selected"
 
@@ -1754,9 +1767,9 @@
 
                     <select data-assignment-field="hospital_id">
                         ${makeHospitalOptions(
-                            row?.hospital_id ||
-                            ""
-                        )}
+                row?.hospital_id ||
+                ""
+            )}
                     </select>
 
                 </div>
@@ -1774,9 +1787,9 @@
                         step="0.01"
                         data-assignment-field="price"
                         value="${escapeHTML(
-                            row?.price ??
-                            0
-                        )}"
+                row?.price ??
+                0
+            )}"
                     >
 
                 </div>
@@ -1794,9 +1807,9 @@
                         step="0.01"
                         data-assignment-field="discount_price"
                         value="${escapeHTML(
-                            row?.discount_price ??
-                            ""
-                        )}"
+                row?.discount_price ??
+                ""
+            )}"
                     >
 
                 </div>
@@ -1813,9 +1826,9 @@
                         data-assignment-field="notes"
                         placeholder="Optional fee note..."
                     >${escapeHTML(
-                        row?.notes ||
-                        ""
-                    )}</textarea>
+                row?.notes ||
+                ""
+            )}</textarea>
 
                 </div>
 
@@ -1829,12 +1842,11 @@
                     <input
                         type="checkbox"
                         data-assignment-field="is_available"
-                        ${
-                            row?.is_available !==
-                            false
-                                ? "checked"
-                                : ""
-                        }
+                        ${row?.is_available !==
+                false
+                ? "checked"
+                : ""
+            }
                     >
 
                     <span>
@@ -2280,7 +2292,7 @@
                     if (
                         editingId &&
                         test.id ===
-                            editingId
+                        editingId
                     ) {
 
                         return false;
@@ -2303,10 +2315,10 @@
                     return (
 
                         existingName ===
-                            nameLower ||
+                        nameLower ||
 
                         existingNameBn ===
-                            nameBnLower
+                        nameBnLower
 
                     );
 
@@ -2471,7 +2483,7 @@
 
             const {
                 error:
-                    rollbackError
+                rollbackError
             } =
                 await state.supabase
 
@@ -2772,7 +2784,7 @@
                         );
 
                     } catch (
-                        assignmentError
+                    assignmentError
                     ) {
 
                         try {
@@ -2791,7 +2803,7 @@
                                 );
 
                         } catch (
-                            cleanupError
+                        cleanupError
                         ) {
 
                             console.error(
@@ -2962,6 +2974,153 @@
 
     }
 
+    /* =====================================================
+   DELETE TEST
+===================================================== */
+
+    async function deleteTest(testId) {
+
+        if (!canManageTests()) {
+
+            showToast(
+                "এই role-এর Test Management permission নেই।"
+            );
+
+            return;
+        }
+
+
+        const test =
+            state.tests.find(
+                function (item) {
+
+                    return (
+                        item.id ===
+                        testId
+                    );
+
+                }
+            );
+
+
+        if (!test) {
+
+            showToast(
+                "Test পাওয়া যায়নি।"
+            );
+
+            return;
+        }
+
+
+        const testName =
+            cleanText(
+                test.name
+            ) || "এই Test";
+
+
+        const confirmed =
+            window.confirm(
+                `"${testName}" স্থায়ীভাবে delete করতে চান?\n\nএই Test-এর সব hospital fee assignment-ও delete হবে। এই action undo করা যাবে না।`
+            );
+
+
+        if (!confirmed) {
+
+            return;
+        }
+
+
+        try {
+
+            /*
+             * First remove hospital fee assignments
+             */
+
+            const {
+                error:
+                assignmentDeleteError
+            } =
+                await state.supabase
+
+                    .from(
+                        HOSPITAL_TEST_TABLE
+                    )
+
+                    .delete()
+
+                    .eq(
+                        "test_id",
+                        testId
+                    );
+
+
+            if (
+                assignmentDeleteError
+            ) {
+
+                throw assignmentDeleteError;
+
+            }
+
+
+            /*
+             * Then delete the master test
+             */
+
+            const {
+                error:
+                testDeleteError
+            } =
+                await state.supabase
+
+                    .from(
+                        TEST_TABLE
+                    )
+
+                    .delete()
+
+                    .eq(
+                        "id",
+                        testId
+                    );
+
+
+            if (
+                testDeleteError
+            ) {
+
+                throw testDeleteError;
+
+            }
+
+
+            showToast(
+                "Test সফলভাবে delete হয়েছে।"
+            );
+
+
+            await loadTests();
+
+
+        } catch (error) {
+
+            console.error(
+                "Test Delete Error:",
+                error
+            );
+
+
+            showToast(
+                getErrorMessage(
+                    error
+                )
+            );
+
+        }
+
+    }
+
 
     /* =====================================================
        TABLE CLICK
@@ -3033,6 +3192,19 @@
             );
 
         }
+
+        if (
+            action ===
+            "delete"
+        ) {
+
+            deleteTest(
+                testId
+            );
+
+        }
+
+
 
     }
 
@@ -3511,7 +3683,7 @@
                         event.target.getAttribute(
                             "data-close-modal"
                         ) ===
-                            "true"
+                        "true"
                     ) {
 
                         closeModal();
@@ -3583,7 +3755,7 @@
                     if (
                         admin &&
                         typeof admin.logout ===
-                            "function"
+                        "function"
                     ) {
 
                         admin.logout();
@@ -3625,7 +3797,7 @@
                     currentModal.getAttribute(
                         "aria-hidden"
                     ) ===
-                        "false"
+                    "false"
                 ) {
 
                     closeModal();
