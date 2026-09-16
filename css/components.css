@@ -1,331 +1,137 @@
-/* =====================================
-   SERVICE GRID
-===================================== */
-
 .service-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-
-    gap: 14px;
-}
-
-
-.service-card {
-    min-height: 145px;
-
-    padding: 20px;
-
-    display: flex;
-    align-items: flex-start;
-
-    gap: 15px;
-
-    position: relative;
-
-    background: var(--surface);
-
-    border: 1px solid var(--border);
-
-    border-radius: var(--radius-md);
-
-    box-shadow: var(--shadow-sm);
-
-    transition:
-        transform var(--transition),
-        box-shadow var(--transition),
-        border-color var(--transition);
-}
-
-
-.service-card:hover {
-    transform: translateY(-3px);
-
-    border-color: var(--border-strong);
-
-    box-shadow: var(--shadow-md);
-}
-
-
-.service-icon {
-    width: 45px;
-    height: 45px;
-
-    flex: 0 0 45px;
-
-    display: grid;
-    place-items: center;
-
-    background: var(--primary-light);
-
-    border-radius: 12px;
-
-    font-size: 21px;
-}
-
-
-.service-info {
-    padding-right: 20px;
-}
-
-
-.service-info h3 {
-    font-size: 16px;
-
-    line-height: 1.4;
-}
-
-
-.service-info p {
-    margin-top: 5px;
-
-    color: var(--text-muted);
-
-    font-size: 12px;
-
-    line-height: 1.5;
-}
-
-
-.card-arrow {
-    position: absolute;
-
-    right: 17px;
-    bottom: 17px;
-
-    color: var(--text-muted);
-
-    font-size: 17px;
-}
-
-
-.emergency-card .service-icon {
-    background: var(--accent-light);
-}
-
-
-/* =====================================
-   EMERGENCY
-===================================== */
-
-.emergency-preview {
-    background: var(--surface-soft);
-}
-
-
-.emergency-label {
-    color: var(--accent);
-}
-
-
-.emergency-list {
-    display: grid;
-
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
 }
 
-
-.emergency-item {
-    padding: 18px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 15px;
-
-    background: #fff;
-
+.service-card {
+    position: relative;
+    min-height: 176px;
+    display: grid;
+    align-content: space-between;
+    gap: 18px;
+    padding: 17px;
     border: 1px solid var(--border);
+    border-radius: 19px;
+    background: var(--surface);
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    box-shadow: var(--shadow-xs);
+    transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background var(--transition);
+}
 
-    border-radius: var(--radius-md);
-
+.service-card:hover {
+    transform: translateY(-3px);
+    border-color: #c8ddd4;
     box-shadow: var(--shadow-sm);
 }
 
+.service-card:focus-visible {
+    outline: 3px solid rgba(13, 92, 69, 0.14);
+    outline-offset: 2px;
+}
 
-.emergency-item-icon {
+.service-card-featured {
+    border-color: #f0caca;
+    background: linear-gradient(150deg, #fff9f9, #ffffff);
+}
+
+.service-card-featured:hover {
+    border-color: #e9aeae;
+}
+
+.service-icon {
     width: 48px;
     height: 48px;
-
-    flex: 0 0 48px;
-
     display: grid;
     place-items: center;
-
-    background: var(--accent-light);
-
-    border-radius: 13px;
-
+    border-radius: 15px;
+    background: var(--primary-light);
     font-size: 22px;
 }
 
+.service-card-featured .service-icon {
+    background: var(--accent-light);
+}
 
-.emergency-item-content {
-    flex: 1;
-
+.service-info {
+    display: grid;
+    gap: 4px;
     min-width: 0;
 }
 
-
-.emergency-item-content h3 {
+.service-info strong {
     font-size: 15px;
+    line-height: 1.35;
 }
 
-
-.emergency-item-content p {
-    margin-top: 2px;
-
+.service-info small {
     color: var(--text-muted);
-
-    font-size: 12px;
+    font-size: 10px;
+    line-height: 1.5;
 }
 
-
-.emergency-number {
-    display: block;
-
-    margin-top: 5px;
-
-    color: var(--accent);
-
-    font-size: 21px;
-
-    letter-spacing: 0.5px;
-}
-
-
-.emergency-actions {
-    display: flex;
-
-    align-items: center;
-
-    gap: 7px;
-}
-
-
-.call-btn,
-.copy-btn {
-    padding: 9px 13px;
-
-    border-radius: 9px;
-
-    font-size: 12px;
-
-    font-weight: 700;
-
-    transition: var(--transition);
-}
-
-
-.call-btn {
-    background: var(--primary);
-    color: #fff;
-}
-
-
-.call-btn:hover {
-    background: var(--primary-dark);
-}
-
-
-.copy-btn {
-    background: var(--surface-soft);
-
+.card-arrow {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
     border: 1px solid var(--border);
-
-    color: var(--text-soft);
-}
-
-
-.copy-btn:hover {
-    background: var(--primary-light);
-
+    border-radius: 10px;
+    background: #fff;
     color: var(--primary);
+    font-size: 15px;
+    font-weight: 900;
 }
 
+.service-card-featured .card-arrow {
+    color: var(--accent-dark);
+}
 
-/* =====================================
-   MOBILE
-===================================== */
+@media (max-width: 1050px) {
+    .service-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
 
 @media (max-width: 760px) {
-
     .service-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        gap: 10px;
+        gap: 9px;
     }
-
 
     .service-card {
-        min-height: 135px;
-
-        padding: 15px;
-
-        gap: 11px;
-
-        flex-direction: column;
+        min-height: 148px;
+        padding: 13px;
+        border-radius: 16px;
+        gap: 12px;
     }
 
-
-    .service-info {
-        padding-right: 0;
+    .service-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        font-size: 20px;
     }
 
-
-    .service-info h3 {
-        font-size: 14px;
+    .service-info strong {
+        font-size: 13px;
     }
 
-
-    .service-info p {
-        font-size: 11px;
+    .service-info small {
+        max-width: 110px;
+        font-size: 9px;
     }
-
 
     .card-arrow {
-        right: 12px;
-        bottom: 12px;
+        right: 10px;
+        bottom: 10px;
+        width: 27px;
+        height: 27px;
+        border-radius: 9px;
+        font-size: 13px;
     }
-
-
-    .emergency-item {
-        align-items: flex-start;
-
-        padding: 15px;
-
-        flex-wrap: wrap;
-    }
-
-
-    .emergency-item-content {
-        width: calc(100% - 63px);
-    }
-
-
-    .emergency-actions {
-        width: 100%;
-
-        margin-left: 63px;
-    }
-
-
-    .call-btn,
-    .copy-btn {
-        flex: 1;
-
-        text-align: center;
-    }
-
-}
-
-
-@media (max-width: 390px) {
-
-    .service-grid {
-        grid-template-columns: 1fr;
-    }
-
 }
