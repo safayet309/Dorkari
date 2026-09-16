@@ -1,0 +1,1261 @@
+```css
+/* =========================================================
+   DORKARI — GOVERNMENT MANAGEMENT
+   File: css/admin-government.css
+
+   Design:
+   - Matches existing Dorkari Admin pages
+   - Uses existing admin visual language
+   - Government-specific selectors only
+   - HTML structure is fixed for future JS
+========================================================= */
+
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.government-page {
+    min-height: 100vh;
+    background: #f6f8f7;
+    color: #17231e;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.government-header {
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px 24px;
+
+    background: #ffffff;
+    border-bottom: 1px solid #e3e9e6;
+
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+
+    box-shadow:
+        0 4px 20px rgba(23, 35, 30, 0.04);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.government-header-left,
+.government-header-actions,
+.government-sidebar-brand,
+.government-profile-card,
+.government-nav-item,
+.government-sidebar-bottom,
+.government-modal-header,
+.government-modal-actions {
+    display: flex;
+    align-items: center;
+}
+
+.government-header-left {
+    min-width: 0;
+    gap: 14px;
+}
+
+.government-header-actions {
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.government-header-title {
+    min-width: 0;
+}
+
+.government-eyebrow,
+.government-section-label,
+.government-nav-label {
+    color: #176b4d;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+}
+
+.government-header-title h1,
+.government-panel-header h2,
+.government-modal-header h2,
+.government-form-section-heading h3 {
+    margin: 0;
+}
+
+.government-header-title h1 {
+    margin-top: 4px;
+    font-size: clamp(22px, 2.5vw, 31px);
+    line-height: 1.15;
+}
+
+.government-header-title p,
+.government-panel-header p,
+.government-modal-header p {
+    margin: 5px 0 0;
+    color: #66736c;
+    font-size: 13px;
+}
+
+.government-sidebar-toggle,
+.government-sidebar-close,
+.government-modal-close {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.government-sidebar-toggle {
+    display: none;
+    padding: 8px;
+    font-size: 24px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.government-primary-btn,
+.government-secondary-btn {
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 10px 15px;
+    border-radius: 11px;
+
+    font: inherit;
+    font-weight: 700;
+    line-height: 1.2;
+
+    cursor: pointer;
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        color .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.government-primary-btn {
+    border: 1px solid #176b4d;
+    background: #176b4d;
+    color: #ffffff;
+}
+
+.government-primary-btn:hover:not(:disabled) {
+    background: #10523b;
+    border-color: #10523b;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(23, 107, 77, .15);
+}
+
+.government-secondary-btn {
+    border: 1px solid #d5ded9;
+    background: #ffffff;
+    color: #34423b;
+}
+
+.government-secondary-btn:hover:not(:disabled) {
+    border-color: #aebdb5;
+    background: #f7faf8;
+}
+
+.government-primary-btn:disabled,
+.government-secondary-btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* =========================================================
+   SHELL
+========================================================= */
+
+.government-shell {
+    min-height: calc(100vh - 78px);
+    display: flex;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.government-sidebar {
+    width: 250px;
+    flex: 0 0 250px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #113f31;
+    color: #ffffff;
+
+    position: sticky;
+    top: 78px;
+
+    height: calc(100vh - 78px);
+
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.government-sidebar-brand {
+    justify-content: space-between;
+    padding: 20px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, .10);
+}
+
+.government-brand-link {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-decoration: none;
+}
+
+.government-brand-main {
+    color: #ffffff;
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.government-brand-bn {
+    color: #b8d5c7;
+    font-size: 12px;
+}
+
+.government-sidebar-close {
+    display: none;
+    color: #ffffff;
+    font-size: 28px;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+.government-profile-card {
+    gap: 11px;
+    margin: 16px;
+    padding: 12px;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .08);
+}
+
+.government-avatar {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 38px;
+
+    border-radius: 50%;
+    background: #176b4d;
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.government-profile-info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.government-profile-info strong {
+    color: #ffffff;
+    font-size: 13px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.government-profile-info span {
+    margin-top: 1px;
+    color: #a8c8ba;
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+.government-nav {
+    padding: 4px 12px 16px;
+}
+
+.government-nav-label {
+    margin: 14px 8px 7px;
+    color: #8eb9a8;
+    font-size: 10px;
+}
+
+.government-nav-item {
+    min-height: 42px;
+
+    gap: 11px;
+
+    margin: 3px 0;
+    padding: 9px 11px;
+
+    border-radius: 10px;
+
+    color: #d6e7df;
+
+    font-size: 13px;
+    font-weight: 650;
+
+    text-decoration: none;
+
+    transition:
+        background .2s ease,
+        color .2s ease;
+}
+
+.government-nav-item > span:first-child {
+    width: 22px;
+    flex: 0 0 22px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 15px;
+}
+
+.government-nav-item:hover {
+    background: rgba(255, 255, 255, .08);
+    color: #ffffff;
+}
+
+.government-nav-item.active {
+    background: rgba(255, 255, 255, .13);
+    color: #ffffff;
+    box-shadow: inset 3px 0 0 #7ed0ad;
+}
+
+
+/* =========================================================
+   SIDEBAR BOTTOM
+========================================================= */
+
+.government-sidebar-bottom {
+    margin-top: auto;
+    padding: 14px 14px 18px;
+
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 6px;
+
+    border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+.government-public-link,
+.government-logout-link {
+    width: 100%;
+    min-height: 40px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 9px 11px;
+
+    border-radius: 9px;
+
+    font: inherit;
+    font-size: 12px;
+    font-weight: 650;
+
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.government-public-link {
+    color: #c9dfd5;
+}
+
+.government-public-link:hover {
+    background: rgba(255, 255, 255, .07);
+    color: #ffffff;
+}
+
+.government-logout-link {
+    border: 0;
+    background: transparent;
+    color: #ffc1c1;
+    text-align: left;
+}
+
+.government-logout-link:hover {
+    background: rgba(255, 255, 255, .07);
+    color: #ffffff;
+}
+
+
+/* =========================================================
+   SIDEBAR OVERLAY
+========================================================= */
+
+.government-sidebar-overlay {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(12, 28, 22, .42);
+
+    z-index: 1190;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.government-main {
+    min-width: 0;
+    flex: 1;
+
+    padding: 26px;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+.government-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+
+    margin-bottom: 20px;
+}
+
+.government-stat-card {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 17px;
+
+    background: #ffffff;
+    border: 1px solid #e3e9e6;
+    border-radius: 15px;
+
+    box-shadow:
+        0 8px 30px rgba(23, 35, 30, .05);
+}
+
+.government-stat-icon {
+    width: 44px;
+    height: 44px;
+
+    flex: 0 0 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    background: #eaf6f0;
+    color: #176b4d;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.government-stat-card > div:last-child {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.government-stat-card span {
+    color: #6b7771;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.government-stat-card strong {
+    margin-top: 2px;
+    color: #17231e;
+    font-size: 23px;
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   PANEL
+========================================================= */
+
+.government-panel {
+    background: #ffffff;
+    border: 1px solid #e3e9e6;
+    border-radius: 16px;
+
+    box-shadow:
+        0 8px 30px rgba(23, 35, 30, .05);
+
+    overflow: hidden;
+}
+
+.government-panel-header {
+    padding: 20px 20px 16px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+
+    border-bottom: 1px solid #edf1ef;
+}
+
+.government-panel-header h2 {
+    margin-top: 4px;
+    font-size: 19px;
+    line-height: 1.3;
+}
+
+.government-result-count {
+    flex-shrink: 0;
+
+    margin-top: 2px;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    background: #f3f7f5;
+    color: #5e6d65;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FILTERS
+========================================================= */
+
+.government-filters {
+    display: grid;
+
+    grid-template-columns:
+        minmax(220px, 1.8fr)
+        repeat(2, minmax(145px, 1fr))
+        repeat(3, minmax(135px, 1fr))
+        minmax(130px, .9fr);
+
+    gap: 11px;
+
+    padding: 16px 20px;
+
+    background: #fbfcfb;
+    border-bottom: 1px solid #edf1ef;
+}
+
+.government-field {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.government-field label {
+    color: #4f5d56;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.government-field input,
+.government-field select,
+.government-field textarea {
+    width: 100%;
+
+    border: 1px solid #d8e1dc;
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: #17231e;
+
+    outline: none;
+
+    transition:
+        border-color .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.government-field input,
+.government-field select {
+    min-height: 42px;
+    padding: 9px 11px;
+}
+
+.government-field textarea {
+    min-height: 96px;
+    padding: 10px 11px;
+    resize: vertical;
+}
+
+.government-field input::placeholder,
+.government-field textarea::placeholder {
+    color: #9aa59f;
+}
+
+.government-field input:focus,
+.government-field select:focus,
+.government-field textarea:focus {
+    border-color: #176b4d;
+
+    box-shadow:
+        0 0 0 3px rgba(23, 107, 77, .10);
+}
+
+.government-field select:disabled {
+    background: #f2f5f3;
+    color: #8b9690;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.government-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.government-table {
+    width: 100%;
+    min-width: 900px;
+
+    border-collapse: collapse;
+
+    font-size: 12px;
+}
+
+.government-table th {
+    padding: 12px 14px;
+
+    background: #f8faf9;
+
+    border-bottom: 1px solid #e6ece9;
+
+    color: #64716a;
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .05em;
+
+    text-align: left;
+    white-space: nowrap;
+}
+
+.government-table td {
+    padding: 13px 14px;
+
+    border-bottom: 1px solid #edf1ef;
+
+    vertical-align: middle;
+}
+
+.government-table tbody tr {
+    transition: background .18s ease;
+}
+
+.government-table tbody tr:hover {
+    background: #fbfdfc;
+}
+
+.government-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.government-state-cell {
+    padding: 45px 20px !important;
+
+    color: #7b8781;
+
+    text-align: center;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.government-pagination {
+    min-height: 58px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+
+    padding: 10px 20px;
+
+    border-top: 1px solid #edf1ef;
+}
+
+.government-pagination button {
+    min-width: 34px;
+    min-height: 34px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 9px;
+
+    border: 1px solid #d7e0db;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #435049;
+
+    font: inherit;
+    font-size: 11px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+.government-pagination button:hover:not(:disabled) {
+    border-color: #176b4d;
+    background: #eaf6f0;
+    color: #176b4d;
+}
+
+.government-pagination button.active {
+    border-color: #176b4d;
+    background: #176b4d;
+    color: #ffffff;
+}
+
+.government-pagination button:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.government-modal {
+    position: fixed;
+    inset: 0;
+
+    z-index: 2000;
+
+    display: grid;
+    place-items: center;
+
+    padding: 20px;
+
+    overflow-y: auto;
+}
+
+.government-modal[hidden] {
+    display: none;
+}
+
+.government-modal-backdrop {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(11, 29, 23, .52);
+
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+
+.government-modal-card {
+    position: relative;
+    z-index: 1;
+
+    width: min(860px, 100%);
+
+    max-height: calc(100vh - 40px);
+
+    display: flex;
+    flex-direction: column;
+
+    background: #ffffff;
+
+    border: 1px solid #dfe7e3;
+    border-radius: 18px;
+
+    box-shadow:
+        0 24px 70px rgba(17, 63, 49, .22);
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.government-modal-header {
+    justify-content: space-between;
+    gap: 18px;
+
+    padding: 20px 22px;
+
+    border-bottom: 1px solid #e9eeeb;
+}
+
+.government-modal-header h2 {
+    margin-top: 4px;
+    font-size: 20px;
+    line-height: 1.25;
+}
+
+.government-modal-close {
+    width: 38px;
+    height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 38px;
+
+    border-radius: 9px;
+
+    color: #68746e;
+
+    font-size: 25px;
+    line-height: 1;
+
+    transition: .2s ease;
+}
+
+.government-modal-close:hover {
+    background: #f2f5f3;
+    color: #17231e;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+#governmentForm {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.government-form-section {
+    padding: 20px 22px;
+
+    border-bottom: 1px solid #edf1ef;
+}
+
+.government-form-section-heading {
+    margin-bottom: 15px;
+}
+
+.government-form-section-heading h3 {
+    margin-top: 3px;
+    font-size: 15px;
+    line-height: 1.3;
+}
+
+.government-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.government-field-full {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   CHECKBOXES
+========================================================= */
+
+.government-check {
+    min-height: 44px;
+
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    padding: 11px 13px;
+
+    border: 1px solid #dbe4df;
+    border-radius: 10px;
+
+    background: #fbfcfb;
+
+    color: #34423b;
+
+    font-size: 12px;
+    font-weight: 650;
+
+    cursor: pointer;
+}
+
+.government-check input {
+    width: 17px;
+    height: 17px;
+
+    margin: 0;
+
+    accent-color: #176b4d;
+
+    cursor: pointer;
+}
+
+.government-check:has(input:checked) {
+    border-color: #a9cfbd;
+    background: #f1f9f5;
+}
+
+
+/* =========================================================
+   MODAL ACTIONS
+========================================================= */
+
+.government-modal-actions {
+    justify-content: flex-end;
+    gap: 9px;
+
+    padding: 16px 22px;
+
+    background: #fbfcfb;
+
+    border-top: 1px solid #edf1ef;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.government-toast {
+    position: fixed;
+
+    right: 22px;
+    bottom: 22px;
+
+    z-index: 3000;
+
+    max-width: min(390px, calc(100vw - 40px));
+
+    padding: 12px 15px;
+
+    border: 1px solid #cfe1d8;
+    border-radius: 11px;
+
+    background: #113f31;
+    color: #ffffff;
+
+    box-shadow:
+        0 12px 35px rgba(17, 63, 49, .20);
+
+    font-size: 12px;
+    font-weight: 650;
+
+    animation:
+        governmentToastIn .2s ease;
+}
+
+.government-toast[hidden] {
+    display: none;
+}
+
+@keyframes governmentToastIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .government-filters {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — SMALL TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .government-main {
+        padding: 20px;
+    }
+
+    .government-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .government-stat-card {
+        padding: 14px;
+    }
+
+    .government-stat-icon {
+        width: 40px;
+        height: 40px;
+        flex-basis: 40px;
+    }
+
+    .government-panel-header {
+        padding: 18px;
+    }
+
+    .government-filters {
+        padding: 14px 18px;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 760px) {
+
+    .government-header {
+        min-height: 70px;
+        padding: 12px 15px;
+    }
+
+    .government-sidebar-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .government-header-title p {
+        display: none;
+    }
+
+    .government-header-title h1 {
+        font-size: 20px;
+    }
+
+    .government-header-actions .government-secondary-btn {
+        display: none;
+    }
+
+    .government-shell {
+        min-height: calc(100vh - 70px);
+    }
+
+    .government-sidebar {
+        position: fixed;
+
+        top: 0;
+        left: 0;
+        z-index: 1200;
+
+        height: 100vh;
+
+        transform: translateX(-102%);
+
+        transition:
+            transform .25s ease;
+
+        box-shadow:
+            12px 0 35px rgba(17, 63, 49, .18);
+    }
+
+    .government-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .government-sidebar-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .government-sidebar-overlay.active {
+        display: block;
+    }
+
+    .government-main {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .government-stats {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .government-panel-header {
+        flex-direction: column;
+        gap: 10px;
+        padding: 16px;
+    }
+
+    .government-result-count {
+        align-self: flex-start;
+    }
+
+    .government-filters {
+        grid-template-columns: 1fr;
+        padding: 14px 16px;
+    }
+
+    .government-table {
+        min-width: 850px;
+    }
+
+    .government-modal {
+        padding: 10px;
+        align-items: end;
+    }
+
+    .government-modal-card {
+        width: 100%;
+        max-height: calc(100vh - 20px);
+        border-radius: 16px 16px 0 0;
+    }
+
+    .government-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .government-field-full {
+        grid-column: auto;
+    }
+
+    .government-modal-header,
+    .government-form-section,
+    .government-modal-actions {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .government-modal-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    .government-modal-actions button {
+        width: 100%;
+    }
+
+    .government-toast {
+        right: 15px;
+        bottom: 15px;
+        max-width: calc(100vw - 30px);
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+
+    .government-header {
+        gap: 8px;
+    }
+
+    .government-header-title h1 {
+        font-size: 18px;
+    }
+
+    .government-header-actions .government-primary-btn {
+        min-height: 38px;
+        padding: 8px 11px;
+        font-size: 11px;
+    }
+
+    .government-main {
+        padding: 11px;
+    }
+
+    .government-stat-card strong {
+        font-size: 21px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .government-primary-btn,
+    .government-secondary-btn,
+    .government-nav-item,
+    .government-field input,
+    .government-field select,
+    .government-field textarea,
+    .government-sidebar {
+        transition: none;
+    }
+
+}
+```
