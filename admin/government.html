@@ -10,644 +10,107 @@
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="../css/admin-crud.css">
     <link rel="stylesheet" href="../css/admin-government.css">
-  
 </head>
 
 <body>
 
-    <div class="government-page">
+<div class="government-page">
 
-        <!-- =====================================================
-             HEADER
-        ====================================================== -->
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
-        <header class="government-header">
+    <header class="government-header">
 
-            <div class="government-header-left">
+        <div class="government-header-left">
 
-                <button
-                    type="button"
-                    class="government-sidebar-toggle"
-                    id="sidebarToggle"
-                    aria-label="Open sidebar"
-                >
-                    ☰
-                </button>
-
-                <div class="government-header-title">
-
-                    <span class="government-eyebrow">
-                        DORKARI ADMIN
-                    </span>
-
-                    <h1>
-                        Government Management
-                    </h1>
-
-                    <p>
-                        সরকারি অফিস ও প্রয়োজনীয় তথ্য পরিচালনা করুন
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="government-header-actions">
-
-                <button
-                    type="button"
-                    class="government-secondary-btn"
-                    id="governmentRefresh"
-                >
-                    ↻ Refresh
-                </button>
-
-                <button
-                    type="button"
-                    class="government-primary-btn"
-                    id="governmentAddBtn"
-                >
-                    + Add Government Office
-                </button>
-
-            </div>
-
-        </header>
-
-
-        <!-- =====================================================
-             MAIN SHELL
-        ====================================================== -->
-
-        <div class="government-shell">
-
-
-            <!-- =================================================
-                 SIDEBAR
-            ================================================== -->
-
-            <aside
-                class="government-sidebar"
-                id="adminSidebar"
-                aria-label="Admin navigation"
+            <button
+                type="button"
+                class="government-sidebar-toggle"
+                id="sidebarToggle"
+                aria-label="Open sidebar"
             >
+                ☰
+            </button>
 
-                <div class="government-sidebar-brand">
+            <div class="government-header-title">
 
-                    <a
-                        href="./dashboard.html"
-                        class="government-brand-link"
-                    >
-                        <span class="government-brand-main">
-                            Dorkari
-                        </span>
+                <span class="government-eyebrow">
+                    DORKARI ADMIN
+                </span>
 
-                        <span class="government-brand-bn">
-                            দরকারি
-                        </span>
-                    </a>
+                <h1>
+                    Government Management
+                </h1>
 
+                <p>
+                    সরকারি অফিস ও প্রয়োজনীয় তথ্য পরিচালনা করুন
+                </p>
 
-                    <button
-                        type="button"
-                        class="government-sidebar-close"
-                        id="sidebarClose"
-                        aria-label="Close sidebar"
-                    >
-                        ×
-                    </button>
-
-                </div>
-
-
-                <!-- Profile -->
-
-                <div class="government-profile-card">
-
-                    <div
-                        class="government-avatar"
-                        id="adminAvatar"
-                    >
-                        A
-                    </div>
-
-                    <div class="government-profile-info">
-
-                        <strong id="sidebarAdminName">
-                            Admin
-                        </strong>
-
-                        <span id="sidebarAdminRole">
-                            Admin
-                        </span>
-
-                    </div>
-
-                </div>
-
-
-                <!-- Navigation -->
-
-                <nav class="government-nav">
-
-                    <p class="government-nav-label">
-                        MAIN
-                    </p>
-
-                    <a
-                        href="./dashboard.html"
-                        class="government-nav-item"
-                    >
-                        <span>⌂</span>
-                        <span>Dashboard</span>
-                    </a>
-
-
-                    <p class="government-nav-label">
-                        MANAGEMENT
-                    </p>
-
-                    <a
-                        href="./location.html"
-                        class="government-nav-item"
-                    >
-                        <span>📍</span>
-                        <span>Location</span>
-                    </a>
-
-                    <a
-                        href="./emergency.html?entity=contacts"
-                        class="government-nav-item"
-                    >
-                        <span>🚨</span>
-                        <span>Emergency</span>
-                    </a>
-
-                    <a
-                        href="./hospital.html"
-                        class="government-nav-item"
-                    >
-                        <span>🏥</span>
-                        <span>Hospitals</span>
-                    </a>
-
-                    <a
-                        href="./doctor.html"
-                        class="government-nav-item"
-                    >
-                        <span>👨‍⚕️</span>
-                        <span>Doctors</span>
-                    </a>
-
-                    <a
-                        href="./test.html"
-                        class="government-nav-item"
-                    >
-                        <span>🧪</span>
-                        <span>Tests &amp; Fees</span>
-                    </a>
-
-                    <a
-                        href="./government.html"
-                        class="government-nav-item active"
-                        aria-current="page"
-                    >
-                        <span>🏛️</span>
-                        <span>Government</span>
-                    </a>
-
-                </nav>
-
-
-                <!-- Sidebar bottom -->
-
-                <div class="government-sidebar-bottom">
-
-                    <a
-                        href="../index.html"
-                        class="government-public-link"
-                    >
-                        ↗ Public Website
-                    </a>
-
-                    <button
-                        type="button"
-                        class="government-logout-link"
-                        id="sidebarLogout"
-                    >
-                        ↪ Logout
-                    </button>
-
-                </div>
-
-            </aside>
-
-
-            <div
-                class="government-sidebar-overlay"
-                id="sidebarOverlay"
-            ></div>
-
-
-            <!-- =================================================
-                 MAIN CONTENT
-            ================================================== -->
-
-            <main class="government-main">
-
-
-                <!-- =================================================
-                     STATISTICS
-                ================================================== -->
-
-                <section
-                    class="government-stats"
-                    aria-label="Government statistics"
-                >
-
-                    <div class="government-stat-card">
-
-                        <div class="government-stat-icon">
-                            🏛️
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Total Offices
-                            </span>
-
-                            <strong id="governmentTotalCount">
-                                —
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="government-stat-card">
-
-                        <div class="government-stat-icon">
-                            ✓
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Active Offices
-                            </span>
-
-                            <strong id="governmentActiveCount">
-                                —
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="government-stat-card">
-
-                        <div class="government-stat-icon">
-                            🛡️
-                        </div>
-
-                        <div>
-
-                            <span>
-                                Verified Offices
-                            </span>
-
-                            <strong id="governmentVerifiedCount">
-                                —
-                            </strong>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     GOVERNMENT LIST PANEL
-                ================================================== -->
-
-                <section class="government-panel">
-
-                    <div class="government-panel-header">
-
-                        <div>
-
-                            <span class="government-section-label">
-                                GOVERNMENT
-                            </span>
-
-                            <h2>
-                                Government Office List
-                            </h2>
-
-                            <p>
-                                সরকারি অফিসের তথ্য, অবস্থান, verification এবং status এক জায়গা থেকে পরিচালনা করুন।
-                            </p>
-
-                        </div>
-
-
-                        <strong
-                            class="government-result-count"
-                            id="governmentResultCount"
-                        >
-                            Loading...
-                        </strong>
-
-                    </div>
-
-
-                    <!-- =================================================
-                         FILTERS
-                    ================================================== -->
-
-                    <div class="government-filters">
-
-                        <div class="government-field">
-
-                            <label for="governmentSearch">
-                                Search
-                            </label>
-
-                            <input
-                                type="search"
-                                id="governmentSearch"
-                                placeholder="অফিসের নাম, বাংলা নাম বা ফোন লিখুন..."
-                            >
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentTypeFilter">
-                                Office Type
-                            </label>
-
-                            <select id="governmentTypeFilter">
-
-                                <option value="">
-                                    সব office type
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentDivisionFilter">
-                                Division
-                            </label>
-
-                            <select id="governmentDivisionFilter">
-
-                                <option value="">
-                                    সব বিভাগ
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentDistrictFilter">
-                                District
-                            </label>
-
-                            <select
-                                id="governmentDistrictFilter"
-                                disabled
-                            >
-
-                                <option value="">
-                                    সব জেলা
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentUpazilaFilter">
-                                Upazila
-                            </label>
-
-                            <select
-                                id="governmentUpazilaFilter"
-                                disabled
-                            >
-
-                                <option value="">
-                                    সব উপজেলা
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentStatusFilter">
-                                Status
-                            </label>
-
-                            <select id="governmentStatusFilter">
-
-                                <option value="">
-                                    সব status
-                                </option>
-
-                                <option value="active">
-                                    Active
-                                </option>
-
-                                <option value="inactive">
-                                    Inactive
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentVerificationFilter">
-                                Verification
-                            </label>
-
-                            <select id="governmentVerificationFilter">
-
-                                <option value="">
-                                    সব verification
-                                </option>
-
-                                <option value="verified">
-                                    Verified
-                                </option>
-
-                                <option value="unverified">
-                                    Unverified
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- =================================================
-                         TABLE
-                    ================================================== -->
-
-                    <div class="government-table-wrap">
-
-                        <table class="government-table">
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Government Office
-                                    </th>
-
-                                    <th>
-                                        Office Type
-                                    </th>
-
-                                    <th>
-                                        Location
-                                    </th>
-
-                                    <th>
-                                        Phone
-                                    </th>
-
-                                    <th>
-                                        Verification
-                                    </th>
-
-                                    <th>
-                                        Status
-                                    </th>
-
-                                    <th>
-                                        Action
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody id="governmentTableBody">
-
-                                <tr>
-
-                                    <td
-                                        colspan="7"
-                                        class="government-state-cell"
-                                    >
-                                        Loading government offices...
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-
-                    <!-- =================================================
-                         PAGINATION
-                    ================================================== -->
-
-                    <div
-                        class="government-pagination"
-                        id="governmentPagination"
-                        aria-label="Pagination"
-                    ></div>
-
-                </section>
-
-            </main>
+            </div>
 
         </div>
 
-    </div>
+
+        <div class="government-header-actions">
+
+            <button
+                type="button"
+                class="government-secondary-btn"
+                id="governmentRefresh"
+            >
+                ↻ Refresh
+            </button>
+
+            <button
+                type="button"
+                class="government-primary-btn"
+                id="governmentAddBtn"
+            >
+                + Add Government Office
+            </button>
+
+        </div>
+
+    </header>
 
 
-    <!-- =========================================================
-         ADD / EDIT GOVERNMENT OFFICE MODAL
-    ========================================================== -->
+    <!-- =====================================================
+         SHELL
+    ====================================================== -->
 
-    <div
-        class="government-modal"
-        id="governmentModal"
-        hidden
-        aria-hidden="true"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="governmentModalTitle"
-    >
+    <div class="government-shell">
 
-        <div
-            class="government-modal-backdrop"
-            data-close-modal="true"
-        ></div>
+        <!-- =================================================
+             SIDEBAR
+        ================================================== -->
 
+        <aside
+            class="government-sidebar"
+            id="adminSidebar"
+            aria-label="Admin navigation"
+        >
 
-        <div class="government-modal-card">
+            <div class="government-sidebar-brand">
 
-
-            <!-- =================================================
-                 MODAL HEADER
-            ================================================== -->
-
-            <div class="government-modal-header">
-
-                <div>
-
-                    <span class="government-section-label">
-                        GOVERNMENT OFFICE
+                <a
+                    href="./dashboard.html"
+                    class="government-brand-link"
+                >
+                    <span class="government-brand-main">
+                        Dorkari
                     </span>
 
-                    <h2 id="governmentModalTitle">
-                        Add Government Office
-                    </h2>
-
-                    <p>
-                        সরকারি অফিসের প্রয়োজনীয় তথ্য সংরক্ষণ ও পরিচালনা করুন।
-                    </p>
-
-                </div>
-
+                    <span class="government-brand-bn">
+                        দরকারি
+                    </span>
+                </a>
 
                 <button
                     type="button"
-                    class="government-modal-close"
-                    id="governmentModalClose"
-                    aria-label="Close modal"
+                    class="government-sidebar-close"
+                    id="sidebarClose"
+                    aria-label="Close sidebar"
                 >
                     ×
                 </button>
@@ -655,405 +118,895 @@
             </div>
 
 
-            <!-- =================================================
-                 FORM
-            ================================================== -->
+            <!-- Profile -->
 
-            <form
-                id="governmentForm"
-                novalidate
-            >
+            <div class="government-profile-card">
 
-                <input
-                    type="hidden"
-                    id="governmentId"
+                <div
+                    class="government-avatar"
+                    id="adminAvatar"
                 >
+                    A
+                </div>
 
+                <div class="government-profile-info">
 
-                <!-- =================================================
-                     BASIC INFORMATION
-                ================================================== -->
+                    <strong id="sidebarAdminName">
+                        Admin
+                    </strong>
 
-                <section class="government-form-section">
-
-                    <div class="government-form-section-heading">
-
-                        <div>
-
-                            <span class="government-section-label">
-                                BASIC INFORMATION
-                            </span>
-
-                            <h3>
-                                Office Information
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="government-form-grid">
-
-                        <div class="government-field">
-
-                            <label for="governmentName">
-                                Office Name *
-                            </label>
-
-                            <input
-                                id="governmentName"
-                                type="text"
-                                maxlength="200"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentNameBn">
-                                বাংলা নাম
-                            </label>
-
-                            <input
-                                id="governmentNameBn"
-                                type="text"
-                                maxlength="200"
-                            >
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentOfficeType">
-                                Office Type *
-                            </label>
-
-                            <input
-                                id="governmentOfficeType"
-                                type="text"
-                                maxlength="120"
-                                placeholder="যেমন: District Office, Upazila Office"
-                                required
-                            >
-
-                        </div>
-
-
-                        <div class="government-field government-field-full">
-
-                            <label for="governmentDescription">
-                                Description
-                            </label>
-
-                            <textarea
-                                id="governmentDescription"
-                                rows="4"
-                                maxlength="1000"
-                                placeholder="এই অফিস সম্পর্কে সংক্ষিপ্ত তথ্য..."
-                            ></textarea>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     CONTACT INFORMATION
-                ================================================== -->
-
-                <section class="government-form-section">
-
-                    <div class="government-form-section-heading">
-
-                        <div>
-
-                            <span class="government-section-label">
-                                CONTACT
-                            </span>
-
-                            <h3>
-                                Contact Information
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="government-form-grid">
-
-                        <div class="government-field">
-
-                            <label for="governmentPhone">
-                                Phone
-                            </label>
-
-                            <input
-                                id="governmentPhone"
-                                type="tel"
-                                maxlength="50"
-                                placeholder="01XXXXXXXXX"
-                            >
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentEmail">
-                                Email
-                            </label>
-
-                            <input
-                                id="governmentEmail"
-                                type="email"
-                                maxlength="160"
-                                placeholder="office@example.gov.bd"
-                            >
-
-                        </div>
-
-
-                        <div class="government-field government-field-full">
-
-                            <label for="governmentWebsite">
-                                Website
-                            </label>
-
-                            <input
-                                id="governmentWebsite"
-                                type="url"
-                                maxlength="300"
-                                placeholder="https://..."
-                            >
-
-                        </div>
-
-
-                        <div class="government-field government-field-full">
-
-                            <label for="governmentAddress">
-                                Address
-                            </label>
-
-                            <textarea
-                                id="governmentAddress"
-                                rows="3"
-                                maxlength="500"
-                                placeholder="পূর্ণ ঠিকানা..."
-                            ></textarea>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     LOCATION
-                ================================================== -->
-
-                <section class="government-form-section">
-
-                    <div class="government-form-section-heading">
-
-                        <div>
-
-                            <span class="government-section-label">
-                                LOCATION
-                            </span>
-
-                            <h3>
-                                Office Location
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="government-form-grid">
-
-                        <div class="government-field">
-
-                            <label for="governmentDivision">
-                                Division *
-                            </label>
-
-                            <select
-                                id="governmentDivision"
-                                required
-                            >
-
-                                <option value="">
-                                    বিভাগ নির্বাচন করুন
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentDistrict">
-                                District *
-                            </label>
-
-                            <select
-                                id="governmentDistrict"
-                                required
-                                disabled
-                            >
-
-                                <option value="">
-                                    জেলা নির্বাচন করুন
-                                </option>
-
-                            </select>
-
-                        </div>
-
-
-                        <div class="government-field">
-
-                            <label for="governmentUpazila">
-                                Upazila
-                            </label>
-
-                            <select
-                                id="governmentUpazila"
-                                disabled
-                            >
-
-                                <option value="">
-                                    উপজেলা নির্বাচন করুন
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     STATUS / VERIFICATION
-                ================================================== -->
-
-                <section class="government-form-section">
-
-                    <div class="government-form-section-heading">
-
-                        <div>
-
-                            <span class="government-section-label">
-                                STATUS
-                            </span>
-
-                            <h3>
-                                Status &amp; Verification
-                            </h3>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="government-form-grid">
-
-                        <label class="government-check">
-
-                            <input
-                                id="governmentIsActive"
-                                type="checkbox"
-                                checked
-                            >
-
-                            <span>
-                                Active office
-                            </span>
-
-                        </label>
-
-
-                        <label class="government-check">
-
-                            <input
-                                id="governmentIsVerified"
-                                type="checkbox"
-                            >
-
-                            <span>
-                                Verified office
-                            </span>
-
-                        </label>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     ACTIONS
-                ================================================== -->
-
-                <div class="government-modal-actions">
-
-                    <button
-                        type="button"
-                        class="government-secondary-btn"
-                        id="governmentCancelBtn"
-                    >
-                        Cancel
-                    </button>
-
-
-                    <button
-                        type="submit"
-                        class="government-primary-btn"
-                        id="governmentSaveBtn"
-                    >
-                        Save Government Office
-                    </button>
+                    <span id="sidebarAdminRole">
+                        Admin
+                    </span>
 
                 </div>
 
-            </form>
+            </div>
+
+
+            <!-- Navigation -->
+
+            <nav class="government-nav">
+
+                <p class="government-nav-label">
+                    MAIN
+                </p>
+
+                <a
+                    href="./dashboard.html"
+                    class="government-nav-item"
+                >
+                    <span>⌂</span>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <p class="government-nav-label">
+                    MANAGEMENT
+                </p>
+
+                <a
+                    href="./location.html"
+                    class="government-nav-item"
+                >
+                    <span>📍</span>
+                    <span>Location</span>
+                </a>
+
+                <a
+                    href="./emergency.html?entity=contacts"
+                    class="government-nav-item"
+                >
+                    <span>🚨</span>
+                    <span>Emergency</span>
+                </a>
+
+                <a
+                    href="./hospital.html"
+                    class="government-nav-item"
+                >
+                    <span>🏥</span>
+                    <span>Hospitals</span>
+                </a>
+
+                <a
+                    href="./doctor.html"
+                    class="government-nav-item"
+                >
+                    <span>👨‍⚕️</span>
+                    <span>Doctors</span>
+                </a>
+
+                <a
+                    href="./test.html"
+                    class="government-nav-item"
+                >
+                    <span>🧪</span>
+                    <span>Tests &amp; Fees</span>
+                </a>
+
+                <a
+                    href="./government.html"
+                    class="government-nav-item active"
+                    aria-current="page"
+                >
+                    <span>🏛️</span>
+                    <span>Government</span>
+                </a>
+
+            </nav>
+
+
+            <!-- Sidebar bottom -->
+
+            <div class="government-sidebar-bottom">
+
+                <a
+                    href="../index.html"
+                    class="government-public-link"
+                >
+                    ↗ Public Website
+                </a>
+
+                <button
+                    type="button"
+                    class="government-logout-link"
+                    id="sidebarLogout"
+                >
+                    ↪ Logout
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <div
+            class="government-sidebar-overlay"
+            id="sidebarOverlay"
+        ></div>
+
+
+        <!-- =================================================
+             MAIN
+        ================================================== -->
+
+        <main class="government-main">
+
+            <!-- =================================================
+                 STATS
+            ================================================== -->
+
+            <section
+                class="government-stats"
+                aria-label="Government statistics"
+            >
+
+                <div class="government-stat-card">
+
+                    <div class="government-stat-icon">
+                        🏛️
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Offices
+                        </span>
+
+                        <strong id="governmentTotalCount">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="government-stat-card">
+
+                    <div class="government-stat-icon">
+                        ✓
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Active Offices
+                        </span>
+
+                        <strong id="governmentActiveCount">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="government-stat-card">
+
+                    <div class="government-stat-icon">
+                        🛡️
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Verified Offices
+                        </span>
+
+                        <strong id="governmentVerifiedCount">
+                            —
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 LIST
+            ================================================== -->
+
+            <section class="government-panel">
+
+                <div class="government-panel-header">
+
+                    <div>
+
+                        <span class="government-section-label">
+                            GOVERNMENT
+                        </span>
+
+                        <h2>
+                            Government Office List
+                        </h2>
+
+                        <p>
+                            সরকারি অফিসের তথ্য, অবস্থান, verification এবং status পরিচালনা করুন।
+                        </p>
+
+                    </div>
+
+                    <strong
+                        class="government-result-count"
+                        id="governmentResultCount"
+                    >
+                        Loading...
+                    </strong>
+
+                </div>
+
+
+                <!-- =================================================
+                     FILTERS
+                ================================================== -->
+
+                <div class="government-filters">
+
+                    <div class="government-field government-search-field">
+
+                        <label for="governmentSearch">
+                            Search
+                        </label>
+
+                        <input
+                            type="search"
+                            id="governmentSearch"
+                            placeholder="নাম, বাংলা নাম, ফোন, email..."
+                        >
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentTypeFilter">
+                            Office Type
+                        </label>
+
+                        <select id="governmentTypeFilter">
+
+                            <option value="">
+                                সব office type
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentDivisionFilter">
+                            Division
+                        </label>
+
+                        <select id="governmentDivisionFilter">
+
+                            <option value="">
+                                সব বিভাগ
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentDistrictFilter">
+                            District
+                        </label>
+
+                        <select
+                            id="governmentDistrictFilter"
+                            disabled
+                        >
+
+                            <option value="">
+                                সব জেলা
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentUpazilaFilter">
+                            Upazila
+                        </label>
+
+                        <select
+                            id="governmentUpazilaFilter"
+                            disabled
+                        >
+
+                            <option value="">
+                                সব উপজেলা
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentStatusFilter">
+                            Status
+                        </label>
+
+                        <select id="governmentStatusFilter">
+
+                            <option value="">
+                                সব status
+                            </option>
+
+                            <option value="active">
+                                Active
+                            </option>
+
+                            <option value="inactive">
+                                Inactive
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentVerificationFilter">
+                            Verification
+                        </label>
+
+                        <select id="governmentVerificationFilter">
+
+                            <option value="">
+                                সব verification
+                            </option>
+
+                            <option value="verified">
+                                Verified
+                            </option>
+
+                            <option value="unverified">
+                                Unverified
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     TABLE
+                ================================================== -->
+
+                <div class="government-table-wrap">
+
+                    <table class="government-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Government Office
+                                </th>
+
+                                <th>
+                                    Office Type
+                                </th>
+
+                                <th>
+                                    Location
+                                </th>
+
+                                <th>
+                                    Phone
+                                </th>
+
+                                <th>
+                                    Verification
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="governmentTableBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="government-state-cell"
+                                >
+                                    সরকারি অফিসের তথ্য লোড হচ্ছে...
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =================================================
+                     PAGINATION
+                ================================================== -->
+
+                <div
+                    class="government-pagination"
+                    id="governmentPagination"
+                    aria-label="Pagination"
+                ></div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL
+========================================================= -->
+
+<div
+    class="government-modal"
+    id="governmentModal"
+    hidden
+    aria-hidden="true"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="governmentModalTitle"
+>
+
+    <div
+        class="government-modal-backdrop"
+        data-close-modal="true"
+    ></div>
+
+
+    <div class="government-modal-card">
+
+        <div class="government-modal-header">
+
+            <div>
+
+                <span class="government-section-label">
+                    GOVERNMENT OFFICE
+                </span>
+
+                <h2 id="governmentModalTitle">
+                    Add Government Office
+                </h2>
+
+                <p>
+                    সরকারি অফিসের তথ্য সংরক্ষণ ও পরিচালনা করুন।
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                class="government-modal-close"
+                id="governmentModalClose"
+                aria-label="Close modal"
+            >
+                ×
+            </button>
 
         </div>
 
+
+        <form
+            id="governmentForm"
+            novalidate
+        >
+
+            <input
+                type="hidden"
+                id="governmentId"
+            >
+
+
+            <!-- BASIC -->
+
+            <section class="government-form-section">
+
+                <div class="government-form-section-heading">
+
+                    <span class="government-section-label">
+                        BASIC INFORMATION
+                    </span>
+
+                    <h3>
+                        Office Information
+                    </h3>
+
+                </div>
+
+
+                <div class="government-form-grid">
+
+                    <div class="government-field">
+
+                        <label for="governmentName">
+                            Office Name *
+                        </label>
+
+                        <input
+                            id="governmentName"
+                            type="text"
+                            maxlength="200"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentNameBn">
+                            বাংলা নাম *
+                        </label>
+
+                        <input
+                            id="governmentNameBn"
+                            type="text"
+                            maxlength="200"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentOfficeType">
+                            Office Type
+                        </label>
+
+                        <input
+                            id="governmentOfficeType"
+                            type="text"
+                            maxlength="120"
+                            placeholder="যেমন: District Office"
+                        >
+
+                    </div>
+
+
+                    <div class="government-field government-field-full">
+
+                        <label for="governmentDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="governmentDescription"
+                            rows="4"
+                            maxlength="1000"
+                            placeholder="এই অফিস সম্পর্কে সংক্ষিপ্ত তথ্য..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONTACT -->
+
+            <section class="government-form-section">
+
+                <div class="government-form-section-heading">
+
+                    <span class="government-section-label">
+                        CONTACT
+                    </span>
+
+                    <h3>
+                        Contact Information
+                    </h3>
+
+                </div>
+
+
+                <div class="government-form-grid">
+
+                    <div class="government-field">
+
+                        <label for="governmentPhone">
+                            Phone
+                        </label>
+
+                        <input
+                            id="governmentPhone"
+                            type="tel"
+                            maxlength="50"
+                            placeholder="01XXXXXXXXX"
+                        >
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentEmail">
+                            Email
+                        </label>
+
+                        <input
+                            id="governmentEmail"
+                            type="email"
+                            maxlength="160"
+                            placeholder="office@example.gov.bd"
+                        >
+
+                    </div>
+
+
+                    <div class="government-field government-field-full">
+
+                        <label for="governmentWebsite">
+                            Website
+                        </label>
+
+                        <input
+                            id="governmentWebsite"
+                            type="url"
+                            maxlength="300"
+                            placeholder="https://..."
+                        >
+
+                    </div>
+
+
+                    <div class="government-field government-field-full">
+
+                        <label for="governmentAddress">
+                            Address
+                        </label>
+
+                        <textarea
+                            id="governmentAddress"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="পূর্ণ ঠিকানা..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- LOCATION -->
+
+            <section class="government-form-section">
+
+                <div class="government-form-section-heading">
+
+                    <span class="government-section-label">
+                        LOCATION
+                    </span>
+
+                    <h3>
+                        Office Location
+                    </h3>
+
+                </div>
+
+
+                <div class="government-form-grid">
+
+                    <div class="government-field">
+
+                        <label for="governmentDivision">
+                            Division
+                        </label>
+
+                        <select id="governmentDivision">
+
+                            <option value="">
+                                বিভাগ নির্বাচন করুন
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentDistrict">
+                            District
+                        </label>
+
+                        <select
+                            id="governmentDistrict"
+                            disabled
+                        >
+
+                            <option value="">
+                                জেলা নির্বাচন করুন
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="government-field">
+
+                        <label for="governmentUpazila">
+                            Upazila
+                        </label>
+
+                        <select
+                            id="governmentUpazila"
+                            disabled
+                        >
+
+                            <option value="">
+                                উপজেলা নির্বাচন করুন
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- STATUS -->
+
+            <section class="government-form-section">
+
+                <div class="government-form-section-heading">
+
+                    <span class="government-section-label">
+                        STATUS
+                    </span>
+
+                    <h3>
+                        Status &amp; Verification
+                    </h3>
+
+                </div>
+
+
+                <div class="government-form-grid">
+
+                    <label class="government-check">
+
+                        <input
+                            id="governmentIsActive"
+                            type="checkbox"
+                            checked
+                        >
+
+                        <span>
+                            Active office
+                        </span>
+
+                    </label>
+
+
+                    <label class="government-check">
+
+                        <input
+                            id="governmentIsVerified"
+                            type="checkbox"
+                        >
+
+                        <span>
+                            Verified office
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </section>
+
+
+            <!-- ACTIONS -->
+
+            <div class="government-modal-actions">
+
+                <button
+                    type="button"
+                    class="government-secondary-btn"
+                    id="governmentCancelBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="government-primary-btn"
+                    id="governmentSaveBtn"
+                >
+                    Save Government Office
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
 
-
-    <!-- =========================================================
-         TOAST
-    ========================================================== -->
-
-    <div
-        class="government-toast"
-        id="governmentToast"
-        hidden
-        role="status"
-        aria-live="polite"
-    >
-        <span id="governmentToastMessage"></span>
-    </div>
+</div>
 
 
-    <!-- =========================================================
-         SCRIPTS
-    ========================================================== -->
+<!-- =========================================================
+     TOAST
+========================================================= -->
+
+<div
+    class="government-toast"
+    id="governmentToast"
+    hidden
+    role="status"
+    aria-live="polite"
+>
+    <span id="governmentToastMessage"></span>
+</div>
+
+
+<!-- =========================================================
+     SCRIPTS
+========================================================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/config.js"></script>
