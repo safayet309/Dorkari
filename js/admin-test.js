@@ -1,22 +1,29 @@
 /* =========================================================
-   DORKARI — TESTS & FEES MANAGEMENT
-   File: js/admin-test.js
+   Dorkari — Tests & Fees Management
 
-   Handles:
-   - Test list
-   - Search
-   - Category filter
-   - Status filter
-   - Pagination
-   - Add Test
-   - Edit Test
-   - Update Test
-   - Activate / Deactivate
-   - Supabase integration
-   - Role-based content permission
+   PURPOSE
+   ---------------------------------------------------------
+   1. Manage master medical tests.
+   2. Assign tests to hospitals.
+   3. Store hospital-wise price.
+   4. Store discount price.
+   5. Store hospital-specific notes.
+   6. Store hospital-specific availability.
+   7. Search tests.
+   8. Filter by category.
+   9. Filter by active/inactive status.
+   10. Pagination.
+   11. Respect Dorkari admin permissions.
+
+   DATABASE
+   ---------------------------------------------------------
+   tests
+   hospital_tests
+   hospitals
 ========================================================= */
 
 (function () {
+
     "use strict";
 
 
@@ -24,10 +31,17 @@
        CONFIG
     ===================================================== */
 
-    const TEST_TABLE = "tests";
-    const HOSPITAL_TEST_TABLE = "hospital_tests";
+    const TEST_TABLE =
+        "tests";
 
-    const PAGE_SIZE = 10;
+    const HOSPITAL_TABLE =
+        "hospitals";
+
+    const HOSPITAL_TEST_TABLE =
+        "hospital_tests";
+
+    const PAGE_SIZE =
+        10;
 
 
     /* =====================================================
@@ -35,26 +49,48 @@
     ===================================================== */
 
     const state = {
-        supabase: null,
 
-        tests: [],
-        filteredTests: [],
+        supabase:
+            null,
 
-        currentPage: 1,
+        profile:
+            null,
 
-        editingTestId: null,
+        tests:
+            [],
 
-        isLoading: false,
-        isSaving: false
+        hospitals:
+            [],
+
+        assignments:
+            [],
+
+        filteredTests:
+            [],
+
+        currentPage:
+            1,
+
+        editingTestId:
+            null,
+
+        isSaving:
+            false,
+
+        initialized:
+            false
+
     };
 
 
     /* =====================================================
-       DOM HELPER
+       DOM
     ===================================================== */
 
     function get(id) {
+
         return document.getElementById(id);
+
     }
 
 
@@ -63,17 +99,67 @@
     ===================================================== */
 
     function cleanText(value) {
-        return String(value ?? "").trim();
+
+        return String(
+            value ?? ""
+        ).trim();
+
     }
 
 
     function escapeHTML(value) {
-        return String(value ?? "")
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
+
+        return String(
+            value ?? ""
+        )
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    function getErrorMessage(error) {
+
+        if (!error) {
+
+            return "অজানা সমস্যা হয়েছে।";
+
+        }
+
+        return (
+            cleanText(
+                error.message
+            ) ||
+            cleanText(
+                error.error_description
+            ) ||
+            cleanText(
+                error.details
+            ) ||
+            cleanText(
+                error.hint
+            ) ||
+            "অজানা সমস্যা হয়েছে।"
+        );
+
     }
 
 
@@ -83,63 +169,156 @@
 
     function showToast(message) {
 
-        const box = get("testToast");
-        const text = get("testToastMessage");
+        const toast =
+            get("testToast");
 
-        if (!box || !text) {
+        const toastMessage =
+            get("testToastMessage");
+
+
+        if (
+            !toast ||
+            !toastMessage
+        ) {
             return;
         }
 
-        text.textContent = cleanText(message);
 
-        box.hidden = false;
+        toastMessage.textContent =
+            cleanText(message);
+
+        toast.hidden =
+            false;
+
 
         clearTimeout(
             showToast.timer
         );
 
+
         showToast.timer =
             setTimeout(
                 function () {
 
-                    box.hidden = true;
+                    toast.hidden =
+                        true;
 
                 },
-                3000
+                2800
             );
+
     }
 
 
     /* =====================================================
-       ERROR MESSAGE
+       ADMIN
     ===================================================== */
 
-    function getErrorMessage(error) {
+    function getAdmin() {
 
-        if (!error) {
-            return "একটি সমস্যা হয়েছে।";
-        }
+        return window.DorkariAdmin || null;
+
+    }
 
 
-        if (
-            error.code === "23505"
+    function canManageTests() {
+
+        const admin =
+            getAdmin();
+
+
+        return Boolean(
+
+            admin &&
+
+            typeof admin.canManageContent ===
+                "function" &&
+
+            admin.canManageContent()
+
+        );
+
+    }
+
+
+    /* =====================================================
+       WAIT FOR ADMIN SECURITY SYSTEM
+    ===================================================== */
+
+    async function waitForAdminSystem() {
+
+        let attempts =
+            0;
+
+        const maxAttempts =
+            200;
+
+
+        while (
+            attempts <
+            maxAttempts
         ) {
 
-            return "এই Test তথ্যটি আগে থেকেই আছে।";
+            const admin =
+                getAdmin();
+
+
+            if (
+
+                admin &&
+
+                typeof admin.getProfile ===
+                    "function" &&
+
+                typeof admin.getSupabase ===
+                    "function" &&
+
+                typeof admin.canManageContent ===
+                    "function"
+
+            ) {
+
+                const profile =
+                    admin.getProfile();
+
+                const supabase =
+                    admin.getSupabase();
+
+
+                if (
+                    profile &&
+                    supabase
+                ) {
+
+                    return;
+
+                }
+
+            }
+
+
+            await new Promise(
+                function (resolve) {
+
+                    setTimeout(
+                        resolve,
+                        50
+                    );
+
+                }
+            );
+
+
+            attempts +=
+                1;
 
         }
 
 
-        if (
-            error.message
-        ) {
+        throw new Error(
+            "Admin security system ready হয়নি।"
+        );
 
-            return error.message;
-
-        }
-
-
-        return "Test সংরক্ষণ করা যায়নি।";
     }
 
 
@@ -149,16 +328,25 @@
 
     function initializeSupabase() {
 
+        const admin =
+            getAdmin();
+
+
         if (
-            window.DorkariAdmin &&
-            typeof window.DorkariAdmin.getSupabase ===
+            !admin ||
+            typeof admin.getSupabase !==
                 "function"
         ) {
 
-            state.supabase =
-                window.DorkariAdmin.getSupabase();
+            throw new Error(
+                "DorkariAdmin Supabase access পাওয়া যায়নি।"
+            );
 
         }
+
+
+        state.supabase =
+            admin.getSupabase();
 
 
         if (!state.supabase) {
@@ -168,28 +356,7 @@
             );
 
         }
-    }
 
-
-    /* =====================================================
-       CONTENT MANAGEMENT PERMISSION
-    ===================================================== */
-
-    function canManageTests() {
-
-        if (
-            window.DorkariAdmin &&
-            typeof window.DorkariAdmin.canManageContent ===
-                "function"
-        ) {
-
-            return Boolean(
-                window.DorkariAdmin.canManageContent()
-            );
-
-        }
-
-        return false;
     }
 
 
@@ -197,35 +364,50 @@
        PERMISSION UI
     ===================================================== */
 
-    function applyPermissionUI() {
+    function updatePermissionUI() {
 
-        const canManage =
+        const allowed =
             canManageTests();
 
 
         const addButton =
             get("testAddBtn");
 
+        const saveButton =
+            get("testSaveBtn");
+
+        const addAssignmentButton =
+            get("testAddAssignmentBtn");
+
+
         if (addButton) {
 
             addButton.disabled =
-                !canManage;
+                !allowed;
 
             addButton.title =
-                canManage
-                    ? ""
-                    : "আপনার এই action-এর permission নেই।";
+                allowed
+                    ? "Add Test"
+                    : "এই role-এর Test Management permission নেই";
+
         }
 
-
-        const saveButton =
-            get("testSaveBtn");
 
         if (saveButton) {
 
             saveButton.disabled =
-                !canManage;
+                !allowed;
+
         }
+
+
+        if (addAssignmentButton) {
+
+            addAssignmentButton.disabled =
+                !allowed;
+
+        }
+
     }
 
 
@@ -235,31 +417,18 @@
 
     async function loadTests() {
 
-        if (state.isLoading) {
-            return;
-        }
-
-
-        if (!state.supabase) {
-            return;
-        }
-
-
-        state.isLoading = true;
-
-
-        const tableBody =
+        const tbody =
             get("testTableBody");
 
 
-        if (tableBody) {
+        if (tbody) {
 
-            tableBody.innerHTML =
+            tbody.innerHTML =
                 `
                 <tr>
                     <td
                         colspan="5"
-                        class="test-empty"
+                        class="test-state-cell"
                     >
                         Loading tests...
                     </td>
@@ -269,93 +438,249 @@
         }
 
 
-        try {
+        const {
+            data,
+            error
+        } =
+            await state.supabase
 
-            const result =
-                await state.supabase
-                    .from(TEST_TABLE)
-                    .select(
-                        [
-                            "id",
-                            "name",
-                            "name_bn",
-                            "category",
-                            "description",
-                            "is_active",
-                            "created_at"
-                        ].join(",")
-                    )
-                    .order(
-                        "created_at",
-                        {
-                            ascending: false
-                        }
-                    );
+                .from(
+                    TEST_TABLE
+                )
 
-
-            if (result.error) {
-                throw result.error;
-            }
-
-
-            state.tests =
-                Array.isArray(result.data)
-                    ? result.data
-                    : [];
-
-
-            populateCategories();
-
-            state.currentPage = 1;
-
-            applyFilters();
-
-
-        } catch (error) {
-
-            console.error(
-                "Tests load error:",
-                error
-            );
-
-
-            if (tableBody) {
-
-                tableBody.innerHTML =
+                .select(
                     `
-                    <tr>
-                        <td
-                            colspan="5"
-                            class="test-empty"
-                        >
-                            Tests data লোড করা যায়নি।
-                        </td>
-                    </tr>
-                    `;
-            }
+                    id,
+                    name,
+                    name_bn,
+                    category,
+                    description,
+                    is_active,
+                    created_at
+                    `
+                )
+
+                .order(
+                    "created_at",
+                    {
+                        ascending:
+                            false
+                    }
+                );
 
 
-            showToast(
-                getErrorMessage(error)
-            );
+        if (error) {
 
-
-        } finally {
-
-            state.isLoading = false;
+            throw error;
 
         }
+
+
+        state.tests =
+            Array.isArray(data)
+                ? data
+                : [];
+
+
+        state.currentPage =
+            1;
+
+
+        rebuildCategoryFilter();
+
+
+        applyFilters();
+
+
+        await loadAssignments();
+
     }
 
 
     /* =====================================================
-       CATEGORY OPTIONS
+       LOAD HOSPITALS
     ===================================================== */
 
-    function populateCategories() {
+    async function loadHospitals() {
+
+        const {
+            data,
+            error
+        } =
+            await state.supabase
+
+                .from(
+                    HOSPITAL_TABLE
+                )
+
+                .select(
+                    `
+                    id,
+                    name,
+                    name_bn,
+                    is_active
+                    `
+                )
+
+                .order(
+                    "name",
+                    {
+                        ascending:
+                            true
+                    }
+                );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        state.hospitals =
+            Array.isArray(data)
+                ? data
+                : [];
+
+    }
+
+
+    /* =====================================================
+       LOAD HOSPITAL TEST ASSIGNMENTS
+    ===================================================== */
+
+    async function loadAssignments() {
+
+        const {
+            data,
+            error
+        } =
+            await state.supabase
+
+                .from(
+                    HOSPITAL_TEST_TABLE
+                )
+
+                .select(
+                    `
+                    id,
+                    test_id,
+                    hospital_id,
+                    price,
+                    discount_price,
+                    notes,
+                    is_available
+                    `
+                );
+
+
+        if (error) {
+
+            throw error;
+
+        }
+
+
+        state.assignments =
+            Array.isArray(data)
+                ? data
+                : [];
+
+
+        renderStats();
+
+
+        renderTable();
+
+    }
+
+
+    /* =====================================================
+       STATS
+    ===================================================== */
+
+    function renderStats() {
+
+        const total =
+            state.tests.length;
+
+
+        const active =
+            state.tests.filter(
+                function (test) {
+
+                    return (
+                        test.is_active ===
+                        true
+                    );
+
+                }
+            ).length;
+
+
+        const assignedTestIds =
+            new Set(
+
+                state.assignments.map(
+                    function (assignment) {
+
+                        return assignment.test_id;
+
+                    }
+                )
+
+            );
+
+
+        const totalElement =
+            get("testTotalCount");
+
+        const activeElement =
+            get("testActiveCount");
+
+        const assignedElement =
+            get("testAssignedCount");
+
+
+        if (totalElement) {
+
+            totalElement.textContent =
+                String(total);
+
+        }
+
+
+        if (activeElement) {
+
+            activeElement.textContent =
+                String(active);
+
+        }
+
+
+        if (assignedElement) {
+
+            assignedElement.textContent =
+                String(
+                    assignedTestIds.size
+                );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CATEGORY FILTER OPTIONS
+    ===================================================== */
+
+    function rebuildCategoryFilter() {
 
         const select =
-            get("testCategoryFilter");
+            get(
+                "testCategoryFilter"
+            );
 
 
         if (!select) {
@@ -363,35 +688,38 @@
         }
 
 
-        const currentValue =
+        const selected =
             select.value;
 
 
         const categories =
             Array.from(
+
                 new Set(
+
                     state.tests
+
                         .map(
-                            function (row) {
+                            function (test) {
 
                                 return cleanText(
-                                    row.category
+                                    test.category
                                 );
 
                             }
                         )
-                        .filter(Boolean)
+
+                        .filter(
+                            Boolean
+                        )
+
                 )
-            )
-            .sort(
+
+            ).sort(
                 function (a, b) {
 
                     return a.localeCompare(
-                        b,
-                        "en",
-                        {
-                            sensitivity: "base"
-                        }
+                        b
                     );
 
                 }
@@ -404,223 +732,213 @@
                 সব category
             </option>
             ` +
-            categories
-                .map(
-                    function (category) {
 
-                        return `
-                        <option value="${escapeHTML(category)}">
-                            ${escapeHTML(category)}
-                        </option>
-                        `;
+            categories.map(
+                function (category) {
 
-                    }
-                )
-                .join("");
+                    return (
+                        '<option value="' +
+                        escapeHTML(category) +
+                        '">' +
+                        escapeHTML(category) +
+                        "</option>"
+                    );
+
+                }
+            ).join("");
 
 
         if (
-            categories.includes(
-                currentValue
-            )
+            categories.indexOf(
+                selected
+            ) !== -1
         ) {
 
             select.value =
-                currentValue;
+                selected;
 
         }
+
     }
 
 
     /* =====================================================
-       FILTERS
+       APPLY FILTERS
     ===================================================== */
 
     function applyFilters() {
 
-        const searchInput =
-            get("testSearch");
-
-        const categorySelect =
-            get("testCategoryFilter");
-
-        const statusSelect =
-            get("testStatusFilter");
-
-
         const search =
             cleanText(
-                searchInput
-                    ? searchInput.value
-                    : ""
-            )
-            .toLocaleLowerCase();
+                get("testSearch")?.value
+            ).toLowerCase();
 
 
         const category =
-            categorySelect
-                ? categorySelect.value
-                : "";
+            cleanText(
+                get("testCategoryFilter")?.value
+            );
 
 
         const status =
-            statusSelect
-                ? statusSelect.value
-                : "";
+            cleanText(
+                get("testStatusFilter")?.value
+            );
 
 
         state.filteredTests =
             state.tests.filter(
-                function (row) {
+                function (test) {
 
-                    const searchableText =
+                    const haystack =
                         [
-                            row.name,
-                            row.name_bn,
-                            row.category,
-                            row.description
+                            test.name,
+                            test.name_bn,
+                            test.category,
+                            test.description
                         ]
+
                             .map(
                                 function (value) {
 
                                     return cleanText(
                                         value
-                                    )
-                                    .toLocaleLowerCase();
+                                    ).toLowerCase();
 
                                 }
                             )
+
                             .join(" ");
 
 
-                    if (
-                        search &&
-                        !searchableText.includes(
+                    const searchMatch =
+                        !search ||
+                        haystack.includes(
                             search
-                        )
-                    ) {
-
-                        return false;
-
-                    }
+                        );
 
 
-                    if (
-                        category &&
+                    const categoryMatch =
+                        !category ||
                         cleanText(
-                            row.category
-                        ) !== category
-                    ) {
-
-                        return false;
-
-                    }
+                            test.category
+                        ) === category;
 
 
-                    if (
-                        status === "active" &&
-                        !row.is_active
-                    ) {
+                    const statusMatch =
 
-                        return false;
+                        !status ||
 
-                    }
+                        (
+                            status ===
+                                "active" &&
+
+                            test.is_active ===
+                                true
+                        ) ||
+
+                        (
+                            status ===
+                                "inactive" &&
+
+                            test.is_active !==
+                                true
+                        );
 
 
-                    if (
-                        status === "inactive" &&
-                        row.is_active
-                    ) {
+                    return (
 
-                        return false;
+                        searchMatch &&
 
-                    }
+                        categoryMatch &&
 
+                        statusMatch
 
-                    return true;
+                    );
 
                 }
             );
 
 
-        const totalPages =
-            Math.max(
-                1,
-                Math.ceil(
-                    state.filteredTests.length /
-                    PAGE_SIZE
-                )
-            );
+        state.currentPage =
+            1;
 
 
-        if (
-            state.currentPage >
-            totalPages
-        ) {
-
-            state.currentPage =
-                totalPages;
-
-        }
-
-
-        renderTests();
+        renderTable();
 
     }
 
 
     /* =====================================================
-       RENDER TESTS
+       ASSIGNMENT COUNT
     ===================================================== */
 
-    function renderTests() {
+    function getTestAssignmentCount(
+        testId
+    ) {
 
-        const tableBody =
-            get("testTableBody");
+        return state.assignments.filter(
+            function (assignment) {
+
+                return (
+                    assignment.test_id ===
+                    testId
+                );
+
+            }
+        ).length;
+
+    }
 
 
-        if (!tableBody) {
+    /* =====================================================
+       RENDER TABLE
+    ===================================================== */
+
+    function renderTable() {
+
+        const tbody =
+            get(
+                "testTableBody"
+            );
+
+
+        const resultCount =
+            get(
+                "testResultCount"
+            );
+
+
+        if (!tbody) {
             return;
         }
 
 
-        const startIndex =
-            (state.currentPage - 1) *
-            PAGE_SIZE;
-
-
-        const pageRows =
-            state.filteredTests.slice(
-                startIndex,
-                startIndex + PAGE_SIZE
-            );
-
-
-        updateStatistics();
-
-
-        const resultCount =
-            get("testResultCount");
+        const total =
+            state.filteredTests.length;
 
 
         if (resultCount) {
 
             resultCount.textContent =
-                `${state.filteredTests.length} result(s)`;
+                total +
+                (
+                    total === 1
+                        ? " test"
+                        : " tests"
+                );
 
         }
 
 
-        if (
-            pageRows.length === 0
-        ) {
+        if (total === 0) {
 
-            tableBody.innerHTML =
+            tbody.innerHTML =
                 `
                 <tr>
                     <td
                         colspan="5"
-                        class="test-empty"
+                        class="test-state-cell"
                     >
                         কোনো Test পাওয়া যায়নি।
                     </td>
@@ -630,68 +948,124 @@
 
             renderPagination();
 
+
             return;
+
         }
 
 
-        tableBody.innerHTML =
-            pageRows
-                .map(
-                    function (row) {
-
-                        const statusClass =
-                            row.is_active
-                                ? "test-status-active"
-                                : "test-status-inactive";
-
-
-                        const statusText =
-                            row.is_active
-                                ? "Active"
-                                : "Inactive";
+        const totalPages =
+            Math.max(
+                1,
+                Math.ceil(
+                    total /
+                    PAGE_SIZE
+                )
+            );
 
 
-                        const toggleText =
-                            row.is_active
-                                ? "Deactivate"
-                                : "Activate";
+        state.currentPage =
+            Math.min(
+                Math.max(
+                    1,
+                    state.currentPage
+                ),
+                totalPages
+            );
 
 
-                        return `
+        const start =
+            (
+                state.currentPage -
+                1
+            ) *
+            PAGE_SIZE;
+
+
+        const pageRows =
+            state.filteredTests.slice(
+                start,
+                start + PAGE_SIZE
+            );
+
+
+        tbody.innerHTML =
+            pageRows.map(
+                function (test) {
+
+                    const assignmentCount =
+                        getTestAssignmentCount(
+                            test.id
+                        );
+
+
+                    const statusClass =
+                        test.is_active ===
+                        true
+
+                            ? "active"
+                            : "inactive";
+
+
+                    const statusText =
+                        test.is_active ===
+                        true
+
+                            ? "Active"
+                            : "Inactive";
+
+
+                    const toggleText =
+                        test.is_active ===
+                        true
+
+                            ? "Deactivate"
+                            : "Activate";
+
+
+                    const description =
+                        cleanText(
+                            test.description
+                        );
+
+
+                    return `
                         <tr>
 
                             <td>
 
-                                <strong>
+                                <div class="test-name-main">
                                     ${escapeHTML(
-                                        row.name_bn ||
-                                        row.name ||
+                                        test.name ||
                                         "—"
                                     )}
-                                </strong>
+                                </div>
 
-                                <br>
-
-                                <small>
+                                <div class="test-name-bn">
                                     ${escapeHTML(
-                                        row.name || ""
+                                        test.name_bn ||
+                                        "—"
                                     )}
-                                </small>
+                                </div>
+
+                                ${
+                                    description
+                                        ? `
+                                            <div class="test-description">
+                                                ${escapeHTML(
+                                                    description
+                                                )}
+                                            </div>
+                                        `
+                                        : ""
+                                }
 
                             </td>
 
 
                             <td>
                                 ${escapeHTML(
-                                    row.category ||
-                                    "—"
-                                )}
-                            </td>
-
-
-                            <td>
-                                ${escapeHTML(
-                                    row.description ||
+                                    test.category ||
                                     "—"
                                 )}
                             </td>
@@ -699,9 +1073,33 @@
 
                             <td>
 
-                                <span
-                                    class="test-status-badge ${statusClass}"
-                                >
+                                <span class="test-hospital-count">
+
+                                    ${
+                                        assignmentCount ===
+                                        0
+
+                                            ? "Not assigned"
+
+                                            : assignmentCount +
+                                              (
+                                                  assignmentCount ===
+                                                  1
+
+                                                      ? " hospital"
+
+                                                      : " hospitals"
+                                              )
+                                    }
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="test-status ${statusClass}">
                                     ${statusText}
                                 </span>
 
@@ -710,16 +1108,13 @@
 
                             <td>
 
-                                <div
-                                    class="test-action-group"
-                                >
+                                <div class="test-actions">
 
                                     <button
                                         type="button"
-                                        class="test-action-btn"
-                                        data-action="edit"
-                                        data-id="${escapeHTML(
-                                            row.id
+                                        data-test-action="edit"
+                                        data-test-id="${escapeHTML(
+                                            test.id
                                         )}"
                                     >
                                         Edit
@@ -728,11 +1123,15 @@
 
                                     <button
                                         type="button"
-                                        class="test-action-btn"
-                                        data-action="toggle"
-                                        data-id="${escapeHTML(
-                                            row.id
+                                        data-test-action="toggle"
+                                        data-test-id="${escapeHTML(
+                                            test.id
                                         )}"
+                                        ${
+                                            canManageTests()
+                                                ? ""
+                                                : "disabled"
+                                        }
                                     >
                                         ${toggleText}
                                     </button>
@@ -742,131 +1141,14 @@
                             </td>
 
                         </tr>
-                        `;
+                    `;
 
-                    }
-                )
-                .join("");
+                }
+            ).join("");
 
 
         renderPagination();
 
-    }
-
-
-    /* =====================================================
-       STATISTICS
-    ===================================================== */
-
-    function updateStatistics() {
-
-        const totalCount =
-            get("testTotalCount");
-
-        const activeCount =
-            get("testActiveCount");
-
-
-        const total =
-            state.tests.length;
-
-
-        const active =
-            state.tests.filter(
-                function (row) {
-
-                    return Boolean(
-                        row.is_active
-                    );
-
-                }
-            ).length;
-
-
-        if (totalCount) {
-
-            totalCount.textContent =
-                String(total);
-
-        }
-
-
-        if (activeCount) {
-
-            activeCount.textContent =
-                String(active);
-
-        }
-
-
-        loadAssignedCount();
-
-    }
-
-
-    /* =====================================================
-       ASSIGNED TEST COUNT
-    ===================================================== */
-
-    async function loadAssignedCount() {
-
-        const countElement =
-            get("testAssignedCount");
-
-
-        if (!countElement) {
-            return;
-        }
-
-
-        try {
-
-            const result =
-                await state.supabase
-                    .from(
-                        HOSPITAL_TEST_TABLE
-                    )
-                    .select(
-                        "id",
-                        {
-                            count: "exact",
-                            head: true
-                        }
-                    );
-
-
-            if (
-                result.error
-            ) {
-
-                console.warn(
-                    "Assigned test count error:",
-                    result.error
-                );
-
-                countElement.textContent =
-                    "0";
-
-                return;
-            }
-
-
-            countElement.textContent =
-                String(
-                    result.count || 0
-                );
-
-
-        } catch (error) {
-
-            console.warn(
-                "Assigned test count failed:",
-                error
-            );
-
-            countElement.textContent =
-                "0";
-        }
     }
 
 
@@ -876,11 +1158,13 @@
 
     function renderPagination() {
 
-        const container =
-            get("testPagination");
+        const pagination =
+            get(
+                "testPagination"
+            );
 
 
-        if (!container) {
+        if (!pagination) {
             return;
         }
 
@@ -895,44 +1179,45 @@
             );
 
 
-        if (
-            totalPages <= 1
-        ) {
+        if (totalPages <= 1) {
 
-            container.innerHTML = "";
+            pagination.innerHTML =
+                "";
 
             return;
+
         }
 
 
-        let html = "";
-
-
-        html += `
+        let html =
+            `
             <button
                 type="button"
-                class="test-page-btn"
                 data-page="prev"
-                ${state.currentPage === 1
-                    ? "disabled"
-                    : ""}
+                ${
+                    state.currentPage === 1
+                        ? "disabled"
+                        : ""
+                }
             >
                 ←
             </button>
-        `;
+            `;
 
 
         for (
             let page = 1;
             page <= totalPages;
-            page++
+            page += 1
         ) {
 
-            html += `
+            html +=
+                `
                 <button
                     type="button"
-                    class="test-page-btn ${
-                        page === state.currentPage
+                    class="${
+                        page ===
+                        state.currentPage
                             ? "active"
                             : ""
                     }"
@@ -940,15 +1225,15 @@
                 >
                     ${page}
                 </button>
-            `;
+                `;
 
         }
 
 
-        html += `
+        html +=
+            `
             <button
                 type="button"
-                class="test-page-btn"
                 data-page="next"
                 ${
                     state.currentPage === totalPages
@@ -958,42 +1243,67 @@
             >
                 →
             </button>
-        `;
+            `;
 
 
-        container.innerHTML =
+        pagination.innerHTML =
             html;
+
     }
 
 
     /* =====================================================
-       OPEN ADD MODAL
+       RESET MODAL
     ===================================================== */
 
-    function openAddModal() {
-
-        state.editingTestId =
-            null;
-
-
-        const modal =
-            get("testModal");
-
+    function resetModalForm() {
 
         const form =
-            get("testForm");
-
-
-        const title =
-            get("testModalTitle");
-
+            get(
+                "testForm"
+            );
 
         const testId =
-            get("testId");
+            get(
+                "testId"
+            );
+
+        const active =
+            get(
+                "testIsActive"
+            );
+
+        const title =
+            get(
+                "testModalTitle"
+            );
+
+        const saveButton =
+            get(
+                "testSaveBtn"
+            );
 
 
-        if (!modal || !form) {
-            return;
+        if (form) {
+
+            form.reset();
+
+        }
+
+
+        if (testId) {
+
+            testId.value =
+                "";
+
+        }
+
+
+        if (active) {
+
+            active.checked =
+                true;
+
         }
 
 
@@ -1005,161 +1315,133 @@
         }
 
 
-        form.reset();
+        if (saveButton) {
 
+            saveButton.textContent =
+                "Save Test";
 
-        if (testId) {
-
-            testId.value = "";
-
-        }
-
-
-        const activeCheckbox =
-            get("testIsActive");
-
-
-        if (activeCheckbox) {
-
-            activeCheckbox.checked =
-                true;
-
-        }
-
-
-        modal.hidden =
-            false;
-
-
-        const nameInput =
-            get("testName");
-
-
-        if (nameInput) {
-
-            nameInput.focus();
-
-        }
-    }
-
-
-    /* =====================================================
-       OPEN EDIT MODAL
-    ===================================================== */
-
-    function openEditModal(testId) {
-
-        const row =
-            state.tests.find(
-                function (item) {
-
-                    return item.id ===
-                        testId;
-
-                }
-            );
-
-
-        if (!row) {
-            return;
         }
 
 
         state.editingTestId =
-            row.id;
+            null;
+
+
+        renderAssignmentRows(
+            []
+        );
+
+    }
+
+
+    /* =====================================================
+       OPEN MODAL
+    ===================================================== */
+
+    function openModal(test) {
+
+        if (!canManageTests()) {
+
+            showToast(
+                "এই role-এর Test Management permission নেই।"
+            );
+
+            return;
+
+        }
 
 
         const modal =
-            get("testModal");
+            get(
+                "testModal"
+            );
 
 
         if (!modal) {
+
+            showToast(
+                "Test modal পাওয়া যায়নি।"
+            );
+
             return;
+
         }
 
 
-        const title =
-            get("testModalTitle");
+        resetModalForm();
 
 
-        const hiddenId =
-            get("testId");
+        if (test) {
+
+            state.editingTestId =
+                test.id;
 
 
-        const nameInput =
-            get("testName");
+            get(
+                "testId"
+            ).value =
+                test.id || "";
 
 
-        const nameBnInput =
-            get("testNameBn");
+            get(
+                "testName"
+            ).value =
+                test.name || "";
 
 
-        const categoryInput =
-            get("testCategory");
+            get(
+                "testNameBn"
+            ).value =
+                test.name_bn || "";
 
 
-        const descriptionInput =
-            get("testDescription");
+            get(
+                "testCategory"
+            ).value =
+                test.category || "";
 
 
-        const activeCheckbox =
-            get("testIsActive");
+            get(
+                "testDescription"
+            ).value =
+                test.description || "";
 
 
-        if (title) {
+            get(
+                "testIsActive"
+            ).checked =
+                test.is_active ===
+                true;
 
-            title.textContent =
+
+            get(
+                "testModalTitle"
+            ).textContent =
                 "Edit Test";
 
-        }
+
+            get(
+                "testSaveBtn"
+            ).textContent =
+                "Update Test";
 
 
-        if (hiddenId) {
+            const existingAssignments =
+                state.assignments.filter(
+                    function (assignment) {
 
-            hiddenId.value =
-                row.id || "";
+                        return (
+                            assignment.test_id ===
+                            test.id
+                        );
 
-        }
-
-
-        if (nameInput) {
-
-            nameInput.value =
-                row.name || "";
-
-        }
-
-
-        if (nameBnInput) {
-
-            nameBnInput.value =
-                row.name_bn || "";
-
-        }
-
-
-        if (categoryInput) {
-
-            categoryInput.value =
-                row.category || "";
-
-        }
-
-
-        if (descriptionInput) {
-
-            descriptionInput.value =
-                row.description || "";
-
-        }
-
-
-        if (activeCheckbox) {
-
-            activeCheckbox.checked =
-                Boolean(
-                    row.is_active
+                    }
                 );
+
+
+            renderAssignmentRows(
+                existingAssignments
+            );
 
         }
 
@@ -1167,12 +1449,37 @@
         modal.hidden =
             false;
 
+        modal.classList.add(
+            "is-open"
+        );
 
-        if (nameInput) {
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
 
-            nameInput.focus();
+        document.body.style.overflow =
+            "hidden";
 
-        }
+
+        setTimeout(
+            function () {
+
+                const nameInput =
+                    get(
+                        "testName"
+                    );
+
+                if (nameInput) {
+
+                    nameInput.focus();
+
+                }
+
+            },
+            0
+        );
+
     }
 
 
@@ -1183,168 +1490,1014 @@
     function closeModal() {
 
         const modal =
-            get("testModal");
+            get(
+                "testModal"
+            );
 
 
-        const form =
-            get("testForm");
-
-
-        if (modal) {
-
-            modal.hidden =
-                true;
-
+        if (!modal) {
+            return;
         }
 
 
-        if (form) {
+        modal.classList.remove(
+            "is-open"
+        );
 
-            form.reset();
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
 
-        }
+        modal.hidden =
+            true;
 
-
-        const hiddenId =
-            get("testId");
-
-
-        if (hiddenId) {
-
-            hiddenId.value =
-                "";
-
-        }
+        document.body.style.overflow =
+            "";
 
 
-        state.editingTestId =
-            null;
+        resetModalForm();
 
     }
 
 
     /* =====================================================
-       VALIDATE FORM
+       HOSPITAL OPTIONS
     ===================================================== */
 
-    function validateForm() {
+    function makeHospitalOptions(
+        selectedId
+    ) {
+
+        const selected =
+            cleanText(
+                selectedId
+            );
+
+
+        return (
+
+            '<option value="">Select hospital</option>' +
+
+            state.hospitals
+
+                .map(
+                    function (hospital) {
+
+                        const label =
+                            cleanText(
+                                hospital.name_bn
+                            ) ||
+                            cleanText(
+                                hospital.name
+                            ) ||
+                            "Hospital";
+
+
+                        const english =
+                            cleanText(
+                                hospital.name
+                            );
+
+
+                        const inactive =
+                            hospital.is_active ===
+                            true
+
+                                ? ""
+
+                                : " (Inactive)";
+
+
+                        const text =
+                            english &&
+                            label !== english
+
+                                ? (
+                                    english +
+                                    " — " +
+                                    label +
+                                    inactive
+                                )
+
+                                : (
+                                    label +
+                                    inactive
+                                );
+
+
+                        const selectedAttr =
+                            hospital.id ===
+                            selected
+
+                                ? " selected"
+
+                                : "";
+
+
+                        return (
+
+                            '<option value="' +
+                            escapeHTML(
+                                hospital.id
+                            ) +
+                            '"' +
+                            selectedAttr +
+                            ">" +
+                            escapeHTML(
+                                text
+                            ) +
+                            "</option>"
+
+                        );
+
+                    }
+                )
+
+                .join("")
+
+        );
+
+    }
+
+
+    /* =====================================================
+       RENDER ASSIGNMENT ROWS
+    ===================================================== */
+
+    function renderAssignmentRows(
+        rows
+    ) {
+
+        const container =
+            get(
+                "testAssignments"
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        const list =
+            Array.isArray(rows)
+                ? rows
+                : [];
+
+
+        container.innerHTML =
+            "";
+
+
+        if (list.length === 0) {
+
+            const emptyElement =
+                document.createElement(
+                    "div"
+                );
+
+
+            emptyElement.className =
+                "test-assignment-empty";
+
+
+            emptyElement.id =
+                "testAssignmentEmpty";
+
+
+            emptyElement.textContent =
+                "এখনো কোনো hospital assignment যোগ করা হয়নি।";
+
+
+            container.appendChild(
+                emptyElement
+            );
+
+
+            return;
+
+        }
+
+
+        list.forEach(
+            function (row, index) {
+
+                container.appendChild(
+
+                    createAssignmentRow(
+                        row,
+                        index
+                    )
+
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       CREATE ASSIGNMENT ROW
+    ===================================================== */
+
+    function createAssignmentRow(
+        row,
+        index
+    ) {
+
+        const wrapper =
+            document.createElement(
+                "div"
+            );
+
+
+        wrapper.className =
+            "test-assignment-row";
+
+
+        wrapper.dataset.assignmentIndex =
+            String(index);
+
+
+        wrapper.innerHTML =
+            `
+            <div class="test-assignment-row-head">
+
+                <strong>
+                    Hospital Fee #${index + 1}
+                </strong>
+
+                <div class="test-assignment-row-actions">
+
+                    <button
+                        type="button"
+                        class="test-danger"
+                        data-remove-assignment="true"
+                    >
+                        Remove
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="test-assignment-row-grid">
+
+                <div class="test-field test-field-full">
+
+                    <label>
+                        Hospital *
+                    </label>
+
+                    <select data-assignment-field="hospital_id">
+                        ${makeHospitalOptions(
+                            row?.hospital_id ||
+                            ""
+                        )}
+                    </select>
+
+                </div>
+
+
+                <div class="test-field">
+
+                    <label>
+                        Price (৳) *
+                    </label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        data-assignment-field="price"
+                        value="${escapeHTML(
+                            row?.price ??
+                            0
+                        )}"
+                    >
+
+                </div>
+
+
+                <div class="test-field">
+
+                    <label>
+                        Discount Price (৳)
+                    </label>
+
+                    <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        data-assignment-field="discount_price"
+                        value="${escapeHTML(
+                            row?.discount_price ??
+                            ""
+                        )}"
+                    >
+
+                </div>
+
+
+                <div class="test-field test-field-full">
+
+                    <label>
+                        Notes
+                    </label>
+
+                    <textarea
+                        rows="2"
+                        data-assignment-field="notes"
+                        placeholder="Optional fee note..."
+                    >${escapeHTML(
+                        row?.notes ||
+                        ""
+                    )}</textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="test-assignment-row-actions">
+
+                <label class="test-assignment-available">
+
+                    <input
+                        type="checkbox"
+                        data-assignment-field="is_available"
+                        ${
+                            row?.is_available !==
+                            false
+                                ? "checked"
+                                : ""
+                        }
+                    >
+
+                    <span>
+                        Available at this hospital
+                    </span>
+
+                </label>
+
+            </div>
+            `;
+
+
+        const removeButton =
+            wrapper.querySelector(
+                '[data-remove-assignment="true"]'
+            );
+
+
+        if (removeButton) {
+
+            removeButton.addEventListener(
+                "click",
+                function () {
+
+                    wrapper.remove();
+
+                    ensureAssignmentEmptyState();
+
+                }
+            );
+
+        }
+
+
+        return wrapper;
+
+    }
+
+
+    /* =====================================================
+       EMPTY ASSIGNMENT STATE
+    ===================================================== */
+
+    function ensureAssignmentEmptyState() {
+
+        const container =
+            get(
+                "testAssignments"
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        if (
+            container.querySelector(
+                ".test-assignment-row"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        renderAssignmentRows(
+            []
+        );
+
+    }
+
+
+    /* =====================================================
+       ADD ASSIGNMENT ROW
+    ===================================================== */
+
+    function addAssignmentRow() {
+
+        if (!canManageTests()) {
+
+            showToast(
+                "এই role-এর Test Management permission নেই।"
+            );
+
+            return;
+
+        }
+
+
+        const container =
+            get(
+                "testAssignments"
+            );
+
+
+        if (!container) {
+            return;
+        }
+
+
+        const existingRows =
+            container.querySelectorAll(
+                ".test-assignment-row"
+            );
+
+
+        const row =
+            createAssignmentRow(
+                {
+                    hospital_id:
+                        "",
+
+                    price:
+                        0,
+
+                    discount_price:
+                        "",
+
+                    notes:
+                        "",
+
+                    is_available:
+                        true
+
+                },
+                existingRows.length
+            );
+
+
+        const empty =
+            get(
+                "testAssignmentEmpty"
+            );
+
+
+        if (empty) {
+
+            empty.remove();
+
+        }
+
+
+        container.appendChild(
+            row
+        );
+
+
+        const select =
+            row.querySelector(
+                '[data-assignment-field="hospital_id"]'
+            );
+
+
+        if (select) {
+
+            select.focus();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       COLLECT ASSIGNMENTS
+    ===================================================== */
+
+    function collectAssignmentsFromForm() {
+
+        const container =
+            get(
+                "testAssignments"
+            );
+
+
+        if (!container) {
+            return [];
+        }
+
+
+        const rows =
+            Array.from(
+                container.querySelectorAll(
+                    ".test-assignment-row"
+                )
+            );
+
+
+        const seenHospitals =
+            new Set();
+
+
+        const assignments =
+            [];
+
+
+        for (
+            let i = 0;
+            i < rows.length;
+            i += 1
+        ) {
+
+            const row =
+                rows[i];
+
+
+            const hospitalId =
+                cleanText(
+                    row.querySelector(
+                        '[data-assignment-field="hospital_id"]'
+                    )?.value
+                );
+
+
+            const priceRaw =
+                cleanText(
+                    row.querySelector(
+                        '[data-assignment-field="price"]'
+                    )?.value
+                );
+
+
+            const discountRaw =
+                cleanText(
+                    row.querySelector(
+                        '[data-assignment-field="discount_price"]'
+                    )?.value
+                );
+
+
+            const notes =
+                cleanText(
+                    row.querySelector(
+                        '[data-assignment-field="notes"]'
+                    )?.value
+                );
+
+
+            const isAvailable =
+                row.querySelector(
+                    '[data-assignment-field="is_available"]'
+                )?.checked !==
+                false;
+
+
+            if (!hospitalId) {
+
+                throw new Error(
+                    "Hospital Fee row #" +
+                    (i + 1) +
+                    "-এ hospital নির্বাচন করুন।"
+                );
+
+            }
+
+
+            if (
+                seenHospitals.has(
+                    hospitalId
+                )
+            ) {
+
+                throw new Error(
+                    "একটি test-এর জন্য একই hospital একাধিকবার assign করা যাবে না।"
+                );
+
+            }
+
+
+            const price =
+                priceRaw === ""
+                    ? 0
+                    : Number(
+                        priceRaw
+                    );
+
+
+            const discountPrice =
+                discountRaw === ""
+                    ? null
+                    : Number(
+                        discountRaw
+                    );
+
+
+            if (
+                !Number.isFinite(
+                    price
+                ) ||
+                price < 0
+            ) {
+
+                throw new Error(
+                    "Hospital Fee row #" +
+                    (i + 1) +
+                    "-এর price সঠিক নয়।"
+                );
+
+            }
+
+
+            if (
+
+                discountPrice !== null &&
+
+                (
+                    !Number.isFinite(
+                        discountPrice
+                    ) ||
+
+                    discountPrice < 0 ||
+
+                    discountPrice > price
+                )
+
+            ) {
+
+                throw new Error(
+                    "Hospital Fee row #" +
+                    (i + 1) +
+                    "-এর discount price সঠিক নয়।"
+                );
+
+            }
+
+
+            seenHospitals.add(
+                hospitalId
+            );
+
+
+            assignments.push(
+                {
+
+                    hospital_id:
+                        hospitalId,
+
+                    price:
+                        price,
+
+                    discount_price:
+                        discountPrice,
+
+                    notes:
+                        notes ||
+                        null,
+
+                    is_available:
+                        isAvailable
+
+                }
+            );
+
+        }
+
+
+        return assignments;
+
+    }
+
+
+    /* =====================================================
+       VALIDATE TEST
+    ===================================================== */
+
+    function validateTestForm() {
 
         const name =
             cleanText(
-                get("testName")
-                    ? get("testName").value
-                    : ""
+                get("testName")?.value
             );
 
 
         const nameBn =
             cleanText(
-                get("testNameBn")
-                    ? get("testNameBn").value
-                    : ""
+                get("testNameBn")?.value
             );
 
 
         if (!name) {
 
             showToast(
-                "English Test name আবশ্যক।"
+                "English Test Name দিন।"
             );
 
-            const input =
-                get("testName");
 
-            if (input) {
-                input.focus();
-            }
+            get(
+                "testName"
+            )?.focus();
+
 
             return false;
+
         }
 
 
         if (!nameBn) {
 
             showToast(
-                "বাংলা Test name আবশ্যক।"
+                "বাংলা Test Name দিন।"
             );
 
-            const input =
-                get("testNameBn");
 
-            if (input) {
-                input.focus();
-            }
+            get(
+                "testNameBn"
+            )?.focus();
+
 
             return false;
+
         }
 
 
         return true;
+
     }
 
 
     /* =====================================================
-       DUPLICATE CHECK
+       DUPLICATE TEST CHECK
     ===================================================== */
 
-    function findDuplicate(
+    function findDuplicateTest(
         name,
         nameBn,
-        excludeId
+        editingId
     ) {
 
-        const normalizedName =
-            cleanText(name)
-                .toLocaleLowerCase();
+        const nameLower =
+            name.toLowerCase();
 
 
-        const normalizedNameBn =
-            cleanText(nameBn)
-                .toLocaleLowerCase();
+        const nameBnLower =
+            nameBn.toLowerCase();
 
 
-        return state.tests.find(
-            function (row) {
+        return (
 
-                if (
-                    excludeId &&
-                    row.id === excludeId
-                ) {
+            state.tests.find(
+                function (test) {
 
-                    return false;
+                    if (
+                        editingId &&
+                        test.id ===
+                            editingId
+                    ) {
+
+                        return false;
+
+                    }
+
+
+                    const existingName =
+                        cleanText(
+                            test.name
+                        ).toLowerCase();
+
+
+                    const existingNameBn =
+                        cleanText(
+                            test.name_bn
+                        ).toLowerCase();
+
+
+                    return (
+
+                        existingName ===
+                            nameLower ||
+
+                        existingNameBn ===
+                            nameBnLower
+
+                    );
 
                 }
+            ) ||
+
+            null
+
+        );
+
+    }
 
 
-                const rowName =
-                    cleanText(
-                        row.name
+    /* =====================================================
+       REPLACE HOSPITAL ASSIGNMENTS
+    ===================================================== */
+
+    async function replaceHospitalAssignments(
+        testId,
+        newAssignments
+    ) {
+
+        const oldRows =
+            state.assignments.filter(
+                function (assignment) {
+
+                    return (
+                        assignment.test_id ===
+                        testId
+                    );
+
+                }
+            );
+
+
+        const {
+            error: deleteError
+        } =
+            await state.supabase
+
+                .from(
+                    HOSPITAL_TEST_TABLE
+                )
+
+                .delete()
+
+                .eq(
+                    "test_id",
+                    testId
+                );
+
+
+        if (deleteError) {
+
+            throw deleteError;
+
+        }
+
+
+        if (
+            !newAssignments.length
+        ) {
+
+            return;
+
+        }
+
+
+        const payload =
+            newAssignments.map(
+                function (assignment) {
+
+                    return {
+
+                        test_id:
+                            testId,
+
+                        hospital_id:
+                            assignment.hospital_id,
+
+                        price:
+                            assignment.price,
+
+                        discount_price:
+                            assignment.discount_price,
+
+                        notes:
+                            assignment.notes,
+
+                        is_available:
+                            assignment.is_available
+
+                    };
+
+                }
+            );
+
+
+        const {
+            error: insertError
+        } =
+            await state.supabase
+
+                .from(
+                    HOSPITAL_TEST_TABLE
+                )
+
+                .insert(
+                    payload
+                );
+
+
+        if (!insertError) {
+
+            return;
+
+        }
+
+
+        /*
+         * Roll back old hospital fee
+         * records if replacement fails.
+         */
+
+        if (
+            oldRows.length
+        ) {
+
+            const rollbackPayload =
+                oldRows.map(
+                    function (row) {
+
+                        return {
+
+                            test_id:
+                                row.test_id,
+
+                            hospital_id:
+                                row.hospital_id,
+
+                            price:
+                                row.price ??
+                                0,
+
+                            discount_price:
+                                row.discount_price ??
+                                null,
+
+                            notes:
+                                row.notes ??
+                                null,
+
+                            is_available:
+                                row.is_available !==
+                                false
+
+                        };
+
+                    }
+                );
+
+
+            const {
+                error:
+                    rollbackError
+            } =
+                await state.supabase
+
+                    .from(
+                        HOSPITAL_TEST_TABLE
                     )
-                    .toLocaleLowerCase();
+
+                    .insert(
+                        rollbackPayload
+                    );
 
 
-                const rowNameBn =
-                    cleanText(
-                        row.name_bn
-                    )
-                    .toLocaleLowerCase();
+            if (rollbackError) {
 
-
-                return (
-                    (
-                        normalizedName &&
-                        rowName ===
-                            normalizedName
-                    ) ||
-                    (
-                        normalizedNameBn &&
-                        rowNameBn ===
-                            normalizedNameBn
-                    )
+                console.error(
+                    "Hospital fee rollback failed:",
+                    rollbackError
                 );
 
             }
-        ) || null;
+
+        }
+
+
+        throw insertError;
+
     }
 
 
@@ -1352,7 +2505,9 @@
        SAVE TEST
     ===================================================== */
 
-    async function saveTest(event) {
+    async function saveTest(
+        event
+    ) {
 
         event.preventDefault();
 
@@ -1360,10 +2515,11 @@
         if (!canManageTests()) {
 
             showToast(
-                "আপনার Test management permission নেই।"
+                "এই role-এর Test Management permission নেই।"
             );
 
             return;
+
         }
 
 
@@ -1372,7 +2528,7 @@
         }
 
 
-        if (!validateForm()) {
+        if (!validateTestForm()) {
             return;
         }
 
@@ -1391,64 +2547,75 @@
 
         const category =
             cleanText(
-                get("testCategory")
-                    ? get("testCategory").value
-                    : ""
+                get("testCategory").value
             );
 
 
         const description =
             cleanText(
-                get("testDescription")
-                    ? get("testDescription").value
-                    : ""
+                get("testDescription").value
             );
 
 
         const isActive =
-            get("testIsActive")
-                ? Boolean(
-                    get("testIsActive").checked
-                )
-                : true;
+            get(
+                "testIsActive"
+            ).checked;
+
+
+        const editingId =
+            state.editingTestId;
 
 
         const duplicate =
-            findDuplicate(
+            findDuplicateTest(
                 name,
                 nameBn,
-                state.editingTestId
+                editingId
             );
 
 
         if (duplicate) {
 
             showToast(
-                "এই Test name ইতোমধ্যে আছে।"
+
+                cleanText(
+                    duplicate.name
+                ).toLowerCase() ===
+                    name.toLowerCase()
+
+                    ? "এই Test name ইতোমধ্যে আছে।"
+
+                    : "এই বাংলা Test name ইতোমধ্যে আছে।"
+
             );
 
+
             return;
+
         }
 
 
-        const payload = {
+        let assignments;
 
-            name: name,
 
-            name_bn: nameBn,
+        try {
 
-            category:
-                category ||
-                null,
+            assignments =
+                collectAssignmentsFromForm();
 
-            description:
-                description ||
-                null,
+        } catch (error) {
 
-            is_active:
-                isActive
+            showToast(
+                getErrorMessage(
+                    error
+                )
+            );
 
-        };
+
+            return;
+
+        }
 
 
         state.isSaving =
@@ -1456,13 +2623,9 @@
 
 
         const saveButton =
-            get("testSaveBtn");
-
-
-        const originalText =
-            saveButton
-                ? saveButton.textContent
-                : "Save Test";
+            get(
+                "testSaveBtn"
+            );
 
 
         if (saveButton) {
@@ -1470,81 +2633,184 @@
             saveButton.disabled =
                 true;
 
+
             saveButton.textContent =
-                "Saving...";
+                editingId
+                    ? "Updating..."
+                    : "Saving...";
 
         }
 
 
-        const editingId =
-            state.editingTestId;
-
-
         try {
 
-            let result;
+            const payload = {
 
+                name:
+                    name,
+
+                name_bn:
+                    nameBn,
+
+                category:
+                    category ||
+                    null,
+
+                description:
+                    description ||
+                    null,
+
+                is_active:
+                    isActive
+
+            };
+
+
+            let savedId =
+                editingId;
+
+
+            /*
+             * UPDATE
+             */
 
             if (editingId) {
 
-                result =
+                const {
+                    error
+                } =
                     await state.supabase
-                        .from(TEST_TABLE)
+
+                        .from(
+                            TEST_TABLE
+                        )
+
                         .update(
                             payload
                         )
+
                         .eq(
                             "id",
                             editingId
-                        )
-                        .select(
-                            [
-                                "id",
-                                "name",
-                                "name_bn",
-                                "category",
-                                "description",
-                                "is_active",
-                                "created_at"
-                            ].join(",")
-                        )
-                        .single();
+                        );
 
-            } else {
 
-                result =
+                if (error) {
+                    throw error;
+                }
+
+
+                await replaceHospitalAssignments(
+                    editingId,
+                    assignments
+                );
+
+
+                showToast(
+                    "Test সফলভাবে update হয়েছে।"
+                );
+
+            }
+
+
+            /*
+             * INSERT
+             */
+
+            else {
+
+                const {
+                    data,
+                    error
+                } =
                     await state.supabase
-                        .from(TEST_TABLE)
+
+                        .from(
+                            TEST_TABLE
+                        )
+
                         .insert(
                             payload
                         )
+
                         .select(
-                            [
-                                "id",
-                                "name",
-                                "name_bn",
-                                "category",
-                                "description",
-                                "is_active",
-                                "created_at"
-                            ].join(",")
+                            "id"
                         )
+
                         .single();
 
-            }
+
+                if (error) {
+                    throw error;
+                }
 
 
-            if (result.error) {
-                throw result.error;
-            }
+                if (
+                    !data?.id
+                ) {
+
+                    throw new Error(
+                        "Test save হয়েছে, কিন্তু Test ID পাওয়া যায়নি।"
+                    );
+
+                }
 
 
-            if (!result.data) {
+                savedId =
+                    data.id;
 
-                throw new Error(
-                    editingId
-                        ? "Test update সফল হয়নি।"
-                        : "Test insert সফল হয়নি।"
+
+                if (
+                    assignments.length
+                ) {
+
+                    try {
+
+                        await replaceHospitalAssignments(
+                            savedId,
+                            assignments
+                        );
+
+                    } catch (
+                        assignmentError
+                    ) {
+
+                        try {
+
+                            await state.supabase
+
+                                .from(
+                                    TEST_TABLE
+                                )
+
+                                .delete()
+
+                                .eq(
+                                    "id",
+                                    savedId
+                                );
+
+                        } catch (
+                            cleanupError
+                        ) {
+
+                            console.error(
+                                "New test cleanup failed:",
+                                cleanupError
+                            );
+
+                        }
+
+
+                        throw assignmentError;
+
+                    }
+
+                }
+
+
+                showToast(
+                    "Test সফলভাবে যোগ হয়েছে।"
                 );
 
             }
@@ -1553,28 +2819,21 @@
             closeModal();
 
 
-            showToast(
-                editingId
-                    ? "Test সফলভাবে update হয়েছে।"
-                    : "Test সফলভাবে যোগ হয়েছে।"
-            );
-
-
             await loadTests();
-
 
         } catch (error) {
 
             console.error(
-                "Test save/update error:",
+                "Test Save Error:",
                 error
             );
 
 
             showToast(
-                getErrorMessage(error)
+                getErrorMessage(
+                    error
+                )
             );
-
 
         } finally {
 
@@ -1587,112 +2846,134 @@
                 saveButton.disabled =
                     !canManageTests();
 
+
                 saveButton.textContent =
-                    originalText;
+                    "Save Test";
 
             }
+
         }
+
     }
 
 
     /* =====================================================
-       TOGGLE STATUS
+       TOGGLE TEST
     ===================================================== */
 
-    async function toggleTest(testId) {
+    async function toggleTest(
+        testId
+    ) {
 
         if (!canManageTests()) {
 
             showToast(
-                "আপনার Test status পরিবর্তনের permission নেই।"
+                "এই role-এর Test Management permission নেই।"
             );
 
             return;
+
         }
 
 
-        const row =
+        const test =
             state.tests.find(
                 function (item) {
 
-                    return item.id ===
-                        testId;
+                    return (
+                        item.id ===
+                        testId
+                    );
 
                 }
             );
 
 
-        if (!row) {
+        if (!test) {
+
+            showToast(
+                "Test পাওয়া যায়নি।"
+            );
+
             return;
+
         }
 
 
         const nextStatus =
-            !Boolean(
-                row.is_active
-            );
+            test.is_active !==
+            true;
 
 
-        try {
+        const {
+            error
+        } =
+            await state.supabase
 
-            const result =
-                await state.supabase
-                    .from(TEST_TABLE)
-                    .update(
-                        {
-                            is_active:
-                                nextStatus
-                        }
-                    )
-                    .eq(
-                        "id",
-                        testId
-                    )
-                    .select(
-                        "id,is_active"
-                    )
-                    .single();
+                .from(
+                    TEST_TABLE
+                )
 
+                .update(
+                    {
+                        is_active:
+                            nextStatus
+                    }
+                )
 
-            if (result.error) {
-                throw result.error;
-            }
+                .eq(
+                    "id",
+                    testId
+                );
 
 
-            showToast(
-                nextStatus
-                    ? "Test activate হয়েছে।"
-                    : "Test deactivate হয়েছে।"
-            );
-
-
-            await loadTests();
-
-
-        } catch (error) {
+        if (error) {
 
             console.error(
-                "Test status update error:",
+                "Test Status Error:",
                 error
             );
 
 
             showToast(
-                getErrorMessage(error)
+                getErrorMessage(
+                    error
+                )
             );
+
+
+            return;
+
         }
+
+
+        showToast(
+
+            nextStatus
+
+                ? "Test activate হয়েছে।"
+
+                : "Test deactivate হয়েছে।"
+
+        );
+
+
+        await loadTests();
+
     }
 
 
     /* =====================================================
-       TABLE ACTIONS
+       TABLE CLICK
     ===================================================== */
 
-    function handleTableAction(event) {
+    function handleTableClick(
+        event
+    ) {
 
         const button =
             event.target.closest(
-                "button[data-action]"
+                "button[data-test-action]"
             );
 
 
@@ -1702,27 +2983,49 @@
 
 
         const action =
-            button.dataset.action;
+            button.getAttribute(
+                "data-test-action"
+            );
 
 
         const testId =
-            button.dataset.id;
+            button.getAttribute(
+                "data-test-id"
+            );
+
+
+        const test =
+            state.tests.find(
+                function (item) {
+
+                    return (
+                        item.id ===
+                        testId
+                    );
+
+                }
+            );
 
 
         if (
-            action === "edit"
+            action ===
+            "edit"
         ) {
 
-            openEditModal(
-                testId
+            openModal(
+                test ||
+                null
             );
 
+
             return;
+
         }
 
 
         if (
-            action === "toggle"
+            action ===
+            "toggle"
         ) {
 
             toggleTest(
@@ -1730,14 +3033,17 @@
             );
 
         }
+
     }
 
 
     /* =====================================================
-       PAGINATION EVENTS
+       PAGINATION CLICK
     ===================================================== */
 
-    function handlePagination(event) {
+    function handlePagination(
+        event
+    ) {
 
         const button =
             event.target.closest(
@@ -1745,8 +3051,13 @@
             );
 
 
-        if (!button) {
+        if (
+            !button ||
+            button.disabled
+        ) {
+
             return;
+
         }
 
 
@@ -1760,115 +3071,128 @@
             );
 
 
-        const pageValue =
-            button.dataset.page;
+        const value =
+            button.getAttribute(
+                "data-page"
+            );
 
 
         if (
-            pageValue === "prev"
+            value ===
+            "prev"
         ) {
 
+            state.currentPage -=
+                1;
+
+        }
+
+
+        else if (
+            value ===
+            "next"
+        ) {
+
+            state.currentPage +=
+                1;
+
+        }
+
+
+        else {
+
             state.currentPage =
+                Number(
+                    value
+                ) || 1;
+
+        }
+
+
+        state.currentPage =
+            Math.min(
                 Math.max(
                     1,
-                    state.currentPage - 1
-                );
-
-        } else if (
-            pageValue === "next"
-        ) {
-
-            state.currentPage =
-                Math.min(
-                    totalPages,
-                    state.currentPage + 1
-                );
-
-        } else {
-
-            const page =
-                Number(pageValue);
+                    state.currentPage
+                ),
+                totalPages
+            );
 
 
-            if (
-                Number.isFinite(page) &&
-                page >= 1 &&
-                page <= totalPages
-            ) {
+        renderTable();
 
-                state.currentPage =
-                    page;
-
-            }
-        }
-
-
-        renderTests();
     }
 
 
     /* =====================================================
-       SEARCH / FILTER EVENTS
+       SIDEBAR
     ===================================================== */
 
-    function handleSearchInput() {
+    function openSidebar() {
 
-        state.currentPage =
-            1;
-
-        applyFilters();
-    }
-
-
-    function handleFilterChange() {
-
-        state.currentPage =
-            1;
-
-        applyFilters();
-    }
+        const sidebar =
+            get(
+                "adminSidebar"
+            );
 
 
-    /* =====================================================
-       MODAL ESCAPE
-    ===================================================== */
+        const overlay =
+            get(
+                "sidebarOverlay"
+            );
 
-    function handleEscape(event) {
 
-        if (
-            event.key !== "Escape"
-        ) {
+        if (sidebar) {
 
-            return;
+            sidebar.classList.add(
+                "is-open"
+            );
+
         }
 
 
-        const modal =
-            get("testModal");
+        if (overlay) {
 
-
-        if (
-            modal &&
-            !modal.hidden
-        ) {
-
-            closeModal();
+            overlay.classList.add(
+                "is-open"
+            );
 
         }
+
     }
 
 
-    /* =====================================================
-       REFRESH
-    ===================================================== */
+    function closeSidebar() {
 
-    async function handleRefresh() {
+        const sidebar =
+            get(
+                "adminSidebar"
+            );
 
-        await loadTests();
 
-        showToast(
-            "Tests list refresh হয়েছে।"
-        );
+        const overlay =
+            get(
+                "sidebarOverlay"
+            );
+
+
+        if (sidebar) {
+
+            sidebar.classList.remove(
+                "is-open"
+            );
+
+        }
+
+
+        if (overlay) {
+
+            overlay.classList.remove(
+                "is-open"
+            );
+
+        }
+
     }
 
 
@@ -1876,96 +3200,170 @@
        EVENTS
     ===================================================== */
 
-    function setupEvents() {
-
-        const search =
-            get("testSearch");
-
-        const categoryFilter =
-            get("testCategoryFilter");
-
-        const statusFilter =
-            get("testStatusFilter");
+    function bindEvents() {
 
         const addButton =
-            get("testAddBtn");
+            get(
+                "testAddBtn"
+            );
+
 
         const refreshButton =
-            get("testRefresh");
+            get(
+                "testRefresh"
+            );
 
-        const modalClose =
-            get("testModalClose");
+
+        const closeButton =
+            get(
+                "testModalClose"
+            );
+
 
         const cancelButton =
-            get("testCancelBtn");
+            get(
+                "testCancelBtn"
+            );
+
 
         const form =
-            get("testForm");
+            get(
+                "testForm"
+            );
+
 
         const tableBody =
-            get("testTableBody");
+            get(
+                "testTableBody"
+            );
+
 
         const pagination =
-            get("testPagination");
+            get(
+                "testPagination"
+            );
+
+
+        const search =
+            get(
+                "testSearch"
+            );
+
+
+        const categoryFilter =
+            get(
+                "testCategoryFilter"
+            );
+
+
+        const statusFilter =
+            get(
+                "testStatusFilter"
+            );
+
+
+        const assignmentButton =
+            get(
+                "testAddAssignmentBtn"
+            );
+
 
         const sidebarToggle =
-            get("sidebarToggle");
+            get(
+                "sidebarToggle"
+            );
+
 
         const sidebarClose =
-            get("sidebarClose");
-
-
-        if (search) {
-
-            search.addEventListener(
-                "input",
-                handleSearchInput
+            get(
+                "sidebarClose"
             );
-        }
 
 
-        if (categoryFilter) {
-
-            categoryFilter.addEventListener(
-                "change",
-                handleFilterChange
+        const sidebarOverlay =
+            get(
+                "sidebarOverlay"
             );
-        }
 
 
-        if (statusFilter) {
-
-            statusFilter.addEventListener(
-                "change",
-                handleFilterChange
+        const sidebarLogout =
+            get(
+                "sidebarLogout"
             );
-        }
 
+
+        const modal =
+            get(
+                "testModal"
+            );
+
+
+        /* -------------------------------------------------
+           ADD TEST
+        ------------------------------------------------- */
 
         if (addButton) {
 
             addButton.addEventListener(
                 "click",
-                openAddModal
+                function () {
+
+                    openModal(
+                        null
+                    );
+
+                }
             );
+
         }
 
+
+        /* -------------------------------------------------
+           REFRESH
+        ------------------------------------------------- */
 
         if (refreshButton) {
 
             refreshButton.addEventListener(
                 "click",
-                handleRefresh
+                function () {
+
+                    loadTests()
+                        .catch(
+                            function (error) {
+
+                                console.error(
+                                    "Test refresh failed:",
+                                    error
+                                );
+
+
+                                showToast(
+                                    getErrorMessage(
+                                        error
+                                    )
+                                );
+
+                            }
+                        );
+
+                }
             );
+
         }
 
 
-        if (modalClose) {
+        /* -------------------------------------------------
+           MODAL CLOSE
+        ------------------------------------------------- */
 
-            modalClose.addEventListener(
+        if (closeButton) {
+
+            closeButton.addEventListener(
                 "click",
                 closeModal
             );
+
         }
 
 
@@ -1975,6 +3373,7 @@
                 "click",
                 closeModal
             );
+
         }
 
 
@@ -1984,17 +3383,27 @@
                 "submit",
                 saveTest
             );
+
         }
 
+
+        /* -------------------------------------------------
+           TABLE
+        ------------------------------------------------- */
 
         if (tableBody) {
 
             tableBody.addEventListener(
                 "click",
-                handleTableAction
+                handleTableClick
             );
+
         }
 
+
+        /* -------------------------------------------------
+           PAGINATION
+        ------------------------------------------------- */
 
         if (pagination) {
 
@@ -2002,91 +3411,338 @@
                 "click",
                 handlePagination
             );
+
         }
 
 
-        if (sidebarToggle) {
+        /* -------------------------------------------------
+           ADD HOSPITAL FEE
+        ------------------------------------------------- */
+
+        if (assignmentButton) {
+
+            assignmentButton.addEventListener(
+                "click",
+                addAssignmentRow
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           SEARCH
+        ------------------------------------------------- */
+
+        if (search) {
+
+            search.addEventListener(
+                "input",
+                function () {
+
+                    state.currentPage =
+                        1;
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           CATEGORY
+        ------------------------------------------------- */
+
+        if (
+            categoryFilter
+        ) {
+
+            categoryFilter.addEventListener(
+                "change",
+                function () {
+
+                    state.currentPage =
+                        1;
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           STATUS
+        ------------------------------------------------- */
+
+        if (
+            statusFilter
+        ) {
+
+            statusFilter.addEventListener(
+                "change",
+                function () {
+
+                    state.currentPage =
+                        1;
+
+                    applyFilters();
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           MODAL BACKDROP
+        ------------------------------------------------- */
+
+        if (modal) {
+
+            modal.addEventListener(
+                "click",
+                function (event) {
+
+                    if (
+                        event.target &&
+                        event.target.getAttribute(
+                            "data-close-modal"
+                        ) ===
+                            "true"
+                    ) {
+
+                        closeModal();
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           SIDEBAR
+        ------------------------------------------------- */
+
+        if (
+            sidebarToggle
+        ) {
 
             sidebarToggle.addEventListener(
                 "click",
-                function () {
-
-                    const sidebar =
-                        get("adminSidebar");
-
-
-                    if (sidebar) {
-
-                        sidebar.classList.add(
-                            "open"
-                        );
-
-                    }
-
-                }
+                openSidebar
             );
+
         }
 
 
-        if (sidebarClose) {
+        if (
+            sidebarClose
+        ) {
 
             sidebarClose.addEventListener(
                 "click",
+                closeSidebar
+            );
+
+        }
+
+
+        if (
+            sidebarOverlay
+        ) {
+
+            sidebarOverlay.addEventListener(
+                "click",
+                closeSidebar
+            );
+
+        }
+
+
+        /* -------------------------------------------------
+           LOGOUT
+        ------------------------------------------------- */
+
+        if (
+            sidebarLogout
+        ) {
+
+            sidebarLogout.addEventListener(
+                "click",
                 function () {
 
-                    const sidebar =
-                        get("adminSidebar");
+                    const admin =
+                        getAdmin();
 
 
-                    if (sidebar) {
+                    if (
+                        admin &&
+                        typeof admin.logout ===
+                            "function"
+                    ) {
 
-                        sidebar.classList.remove(
-                            "open"
-                        );
+                        admin.logout();
 
                     }
 
                 }
             );
+
         }
 
 
+        /* -------------------------------------------------
+           ESCAPE
+        ------------------------------------------------- */
+
         document.addEventListener(
             "keydown",
-            handleEscape
+            function (event) {
+
+                if (
+                    event.key !==
+                    "Escape"
+                ) {
+
+                    return;
+
+                }
+
+
+                const currentModal =
+                    get(
+                        "testModal"
+                    );
+
+
+                if (
+                    currentModal &&
+                    currentModal.getAttribute(
+                        "aria-hidden"
+                    ) ===
+                        "false"
+                ) {
+
+                    closeModal();
+
+
+                    return;
+
+                }
+
+
+                closeSidebar();
+
+            }
         );
+
     }
 
 
     /* =====================================================
-       INIT
+       INITIALIZE
     ===================================================== */
 
-    async function init() {
+    async function initialize() {
+
+        if (
+            state.initialized
+        ) {
+
+            return;
+
+        }
+
 
         try {
 
+            /*
+             * Wait until admin guard has
+             * verified the current profile.
+             */
+
+            await waitForAdminSystem();
+
+
+            state.profile =
+                getAdmin().getProfile();
+
+
+            /*
+             * Use the existing verified
+             * Supabase client.
+             */
+
             initializeSupabase();
 
-            setupEvents();
 
-            applyPermissionUI();
+            /*
+             * Events must be attached
+             * before any data loading.
+             */
 
-            await loadTests();
+            bindEvents();
 
+
+            updatePermissionUI();
+
+
+            /*
+             * Guarantee closed state
+             * before page rendering.
+             */
+
+            closeModal();
+
+
+            /*
+             * Load both independent
+             * datasets.
+             */
+
+            await Promise.all(
+                [
+
+                    loadHospitals(),
+
+                    loadTests()
+
+                ]
+            );
+
+
+            state.initialized =
+                true;
+
+
+            console.log(
+                "Dorkari Tests & Fees Management ready."
+            );
 
         } catch (error) {
 
             console.error(
-                "Tests page initialization error:",
+                "Tests & Fees initialization failed:",
                 error
             );
 
 
+            updatePermissionUI();
+
+
             showToast(
-                getErrorMessage(error)
+                getErrorMessage(
+                    error
+                )
             );
+
         }
+
     }
 
 
@@ -2094,6 +3750,82 @@
        START
     ===================================================== */
 
-    init();
+    function start() {
+
+        if (
+            document.readyState ===
+            "loading"
+        ) {
+
+            document.addEventListener(
+                "DOMContentLoaded",
+                initialize
+            );
+
+        } else {
+
+            initialize();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       PUBLIC API
+    ===================================================== */
+
+    window.DorkariTest = {
+
+        refresh:
+            function () {
+
+                return loadTests();
+
+            },
+
+
+        getTests:
+            function () {
+
+                return [
+                    ...state.tests
+                ];
+
+            },
+
+
+        getFilteredTests:
+            function () {
+
+                return [
+                    ...state.filteredTests
+                ];
+
+            },
+
+
+        openAddForm:
+            function () {
+
+                openModal(
+                    null
+                );
+
+            },
+
+
+        closeForm:
+            closeModal
+
+    };
+
+
+    /* =====================================================
+       RUN
+    ===================================================== */
+
+    start();
+
 
 })();
