@@ -1,45 +1,299 @@
-/* =====================================================
+/* =========================================================
    DORKARI — TESTS & FEES ADMIN
    File: css/admin-test.css
-===================================================== */
+========================================================= */
 
 
-/* =====================================================
-   PAGE
-===================================================== */
+/* =========================================================
+   RESET / BASE
+========================================================= */
+
+.test-content,
+.test-content *,
+.test-content *::before,
+.test-content *::after,
+.test-modal,
+.test-modal *,
+.test-modal *::before,
+.test-modal *::after {
+    box-sizing: border-box;
+}
+
+.test-content button,
+.test-modal button,
+.test-content input,
+.test-content select,
+.test-content textarea,
+.test-modal input,
+.test-modal select,
+.test-modal textarea {
+    font-family: inherit;
+}
 
 .test-content {
     width: 100%;
     max-width: 1440px;
     margin: 0 auto;
-    padding: 32px;
-    box-sizing: border-box;
+    padding: 28px 32px 40px;
+    color: var(--color-text, #1f2937);
 }
 
 
-/* =====================================================
-   HEADER BUTTONS
-===================================================== */
+/* =========================================================
+   PAGE SHELL
+   আমাদের test.html-এর custom shell
+========================================================= */
+
+.admin-layout {
+    min-height: 100vh;
+    display: flex;
+    width: 100%;
+    background: var(--color-bg, #f7f8fa);
+}
+
+.admin-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 16px 28px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.admin-sidebar-toggle {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid #dfe5e2;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #176b4d;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.admin-sidebar-toggle:hover {
+    background: #f3f8f5;
+}
+
+.admin-header-title {
+    min-width: 0;
+}
+
+.admin-header-title h1 {
+    margin: 0;
+    color: #18322a;
+    font-size: 25px;
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.admin-header-title p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.admin-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.admin-layout .admin-sidebar {
+    width: 250px;
+    flex: 0 0 250px;
+    min-height: calc(100vh - 76px);
+    padding: 20px 14px;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    overflow-y: auto;
+}
+
+.admin-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-brand-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: #176b4d;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.admin-brand-title {
+    color: #18322a;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.admin-brand-subtitle {
+    margin-top: 2px;
+    color: #7a8983;
+    font-size: 11px;
+}
+
+.admin-sidebar-close {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #e1e7e4;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #617068;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.admin-sidebar-close:hover {
+    background: #f5f8f6;
+}
+
+.admin-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 12px;
+    margin-bottom: 18px;
+    border: 1px solid #e4ebe7;
+    border-radius: 12px;
+    background: #f8fbf9;
+}
+
+.admin-avatar {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    flex: 0 0 38px;
+    border-radius: 50%;
+    background: #e9f5ef;
+    color: #176b4d;
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.admin-profile-info {
+    min-width: 0;
+}
+
+.admin-profile-info strong {
+    display: block;
+    color: #18322a;
+    font-size: 13px;
+}
+
+.admin-profile-info span {
+    display: block;
+    margin-top: 2px;
+    color: #718079;
+    font-size: 11px;
+}
+
+.admin-sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.admin-sidebar-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 42px;
+    padding: 0 12px;
+    border-radius: 10px;
+    color: #4b5d56;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.admin-sidebar-nav a:hover {
+    background: #f2f8f5;
+    color: #176b4d;
+}
+
+.admin-sidebar-nav a.active {
+    background: #eaf6f0;
+    color: #176b4d;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.admin-layout .admin-main {
+    min-width: 0;
+    flex: 1;
+    background: #f7f8fa;
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   GENERIC BUTTONS
+========================================================= */
 
 .admin-header-btn {
-    border: 1px solid var(--border-color, #dfe7e2);
-    background: #ffffff;
-    color: var(--text-primary, #18322a);
+    min-height: 42px;
+    padding: 10px 15px;
+    border: 1px solid #dce5e1;
     border-radius: 10px;
-    padding: 10px 16px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
+    background: #ffffff;
+    color: #18322a;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
     transition:
         background 0.2s ease,
         border-color 0.2s ease,
-        transform 0.2s ease;
+        transform 0.15s ease;
 }
 
 .admin-header-btn:hover {
     background: #f4f8f6;
-    border-color: #c9d8d1;
+    border-color: #c6d5ce;
 }
 
 .admin-header-btn:active {
@@ -47,39 +301,38 @@
 }
 
 .admin-primary-btn {
-    background: var(--primary, #176b4d);
-    border-color: var(--primary, #176b4d);
+    background: #176b4d;
+    border-color: #176b4d;
     color: #ffffff;
 }
 
 .admin-primary-btn:hover {
-    background: var(--primary-dark, #10523b);
-    border-color: var(--primary-dark, #10523b);
+    background: #10523b;
+    border-color: #10523b;
 }
 
 
-/* =====================================================
+/* =========================================================
    STATS
-===================================================== */
+========================================================= */
 
 .test-stats {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 18px;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
 }
 
 .test-stat-card {
+    min-height: 104px;
     display: flex;
     align-items: center;
-    gap: 16px;
-    min-height: 100px;
-    padding: 20px;
+    gap: 15px;
+    padding: 19px;
+    border: 1px solid #e2e9e5;
+    border-radius: 15px;
     background: #ffffff;
-    border: 1px solid var(--border-color, #dfe7e2);
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(20, 65, 49, 0.05);
-    box-sizing: border-box;
+    box-shadow: 0 6px 20px rgba(23, 55, 43, 0.045);
 }
 
 .test-stat-card > span {
@@ -89,93 +342,97 @@
     display: grid;
     place-items: center;
     border-radius: 12px;
-    background: var(--primary-light, #eaf6f0);
-    font-size: 22px;
+    background: #eaf6f0;
+    color: #176b4d;
+    font-size: 21px;
 }
 
 .test-stat-card small {
     display: block;
     margin-bottom: 5px;
-    color: var(--text-secondary, #61736c);
-    font-size: 13px;
-    font-weight: 600;
+    color: #6b7a74;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .test-stat-card strong {
     display: block;
-    color: var(--text-primary, #18322a);
-    font-size: 28px;
+    color: #18322a;
+    font-size: 26px;
     line-height: 1;
     font-weight: 800;
 }
 
 
-/* =====================================================
+/* =========================================================
    PANEL
-===================================================== */
+========================================================= */
 
 .test-panel {
-    background: #ffffff;
-    border: 1px solid var(--border-color, #dfe7e2);
-    border-radius: 18px;
-    box-shadow: 0 10px 28px rgba(20, 65, 49, 0.06);
+    margin-bottom: 20px;
     overflow: hidden;
+    border: 1px solid #e2e9e5;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 7px 22px rgba(23, 55, 43, 0.045);
 }
 
 .test-panel-heading {
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    padding: 24px;
-    border-bottom: 1px solid var(--border-color, #dfe7e2);
+    gap: 18px;
+    padding: 21px 22px;
+    border-bottom: 1px solid #edf1ef;
 }
 
 .test-panel-heading > div > span {
     display: block;
-    margin-bottom: 6px;
-    color: var(--primary, #176b4d);
-    font-size: 12px;
+    color: #176b4d;
+    font-size: 11px;
+    line-height: 1.2;
     font-weight: 800;
     letter-spacing: 0.08em;
 }
 
 .test-panel-heading h2 {
-    margin: 0;
-    color: var(--text-primary, #18322a);
-    font-size: 24px;
+    margin: 4px 0 0;
+    color: #18322a;
+    font-size: 21px;
     line-height: 1.25;
+    font-weight: 800;
 }
 
 .test-panel-heading > strong {
-    color: var(--text-secondary, #61736c);
-    font-size: 13px;
+    color: #718079;
+    font-size: 12px;
     white-space: nowrap;
 }
 
 
-/* =====================================================
+/* =========================================================
    FILTERS
-===================================================== */
+========================================================= */
 
 .test-filters {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr) minmax(180px, 1fr);
-    gap: 16px;
-    padding: 20px 24px;
-    background: #fbfdfc;
-    border-bottom: 1px solid var(--border-color, #dfe7e2);
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 14px;
+    padding: 20px 22px;
+    border-bottom: 1px solid #edf1ef;
+    background: #fbfcfb;
 }
 
 .test-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     min-width: 0;
 }
 
 .test-field label {
-    display: block;
-    margin-bottom: 7px;
-    color: var(--text-primary, #18322a);
-    font-size: 13px;
+    color: #374840;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -183,46 +440,40 @@
 .test-field select,
 .test-field textarea {
     width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #d5e0db;
-    background: #ffffff;
-    color: var(--text-primary, #18322a);
-    border-radius: 10px;
-    padding: 11px 13px;
-    font-family: inherit;
-    font-size: 14px;
+    min-height: 43px;
+    padding: 10px 12px;
+    border: 1px solid #d8e2dd;
+    border-radius: 9px;
     outline: none;
+    background: #ffffff;
+    color: #18322a;
+    font-size: 13px;
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease;
 }
 
-.test-field input,
-.test-field select {
-    min-height: 44px;
+.test-field textarea {
+    min-height: 110px;
+    resize: vertical;
 }
 
-.test-field textarea {
-    resize: vertical;
-    min-height: 110px;
+.test-field input::placeholder,
+.test-field textarea::placeholder {
+    color: #9aa7a1;
 }
 
 .test-field input:focus,
 .test-field select:focus,
 .test-field textarea:focus {
-    border-color: var(--primary, #176b4d);
+    border-color: #176b4d;
     box-shadow: 0 0 0 3px rgba(23, 107, 77, 0.10);
 }
 
-.test-field input::placeholder,
-.test-field textarea::placeholder {
-    color: #98a7a1;
-}
 
-
-/* =====================================================
+/* =========================================================
    TABLE
-===================================================== */
+========================================================= */
 
 .test-table-wrap {
     width: 100%;
@@ -231,71 +482,57 @@
 
 .test-table {
     width: 100%;
+    min-width: 850px;
     border-collapse: collapse;
-    min-width: 860px;
 }
 
 .test-table th {
-    padding: 14px 16px;
+    padding: 13px 15px;
     text-align: left;
+    border-bottom: 1px solid #e4ebe7;
     background: #f7faf8;
-    border-bottom: 1px solid var(--border-color, #dfe7e2);
-    color: #496158;
-    font-size: 12px;
+    color: #63726b;
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
 }
 
 .test-table td {
-    padding: 16px;
-    border-bottom: 1px solid #edf2ef;
-    color: var(--text-primary, #18322a);
-    font-size: 14px;
+    padding: 15px;
+    border-bottom: 1px solid #edf1ef;
+    color: #24362f;
+    font-size: 13px;
     vertical-align: middle;
-}
-
-.test-table tbody tr {
-    transition: background 0.2s ease;
-}
-
-.test-table tbody tr:hover {
-    background: #fbfdfc;
 }
 
 .test-table tbody tr:last-child td {
     border-bottom: 0;
 }
 
-
-/* =====================================================
-   EMPTY / ERROR / LOADING
-===================================================== */
+.test-table tbody tr:hover {
+    background: #fbfdfc;
+}
 
 .test-empty {
-    padding: 48px 24px !important;
+    padding: 44px 20px !important;
     text-align: center !important;
-    color: var(--text-secondary, #61736c) !important;
-    font-size: 14px !important;
-}
-
-.test-loading {
-    opacity: 0.65;
+    color: #76857e !important;
 }
 
 
-/* =====================================================
+/* =========================================================
    STATUS
-===================================================== */
+========================================================= */
 
 .test-status-badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 76px;
+    min-width: 72px;
     padding: 6px 10px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
 }
 
@@ -306,77 +543,71 @@
 
 .test-status-inactive {
     background: #f1f3f2;
-    color: #65736d;
+    color: #66736d;
 }
 
 
-/* =====================================================
-   TABLE ACTIONS
-===================================================== */
+/* =========================================================
+   ACTIONS
+========================================================= */
 
 .test-action-group {
     display: flex;
-    align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
+    align-items: center;
+    gap: 7px;
 }
 
 .test-action-btn {
-    border: 1px solid #d5e0db;
-    background: #ffffff;
-    color: var(--text-primary, #18322a);
+    min-height: 32px;
+    padding: 6px 10px;
+    border: 1px solid #d7e0dc;
     border-radius: 8px;
-    padding: 7px 10px;
-    font-family: inherit;
-    font-size: 12px;
+    background: #ffffff;
+    color: #2e4138;
+    font-size: 11px;
     font-weight: 700;
     cursor: pointer;
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
 }
 
 .test-action-btn:hover {
     background: #f4f8f6;
-    border-color: #bfd0c8;
 }
 
 .test-action-btn.danger {
+    border-color: #edcccc;
     color: #b33b3b;
-    border-color: #efcccc;
 }
 
 .test-action-btn.danger:hover {
     background: #fff6f6;
-    border-color: #e7baba;
 }
 
 
-/* =====================================================
+/* =========================================================
    PAGINATION
-===================================================== */
+========================================================= */
 
 .test-pagination {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 8px;
-    padding: 20px 24px;
-    border-top: 1px solid var(--border-color, #dfe7e2);
-    background: #fbfdfc;
+    gap: 7px;
+    padding: 18px 20px;
+    border-top: 1px solid #edf1ef;
+    background: #fbfcfb;
 }
 
 .test-page-btn {
-    min-width: 38px;
-    height: 38px;
-    padding: 0 10px;
-    border: 1px solid #d5e0db;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 9px;
+    border: 1px solid #d7e0dc;
+    border-radius: 8px;
     background: #ffffff;
-    color: var(--text-primary, #18322a);
-    border-radius: 9px;
-    font-family: inherit;
-    font-size: 13px;
+    color: #31433b;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
 }
@@ -386,8 +617,8 @@
 }
 
 .test-page-btn.active {
-    background: var(--primary, #176b4d);
-    border-color: var(--primary, #176b4d);
+    border-color: #176b4d;
+    background: #176b4d;
     color: #ffffff;
 }
 
@@ -397,9 +628,9 @@
 }
 
 
-/* =====================================================
+/* =========================================================
    MODAL
-===================================================== */
+========================================================= */
 
 .test-modal {
     position: fixed;
@@ -407,10 +638,9 @@
     z-index: 9999;
     display: grid;
     place-items: center;
-    padding: 24px;
-    background: rgba(15, 35, 27, 0.48);
-    backdrop-filter: blur(4px);
-    box-sizing: border-box;
+    padding: 20px;
+    background: rgba(11, 28, 21, 0.48);
+    backdrop-filter: blur(3px);
 }
 
 .test-modal[hidden] {
@@ -419,68 +649,69 @@
 
 .test-modal-card {
     width: min(680px, 100%);
-    max-height: calc(100vh - 48px);
+    max-height: calc(100vh - 40px);
     overflow-y: auto;
+    border: 1px solid #dfe7e3;
+    border-radius: 16px;
     background: #ffffff;
-    border-radius: 18px;
-    border: 1px solid #dce6e1;
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.16);
+    box-shadow: 0 24px 65px rgba(0, 0, 0, 0.18);
 }
 
 .test-modal-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 20px;
-    padding: 22px 24px;
-    border-bottom: 1px solid var(--border-color, #dfe7e2);
+    gap: 18px;
+    padding: 20px 22px;
+    border-bottom: 1px solid #edf1ef;
 }
 
 .test-modal-header > div > span {
     display: block;
-    margin-bottom: 5px;
-    color: var(--primary, #176b4d);
+    color: #176b4d;
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.08em;
 }
 
 .test-modal-header h2 {
-    margin: 0;
-    color: var(--text-primary, #18322a);
-    font-size: 22px;
+    margin: 4px 0 0;
+    color: #18322a;
+    font-size: 20px;
 }
 
 .test-modal-header > button {
-    width: 36px;
-    height: 36px;
-    flex: 0 0 36px;
-    border: 1px solid #d5e0db;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #dce4e0;
+    border-radius: 8px;
     background: #ffffff;
-    color: #52645d;
-    border-radius: 9px;
-    font-size: 22px;
-    line-height: 1;
+    color: #5e6d66;
     cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
 }
 
 .test-modal-header > button:hover {
-    background: #f4f8f6;
+    background: #f4f7f5;
 }
 
 
-/* =====================================================
+/* =========================================================
    FORM
-===================================================== */
+========================================================= */
 
 #testForm {
-    padding: 24px;
+    padding: 22px;
 }
 
 .test-form-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
+    gap: 16px;
 }
 
 .test-field-full {
@@ -488,54 +719,54 @@
 }
 
 .test-check {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 9px;
-    color: var(--text-primary, #18322a);
-    font-size: 14px;
-    font-weight: 600;
+    gap: 8px;
+    color: #33463d;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
 }
 
 .test-check input {
     width: 17px;
     height: 17px;
-    accent-color: var(--primary, #176b4d);
+    margin: 0;
+    accent-color: #176b4d;
 }
 
 
-/* =====================================================
+/* =========================================================
    MODAL ACTIONS
-===================================================== */
+========================================================= */
 
 .test-modal-actions {
     display: flex;
-    align-items: center;
     justify-content: flex-end;
-    gap: 10px;
-    padding-top: 22px;
+    gap: 9px;
     margin-top: 22px;
-    border-top: 1px solid var(--border-color, #dfe7e2);
+    padding-top: 18px;
+    border-top: 1px solid #edf1ef;
 }
 
 
-/* =====================================================
+/* =========================================================
    TOAST
-===================================================== */
+========================================================= */
 
 .test-toast {
     position: fixed;
-    right: 24px;
-    bottom: 24px;
+    right: 20px;
+    bottom: 20px;
     z-index: 10000;
-    max-width: min(420px, calc(100vw - 48px));
-    padding: 13px 16px;
+    max-width: 380px;
+    padding: 12px 15px;
+    border-radius: 10px;
     background: #18322a;
     color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.16);
-    font-size: 14px;
-    font-weight: 600;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+    font-size: 13px;
+    font-weight: 700;
 }
 
 .test-toast[hidden] {
@@ -543,22 +774,23 @@
 }
 
 
-/* =====================================================
+/* =========================================================
    RESPONSIVE
-===================================================== */
+========================================================= */
 
 @media (max-width: 1100px) {
+
+    .admin-layout .admin-sidebar {
+        width: 220px;
+        flex-basis: 220px;
+    }
 
     .test-content {
         padding: 24px;
     }
 
-    .test-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
     .test-filters {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .test-filters .test-field:first-child {
@@ -569,26 +801,54 @@
 
 @media (max-width: 800px) {
 
+    .admin-header {
+        min-height: 68px;
+        padding: 12px 16px;
+    }
+
+    .admin-header-title h1 {
+        font-size: 20px;
+    }
+
+    .admin-header-title p {
+        font-size: 11px;
+    }
+
+    .admin-header-right {
+        gap: 6px;
+    }
+
+    .admin-header-right .admin-header-btn:first-child {
+        display: none;
+    }
+
+    .admin-layout .admin-sidebar {
+        position: fixed;
+        top: 68px;
+        left: 0;
+        z-index: 1000;
+        width: 250px;
+        height: calc(100vh - 68px);
+        flex-basis: auto;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+        box-shadow: 12px 0 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .admin-layout .admin-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .admin-layout .admin-main {
+        width: 100%;
+    }
+
     .test-content {
         padding: 18px;
     }
 
-    .test-panel-heading {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 8px;
-    }
-
     .test-stats {
         grid-template-columns: 1fr;
-    }
-
-    .test-filters {
-        grid-template-columns: 1fr;
-    }
-
-    .test-filters .test-field:first-child {
-        grid-column: auto;
     }
 
     .test-form-grid {
@@ -599,51 +859,58 @@
         grid-column: auto;
     }
 
-    #testForm {
-        padding: 20px;
+    .test-filters {
+        grid-template-columns: 1fr;
     }
 
-    .test-modal {
-        padding: 12px;
-    }
-
-    .test-modal-card {
-        max-height: calc(100vh - 24px);
-    }
-
-    .test-modal-header {
-        padding: 18px 20px;
-    }
-
-    .test-toast {
-        right: 12px;
-        bottom: 12px;
-        max-width: calc(100vw - 24px);
+    .test-filters .test-field:first-child {
+        grid-column: auto;
     }
 }
 
 
 @media (max-width: 520px) {
 
+    .admin-header {
+        padding: 10px 12px;
+    }
+
+    .admin-header-title h1 {
+        font-size: 17px;
+    }
+
+    .admin-header-title p {
+        display: none;
+    }
+
+    .admin-primary-btn {
+        min-height: 38px;
+        padding: 8px 11px;
+        font-size: 12px;
+    }
+
     .test-content {
         padding: 12px;
     }
 
+    .test-panel-heading,
+    .test-filters,
+    #testForm {
+        padding: 17px;
+    }
+
     .test-panel-heading {
-        padding: 18px;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 7px;
     }
 
-    .test-filters {
-        padding: 16px;
+    .test-modal {
+        padding: 10px;
     }
 
-    .test-table td,
-    .test-table th {
-        padding: 12px;
-    }
-
-    .test-modal-header h2 {
-        font-size: 19px;
+    .test-modal-card {
+        max-height: calc(100vh - 20px);
     }
 
     .test-modal-actions {
@@ -653,5 +920,11 @@
 
     .test-modal-actions .admin-header-btn {
         width: 100%;
+    }
+
+    .test-toast {
+        right: 10px;
+        bottom: 10px;
+        max-width: calc(100vw - 20px);
     }
 }
