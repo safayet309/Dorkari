@@ -3850,7 +3850,7 @@
             refresh:
                 function () {
 
-                    return loadOffices();
+                    return loadOffices(); 
 
                 },
 
