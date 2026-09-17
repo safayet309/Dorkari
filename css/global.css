@@ -2871,3 +2871,398 @@ select {
         font-size: 21px;
     }
 }
+/* =========================================================
+   DORKARI — STEP 13
+   COMPACT HERO / MOCKUP MATCH
+   ========================================================= */
+
+
+/* =========================================================
+   DESKTOP HERO
+   ========================================================= */
+
+@media (min-width: 901px) {
+
+    /*
+     * Hero visual বাদ দেওয়ার পর
+     * empty দ্বিতীয় column থাকবে না।
+     */
+
+    .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
+
+    .hero-content {
+        max-width: 860px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .hero-content .eyebrow {
+        margin-inline: auto;
+    }
+
+    .hero-content h1 {
+        max-width: 760px;
+        margin-inline: auto;
+        font-size: clamp(
+            42px,
+            4.2vw,
+            56px
+        );
+        line-height: 1.20;
+    }
+
+    .hero-description {
+        max-width: 650px;
+        margin-inline: auto;
+    }
+
+    .search-box {
+        max-width: 760px;
+        margin-inline: auto;
+    }
+
+    .search-suggestions {
+        justify-content: center;
+    }
+
+    .hero-meta-row {
+        justify-content: center;
+    }
+
+    /*
+     * HTML-এ hero visual future-proof হিসেবে থাকলে
+     * সেটি desktop-এ render হবে না।
+     */
+
+    .hero-visual {
+        display: none !important;
+    }
+
+    .hero-section {
+        padding-top: 62px;
+        padding-bottom: 38px;
+    }
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .hero-visual {
+        display: none !important;
+    }
+}
+
+
+/* =========================================================
+   MOBILE HERO
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .hero-section {
+        padding-top: 28px;
+        padding-bottom: 22px;
+
+        background:
+            radial-gradient(
+                circle at 100% 5%,
+                rgba(15, 124, 91, 0.08),
+                transparent 28%
+            ),
+            linear-gradient(
+                180deg,
+                #fbfefd 0%,
+                #f5faf7 100%
+            );
+    }
+
+
+    .hero-grid {
+        gap: 0;
+    }
+
+
+    .hero-content {
+        width: 100%;
+        max-width: none;
+    }
+
+
+    .hero-content h1 {
+        max-width: 100%;
+
+        margin-top: 12px;
+        margin-bottom: 10px;
+
+        font-size: clamp(
+            28px,
+            8.2vw,
+            38px
+        );
+
+        line-height: 1.20;
+
+        letter-spacing: -0.035em;
+    }
+
+
+    .hero-description {
+        max-width: 520px;
+
+        margin-inline: auto;
+
+        font-size: 11px;
+        line-height: 1.65;
+    }
+
+
+    .search-box {
+        min-height: 55px;
+
+        margin-top: 16px;
+
+        padding:
+            5px
+            5px
+            5px
+            11px;
+
+        border-radius: 15px;
+    }
+
+
+    .search-box input {
+        height: 42px;
+        font-size: 12px;
+    }
+
+
+    .search-button {
+        min-height: 43px;
+        padding-inline: 15px;
+        border-radius: 10px;
+        font-size: 10px;
+    }
+
+
+    .search-suggestions {
+        gap: 5px;
+        margin-top: 8px;
+
+        overflow-x: auto;
+        flex-wrap: nowrap;
+
+        padding-bottom: 2px;
+
+        justify-content: flex-start;
+
+        scrollbar-width: none;
+    }
+
+
+    .search-suggestions::-webkit-scrollbar {
+        display: none;
+    }
+
+
+    .search-suggestions .suggestion-label {
+        flex: 0 0 auto;
+    }
+
+
+    .search-suggestions button {
+        flex: 0 0 auto;
+
+        min-height: 28px;
+
+        padding:
+            4px
+            9px;
+
+        font-size: 8px;
+        white-space: nowrap;
+    }
+
+
+    .hero-meta-row {
+        margin-top: 11px;
+
+        justify-content: flex-start;
+
+        gap:
+            6px
+            10px;
+    }
+
+
+    .hero-meta-row > span {
+        font-size: 7.5px;
+    }
+
+
+    .meta-check {
+        width: 14px;
+        height: 14px;
+        font-size: 7px;
+    }
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .hero-section {
+        padding-top: 24px;
+        padding-bottom: 18px;
+    }
+
+
+    .eyebrow {
+        min-height: 27px;
+        padding:
+            5px
+            9px;
+
+        font-size: 8px;
+    }
+
+
+    .eyebrow-dot {
+        width: 5px;
+        height: 5px;
+    }
+
+
+    .hero-content h1 {
+        margin-top: 10px;
+        margin-bottom: 8px;
+
+        font-size: clamp(
+            26px,
+            8.5vw,
+            34px
+        );
+
+        line-height: 1.22;
+    }
+
+
+    .hero-description {
+        font-size: 10px;
+        line-height: 1.65;
+    }
+
+
+    .search-box {
+        min-height: 52px;
+        margin-top: 14px;
+    }
+
+
+    .search-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+
+    .search-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+
+    .search-box input {
+        height: 40px;
+        font-size: 11px;
+    }
+
+
+    .search-button {
+        min-height: 40px;
+        padding-inline: 13px;
+        font-size: 9px;
+    }
+
+
+    .hero-meta-row {
+        grid-template-columns: repeat(3, auto);
+        display: grid;
+
+        gap:
+            5px
+            7px;
+
+        margin-top: 10px;
+    }
+
+
+    .hero-meta-row > span {
+        font-size: 7px;
+    }
+
+
+    .hero-meta-row > span:last-child {
+        grid-column: auto;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 340px) {
+
+    .hero-section {
+        padding-top: 21px;
+        padding-bottom: 15px;
+    }
+
+
+    .hero-content h1 {
+        font-size: 25px;
+    }
+
+
+    .hero-description {
+        font-size: 9px;
+    }
+
+
+    .search-box {
+        min-height: 49px;
+    }
+
+
+    .search-box input {
+        height: 38px;
+        font-size: 10px;
+    }
+
+
+    .search-button {
+        min-height: 38px;
+        padding-inline: 11px;
+        font-size: 8.5px;
+    }
+
+
+    .hero-meta-row > span {
+        font-size: 6.5px;
+    }
+}
