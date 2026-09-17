@@ -5125,3 +5125,482 @@ summary::after {
     }
 
 }
+/* =========================================================
+   DORKARI — BLOOD BANK INTERFACE
+   ========================================================= */
+
+.interface-blood-filter {
+    margin-top: 18px;
+    padding: 18px;
+    border: 1px solid #f0d9de;
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            145deg,
+            #fffafb 0%,
+            #fff4f6 100%
+        );
+}
+
+.interface-filter-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.interface-filter-heading strong {
+    color: #7c2636;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.interface-filter-clear {
+    border: 0;
+    background: transparent;
+    color: #a12b42;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 8px;
+}
+
+.interface-filter-clear:hover {
+    background: #fdebef;
+}
+
+.interface-blood-groups {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            8,
+            minmax(0, 1fr)
+        );
+    gap: 10px;
+}
+
+.interface-blood-groups button {
+    min-height: 44px;
+    border: 1px solid #ecd6db;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #8f2940;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease,
+        box-shadow .18s ease;
+}
+
+.interface-blood-groups button:hover {
+    border-color: #dfbcc5;
+    background: #fff0f3;
+    transform: translateY(-1px);
+}
+
+.interface-blood-groups button[aria-pressed="true"] {
+    border-color: #b92f48;
+    background: #b92f48;
+    color: #ffffff;
+    box-shadow:
+        0 8px 20px
+        rgba(
+            185,
+            47,
+            72,
+            .16
+        );
+}
+
+.interface-results-head {
+    margin-top: 22px;
+}
+
+.interface-result-count {
+    display: block;
+    margin-top: 3px;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   BLOOD RESULT LIST
+   ========================================================= */
+
+.blood-interface-list {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            3,
+            minmax(0, 1fr)
+        );
+    gap: 18px;
+    margin-top: 16px;
+}
+
+.blood-interface-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid #eadfe2;
+    border-radius: 22px;
+    background: #ffffff;
+    box-shadow:
+        0 10px 30px
+        rgba(
+            53,
+            24,
+            31,
+            .06
+        );
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+.blood-interface-card:hover {
+    transform: translateY(-2px);
+    border-color: #e0c5cb;
+    box-shadow:
+        0 16px 34px
+        rgba(
+            53,
+            24,
+            31,
+            .09
+        );
+}
+
+.blood-interface-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.blood-interface-card-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 17px;
+    line-height: 1.45;
+    font-weight: 800;
+}
+
+.blood-interface-card-subtitle {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.blood-interface-card-mark {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid #efd5da;
+    border-radius: 12px;
+    background:
+        linear-gradient(
+            145deg,
+            #fff6f8 0%,
+            #ffebef 100%
+        );
+    color: #b92f48;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.blood-interface-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 14px;
+}
+
+.blood-interface-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 27px;
+    padding: 5px 9px;
+    border: 1px solid #e7dfe2;
+    border-radius: 999px;
+    background: #faf9f9;
+    color: #66706c;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 700;
+}
+
+.blood-interface-badge.is-blood {
+    border-color: #efd0d7;
+    background: #fff1f4;
+    color: #a62942;
+}
+
+.blood-interface-badge.is-verified {
+    border-color: #d4e9dd;
+    background: #eff9f2;
+    color: #19734d;
+}
+
+.blood-interface-meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.55;
+}
+
+.blood-interface-meta > span:first-child {
+    flex: 0 0 auto;
+    color: #b92f48;
+    font-weight: 800;
+}
+
+.blood-interface-phone {
+    margin-top: 14px;
+    color: #7f2337;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .01em;
+}
+
+.blood-interface-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 14px;
+}
+
+.blood-interface-group-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    min-height: 30px;
+    padding: 5px 9px;
+    border: 1px solid #ecd5da;
+    border-radius: 999px;
+    background: #fff8fa;
+    color: #a52a43;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.blood-interface-actions {
+    display: grid;
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.blood-interface-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 1px solid #e2d8db;
+    border-radius: 11px;
+    background: #ffffff;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+.blood-interface-action:hover {
+    border-color: #d5c4c8;
+    background: #faf8f8;
+    transform: translateY(-1px);
+}
+
+.blood-interface-action.is-primary {
+    border-color: #cfe1d7;
+    background: #f1f9f4;
+    color: #176b49;
+}
+
+.blood-interface-action.is-primary:hover {
+    border-color: #b8d4c4;
+    background: #e8f5ed;
+}
+
+.blood-interface-action.is-danger {
+    border-color: #efd0d6;
+    background: #fff1f3;
+    color: #a52841;
+}
+
+.blood-interface-action.is-danger:hover {
+    border-color: #e6bcc5;
+    background: #ffeaee;
+}
+
+.blood-interface-details {
+    margin-top: 14px;
+    border-top: 1px solid #eee7e9;
+    padding-top: 12px;
+}
+
+.blood-interface-details summary {
+    cursor: pointer;
+    color: #7f5d65;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.blood-interface-details-body {
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.blood-interface-empty {
+    grid-column: 1 / -1;
+    padding: 28px 20px;
+    border: 1px dashed #dfcfd4;
+    border-radius: 20px;
+    background: #fffafb;
+    text-align: center;
+    color: var(--muted);
+}
+
+.blood-interface-empty strong {
+    display: block;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.blood-interface-empty span {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   BLOOD MOBILE / TABLET
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .blood-interface-list {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .interface-blood-groups {
+        grid-template-columns:
+            repeat(
+                4,
+                minmax(0, 1fr)
+            );
+    }
+
+}
+
+@media (max-width: 760px) {
+
+    .interface-blood-filter {
+        margin-top: 14px;
+        padding: 14px;
+        border-radius: 17px;
+    }
+
+    .interface-filter-heading {
+        margin-bottom: 11px;
+    }
+
+    .interface-blood-groups {
+        grid-template-columns:
+            repeat(
+                4,
+                minmax(0, 1fr)
+            );
+        gap: 8px;
+    }
+
+    .interface-blood-groups button {
+        min-height: 42px;
+        border-radius: 11px;
+        font-size: 13px;
+    }
+
+    .blood-interface-list {
+        grid-template-columns: 1fr;
+        gap: 13px;
+        margin-top: 13px;
+    }
+
+    .blood-interface-card {
+        padding: 17px;
+        border-radius: 18px;
+    }
+
+    .blood-interface-card-title {
+        font-size: 16px;
+    }
+
+    .blood-interface-card-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+    }
+
+    .blood-interface-actions {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    .interface-blood-groups {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+    .blood-interface-actions {
+        grid-template-columns: 1fr;
+    }
+
+}
