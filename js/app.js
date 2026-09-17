@@ -10,16 +10,16 @@
 // SUPABASE
 // =========================================================
 
- const supabaseConfig =
+const supabaseConfig =
     typeof DORKARI_CONFIG !== "undefined" &&
-    DORKARI_CONFIG?.SUPABASE
+        DORKARI_CONFIG?.SUPABASE
         ? DORKARI_CONFIG.SUPABASE
         : null;
 
 const dorkariSupabase =
     window.supabase &&
         typeof window.supabase.createClient ===
-            "function" &&
+        "function" &&
         supabaseConfig?.URL &&
         supabaseConfig?.PUBLISHABLE_KEY
         ? window.supabase.createClient(
@@ -1043,14 +1043,12 @@ function initializeServiceInterfaces() {
      * HOSPITAL PUBLIC DATA
      * =========================================================
      */
-
     let hospitalState = {
         hospitals: [],
         filtered: [],
         loading: false,
         locationOnly: false
     };
-
 
     function getHospitalElements() {
         return {
@@ -1065,6 +1063,21 @@ function initializeServiceInterfaces() {
             locationButton:
                 document.querySelector(
                     '[data-interface-location="hospital"]'
+                ),
+
+            divisionFilter:
+                document.querySelector(
+                    '[data-hospital-filter="division"]'
+                ),
+
+            districtFilter:
+                document.querySelector(
+                    '[data-hospital-filter="district"]'
+                ),
+
+            upazilaFilter:
+                document.querySelector(
+                    '[data-hospital-filter="upazila"]'
                 ),
 
             results:
@@ -1366,8 +1379,8 @@ function initializeServiceInterfaces() {
                         class="hospital-interface-badge"
                     >
                         ${escapeHTML(
-                            hospitalType
-                        )}
+                    hospitalType
+                )}
                     </span>
                 `
                 : "";
@@ -1378,8 +1391,8 @@ function initializeServiceInterfaces() {
                 ? `
                     <a
                         href="tel:${escapeHTML(
-                            normalizePhone(phone)
-                        )}"
+                    normalizePhone(phone)
+                )}"
                         class="hospital-interface-action is-primary"
                     >
                         কল করুন
@@ -1393,10 +1406,10 @@ function initializeServiceInterfaces() {
                 ? `
                     <a
                         href="tel:${escapeHTML(
-                            normalizePhone(
-                                emergencyPhone
-                            )
-                        )}"
+                    normalizePhone(
+                        emergencyPhone
+                    )
+                )}"
                         class="hospital-interface-action is-danger"
                     >
                         জরুরি কল
@@ -1410,8 +1423,8 @@ function initializeServiceInterfaces() {
                 ? `
                     <a
                         href="${escapeHTML(
-                            mapUrl
-                        )}"
+                    mapUrl
+                )}"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="hospital-interface-action"
@@ -1427,8 +1440,8 @@ function initializeServiceInterfaces() {
                 ? `
                     <a
                         href="${escapeHTML(
-                            website
-                        )}"
+                    website
+                )}"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="hospital-interface-action"
@@ -1453,24 +1466,23 @@ function initializeServiceInterfaces() {
                             class="hospital-interface-card-title"
                         >
                             ${escapeHTML(
-                                name
-                            )}
+            name
+        )}
                         </h3>
 
-                        ${
-                            englishName &&
-                            englishName !== name
-                                ? `
+                        ${englishName &&
+                englishName !== name
+                ? `
                                     <p
                                         class="hospital-interface-card-subtitle"
                                     >
                                         ${escapeHTML(
-                                            englishName
-                                        )}
+                    englishName
+                )}
                                     </p>
                                 `
-                                : ""
-                        }
+                : ""
+            }
                     </div>
 
 
@@ -1492,9 +1504,8 @@ function initializeServiceInterfaces() {
                 </div>
 
 
-                ${
-                    locationLabel
-                        ? `
+                ${locationLabel
+                ? `
                             <div
                                 class="hospital-interface-meta"
                             >
@@ -1506,18 +1517,17 @@ function initializeServiceInterfaces() {
 
                                 <span>
                                     ${escapeHTML(
-                                        locationLabel
-                                    )}
+                    locationLabel
+                )}
                                 </span>
                             </div>
                         `
-                        : ""
-                }
+                : ""
+            }
 
 
-                ${
-                    address
-                        ? `
+                ${address
+                ? `
                             <div
                                 class="hospital-interface-meta"
                             >
@@ -1529,28 +1539,27 @@ function initializeServiceInterfaces() {
 
                                 <span>
                                     ${escapeHTML(
-                                        address
-                                    )}
+                    address
+                )}
                                 </span>
                             </div>
                         `
-                        : ""
-                }
+                : ""
+            }
 
 
-                ${
-                    phone
-                        ? `
+                ${phone
+                ? `
                             <div
                                 class="hospital-interface-phone"
                             >
                                 ${escapeHTML(
-                                    phone
-                                )}
+                    phone
+                )}
                             </div>
                         `
-                        : ""
-                }
+                : ""
+            }
 
 
                 <div
@@ -1576,9 +1585,8 @@ function initializeServiceInterfaces() {
                         class="hospital-interface-details-body"
                     >
 
-                        ${
-                            emergencyPhone
-                                ? `
+                        ${emergencyPhone
+                ? `
                                     <p>
                                         <strong>
                                             জরুরি নম্বর:
@@ -1586,75 +1594,71 @@ function initializeServiceInterfaces() {
 
                                         <a
                                             href="tel:${escapeHTML(
-                                                normalizePhone(
-                                                    emergencyPhone
-                                                )
-                                            )}"
+                    normalizePhone(
+                        emergencyPhone
+                    )
+                )}"
                                         >
                                             ${escapeHTML(
-                                                emergencyPhone
-                                            )}
+                    emergencyPhone
+                )}
                                         </a>
                                     </p>
                                 `
-                                : ""
-                        }
+                : ""
+            }
 
 
-                        ${
-                            phone
-                                ? `
+                        ${phone
+                ? `
                                     <p>
                                         <strong>
                                             ফোন:
                                         </strong>
 
                                         ${escapeHTML(
-                                            phone
-                                        )}
+                    phone
+                )}
                                     </p>
                                 `
-                                : ""
-                        }
+                : ""
+            }
 
 
-                        ${
-                            address
-                                ? `
+                        ${address
+                ? `
                                     <p>
                                         <strong>
                                             ঠিকানা:
                                         </strong>
 
                                         ${escapeHTML(
-                                            address
-                                        )}
+                    address
+                )}
                                     </p>
                                 `
-                                : ""
-                        }
+                : ""
+            }
 
 
-                        ${
-                            description
-                                ? `
+                        ${description
+                ? `
                                     <p>
                                         <strong>
                                             তথ্য:
                                         </strong>
 
                                         ${escapeHTML(
-                                            description
-                                        )}
+                    description
+                )}
                                     </p>
                                 `
-                                : ""
-                        }
+                : ""
+            }
 
 
-                        ${
-                            website
-                                ? `
+                        ${website
+                ? `
                                     <p>
                                         <strong>
                                             ওয়েবসাইট:
@@ -1662,36 +1666,35 @@ function initializeServiceInterfaces() {
 
                                         <a
                                             href="${escapeHTML(
-                                                website
-                                            )}"
+                    website
+                )}"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
                                             ${escapeHTML(
-                                                website
-                                            )}
+                    website
+                )}
                                         </a>
                                     </p>
                                 `
-                                : ""
-                        }
+                : ""
+            }
 
 
-                        ${
-                            locationLabel
-                                ? `
+                        ${locationLabel
+                ? `
                                     <p>
                                         <strong>
                                             লোকেশন:
                                         </strong>
 
                                         ${escapeHTML(
-                                            locationLabel
-                                        )}
+                    locationLabel
+                )}
                                     </p>
                                 `
-                                : ""
-                        }
+                : ""
+            }
 
                     </div>
 
@@ -1701,35 +1704,98 @@ function initializeServiceInterfaces() {
         `;
     }
 
-
     function renderHospitalResults() {
         const {
+            search,
+            divisionFilter,
+            districtFilter,
+            upazilaFilter,
             results
         } =
             getHospitalElements();
-
 
         if (!results) {
             return;
         }
 
-
-        const search =
+        const searchText =
             cleanText(
-                getHospitalElements()
-                    .search
-                    ?.value
-            )
-                .toLowerCase();
+                search?.value
+            ).toLowerCase();
 
+        const divisionId =
+            cleanText(
+                divisionFilter?.value
+            );
+
+        const districtId =
+            cleanText(
+                districtFilter?.value
+            );
+
+        const upazilaId =
+            cleanText(
+                upazilaFilter?.value
+            );
 
         const savedLocation =
             getSavedHospitalLocation();
 
-
         hospitalState.filtered =
             hospitalState.hospitals.filter(
                 (hospital) => {
+
+                    /*
+                     * =================================================
+                     * MANUAL LOCATION FILTER
+                     * Division -> District -> Upazila
+                     * যেটা নির্বাচন করা হবে সেটি অনুযায়ী filter হবে।
+                     * =================================================
+                     */
+
+                    if (
+                        divisionId &&
+                        String(
+                            hospital.division_id
+                        ) !==
+                        String(
+                            divisionId
+                        )
+                    ) {
+                        return false;
+                    }
+
+                    if (
+                        districtId &&
+                        String(
+                            hospital.district_id
+                        ) !==
+                        String(
+                            districtId
+                        )
+                    ) {
+                        return false;
+                    }
+
+                    if (
+                        upazilaId &&
+                        String(
+                            hospital.upazila_id
+                        ) !==
+                        String(
+                            upazilaId
+                        )
+                    ) {
+                        return false;
+                    }
+
+
+                    /*
+                     * =================================================
+                     * HOME SAVED LOCATION
+                     * পুরোনো "আমার এলাকা" option
+                     * =================================================
+                     */
 
                     if (
                         hospitalState.locationOnly &&
@@ -1742,7 +1808,13 @@ function initializeServiceInterfaces() {
                     }
 
 
-                    if (!search) {
+                    /*
+                     * =================================================
+                     * TEXT SEARCH
+                     * =================================================
+                     */
+
+                    if (!searchText) {
                         return true;
                     }
 
@@ -1762,54 +1834,78 @@ function initializeServiceInterfaces() {
 
 
                     return searchableText.includes(
-                        search
+                        searchText
                     );
                 }
             );
 
 
+        /*
+         * =========================================================
+         * EMPTY STATE
+         * =========================================================
+         */
+
         if (
             hospitalState.filtered.length === 0
         ) {
+            let emptyMessage =
+                "কোনো হাসপাতালের তথ্য পাওয়া যায়নি।";
+
+            if (
+                hospitalState.locationOnly
+            ) {
+                emptyMessage =
+                    "আপনার নির্বাচিত এলাকায় কোনো সক্রিয় হাসপাতাল পাওয়া যায়নি।";
+            } else if (
+                divisionId ||
+                districtId ||
+                upazilaId
+            ) {
+                emptyMessage =
+                    "নির্বাচিত লোকেশনে কোনো সক্রিয় হাসপাতাল পাওয়া যায়নি।";
+            }
+
             results.innerHTML = `
-                <div class="interface-empty">
-                    ${
-                        hospitalState.locationOnly
-                            ? "আপনার নির্বাচিত এলাকায় কোনো সক্রিয় হাসপাতাল পাওয়া যায়নি।"
-                            : "কোনো হাসপাতালের তথ্য পাওয়া যায়নি।"
-                    }
-                </div>
-            `;
+            <div class="interface-empty">
+                ${emptyMessage}
+            </div>
+        `;
 
             return;
         }
 
 
+        /*
+         * =========================================================
+         * RESULTS
+         * =========================================================
+         */
+
         results.innerHTML = `
-            <div
-                class="hospital-interface-results-head"
-            >
-                <strong>
-                    ${hospitalState.filtered.length}
-                </strong>
+        <div
+            class="hospital-interface-results-head"
+        >
+            <strong>
+                ${hospitalState.filtered.length}
+            </strong>
 
-                <span>
-                    টি হাসপাতাল পাওয়া গেছে
-                </span>
-            </div>
+            <span>
+                টি হাসপাতাল পাওয়া গেছে
+            </span>
+        </div>
 
-            <div
-                class="hospital-interface-list"
-            >
-                ${hospitalState.filtered
-                    .map(
-                        buildHospitalCard
-                    )
-                    .join("")}
-            </div>
-        `;
+        <div
+            class="hospital-interface-list"
+        >
+            ${hospitalState.filtered
+                .map(
+                    buildHospitalCard
+                )
+                .join("")}
+        </div>
+    `;
     }
-
 
     async function loadHospitalData() {
         const {
@@ -1934,34 +2030,316 @@ function initializeServiceInterfaces() {
         }
     }
 
-
     function initializeHospitalInterface() {
+
         const {
             search,
-            locationButton
+            locationButton,
+            divisionFilter,
+            districtFilter,
+            upazilaFilter
         } =
             getHospitalElements();
 
 
+        /*
+         * =========================================================
+         * LOCATION FILTER BUILDER
+         * =========================================================
+         */
+
+        function populateHospitalDivisionFilter() {
+
+            if (!divisionFilter) {
+                return;
+            }
+
+            fillLocationSelect(
+                divisionFilter,
+                homeLocationState.divisions,
+                "সব বিভাগ"
+            );
+
+            divisionFilter.disabled =
+                homeLocationState.divisions.length === 0;
+
+            /*
+             * District / Upazila reset
+             */
+            if (districtFilter) {
+                resetLocationSelect(
+                    districtFilter,
+                    "সব জেলা"
+                );
+            }
+
+            if (upazilaFilter) {
+                resetLocationSelect(
+                    upazilaFilter,
+                    "সব উপজেলা"
+                );
+            }
+        }
+
+
+        function populateHospitalDistrictFilter(
+            divisionId
+        ) {
+
+            if (
+                !districtFilter ||
+                !upazilaFilter
+            ) {
+                return;
+            }
+
+            if (!divisionId) {
+
+                resetLocationSelect(
+                    districtFilter,
+                    "সব জেলা"
+                );
+
+                resetLocationSelect(
+                    upazilaFilter,
+                    "সব উপজেলা"
+                );
+
+                return;
+            }
+
+
+            const districts =
+                homeLocationState.districts.filter(
+                    (district) =>
+                        String(
+                            district.division_id
+                        ) ===
+                        String(
+                            divisionId
+                        )
+                );
+
+
+            fillLocationSelect(
+                districtFilter,
+                districts,
+                "সব জেলা"
+            );
+
+            districtFilter.disabled =
+                districts.length === 0;
+
+
+            resetLocationSelect(
+                upazilaFilter,
+                "সব উপজেলা"
+            );
+
+
+            /*
+             * filter empty রাখি
+             * কারণ Division শুধু নির্বাচন করলেও
+             * সেই Division-এর সব hospital দেখাতে হবে।
+             */
+            districtFilter.value =
+                "";
+        }
+
+
+        function populateHospitalUpazilaFilter(
+            districtId
+        ) {
+
+            if (!upazilaFilter) {
+                return;
+            }
+
+
+            if (!districtId) {
+
+                resetLocationSelect(
+                    upazilaFilter,
+                    "সব উপজেলা"
+                );
+
+                return;
+            }
+
+
+            const upazilas =
+                homeLocationState.upazilas.filter(
+                    (upazila) =>
+                        String(
+                            upazila.district_id
+                        ) ===
+                        String(
+                            districtId
+                        )
+                );
+
+
+            fillLocationSelect(
+                upazilaFilter,
+                upazilas,
+                "সব উপজেলা"
+            );
+
+            upazilaFilter.disabled =
+                upazilas.length === 0;
+
+
+            upazilaFilter.value =
+                "";
+        }
+
+
+        /*
+         * =========================================================
+         * INITIAL FILTER LOAD
+         *
+         * Home location data load হয়ে যাওয়ার পর
+         * Hospital interface open হলে options তৈরি হবে।
+         * =========================================================
+         */
+
+        populateHospitalDivisionFilter();
+
+
+        /*
+         * =========================================================
+         * TEXT SEARCH
+         * =========================================================
+         */
+
         search?.addEventListener(
             "input",
             () => {
+
+                /*
+                 * Manual search শুরু করলে
+                 * "আমার এলাকা" mode বন্ধ হবে।
+                 */
                 hospitalState.locationOnly =
                     false;
+
+
+                if (locationButton) {
+                    locationButton.textContent =
+                        "⌖ এলাকা";
+                }
+
 
                 renderHospitalResults();
             }
         );
 
 
+        /*
+         * =========================================================
+         * DIVISION CHANGE
+         * =========================================================
+         */
+
+        divisionFilter?.addEventListener(
+            "change",
+            () => {
+
+                /*
+                 * Manual location selection করলে
+                 * saved-area mode বন্ধ।
+                 */
+                hospitalState.locationOnly =
+                    false;
+
+
+                if (locationButton) {
+                    locationButton.textContent =
+                        "⌖ এলাকা";
+                }
+
+
+                populateHospitalDistrictFilter(
+                    divisionFilter.value
+                );
+
+
+                renderHospitalResults();
+            }
+        );
+
+
+        /*
+         * =========================================================
+         * DISTRICT CHANGE
+         * =========================================================
+         */
+
+        districtFilter?.addEventListener(
+            "change",
+            () => {
+
+                hospitalState.locationOnly =
+                    false;
+
+
+                if (locationButton) {
+                    locationButton.textContent =
+                        "⌖ এলাকা";
+                }
+
+
+                populateHospitalUpazilaFilter(
+                    districtFilter.value
+                );
+
+
+                renderHospitalResults();
+            }
+        );
+
+
+        /*
+         * =========================================================
+         * UPAZILA CHANGE
+         * =========================================================
+         */
+
+        upazilaFilter?.addEventListener(
+            "change",
+            () => {
+
+                hospitalState.locationOnly =
+                    false;
+
+
+                if (locationButton) {
+                    locationButton.textContent =
+                        "⌖ এলাকা";
+                }
+
+
+                renderHospitalResults();
+            }
+        );
+
+
+        /*
+         * =========================================================
+         * MY AREA BUTTON
+         * =========================================================
+         */
+
         locationButton?.addEventListener(
             "click",
             () => {
+
                 const saved =
                     getSavedHospitalLocation();
 
 
                 if (!saved) {
+
                     showToast(
                         "আগে Home থেকে আপনার লোকেশন সেট করুন"
                     );
@@ -1977,9 +2355,12 @@ function initializeServiceInterfaces() {
                 if (
                     hospitalState.locationOnly
                 ) {
+
                     locationButton.textContent =
                         "✓ আমার এলাকা";
+
                 } else {
+
                     locationButton.textContent =
                         "⌖ এলাকা";
                 }
@@ -1989,6 +2370,7 @@ function initializeServiceInterfaces() {
             }
         );
     }
+
 
 
     /*
@@ -2162,7 +2544,7 @@ function initializeServiceInterfaces() {
     }
 }
 
- 
+
 
 function handleServiceClick(
     serviceButton
@@ -2215,7 +2597,7 @@ function initializeServiceCards() {
         });
 }
 
- 
+
 
 
 // =========================================================
@@ -3403,7 +3785,7 @@ function initializeSmoothNavigation() {
                 cleanText(
                     link.getAttribute("href")
                 )
-                .replace(/^#/, "");
+                    .replace(/^#/, "");
 
 
             if (!targetId) {
@@ -3435,7 +3817,7 @@ function initializeSmoothNavigation() {
         }
     );
 }
- 
+
 
 // =========================================================
 // BOTTOM NAVIGATION
@@ -3459,7 +3841,7 @@ function setActiveBottomNav(
             );
         });
 }
- 
+
 // =========================================================
 // BOTTOM NAVIGATION — APP STYLE
 // এখানে কোনো scroll হবে না।
