@@ -1646,3 +1646,421 @@
             rgba(6, 58, 44, 0.08);
     }
 }
+/* =========================================================
+   DORKARI — HOSPITAL PUBLIC RESULT CARDS
+   Premium user-facing hospital cards
+   ========================================================= */
+
+.hospital-interface-results-head {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    margin: 0 0 16px;
+    color: var(--text-soft);
+    font-size: 14px;
+}
+
+.hospital-interface-results-head strong {
+    color: var(--primary);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+.hospital-interface-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+
+.hospital-interface-card {
+    position: relative;
+    min-width: 0;
+    padding: 20px;
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fbfdfc 100%
+        );
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow:
+        0 8px 24px rgba(20, 40, 30, 0.055);
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.hospital-interface-card:hover {
+    transform: translateY(-2px);
+    border-color: #cfe1d8;
+    box-shadow:
+        0 14px 30px rgba(20, 40, 30, 0.09);
+}
+
+
+.hospital-interface-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+
+.hospital-interface-card-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 20px;
+    line-height: 1.4;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+
+
+.hospital-interface-card-subtitle {
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+
+.hospital-interface-card-mark {
+    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--primary-light);
+    color: var(--primary);
+    font-size: 21px;
+    font-weight: 700;
+}
+
+
+.hospital-interface-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 13px;
+}
+
+
+.hospital-interface-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    background: #f2f5f3;
+    color: var(--text-soft);
+    border: 1px solid #e4ebe7;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+
+.hospital-interface-badge.is-verified {
+    background: #eaf6f0;
+    color: var(--primary);
+    border-color: #cfe7db;
+}
+
+
+.hospital-interface-meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-top: 12px;
+    color: var(--text-soft);
+    font-size: 13px;
+    line-height: 1.65;
+}
+
+
+.hospital-interface-meta > span:first-child {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 13px;
+}
+
+
+.hospital-interface-phone {
+    margin-top: 12px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+.hospital-interface-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+
+.hospital-interface-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 13px;
+    border-radius: 11px;
+    background: #ffffff;
+    border: 1px solid var(--border-strong);
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease;
+}
+
+
+.hospital-interface-action:hover {
+    background: var(--primary-light);
+    border-color: #c8dfd5;
+}
+
+
+.hospital-interface-action:active {
+    transform: translateY(1px);
+}
+
+
+.hospital-interface-action.is-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+}
+
+
+.hospital-interface-action.is-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+
+.hospital-interface-action.is-danger {
+    background: var(--accent-light);
+    border-color: #f3cccc;
+    color: var(--accent);
+}
+
+
+.hospital-interface-action.is-danger:hover {
+    background: #ffe6e6;
+    border-color: #efb8b8;
+}
+
+
+.hospital-interface-details {
+    margin-top: 14px;
+    border-top: 1px solid #edf1ee;
+    padding-top: 12px;
+}
+
+
+.hospital-interface-details summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    list-style: none;
+    user-select: none;
+}
+
+
+.hospital-interface-details summary::-webkit-details-marker {
+    display: none;
+}
+
+
+.hospital-interface-details summary::after {
+    content: "⌄";
+    font-size: 13px;
+    transition: transform 180ms ease;
+}
+
+
+.hospital-interface-details[open]
+summary::after {
+    transform: rotate(180deg);
+}
+
+
+.hospital-interface-details-body {
+    margin-top: 11px;
+    padding: 13px 14px;
+    border-radius: 13px;
+    background: #f7faf8;
+    border: 1px solid #e9efeb;
+}
+
+
+.hospital-interface-details-body p {
+    margin: 0;
+    padding: 7px 0;
+    color: var(--text-soft);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+
+.hospital-interface-details-body p + p {
+    border-top: 1px solid #e8eeea;
+}
+
+
+.hospital-interface-details-body strong {
+    color: var(--text);
+    font-weight: 700;
+}
+
+
+.hospital-interface-details-body a {
+    color: var(--primary);
+    text-decoration: none;
+    word-break: break-word;
+}
+
+
+.hospital-interface-details-body a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   HOSPITAL CARDS — MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .hospital-interface-results-head {
+        margin-bottom: 12px;
+        font-size: 13px;
+    }
+
+    .hospital-interface-results-head strong {
+        font-size: 18px;
+    }
+
+
+    .hospital-interface-list {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+
+    .hospital-interface-card {
+        padding: 16px;
+        border-radius: 17px;
+    }
+
+
+    .hospital-interface-card-title {
+        font-size: 17px;
+        line-height: 1.45;
+    }
+
+
+    .hospital-interface-card-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        font-size: 19px;
+    }
+
+
+    .hospital-interface-meta {
+        font-size: 12px;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+
+    .hospital-interface-phone {
+        font-size: 13px;
+    }
+
+
+    .hospital-interface-actions {
+        gap: 7px;
+        margin-top: 13px;
+    }
+
+
+    .hospital-interface-action {
+        flex: 1 1 auto;
+        min-width: 0;
+        min-height: 36px;
+        padding: 0 10px;
+        border-radius: 10px;
+        font-size: 11px;
+    }
+
+
+    .hospital-interface-details {
+        margin-top: 12px;
+        padding-top: 11px;
+    }
+
+
+    .hospital-interface-details summary {
+        font-size: 12px;
+    }
+
+
+    .hospital-interface-details-body {
+        padding: 11px 12px;
+    }
+
+
+    .hospital-interface-details-body p {
+        font-size: 11px;
+    }
+
+}
+
+
+/* =========================================================
+   HOSPITAL CARDS — VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .hospital-interface-card {
+        padding: 14px;
+    }
+
+
+    .hospital-interface-card-title {
+        font-size: 16px;
+    }
+
+
+    .hospital-interface-action {
+        flex: 1 1 calc(50% - 4px);
+    }
+
+}
