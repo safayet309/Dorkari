@@ -2840,6 +2840,1558 @@ function initializeDoctorInterface() {
     );
 }
 
+// =========================================================
+// AMBULANCE PUBLIC DATA
+// =========================================================
+
+let ambulanceState = {
+    ambulances: [],
+    filtered: [],
+    loading: false,
+    loaded: false,
+    locationOnly: false
+};
+
+
+// =========================================================
+// AMBULANCE DOM
+// =========================================================
+
+function getAmbulanceElements() {
+
+    return {
+
+        interface:
+            getServiceInterface(
+                "ambulance"
+            ),
+
+        search:
+            document.querySelector(
+                '[data-interface-search="ambulance"]'
+            ),
+
+        locationButton:
+            document.querySelector(
+                '[data-interface-location="ambulance"]'
+            ),
+
+        providerTypeFilter:
+            document.querySelector(
+                '[data-ambulance-filter="provider_type"]'
+            ),
+
+        divisionFilter:
+            document.querySelector(
+                '[data-ambulance-filter="division"]'
+            ),
+
+        districtFilter:
+            document.querySelector(
+                '[data-ambulance-filter="district"]'
+            ),
+
+        upazilaFilter:
+            document.querySelector(
+                '[data-ambulance-filter="upazila"]'
+            ),
+
+        results:
+            document.querySelector(
+                '[data-interface-results="ambulance"]'
+            )
+    };
+}
+
+
+// =========================================================
+// AMBULANCE LOCATION
+// =========================================================
+
+function getAmbulanceLocationLabel(
+    ambulance
+) {
+
+    const divisionName =
+        getLocationNameById(
+            homeLocationState.divisions,
+            ambulance?.division_id
+        );
+
+    const districtName =
+        getLocationNameById(
+            homeLocationState.districts,
+            ambulance?.district_id
+        );
+
+    const upazilaName =
+        getLocationNameById(
+            homeLocationState.upazilas,
+            ambulance?.upazila_id
+        );
+
+    return getLocationLabel(
+        divisionName,
+        districtName,
+        upazilaName
+    );
+}
+
+
+function ambulanceMatchesLocation(
+    ambulance,
+    saved
+) {
+
+    if (!saved) {
+        return true;
+    }
+
+
+    if (saved.upazilaId) {
+
+        return (
+            String(
+                ambulance?.upazila_id
+            ) ===
+            String(
+                saved.upazilaId
+            )
+        );
+    }
+
+
+    if (saved.districtId) {
+
+        return (
+            String(
+                ambulance?.district_id
+            ) ===
+            String(
+                saved.districtId
+            )
+        );
+    }
+
+
+    if (saved.divisionId) {
+
+        return (
+            String(
+                ambulance?.division_id
+            ) ===
+            String(
+                saved.divisionId
+            )
+        );
+    }
+
+
+    return true;
+}
+
+
+// =========================================================
+// AMBULANCE FILTER OPTIONS
+// =========================================================
+
+function populateAmbulanceFilters() {
+
+    const {
+        providerTypeFilter,
+        divisionFilter
+    } =
+        getAmbulanceElements();
+
+
+    /*
+     * PROVIDER TYPE
+     */
+
+    if (providerTypeFilter) {
+
+        const providerTypes =
+            Array.from(
+                new Set(
+                    ambulanceState.ambulances
+                        .map(
+                            (ambulance) =>
+                                cleanText(
+                                    ambulance.provider_type
+                                )
+                        )
+                        .filter(Boolean)
+                )
+            ).sort(
+                (a, b) =>
+                    a.localeCompare(
+                        b,
+                        "bn"
+                    )
+            );
+
+
+        providerTypeFilter.innerHTML = `
+            <option value="">
+                সব ধরনের
+            </option>
+        `;
+
+
+        providerTypes.forEach(
+            (providerType) => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    providerType;
+
+                option.textContent =
+                    providerType;
+
+                providerTypeFilter.appendChild(
+                    option
+                );
+            }
+        );
+    }
+
+
+    /*
+     * DIVISION
+     */
+
+    if (divisionFilter) {
+
+        fillLocationSelect(
+            divisionFilter,
+            homeLocationState.divisions,
+            "সব বিভাগ"
+        );
+
+        divisionFilter.disabled =
+            homeLocationState.divisions.length === 0;
+    }
+}
+
+
+// =========================================================
+// AMBULANCE SEARCH TEXT
+// =========================================================
+
+function getAmbulanceSearchText(
+    ambulance
+) {
+
+    return [
+        ambulance?.name,
+        ambulance?.name_bn,
+        ambulance?.provider_type,
+        ambulance?.phone,
+        ambulance?.alternative_phone,
+        ambulance?.address,
+        getAmbulanceLocationLabel(
+            ambulance
+        )
+    ]
+        .map(cleanText)
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+}
+
+
+// =========================================================
+// AMBULANCE MAP URL
+// =========================================================
+
+function buildAmbulanceMapUrl(
+    ambulance
+) {
+
+    const searchText = [
+        cleanText(
+            ambulance?.name
+        ),
+        cleanText(
+            ambulance?.address
+        ),
+        getAmbulanceLocationLabel(
+            ambulance
+        )
+    ]
+        .map(cleanText)
+        .filter(Boolean)
+        .join(", ");
+
+
+    if (!searchText) {
+        return "";
+    }
+
+
+    return (
+        "https://www.google.com/maps/search/?api=1" +
+        `&query=${encodeURIComponent(
+            searchText
+        )}`
+    );
+}
+
+
+// =========================================================
+// AMBULANCE FILTERING
+// =========================================================
+
+function applyAmbulanceFilters() {
+
+    const {
+        search,
+        providerTypeFilter,
+        divisionFilter,
+        districtFilter,
+        upazilaFilter
+    } =
+        getAmbulanceElements();
+
+
+    const searchText =
+        cleanText(
+            search?.value
+        ).toLowerCase();
+
+
+    const providerType =
+        cleanText(
+            providerTypeFilter?.value
+        );
+
+
+    const divisionId =
+        cleanText(
+            divisionFilter?.value
+        );
+
+
+    const districtId =
+        cleanText(
+            districtFilter?.value
+        );
+
+
+    const upazilaId =
+        cleanText(
+            upazilaFilter?.value
+        );
+
+
+    const savedLocation =
+        getSavedHomeLocation();
+
+
+    ambulanceState.filtered =
+        ambulanceState.ambulances.filter(
+            (ambulance) => {
+
+
+                /*
+                 * PROVIDER TYPE
+                 */
+
+                if (
+                    providerType &&
+                    cleanText(
+                        ambulance.provider_type
+                    ) !==
+                    providerType
+                ) {
+                    return false;
+                }
+
+
+                /*
+                 * DIVISION
+                 */
+
+                if (
+                    divisionId &&
+                    String(
+                        ambulance.division_id
+                    ) !==
+                    String(
+                        divisionId
+                    )
+                ) {
+                    return false;
+                }
+
+
+                /*
+                 * DISTRICT
+                 */
+
+                if (
+                    districtId &&
+                    String(
+                        ambulance.district_id
+                    ) !==
+                    String(
+                        districtId
+                    )
+                ) {
+                    return false;
+                }
+
+
+                /*
+                 * UPAZILA
+                 */
+
+                if (
+                    upazilaId &&
+                    String(
+                        ambulance.upazila_id
+                    ) !==
+                    String(
+                        upazilaId
+                    )
+                ) {
+                    return false;
+                }
+
+
+                /*
+                 * MY AREA
+                 */
+
+                if (
+                    ambulanceState.locationOnly &&
+                    !ambulanceMatchesLocation(
+                        ambulance,
+                        savedLocation
+                    )
+                ) {
+                    return false;
+                }
+
+
+                /*
+                 * SEARCH
+                 */
+
+                if (!searchText) {
+                    return true;
+                }
+
+
+                return getAmbulanceSearchText(
+                    ambulance
+                ).includes(
+                    searchText
+                );
+            }
+        );
+
+
+    renderAmbulanceResults();
+}
+
+
+// =========================================================
+// AMBULANCE CARD
+// =========================================================
+
+function buildAmbulanceCard(
+    ambulance
+) {
+
+    const name =
+        cleanText(
+            ambulance?.name_bn
+        ) ||
+        cleanText(
+            ambulance?.name
+        ) ||
+        "অ্যাম্বুলেন্স সার্ভিস";
+
+
+    const englishName =
+        cleanText(
+            ambulance?.name
+        );
+
+
+    const providerType =
+        cleanText(
+            ambulance?.provider_type
+        );
+
+
+    const phone =
+        cleanText(
+            ambulance?.phone
+        );
+
+
+    const alternativePhone =
+        cleanText(
+            ambulance?.alternative_phone
+        );
+
+
+    const address =
+        cleanText(
+            ambulance?.address
+        );
+
+
+    const locationLabel =
+        getAmbulanceLocationLabel(
+            ambulance
+        );
+
+
+    const mapUrl =
+        buildAmbulanceMapUrl(
+            ambulance
+        );
+
+
+    const verifiedBadge =
+        ambulance?.is_verified
+            ? `
+                <span
+                    class="ambulance-interface-badge is-verified"
+                >
+                    ✓ যাচাইকৃত
+                </span>
+            `
+            : `
+                <span
+                    class="ambulance-interface-badge"
+                >
+                    যাচাই চলমান
+                </span>
+            `;
+
+
+    const providerBadge =
+        providerType
+            ? `
+                <span
+                    class="ambulance-interface-badge"
+                >
+                    ${escapeHTML(
+                providerType
+            )}
+                </span>
+            `
+            : "";
+
+
+    const hoursBadge =
+        ambulance?.is_24_hours
+            ? `
+                <span
+                    class="ambulance-interface-badge is-24h"
+                >
+                    ২৪ ঘণ্টা সেবা
+                </span>
+            `
+            : "";
+
+
+    const phoneAction =
+        phone
+            ? `
+                <a
+                    href="tel:${escapeHTML(
+                normalizePhone(
+                    phone
+                )
+            )}"
+                    class="ambulance-interface-action is-primary"
+                >
+                    ☎ কল করুন
+                </a>
+            `
+            : "";
+
+
+    const mapAction =
+        mapUrl
+            ? `
+                <a
+                    href="${escapeHTML(
+                mapUrl
+            )}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="ambulance-interface-action"
+                >
+                    ⌖ ম্যাপে দেখুন
+                </a>
+            `
+            : "";
+
+
+    return `
+        <article
+            class="ambulance-interface-card"
+        >
+
+            <div
+                class="ambulance-interface-card-main"
+            >
+
+                <div
+                    class="ambulance-interface-avatar"
+                    aria-hidden="true"
+                >
+                    🚑
+                </div>
+
+
+                <div
+                    class="ambulance-interface-card-content"
+                >
+
+                    <div
+                        class="ambulance-interface-card-heading"
+                    >
+
+                        <div>
+
+                            <h3
+                                class="ambulance-interface-card-title"
+                            >
+                                ${escapeHTML(
+        name
+    )}
+                            </h3>
+
+
+                            ${englishName &&
+            englishName !== name
+            ? `
+                                    <p
+                                        class="ambulance-interface-card-subtitle"
+                                    >
+                                        ${escapeHTML(
+                englishName
+            )}
+                                    </p>
+                                `
+            : ""
+        }
+
+                        </div>
+
+
+                        <span
+                            class="ambulance-interface-card-mark"
+                            aria-hidden="true"
+                        >
+                            +
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="ambulance-interface-badges"
+                    >
+                        ${providerBadge}
+                        ${verifiedBadge}
+                        ${hoursBadge}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            ${phone || alternativePhone
+            ? `
+                        <div
+                            class="ambulance-interface-phone-row"
+                        >
+
+                            ${phone
+                ? `
+                                        <span>
+                                            ☎
+                                            ${escapeHTML(
+                    phone
+                )}
+                                        </span>
+                                      `
+                : ""
+            }
+
+                            ${alternativePhone
+                ? `
+                                        <span>
+                                            |
+                                            ${escapeHTML(
+                    alternativePhone
+                )}
+                                        </span>
+                                      `
+                : ""
+            }
+
+                        </div>
+                      `
+            : ""
+        }
+
+
+            ${locationLabel
+            ? `
+                        <div
+                            class="ambulance-interface-meta"
+                        >
+
+                            <span
+                                aria-hidden="true"
+                            >
+                                ⌖
+                            </span>
+
+                            <span>
+                                ${escapeHTML(
+                locationLabel
+            )}
+                            </span>
+
+                        </div>
+                      `
+            : ""
+        }
+
+
+            ${address
+            ? `
+                        <div
+                            class="ambulance-interface-meta"
+                        >
+
+                            <span
+                                aria-hidden="true"
+                            >
+                                ⌂
+                            </span>
+
+                            <span>
+                                ${escapeHTML(
+                address
+            )}
+                            </span>
+
+                        </div>
+                      `
+            : ""
+        }
+
+
+            <div
+                class="ambulance-interface-actions"
+            >
+
+                ${phoneAction}
+
+                ${mapAction}
+
+            </div>
+
+
+            <details
+                class="ambulance-interface-details"
+            >
+
+                <summary>
+                    বিস্তারিত দেখুন
+                </summary>
+
+
+                <div
+                    class="ambulance-interface-details-body"
+                >
+
+                    ${providerType
+            ? `
+                                <p>
+                                    <strong>
+                                        সেবা ধরন:
+                                    </strong>
+
+                                    ${escapeHTML(
+                providerType
+            )}
+                                </p>
+                              `
+            : ""
+        }
+
+
+                    ${ambulance?.is_24_hours
+            ? `
+                                <p>
+                                    <strong>
+                                        সেবা:
+                                    </strong>
+
+                                    ২৪ ঘণ্টা
+                                </p>
+                              `
+            : ""
+        }
+
+
+                    ${phone
+            ? `
+                                <p>
+                                    <strong>
+                                        ফোন:
+                                    </strong>
+
+                                    <a
+                                        href="tel:${escapeHTML(
+                normalizePhone(
+                    phone
+                )
+            )}"
+                                    >
+                                        ${escapeHTML(
+                phone
+            )}
+                                    </a>
+                                </p>
+                              `
+            : ""
+        }
+
+
+                    ${alternativePhone
+            ? `
+                                <p>
+                                    <strong>
+                                        বিকল্প ফোন:
+                                    </strong>
+
+                                    <a
+                                        href="tel:${escapeHTML(
+                normalizePhone(
+                    alternativePhone
+                )
+            )}"
+                                    >
+                                        ${escapeHTML(
+                alternativePhone
+            )}
+                                    </a>
+                                </p>
+                              `
+            : ""
+        }
+
+
+                    ${address
+            ? `
+                                <p>
+                                    <strong>
+                                        ঠিকানা:
+                                    </strong>
+
+                                    ${escapeHTML(
+                address
+            )}
+                                </p>
+                              `
+            : ""
+        }
+
+
+                    ${locationLabel
+            ? `
+                                <p>
+                                    <strong>
+                                        লোকেশন:
+                                    </strong>
+
+                                    ${escapeHTML(
+                locationLabel
+            )}
+                                </p>
+                              `
+            : ""
+        }
+
+                </div>
+
+            </details>
+
+        </article>
+    `;
+}
+
+
+// =========================================================
+// AMBULANCE RESULTS
+// =========================================================
+
+function renderAmbulanceResults() {
+
+    const {
+        results
+    } =
+        getAmbulanceElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    if (
+        ambulanceState.filtered.length === 0
+    ) {
+
+        let message =
+            "কোনো অ্যাম্বুলেন্স সার্ভিস পাওয়া যায়নি।";
+
+
+        if (
+            ambulanceState.locationOnly
+        ) {
+
+            message =
+                "আপনার নির্বাচিত এলাকায় কোনো অ্যাম্বুলেন্স সার্ভিস পাওয়া যায়নি।";
+
+        } else {
+
+            const {
+                providerTypeFilter,
+                divisionFilter,
+                districtFilter,
+                upazilaFilter
+            } =
+                getAmbulanceElements();
+
+
+            if (
+                providerTypeFilter?.value ||
+                divisionFilter?.value ||
+                districtFilter?.value ||
+                upazilaFilter?.value
+            ) {
+
+                message =
+                    "নির্বাচিত ফিল্টারে কোনো অ্যাম্বুলেন্স সার্ভিস পাওয়া যায়নি।";
+            }
+        }
+
+
+        results.innerHTML = `
+            <div
+                class="interface-empty"
+            >
+                ${escapeHTML(
+            message
+        )}
+            </div>
+        `;
+
+
+        return;
+    }
+
+
+    results.innerHTML = `
+        <div
+            class="ambulance-interface-results-head"
+        >
+
+            <div>
+
+                <strong>
+                    ${ambulanceState.filtered.length}
+                </strong>
+
+                <span>
+                    টি অ্যাম্বুলেন্স সার্ভিস পাওয়া গেছে
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="ambulance-interface-list"
+        >
+            ${ambulanceState.filtered
+            .map(
+                buildAmbulanceCard
+            )
+            .join("")}
+        </div>
+    `;
+}
+
+
+// =========================================================
+// LOAD AMBULANCE DATA
+// =========================================================
+
+async function loadAmbulanceData() {
+
+    const {
+        results
+    } =
+        getAmbulanceElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    if (
+        ambulanceState.loading
+    ) {
+        return;
+    }
+
+
+    if (
+        ambulanceState.loaded
+    ) {
+        applyAmbulanceFilters();
+        return;
+    }
+
+
+    if (!dorkariSupabase) {
+
+        results.innerHTML = `
+            <div
+                class="interface-empty"
+            >
+                Supabase সংযোগ পাওয়া যায়নি।
+            </div>
+        `;
+
+        return;
+    }
+
+
+    ambulanceState.loading =
+        true;
+
+
+    results.innerHTML = `
+        <div
+            class="interface-empty"
+        >
+            অ্যাম্বুলেন্সের তথ্য লোড হচ্ছে...
+        </div>
+    `;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await dorkariSupabase
+                .from("ambulances")
+                .select(`
+                    id,
+                    name,
+                    provider_type,
+                    division_id,
+                    district_id,
+                    upazila_id,
+                    phone,
+                    alternative_phone,
+                    address,
+                    is_24_hours,
+                    is_verified,
+                    is_active
+                `)
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order(
+                    "name",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        ambulanceState.ambulances =
+            Array.isArray(data)
+                ? data
+                : [];
+
+
+        ambulanceState.loaded =
+            true;
+
+        ambulanceState.loading =
+            false;
+
+
+        populateAmbulanceFilters();
+
+        applyAmbulanceFilters();
+
+
+        console.info(
+            "Dorkari public ambulances loaded:",
+            ambulanceState.ambulances.length
+        );
+
+    } catch (error) {
+
+        ambulanceState.loading =
+            false;
+
+
+        console.error(
+            "Ambulance public data load failed:",
+            error
+        );
+
+
+        results.innerHTML = `
+            <div
+                class="interface-empty"
+            >
+                অ্যাম্বুলেন্সের তথ্য লোড করতে সমস্যা হয়েছে।
+            </div>
+        `;
+
+
+        showToast(
+            "অ্যাম্বুলেন্সের তথ্য লোড করা যায়নি"
+        );
+    }
+}
+
+
+// =========================================================
+// INITIALIZE AMBULANCE INTERFACE
+// =========================================================
+
+function initializeAmbulanceInterface() {
+
+    const {
+        search,
+        locationButton,
+        providerTypeFilter,
+        divisionFilter,
+        districtFilter,
+        upazilaFilter,
+        results
+    } =
+        getAmbulanceElements();
+
+
+    /*
+     * INITIAL LOCATION OPTIONS
+     */
+
+    if (divisionFilter) {
+
+        fillLocationSelect(
+            divisionFilter,
+            homeLocationState.divisions,
+            "সব বিভাগ"
+        );
+
+        divisionFilter.disabled =
+            homeLocationState.divisions.length === 0;
+    }
+
+
+    /*
+     * LOCATION DATA READY হলে
+     * filters আবার sync করি।
+     */
+
+    document.addEventListener(
+        "dorkari:locations-loaded",
+        () => {
+
+            if (divisionFilter) {
+
+                fillLocationSelect(
+                    divisionFilter,
+                    homeLocationState.divisions,
+                    "সব বিভাগ"
+                );
+
+                divisionFilter.disabled =
+                    homeLocationState.divisions.length === 0;
+            }
+
+
+            if (
+                ambulanceState.loaded
+            ) {
+
+                applyAmbulanceFilters();
+            }
+
+        }
+    );
+
+
+    /*
+     * SEARCH
+     */
+
+    search?.addEventListener(
+        "input",
+        () => {
+
+            ambulanceState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            applyAmbulanceFilters();
+        }
+    );
+
+
+    /*
+     * PROVIDER TYPE
+     */
+
+    providerTypeFilter?.addEventListener(
+        "change",
+        () => {
+
+            ambulanceState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            applyAmbulanceFilters();
+        }
+    );
+
+
+    /*
+     * DIVISION
+     */
+
+    divisionFilter?.addEventListener(
+        "change",
+        () => {
+
+            ambulanceState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            const selectedDivision =
+                divisionFilter.value;
+
+
+            if (districtFilter) {
+
+                const districts =
+                    selectedDivision
+                        ? homeLocationState.districts.filter(
+                            (district) =>
+                                String(
+                                    district.division_id
+                                ) ===
+                                String(
+                                    selectedDivision
+                                )
+                        )
+                        : [];
+
+
+                fillLocationSelect(
+                    districtFilter,
+                    districts,
+                    "সব জেলা"
+                );
+
+
+                districtFilter.disabled =
+                    districts.length === 0;
+
+
+                districtFilter.value =
+                    "";
+            }
+
+
+            if (upazilaFilter) {
+
+                resetLocationSelect(
+                    upazilaFilter,
+                    "সব উপজেলা"
+                );
+            }
+
+
+            applyAmbulanceFilters();
+        }
+    );
+
+
+    /*
+     * DISTRICT
+     */
+
+    districtFilter?.addEventListener(
+        "change",
+        () => {
+
+            ambulanceState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            const selectedDistrict =
+                districtFilter.value;
+
+
+            if (upazilaFilter) {
+
+                const upazilas =
+                    selectedDistrict
+                        ? homeLocationState.upazilas.filter(
+                            (upazila) =>
+                                String(
+                                    upazila.district_id
+                                ) ===
+                                String(
+                                    selectedDistrict
+                                )
+                        )
+                        : [];
+
+
+                fillLocationSelect(
+                    upazilaFilter,
+                    upazilas,
+                    "সব উপজেলা"
+                );
+
+
+                upazilaFilter.disabled =
+                    upazilas.length === 0;
+
+
+                upazilaFilter.value =
+                    "";
+            }
+
+
+            applyAmbulanceFilters();
+        }
+    );
+
+
+    /*
+     * UPAZILA
+     */
+
+    upazilaFilter?.addEventListener(
+        "change",
+        () => {
+
+            ambulanceState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            applyAmbulanceFilters();
+        }
+    );
+
+
+    /*
+     * MY AREA
+     */
+
+    locationButton?.addEventListener(
+        "click",
+        () => {
+
+            const saved =
+                getSavedHomeLocation();
+
+
+            if (!saved) {
+
+                showToast(
+                    "আগে Home থেকে আপনার লোকেশন সেট করুন"
+                );
+
+                return;
+            }
+
+
+            ambulanceState.locationOnly =
+                !ambulanceState.locationOnly;
+
+
+            if (
+                ambulanceState.locationOnly
+            ) {
+
+                locationButton.textContent =
+                    "✓ আমার এলাকা";
+
+
+                if (
+                    divisionFilter &&
+                    saved.divisionId
+                ) {
+
+                    divisionFilter.value =
+                        saved.divisionId;
+
+
+                    divisionFilter.dispatchEvent(
+                        new Event(
+                            "change"
+                        )
+                    );
+
+                }
+
+
+                if (
+                    districtFilter &&
+                    saved.districtId
+                ) {
+
+                    districtFilter.value =
+                        saved.districtId;
+
+
+                    districtFilter.dispatchEvent(
+                        new Event(
+                            "change"
+                        )
+                    );
+
+                }
+
+
+                if (
+                    upazilaFilter &&
+                    saved.upazilaId
+                ) {
+
+                    upazilaFilter.value =
+                        saved.upazilaId;
+                }
+
+            } else {
+
+                locationButton.textContent =
+                    "⌖ এলাকা";
+
+
+                if (providerTypeFilter) {
+                    providerTypeFilter.value =
+                        "";
+                }
+
+
+                if (divisionFilter) {
+                    divisionFilter.value =
+                        "";
+                }
+
+
+                if (districtFilter) {
+
+                    resetLocationSelect(
+                        districtFilter,
+                        "সব জেলা"
+                    );
+                }
+
+
+                if (upazilaFilter) {
+
+                    resetLocationSelect(
+                        upazilaFilter,
+                        "সব উপজেলা"
+                    );
+                }
+            }
+
+
+            applyAmbulanceFilters();
+        }
+    );
+
+
+    /*
+     * প্রথম অবস্থায় results untouched থাকবে।
+     * Service open হলে loadAmbulanceData()
+     * থেকে data render হবে।
+     */
+
+    void results;
+}
+
 function initializeServiceInterfaces() {
     /*
      * =========================================================
@@ -4315,6 +5867,12 @@ function initializeServiceInterfaces() {
                     ) {
                         loadDoctorData();
                     }
+                    if (
+                        service ===
+                        "ambulance"
+                    ) {
+                        loadAmbulanceData();
+                    }
                 }
             );
 
@@ -4426,6 +5984,15 @@ function initializeServiceInterfaces() {
                 ) {
 
                     loadDoctorData();
+
+                }
+
+                else if (
+                    initialHash ===
+                    "ambulance"
+                ) {
+
+                    loadAmbulanceData();
 
                 }
 
@@ -6232,6 +7799,7 @@ document.addEventListener(
         initializeServiceCards();
         initializeServiceInterfaces();
         initializeDoctorInterface();
+        initializeAmbulanceInterface();
 
         initializeHomeLocationEvents();
 
