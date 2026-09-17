@@ -2621,3 +2621,253 @@ select {
         transition: none !important;
     }
 }
+/* =========================================================
+   DORKARI — MOCKUP MATCH
+   Premium mobile navigation + compact mobile typography
+   ========================================================= */
+
+
+/* =========================================================
+   MOBILE BOTTOM NAV — PREMIUM STATE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .bottom-nav {
+        height: 74px;
+        padding:
+            6px 8px
+            calc(6px + env(safe-area-inset-bottom));
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 4px;
+        border-top: 1px solid #d8e8e0;
+        background: rgba(255, 255, 255, 0.97);
+        box-shadow:
+            0 -10px 28px rgba(6, 58, 44, 0.07),
+            0 -1px 0 rgba(255, 255, 255, 0.90);
+    }
+
+    .bottom-nav-item {
+        position: relative;
+        min-height: 54px;
+        padding: 5px 4px;
+        border-radius: 15px;
+        color: #87968f;
+        font-size: 18px;
+        transition:
+            color var(--transition),
+            background var(--transition),
+            transform var(--transition);
+    }
+
+    .bottom-nav-item small {
+        margin-top: 2px;
+        font-size: 8px;
+        font-weight: 900;
+        line-height: 1.2;
+    }
+
+    /*
+     * Active item:
+     * হালকা সবুজ background box থাকবে,
+     * যাতে কোন page/section active বুঝতে সুবিধা হয়।
+     */
+
+    .bottom-nav-item.active {
+        color: var(--primary);
+        background: #edf8f3;
+        box-shadow:
+            inset 0 0 0 1px rgba(15, 124, 91, 0.05);
+    }
+
+    .bottom-nav-item.active::before {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 50%;
+        width: 22px;
+        height: 3px;
+        border-radius: var(--radius-pill);
+        background: var(--primary);
+        transform: translateX(-50%);
+        opacity: 0.92;
+    }
+
+    .bottom-nav-item:not(.bottom-nav-emergency):hover {
+        color: var(--primary);
+        background: #f4faf7;
+    }
+
+
+    /* -----------------------------------------------------
+       EMERGENCY CENTER BUTTON
+       ----------------------------------------------------- */
+
+    .bottom-nav-emergency {
+        width: 52px;
+        height: 52px;
+        min-height: 52px;
+        align-self: center;
+        justify-self: center;
+
+        display: grid;
+        place-items: center;
+
+        padding: 0;
+
+        border: 4px solid #ffffff;
+        border-radius: 50%;
+
+        background:
+            linear-gradient(
+                145deg,
+                var(--accent) 0%,
+                var(--accent-dark) 100%
+            );
+
+        color: #ffffff;
+
+        box-shadow:
+            0 10px 22px rgba(223, 61, 69, 0.20),
+            0 3px 8px rgba(223, 61, 69, 0.12);
+
+        transform: translateY(-16px);
+
+        transition:
+            transform var(--transition),
+            box-shadow var(--transition);
+    }
+
+    .bottom-nav-emergency::before {
+        display: none;
+    }
+
+    .bottom-nav-emergency:hover {
+        background:
+            linear-gradient(
+                145deg,
+                var(--accent) 0%,
+                var(--accent-dark) 100%
+            );
+        color: #ffffff;
+        box-shadow:
+            0 12px 24px rgba(223, 61, 69, 0.22),
+            0 4px 9px rgba(223, 61, 69, 0.13);
+        transform: translateY(-17px);
+    }
+
+    .bottom-nav-emergency:active {
+        transform: translateY(-14px) scale(0.96);
+    }
+
+    .bottom-nav-emergency span {
+        font-size: 21px;
+        font-weight: 950;
+        line-height: 1;
+    }
+
+    .bottom-nav-emergency small {
+        position: absolute;
+        top: 53px;
+        left: 50%;
+        margin: 0;
+        color: var(--accent-dark);
+        white-space: nowrap;
+        transform: translateX(-50%);
+    }
+}
+
+
+/* =========================================================
+   MOBILE HEADER / HERO — SLIGHTLY COMPACT
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .hero-content h1 {
+        font-size: clamp(
+            32px,
+            8.8vw,
+            44px
+        );
+        line-height: 1.22;
+        letter-spacing: -0.038em;
+    }
+
+    .hero-description {
+        max-width: 540px;
+        font-size: 12px;
+        line-height: 1.68;
+    }
+
+    .section-heading h2 {
+        font-size: 22px;
+        line-height: 1.28;
+    }
+
+    .section-heading p {
+        font-size: 10px;
+    }
+
+    .location-card-copy h2 {
+        font-size: 20px;
+        line-height: 1.35;
+    }
+}
+
+
+/* =========================================================
+   EXTRA SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .bottom-nav {
+        height: 72px;
+        padding-left: 6px;
+        padding-right: 6px;
+        gap: 3px;
+    }
+
+    .bottom-nav-item {
+        min-height: 52px;
+        border-radius: 14px;
+        font-size: 17px;
+    }
+
+    .bottom-nav-item small {
+        font-size: 7.5px;
+    }
+
+    .bottom-nav-emergency {
+        width: 49px;
+        height: 49px;
+        min-height: 49px;
+        transform: translateY(-15px);
+    }
+
+    .bottom-nav-emergency:hover {
+        transform: translateY(-16px);
+    }
+
+    .bottom-nav-emergency span {
+        font-size: 20px;
+    }
+
+    .bottom-nav-emergency small {
+        top: 50px;
+        font-size: 7.5px;
+    }
+
+    .hero-content h1 {
+        font-size: clamp(
+            29px,
+            8.8vw,
+            39px
+        );
+    }
+
+    .section-heading h2 {
+        font-size: 21px;
+    }
+}
