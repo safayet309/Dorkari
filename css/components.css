@@ -2272,3 +2272,173 @@ summary::after {
     }
 
 }
+/* =========================================================
+   DORKARI — HOSPITAL LOCATION FILTERS
+   Division / District / Upazila
+   ========================================================= */
+
+.hospital-location-filter {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+
+.hospital-location-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+
+.hospital-location-filter-field span {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+
+.hospital-location-filter-field select {
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    padding: 0 34px 0 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background-color: #ffffff;
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+
+    outline: none;
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+        linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+    background-position:
+        calc(100% - 15px) 17px,
+        calc(100% - 10px) 17px;
+    background-size:
+        5px 5px,
+        5px 5px;
+    background-repeat: no-repeat;
+
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        background-color 180ms ease;
+}
+
+
+.hospital-location-filter-field select:hover {
+    border-color: #c8ddd4;
+}
+
+
+.hospital-location-filter-field select:focus {
+    border-color: #b9d7ca;
+    box-shadow:
+        0 0 0 3px rgba(22, 116, 90, 0.08);
+}
+
+
+.hospital-location-filter-field select:disabled {
+    background-color: #f5f8f6;
+    color: #a3aea8;
+    border-color: #e2e9e5;
+    cursor: not-allowed;
+
+    background-image:
+        linear-gradient(45deg, transparent 50%, #b4beb9 50%),
+        linear-gradient(135deg, #b4beb9 50%, transparent 50%);
+}
+
+
+/* =========================================================
+   HOSPITAL LOCATION FILTERS — MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .hospital-location-filter {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+
+    .hospital-location-filter-field:last-child {
+        grid-column: 1 / -1;
+    }
+
+
+    .hospital-location-filter-field {
+        gap: 4px;
+    }
+
+
+    .hospital-location-filter-field span {
+        font-size: 8px;
+    }
+
+
+    .hospital-location-filter-field select {
+        height: 36px;
+        padding: 0 29px 0 9px;
+        border-radius: 9px;
+        font-size: 10px;
+
+        background-position:
+            calc(100% - 12px) 15px,
+            calc(100% - 8px) 15px;
+        background-size:
+            4px 4px,
+            4px 4px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .hospital-location-filter {
+        gap: 6px;
+        margin-top: 7px;
+    }
+
+
+    .hospital-location-filter-field span {
+        font-size: 7.5px;
+    }
+
+
+    .hospital-location-filter-field select {
+        height: 34px;
+        padding-left: 8px;
+        padding-right: 26px;
+        border-radius: 8px;
+        font-size: 9px;
+
+        background-position:
+            calc(100% - 11px) 14px,
+            calc(100% - 7px) 14px;
+    }
+}
