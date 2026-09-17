@@ -714,6 +714,484 @@ const serviceLabels = {
         "ফার্মেসি"
 };
 
+// =========================================================
+// SERVICE INTERFACE SYSTEM
+// =========================================================
+
+let activeServiceInterface =
+    null;
+
+let previousScrollPosition =
+    0;
+
+
+function getServiceInterfaceLayer() {
+
+    return $(
+        "#serviceInterfaceLayer"
+    );
+}
+
+
+function getServiceInterfaces() {
+
+    return $$(
+        ".service-interface[data-interface]"
+    );
+}
+
+
+function getServiceInterface(
+    service
+) {
+
+    return document.querySelector(
+        `.service-interface[data-interface="${CSS.escape(
+            service
+        )}"]`
+    );
+}
+
+
+function openServiceInterface(
+    service
+) {
+
+    const layer =
+        getServiceInterfaceLayer();
+
+    const interfaceElement =
+        getServiceInterface(
+            service
+        );
+
+    if (
+        !layer ||
+        !interfaceElement
+    ) {
+
+        console.warn(
+            "Service interface not found:",
+            service
+        );
+
+        showToast(
+            "এই সেবার interface পাওয়া যায়নি"
+        );
+
+        return;
+    }
+
+
+    /*
+     * যদি আগের কোনো interface খোলা থাকে,
+     * আগে সেটা বন্ধ করি।
+     */
+
+    getServiceInterfaces()
+        .forEach((item) => {
+
+            item.hidden =
+                true;
+
+            item.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+        });
+
+
+    /*
+     * User কোথা থেকে interface-এ গেল
+     * সেটা মনে রাখি।
+     */
+
+    previousScrollPosition =
+        window.scrollY;
+
+
+    activeServiceInterface =
+        service;
+
+
+    /*
+     * Selected interface দেখাই।
+     */
+
+    interfaceElement.hidden =
+        false;
+
+    interfaceElement.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    layer.hidden =
+        false;
+
+    layer.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    document.body.classList.add(
+        "service-interface-open"
+    );
+
+
+    /*
+     * Body scrolling এখন CSS দ্বারা
+     * control করা যাবে।
+     */
+
+    document.documentElement.classList.add(
+        "service-interface-open"
+    );
+
+
+    /*
+     * Accessibility:
+     * interface-এর heading-এ focus।
+     */
+
+    const heading =
+        interfaceElement.querySelector(
+            "h2"
+        );
+
+
+    if (heading) {
+
+        heading.setAttribute(
+            "tabindex",
+            "-1"
+        );
+
+        window.requestAnimationFrame(
+            () => {
+
+                heading.focus({
+                    preventScroll: true
+                });
+
+            }
+        );
+    }
+
+
+    /*
+     * Interface layer-এর শুরুতে যাই।
+     */
+
+    window.requestAnimationFrame(
+        () => {
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+    );
+
+
+    /*
+     * Browser history-তে state রাখি।
+     * ফলে browser back চাপলেও
+     * interface বন্ধ করা যাবে।
+     */
+
+    try {
+
+        window.history.pushState(
+            {
+                dorkariService:
+                    service
+            },
+            "",
+            `#${service}`
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "History state failed:",
+            error
+        );
+    }
+
+
+    /*
+     * Mobile menu খোলা থাকলে বন্ধ করি।
+     */
+
+    closeMobileMenu();
+}
+
+
+function closeServiceInterface(
+    restoreScroll = true
+) {
+
+    const layer =
+        getServiceInterfaceLayer();
+
+
+    if (!layer) {
+        return;
+    }
+
+
+    getServiceInterfaces()
+        .forEach((item) => {
+
+            item.hidden =
+                true;
+
+            item.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+        });
+
+
+    layer.hidden =
+        true;
+
+    layer.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+
+    document.body.classList.remove(
+        "service-interface-open"
+    );
+
+    document.documentElement.classList.remove(
+        "service-interface-open"
+    );
+
+
+    const shouldRestore =
+        restoreScroll &&
+        Number.isFinite(
+            previousScrollPosition
+        );
+
+
+    activeServiceInterface =
+        null;
+
+
+    /*
+     * #service বা #hospital টাইপ hash
+     * Home URL থেকে সরিয়ে দিই।
+     */
+
+    try {
+
+        const currentUrl =
+            new URL(
+                window.location.href
+            );
+
+        currentUrl.hash =
+            "";
+
+        window.history.replaceState(
+            {},
+            "",
+            currentUrl.toString()
+        );
+
+    } catch (error) {
+
+        console.warn(
+            "URL cleanup failed:",
+            error
+        );
+    }
+
+
+    if (shouldRestore) {
+
+        window.requestAnimationFrame(
+            () => {
+
+                window.scrollTo({
+                    top:
+                        previousScrollPosition,
+                    behavior:
+                        "smooth"
+                });
+
+            }
+        );
+    }
+}
+
+
+function initializeServiceInterfaces() {
+
+    /*
+     * Service cards
+     */
+
+    $$(
+        "[data-interface-open]"
+    )
+        .forEach((trigger) => {
+
+            trigger.addEventListener(
+                "click",
+                (event) => {
+
+                    /*
+                     * Service card/button হলে
+                     * normal browser action আটকাই।
+                     */
+
+                    if (
+                        trigger.tagName ===
+                        "BUTTON"
+                    ) {
+                        event.preventDefault();
+                    }
+
+
+                    const service =
+                        cleanText(
+                            trigger.dataset
+                                .interfaceOpen
+                        );
+
+
+                    if (!service) {
+                        return;
+                    }
+
+
+                    openServiceInterface(
+                        service
+                    );
+
+                }
+            );
+
+        });
+
+
+    /*
+     * Back buttons
+     */
+
+    $$(
+        "[data-interface-back]"
+    )
+        .forEach((button) => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    closeServiceInterface(
+                        true
+                    );
+
+                }
+            );
+
+        });
+
+
+    /*
+     * Browser Back button
+     */
+
+    window.addEventListener(
+        "popstate",
+        () => {
+
+            if (
+                activeServiceInterface
+            ) {
+
+                closeServiceInterface(
+                    true
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Escape = close
+     */
+
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "Escape" &&
+                activeServiceInterface
+            ) {
+
+                closeServiceInterface(
+                    true
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Home load হওয়ার সময় hash থাকলে
+     * corresponding interface খুলতে পারি।
+     */
+
+    const initialHash =
+        cleanText(
+            window.location.hash
+                .replace(
+                    "#",
+                    ""
+                )
+        );
+
+
+    if (
+        initialHash &&
+        getServiceInterface(
+            initialHash
+        )
+    ) {
+
+        /*
+         * setTimeout ব্যবহার করছি যাতে
+         * DOM সম্পূর্ণ initialize হওয়ার পর
+         * interface খোলে।
+         */
+
+        window.setTimeout(
+            () => {
+
+                openServiceInterface(
+                    initialHash
+                );
+
+            },
+            80
+        );
+    }
+}
 
 function handleServiceClick(
     serviceButton
@@ -721,6 +1199,7 @@ function handleServiceClick(
 
     const service =
         cleanText(
+            serviceButton?.dataset?.interfaceOpen ||
             serviceButton?.dataset?.service
         );
 
@@ -728,18 +1207,8 @@ function handleServiceClick(
         return;
     }
 
-    const label =
-        serviceLabels[service] ||
-        "সেবা";
-
-
-    /*
-     * Public module pages
-     * পরের phase-এ route হবে।
-     */
-
-    showToast(
-        `${label} — বিস্তারিত পেজ পরের ধাপে আসছে`
+    openServiceInterface(
+        service
     );
 }
 
@@ -749,14 +1218,33 @@ function initializeServiceCards() {
     $$(".service-card[data-service]")
         .forEach((card) => {
 
+            /*
+             * Interface system যদি data-interface-open
+             * handle করে, তাহলে এই listener আরেকবার
+             * একই action চালাবে না।
+             */
+
             card.addEventListener(
                 "click",
                 () => {
-                    handleServiceClick(card);
+
+                    if (
+                        card.dataset.interfaceOpen
+                    ) {
+                        return;
+                    }
+
+                    handleServiceClick(
+                        card
+                    );
+
                 }
             );
+
         });
 }
+
+ 
 
 
 // =========================================================
@@ -2351,6 +2839,7 @@ document.addEventListener(
         initializeBottomSearch();
 
         initializeServiceCards();
+        initializeServiceInterfaces();
 
         initializeHomeLocationEvents();
 
