@@ -768,3 +768,33 @@
         transform: translateX(2px);
     }
 }
+/* =========================================================
+   SERVICE SVG ICONS
+   ========================================================= */
+
+.service-icon svg {
+    width: 27px;
+    height: 27px;
+    display: block;
+    overflow: visible;
+}
+
+.service-icon svg * {
+    vector-effect: non-scaling-stroke;
+}
+
+@media (max-width: 760px) {
+
+    .service-icon svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .service-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+}
