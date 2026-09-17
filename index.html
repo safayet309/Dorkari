@@ -1177,6 +1177,164 @@
         <section class="service-interface-layer" id="serviceInterfaceLayer" hidden aria-hidden="true">
 
             <div class="container">
+                <!-- =====================================================
+     BLOOD BANK INTERFACE
+     ===================================================== -->
+
+                <section class="service-interface" data-interface="blood" id="bloodInterface" hidden
+                    aria-labelledby="bloodInterfaceTitle">
+
+                    <div class="service-interface-header">
+
+                        <button type="button" class="service-interface-back" data-interface-back>
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon is-red" aria-hidden="true">
+                            ♥
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label emergency-label">
+                                রক্তসেবা
+                            </span>
+
+                            <h2 id="bloodInterfaceTitle">
+                                ব্লাড ব্যাংক
+                            </h2>
+
+                            <p>
+                                রক্তের গ্রুপ ও আপনার এলাকার
+                                প্রয়োজনীয় ব্লাড ব্যাংক খুঁজুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+         SEARCH + LOCATION
+         ================================================= -->
+
+                    <div class="interface-toolbar">
+
+                        <input type="search" data-interface-search="blood" placeholder="ব্লাড ব্যাংক বা এলাকা লিখুন..."
+                            aria-label="ব্লাড ব্যাংক খুঁজুন">
+
+
+                        <button type="button" data-interface-location="blood" aria-pressed="false">
+                            ⌖ আমার এলাকা
+                        </button>
+
+                    </div>
+
+
+                    <!-- =================================================
+         BLOOD GROUP FILTER
+         ================================================= -->
+
+                    <div class="interface-blood-filter">
+
+                        <div class="interface-filter-heading">
+
+                            <strong>
+                                রক্তের গ্রুপ
+                            </strong>
+
+                            <button type="button" class="interface-filter-clear" data-blood-group-clear>
+                                সব দেখুন
+                            </button>
+
+                        </div>
+
+
+                        <div class="interface-blood-groups">
+
+                            <button type="button" data-blood-group="A+" aria-pressed="false">
+                                A+
+                            </button>
+
+                            <button type="button" data-blood-group="A-" aria-pressed="false">
+                                A−
+                            </button>
+
+                            <button type="button" data-blood-group="B+" aria-pressed="false">
+                                B+
+                            </button>
+
+                            <button type="button" data-blood-group="B-" aria-pressed="false">
+                                B−
+                            </button>
+
+                            <button type="button" data-blood-group="AB+" aria-pressed="false">
+                                AB+
+                            </button>
+
+                            <button type="button" data-blood-group="AB-" aria-pressed="false">
+                                AB−
+                            </button>
+
+                            <button type="button" data-blood-group="O+" aria-pressed="false">
+                                O+
+                            </button>
+
+                            <button type="button" data-blood-group="O-" aria-pressed="false">
+                                O−
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+         RESULTS HEADER
+         ================================================= -->
+
+                    <div class="interface-results-head">
+
+                        <div>
+                            <span class="section-label">
+                                পাওয়া তথ্য
+                            </span>
+
+                            <strong class="interface-result-count" data-blood-result-count>
+                                ০টি
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+         RESULTS
+         ================================================= -->
+
+                    <div class="interface-results" data-interface-results="blood" aria-live="polite">
+
+                        <div class="interface-empty">
+
+                            <strong>
+                                ব্লাড ব্যাংকের তথ্য এখানে দেখানো হবে।
+                            </strong>
+
+                            <span>
+                                রক্তের গ্রুপ নির্বাচন করে অথবা
+                                নাম/এলাকা লিখে খুঁজুন।
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
 
 
                 <!-- =================================================
@@ -2041,90 +2199,7 @@
                      BLOOD INTERFACE
                      ================================================= -->
 
-                <section class="service-interface" data-interface="blood" id="bloodInterface" hidden
-                    aria-labelledby="bloodInterfaceTitle">
 
-                    <div class="service-interface-header">
-
-                        <button type="button" class="service-interface-back" data-interface-back>
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-
-                        <span class="service-interface-icon is-red">
-                            ♥
-                        </span>
-
-
-                        <div>
-
-                            <span class="section-label emergency-label">
-                                রক্তসেবা
-                            </span>
-
-                            <h2 id="bloodInterfaceTitle">
-                                ব্লাড ব্যাংক
-                            </h2>
-
-                            <p>
-                                রক্তের গ্রুপ অনুযায়ী
-                                প্রয়োজনীয় তথ্য খুঁজুন।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="interface-blood-groups">
-
-                        <button type="button" data-blood-group="A+">
-                            A+
-                        </button>
-
-                        <button type="button" data-blood-group="A-">
-                            A−
-                        </button>
-
-                        <button type="button" data-blood-group="B+">
-                            B+
-                        </button>
-
-                        <button type="button" data-blood-group="B-">
-                            B−
-                        </button>
-
-                        <button type="button" data-blood-group="AB+">
-                            AB+
-                        </button>
-
-                        <button type="button" data-blood-group="AB-">
-                            AB−
-                        </button>
-
-                        <button type="button" data-blood-group="O+">
-                            O+
-                        </button>
-
-                        <button type="button" data-blood-group="O-">
-                            O−
-                        </button>
-
-                    </div>
-
-
-                    <div class="interface-results" data-interface-results="blood">
-
-                        <div class="interface-empty">
-                            রক্তের তথ্য এখানে দেখানো হবে।
-                        </div>
-
-                    </div>
-
-                </section>
 
 
                 <!-- =================================================
