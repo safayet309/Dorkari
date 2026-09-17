@@ -2193,17 +2193,38 @@ function initializeServiceInterfaces() {
                 "";
         }
 
+        /*
+ * =========================================================
+ * INITIAL FILTER LOAD
+ * =========================================================
+ */
+
+        function syncHospitalLocationFilters() {
+            populateHospitalDivisionFilter();
+
+            /*
+             * Location data পরে load হলে
+             * existing hospital cards-ও refresh হবে।
+             */
+            if (
+                hospitalState.hospitals.length
+            ) {
+                renderHospitalResults();
+            }
+        }
+
+
+        syncHospitalLocationFilters();
+
 
         /*
-         * =========================================================
-         * INITIAL FILTER LOAD
-         *
-         * Home location data load হয়ে যাওয়ার পর
-         * Hospital interface open হলে options তৈরি হবে।
-         * =========================================================
+         * Home location data asynchronousভাবে
+         * load শেষ হলে Hospital filters আবার sync করি।
          */
-
-        populateHospitalDivisionFilter();
+        document.addEventListener(
+            "dorkari:locations-loaded",
+            syncHospitalLocationFilters
+        );
 
 
         /*
@@ -3181,6 +3202,32 @@ async function loadHomeLocations() {
 
 
         restoreSavedHomeLocation();
+
+
+        /*
+         * Hospital interface-কে জানাই যে
+         * Division / District / Upazila data এখন ready।
+         */
+        document.dispatchEvent(
+            new CustomEvent(
+                "dorkari:locations-loaded"
+            )
+        );
+
+
+        console.info(
+            "Dorkari locations loaded:",
+            {
+                divisions:
+                    homeLocationState.divisions.length,
+
+                districts:
+                    homeLocationState.districts.length,
+
+                upazilas:
+                    homeLocationState.upazilas.length
+            }
+        );
 
 
         console.info(
