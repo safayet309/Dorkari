@@ -2442,3 +2442,824 @@ summary::after {
             calc(100% - 7px) 14px;
     }
 }
+/* =========================================================
+   DORKARI — DOCTOR INTERFACE
+   ========================================================= */
+
+.doctor-filter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+
+.doctor-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+
+.doctor-filter-field span {
+    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+
+.doctor-filter-field select {
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    padding: 0 34px 0 12px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+
+    background-color: #ffffff;
+    color: var(--text);
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+
+    outline: none;
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    background-image:
+        linear-gradient(
+            45deg,
+            transparent 50%,
+            var(--text-muted) 50%
+        ),
+        linear-gradient(
+            135deg,
+            var(--text-muted) 50%,
+            transparent 50%
+        );
+
+    background-position:
+        calc(100% - 15px) 17px,
+        calc(100% - 10px) 17px;
+
+    background-size:
+        5px 5px,
+        5px 5px;
+
+    background-repeat: no-repeat;
+
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+
+.doctor-filter-field select:hover {
+    border-color: #c8ddd4;
+}
+
+
+.doctor-filter-field select:focus {
+    border-color: #b9d7ca;
+    box-shadow:
+        0 0 0 3px rgba(22, 116, 90, 0.08);
+}
+
+
+/* =========================================================
+   DOCTOR RESULTS HEADER
+   ========================================================= */
+
+.doctor-interface-results-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    margin: 16px 0 12px;
+}
+
+
+.doctor-interface-results-head > div {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+}
+
+
+.doctor-interface-results-head strong {
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 900;
+}
+
+
+.doctor-interface-results-head span {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   DOCTOR GRID
+   ========================================================= */
+
+.doctor-interface-list {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
+    width: 100%;
+}
+
+
+/* =========================================================
+   DOCTOR CARD
+   ========================================================= */
+
+.doctor-interface-card {
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+    padding: 15px;
+
+    border: 1px solid #e3ebe7;
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 8px 24px rgba(23, 55, 44, 0.05);
+
+    transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+
+.doctor-interface-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #d4e4dd;
+
+    box-shadow:
+        0 12px 30px rgba(23, 55, 44, 0.08);
+}
+
+
+/* =========================================================
+   CARD MAIN
+   ========================================================= */
+
+.doctor-interface-card-main {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+
+    min-width: 0;
+}
+
+
+.doctor-interface-avatar {
+    flex:
+        0 0 58px;
+
+    width: 58px;
+    height: 58px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid #dfe9e4;
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #f5f9f7 100%
+        );
+
+    color: #7e9189;
+
+    font-size: 22px;
+    font-weight: 900;
+
+    box-shadow:
+        inset 0 0 0 4px #ffffff;
+}
+
+
+.doctor-interface-card-content {
+    min-width: 0;
+    flex: 1;
+}
+
+
+.doctor-interface-card-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+
+    min-width: 0;
+}
+
+
+.doctor-interface-card-title {
+    margin: 0;
+
+    color: var(--text);
+
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1.35;
+
+    overflow-wrap: anywhere;
+}
+
+
+.doctor-interface-card-subtitle {
+    margin: 3px 0 0;
+
+    color: var(--text-muted);
+
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.3;
+
+    overflow-wrap: anywhere;
+}
+
+
+.doctor-interface-card-mark {
+    flex: 0 0 auto;
+
+    display: grid;
+    place-items: center;
+
+    width: 26px;
+    height: 26px;
+
+    border: 1px solid #e2ebe7;
+    border-radius: 9px;
+
+    color: #8ca097;
+    background: #f8fbfa;
+
+    font-size: 12px;
+}
+
+
+.doctor-interface-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+
+    margin-top: 8px;
+}
+
+
+.doctor-interface-badge {
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 22px;
+    padding: 4px 7px;
+
+    border: 1px solid #dce8e2;
+    border-radius: 999px;
+
+    color: #5f756b;
+    background: #f6faf8;
+
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+
+.doctor-interface-badge.is-verified {
+    border-color: #cce7db;
+
+    color: #267659;
+    background: #eff9f4;
+}
+
+
+.doctor-interface-qualification {
+    margin-top: 7px;
+
+    color: var(--text);
+
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
+
+.doctor-interface-department {
+    margin-top: 3px;
+
+    color: var(--text-muted);
+
+    font-size: 9px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+
+/* =========================================================
+   CARD META
+   ========================================================= */
+
+.doctor-interface-meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+
+    margin-top: 10px;
+
+    color: #667a71;
+
+    font-size: 9px;
+    font-weight: 650;
+    line-height: 1.45;
+}
+
+
+.doctor-interface-meta > span:first-child {
+    flex: 0 0 auto;
+
+    color: #7f9b90;
+
+    font-size: 11px;
+}
+
+
+.doctor-interface-meta > span:last-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+
+.doctor-interface-phone {
+    margin-top: 9px;
+
+    color: var(--text);
+
+    font-size: 10px;
+    font-weight: 850;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.doctor-interface-actions {
+    display: flex;
+    gap: 6px;
+
+    margin-top: 11px;
+}
+
+
+.doctor-interface-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 34px;
+    padding: 7px 11px;
+
+    border: 1px solid #dfe9e4;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #5b7067;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    text-decoration: none;
+
+    transition:
+        border-color 160ms ease,
+        background-color 160ms ease,
+        color 160ms ease;
+}
+
+
+.doctor-interface-action:hover {
+    border-color: #cbded5;
+    background: #f5faf7;
+}
+
+
+.doctor-interface-action.is-primary {
+    border-color: #bfe0d0;
+    background: #eef9f3;
+    color: #25775a;
+}
+
+
+/* =========================================================
+   DETAILS
+   ========================================================= */
+
+.doctor-interface-details {
+    margin-top: 9px;
+
+    border-top: 1px solid #edf2ef;
+    padding-top: 8px;
+}
+
+
+.doctor-interface-details summary {
+    cursor: pointer;
+
+    color: #70837a;
+
+    font-size: 9px;
+    font-weight: 800;
+
+    list-style: none;
+}
+
+
+.doctor-interface-details summary::-webkit-details-marker {
+    display: none;
+}
+
+
+.doctor-interface-details summary::after {
+    content: "＋";
+
+    float: right;
+
+    color: #8ca097;
+}
+
+
+.doctor-interface-details[open]
+summary::after {
+    content: "−";
+}
+
+
+.doctor-interface-details-body {
+    padding-top: 8px;
+}
+
+
+.doctor-interface-details-body p {
+    margin: 0 0 6px;
+
+    color: #687b72;
+
+    font-size: 9px;
+    line-height: 1.5;
+
+    overflow-wrap: anywhere;
+}
+
+
+.doctor-interface-details-body strong {
+    color: var(--text);
+    font-weight: 800;
+}
+
+
+.doctor-interface-details-body a {
+    color: #29765b;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   PAGINATION
+   ========================================================= */
+
+.doctor-interface-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    margin-top: 20px;
+}
+
+
+.doctor-interface-page {
+    min-width: 32px;
+    height: 32px;
+
+    padding: 0 8px;
+
+    border: 1px solid #dfe9e4;
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: #687b72;
+
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.doctor-interface-page.is-active {
+    border-color: #b9dccb;
+    background: #edf8f2;
+    color: #26765a;
+}
+
+
+.doctor-interface-page:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .doctor-filter-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+
+    .doctor-filter-field:last-child {
+        grid-column: 1 / -1;
+    }
+
+
+    .doctor-filter-field {
+        gap: 4px;
+    }
+
+
+    .doctor-filter-field span {
+        font-size: 8px;
+    }
+
+
+    .doctor-filter-field select {
+        height: 36px;
+
+        padding: 0 29px 0 9px;
+
+        border-radius: 9px;
+
+        font-size: 10px;
+
+        background-position:
+            calc(100% - 12px) 15px,
+            calc(100% - 8px) 15px;
+
+        background-size:
+            4px 4px,
+            4px 4px;
+    }
+
+
+    .doctor-interface-results-head {
+        margin: 13px 0 9px;
+    }
+
+
+    .doctor-interface-results-head strong {
+        font-size: 15px;
+    }
+
+
+    .doctor-interface-results-head span {
+        font-size: 9px;
+    }
+
+
+    .doctor-interface-list {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 8px;
+    }
+
+
+    .doctor-interface-card {
+        padding: 10px;
+        border-radius: 13px;
+    }
+
+
+    .doctor-interface-card-main {
+        gap: 7px;
+    }
+
+
+    .doctor-interface-avatar {
+        flex-basis: 40px;
+
+        width: 40px;
+        height: 40px;
+
+        border-radius: 10px;
+
+        font-size: 16px;
+    }
+
+
+    .doctor-interface-card-title {
+        font-size: 11px;
+    }
+
+
+    .doctor-interface-card-subtitle {
+        margin-top: 2px;
+        font-size: 7px;
+    }
+
+
+    .doctor-interface-card-mark {
+        width: 21px;
+        height: 21px;
+        border-radius: 7px;
+
+        font-size: 9px;
+    }
+
+
+    .doctor-interface-badges {
+        gap: 3px;
+        margin-top: 5px;
+    }
+
+
+    .doctor-interface-badge {
+        min-height: 18px;
+
+        padding: 3px 5px;
+
+        font-size: 6.5px;
+    }
+
+
+    .doctor-interface-qualification {
+        margin-top: 5px;
+        font-size: 7.5px;
+    }
+
+
+    .doctor-interface-department {
+        margin-top: 2px;
+        font-size: 7px;
+    }
+
+
+    .doctor-interface-meta {
+        gap: 5px;
+        margin-top: 7px;
+
+        font-size: 7px;
+        line-height: 1.35;
+    }
+
+
+    .doctor-interface-meta > span:first-child {
+        font-size: 8px;
+    }
+
+
+    .doctor-interface-phone {
+        margin-top: 7px;
+        font-size: 7.5px;
+    }
+
+
+    .doctor-interface-actions {
+        margin-top: 7px;
+        gap: 4px;
+    }
+
+
+    .doctor-interface-action {
+        min-height: 28px;
+
+        padding: 5px 7px;
+
+        border-radius: 7px;
+
+        font-size: 7px;
+    }
+
+
+    .doctor-interface-details {
+        margin-top: 6px;
+        padding-top: 6px;
+    }
+
+
+    .doctor-interface-details summary {
+        font-size: 7px;
+    }
+
+
+    .doctor-interface-details-body {
+        padding-top: 6px;
+    }
+
+
+    .doctor-interface-details-body p {
+        margin-bottom: 4px;
+        font-size: 7px;
+    }
+
+
+    .doctor-interface-pagination {
+        gap: 4px;
+        margin-top: 14px;
+    }
+
+
+    .doctor-interface-page {
+        min-width: 28px;
+        height: 28px;
+
+        padding: 0 6px;
+
+        border-radius: 8px;
+
+        font-size: 8px;
+    }
+}
+
+
+/* =========================================================
+   VERY SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .doctor-interface-list {
+        gap: 6px;
+    }
+
+
+    .doctor-interface-card {
+        padding: 8px;
+        border-radius: 11px;
+    }
+
+
+    .doctor-interface-avatar {
+        flex-basis: 36px;
+
+        width: 36px;
+        height: 36px;
+
+        border-radius: 9px;
+
+        font-size: 14px;
+    }
+
+
+    .doctor-interface-card-title {
+        font-size: 10px;
+    }
+
+
+    .doctor-interface-card-mark {
+        width: 19px;
+        height: 19px;
+
+        font-size: 8px;
+    }
+
+
+    .doctor-interface-action {
+        min-height: 26px;
+        padding: 4px 6px;
+        font-size: 6.5px;
+    }
+}
