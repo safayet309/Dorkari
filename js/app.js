@@ -9624,6 +9624,7 @@ document.addEventListener(
         initializeServiceCards();
         initializeServiceInterfaces();
         initializeBloodInterface();
+        initializeBloodGuidelinePopup();
         initializeGovernmentInterface();
         initializeDoctorInterface();
         initializeAmbulanceInterface();
