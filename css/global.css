@@ -3266,3 +3266,769 @@ select {
         font-size: 6.5px;
     }
 }
+/* =========================================================
+   DORKARI — SERVICE INTERFACE
+   Full-screen app-like experience
+   ========================================================= */
+
+
+/* =========================================================
+   INTERFACE LAYER
+   ========================================================= */
+
+.service-interface-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+
+    width: 100%;
+    height: 100dvh;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f7fbf9 0%,
+            #f3f8f5 100%
+        );
+
+    opacity: 1;
+    visibility: visible;
+
+    overscroll-behavior: contain;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* =========================================================
+   HIDE HOME WHILE SERVICE IS OPEN
+   ========================================================= */
+
+html.service-interface-open,
+body.service-interface-open {
+    overflow: hidden;
+}
+
+
+body.service-interface-open > *:not(.service-interface-layer) {
+    pointer-events: none;
+}
+
+
+body.service-interface-open .site-header,
+body.service-interface-open main,
+body.service-interface-open .site-footer,
+body.service-interface-open .bottom-nav {
+    visibility: hidden;
+}
+
+
+body.service-interface-open .service-interface-layer {
+    pointer-events: auto;
+    visibility: visible;
+}
+
+
+/* =========================================================
+   INTERFACE INNER CONTAINER
+   ========================================================= */
+
+.service-interface-layer > .container {
+    min-height: 100%;
+    padding-top: 20px;
+    padding-bottom: 40px;
+}
+
+
+/* =========================================================
+   INDIVIDUAL INTERFACE
+   ========================================================= */
+
+.service-interface {
+    width: 100%;
+    min-height: calc(100dvh - 60px);
+
+    padding: 18px 0 50px;
+}
+
+
+/* =========================================================
+   INTERFACE HEADER
+   ========================================================= */
+
+.service-interface-header {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: auto 58px minmax(0, 1fr);
+
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 14px 0 24px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.service-interface-back {
+    min-height: 42px;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 0 12px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 12px;
+
+    background: #ffffff;
+
+    color: var(--text-soft);
+
+    cursor: pointer;
+
+    font-size: 11px;
+    font-weight: 900;
+
+    white-space: nowrap;
+
+    box-shadow: var(--shadow-xs);
+
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition),
+        transform var(--transition);
+}
+
+
+.service-interface-back:hover {
+    border-color: var(--border-strong);
+    background: var(--surface-soft);
+    color: var(--primary);
+
+    transform: translateX(-1px);
+}
+
+
+.service-interface-back:active {
+    transform: translateX(0) scale(0.98);
+}
+
+
+/* =========================================================
+   INTERFACE ICON
+   ========================================================= */
+
+.service-interface-icon {
+    width: 58px;
+    height: 58px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid #d8eae1;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #edf9f3 0%,
+            #e3f5ec 100%
+        );
+
+    color: var(--primary);
+
+    font-size: 24px;
+    font-weight: 950;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.90),
+        var(--shadow-xs);
+}
+
+
+.service-interface-icon.is-emergency,
+.service-interface-icon.is-red {
+    border-color: #efd4d7;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fff7f7 0%,
+            #ffedef 100%
+        );
+
+    color: var(--accent);
+}
+
+
+.service-interface-icon.is-amber {
+    border-color: #efdfca;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fff9f1 0%,
+            #fff0dc 100%
+        );
+
+    color: #b46112;
+}
+
+
+.service-interface-icon.is-purple {
+    border-color: #e1daf0;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f8f6fd 0%,
+            #efebf9 100%
+        );
+
+    color: #6654a7;
+}
+
+
+.service-interface-icon.is-cyan {
+    border-color: #d5eaea;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f0fbfb 0%,
+            #e5f5f5 100%
+        );
+
+    color: #137e84;
+}
+
+
+/* =========================================================
+   INTERFACE TITLE
+   ========================================================= */
+
+.service-interface-header > div:last-child {
+    min-width: 0;
+}
+
+
+.service-interface-header h2 {
+    margin: 3px 0 0;
+
+    color: var(--text);
+
+    font-size: clamp(
+        25px,
+        4vw,
+        36px
+    );
+
+    font-weight: 950;
+
+    line-height: 1.2;
+
+    letter-spacing: -0.035em;
+}
+
+
+.service-interface-header p {
+    max-width: 700px;
+
+    margin: 7px 0 0;
+
+    color: var(--text-soft);
+
+    font-size: 12px;
+
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   INTERFACE TOOLBAR
+   ========================================================= */
+
+.interface-toolbar {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto;
+
+    gap: 10px;
+
+    margin-top: 22px;
+
+    padding: 14px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 18px;
+
+    background: #ffffff;
+
+    box-shadow: var(--shadow-xs);
+}
+
+
+.interface-toolbar input {
+    width: 100%;
+    min-height: 48px;
+
+    padding: 0 14px;
+
+    border: 1px solid var(--border-strong);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background: #ffffff;
+
+    color: var(--text);
+
+    font-size: 12px;
+
+    font-weight: 650;
+
+    transition:
+        border-color var(--transition),
+        box-shadow var(--transition);
+}
+
+
+.interface-toolbar input::placeholder {
+    color: var(--text-muted);
+}
+
+
+.interface-toolbar input:focus {
+    border-color: #91cbb4;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(15, 124, 91, 0.08);
+}
+
+
+.interface-toolbar button {
+    min-height: 48px;
+
+    padding: 0 15px;
+
+    border: 1px solid #cfe4da;
+
+    border-radius: 12px;
+
+    background: var(--primary-light);
+
+    color: var(--primary);
+
+    cursor: pointer;
+
+    font-size: 11px;
+
+    font-weight: 900;
+
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        transform var(--transition);
+}
+
+
+.interface-toolbar button:hover {
+    border-color: #b9d9ca;
+    background: #e0f3ea;
+
+    transform: translateY(-1px);
+}
+
+
+.interface-toolbar button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   INTERFACE RESULTS
+   ========================================================= */
+
+.interface-results {
+    display: grid;
+
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+
+.interface-empty {
+    min-height: 130px;
+
+    display: grid;
+    place-items: center;
+
+    padding: 25px;
+
+    border: 1px dashed #cfded7;
+
+    border-radius: 17px;
+
+    background:
+        rgba(255,255,255,.72);
+
+    color: var(--text-muted);
+
+    text-align: center;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   BLOOD GROUPS
+   ========================================================= */
+
+.interface-blood-groups {
+    display: grid;
+
+    grid-template-columns:
+        repeat(8, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-top: 20px;
+}
+
+
+.interface-blood-groups button {
+    min-height: 44px;
+
+    border: 1px solid #efd4d8;
+
+    border-radius: 11px;
+
+    background: #fff7f8;
+
+    color: var(--accent-dark);
+
+    cursor: pointer;
+
+    font-size: 11px;
+
+    font-weight: 950;
+
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        transform var(--transition);
+}
+
+
+.interface-blood-groups button:hover {
+    border-color: #e6bec3;
+
+    background: #ffeef0;
+
+    transform: translateY(-1px);
+}
+
+
+.interface-blood-groups button:active {
+    transform: translateY(0);
+}
+
+
+.interface-blood-groups button.active {
+    border-color: var(--accent);
+
+    background: var(--accent);
+
+    color: #ffffff;
+
+    box-shadow:
+        0 7px 16px
+        rgba(223, 61, 69, .15);
+}
+
+
+/* =========================================================
+   PRIMARY INTERFACE ACTION
+   ========================================================= */
+
+.interface-primary-action {
+    min-height: 48px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 0 18px;
+
+    border-radius: 13px;
+
+    font-size: 11px;
+
+    font-weight: 950;
+
+    box-shadow:
+        0 8px 18px
+        rgba(6,58,44,.12);
+
+    transition:
+        transform var(--transition),
+        box-shadow var(--transition);
+}
+
+
+.interface-primary-action:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 11px 22px
+        rgba(6,58,44,.15);
+}
+
+
+.interface-primary-action.is-red {
+    background:
+        linear-gradient(
+            145deg,
+            var(--accent) 0%,
+            var(--accent-dark) 100%
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 8px 18px
+        rgba(223,61,69,.17);
+}
+
+
+/* =========================================================
+   EMERGENCY INTERFACE ACTION AREA
+   ========================================================= */
+
+.service-interface-actions {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .service-interface-layer > .container {
+        width: calc(100% - 24px);
+
+        padding-top: 8px;
+        padding-bottom: 30px;
+    }
+
+
+    .service-interface {
+        min-height: calc(100dvh - 30px);
+
+        padding:
+            8px
+            0
+            36px;
+    }
+
+
+    .service-interface-header {
+        grid-template-columns:
+            auto 45px minmax(0, 1fr);
+
+        gap: 10px;
+
+        padding:
+            7px
+            0
+            17px;
+    }
+
+
+    .service-interface-back {
+        min-height: 38px;
+
+        padding: 0 10px;
+
+        border-radius: 11px;
+
+        font-size: 9px;
+    }
+
+
+    .service-interface-back span {
+        display: none;
+    }
+
+
+    .service-interface-icon {
+        width: 45px;
+        height: 45px;
+
+        border-radius: 14px;
+
+        font-size: 19px;
+    }
+
+
+    .service-interface-header h2 {
+        font-size: 22px;
+
+        line-height: 1.23;
+    }
+
+
+    .service-interface-header p {
+        margin-top: 4px;
+
+        font-size: 9px;
+
+        line-height: 1.6;
+    }
+
+
+    .interface-toolbar {
+        grid-template-columns: 1fr;
+
+        gap: 7px;
+
+        margin-top: 14px;
+
+        padding: 10px;
+
+        border-radius: 15px;
+    }
+
+
+    .interface-toolbar input {
+        min-height: 44px;
+
+        border-radius: 11px;
+
+        font-size: 10px;
+    }
+
+
+    .interface-toolbar button {
+        width: 100%;
+
+        min-height: 42px;
+
+        border-radius: 11px;
+
+        font-size: 10px;
+    }
+
+
+    .interface-blood-groups {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+
+        gap: 7px;
+
+        margin-top: 14px;
+    }
+
+
+    .interface-blood-groups button {
+        min-height: 40px;
+
+        border-radius: 10px;
+
+        font-size: 10px;
+    }
+
+
+    .service-interface-actions {
+        margin-top: 14px;
+    }
+
+
+    .interface-primary-action {
+        width: 100%;
+
+        min-height: 45px;
+
+        border-radius: 12px;
+
+        font-size: 10px;
+    }
+
+
+    .interface-empty {
+        min-height: 110px;
+
+        padding: 18px;
+
+        border-radius: 14px;
+
+        font-size: 9px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .service-interface-layer > .container {
+        width: calc(100% - 18px);
+    }
+
+
+    .service-interface-header {
+        grid-template-columns:
+            auto 42px minmax(0, 1fr);
+
+        gap: 8px;
+    }
+
+
+    .service-interface-icon {
+        width: 42px;
+        height: 42px;
+
+        border-radius: 13px;
+    }
+
+
+    .service-interface-header h2 {
+        font-size: 20px;
+    }
+
+
+    .service-interface-header p {
+        font-size: 8px;
+    }
+}
