@@ -42,21 +42,21 @@
 
     <link rel="stylesheet" href="css/components.css">
     <style>
-    html,
-    body {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: hidden;
-        -webkit-text-size-adjust: 100%;
-        text-size-adjust: 100%;
-    }
-
-    @media (max-width: 760px) {
+        html,
         body {
-            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
-    }
-</style>
+
+        @media (max-width: 760px) {
+            body {
+                min-width: 0;
+            }
+        }
+    </style>
 
 </head>
 
@@ -1494,16 +1494,39 @@
 
                     </div>
 
-
                     <div class="interface-toolbar">
-
-                        <input type="search" data-interface-search="hospital" placeholder="হাসপাতালের নাম লিখুন..."
-                            aria-label="হাসপাতাল খুঁজুন">
+                        <input type="search" data-interface-search="hospital" placeholder="হাসপাতাল খুঁজুন..."
+                            autocomplete="off">
 
                         <button type="button" data-interface-location="hospital">
                             ⌖ এলাকা
                         </button>
+                    </div>
 
+                    <div class="hospital-location-filter" aria-label="হাসপাতালের এলাকা নির্বাচন">
+                        <label class="hospital-location-filter-field">
+                            <span>বিভাগ</span>
+
+                            <select id="hospitalFilterDivision" data-hospital-filter="division">
+                                <option value="">সব বিভাগ</option>
+                            </select>
+                        </label>
+
+                        <label class="hospital-location-filter-field">
+                            <span>জেলা</span>
+
+                            <select id="hospitalFilterDistrict" data-hospital-filter="district" disabled>
+                                <option value="">সব জেলা</option>
+                            </select>
+                        </label>
+
+                        <label class="hospital-location-filter-field">
+                            <span>উপজেলা</span>
+
+                            <select id="hospitalFilterUpazila" data-hospital-filter="upazila" disabled>
+                                <option value="">সব উপজেলা</option>
+                            </select>
+                        </label>
                     </div>
 
 
