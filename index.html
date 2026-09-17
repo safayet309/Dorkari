@@ -64,7 +64,9 @@
     <title>Dorkari — দরকারি</title>
 
 
-    <!-- Styles -->
+    <!-- =====================================================
+         CSS
+         ===================================================== -->
 
     <link
         rel="stylesheet"
@@ -217,16 +219,13 @@
 
             <div class="header-actions">
 
-
                 <button
                     type="button"
                     class="header-install-btn"
                     data-install-app
                     hidden
                 >
-                    <span aria-hidden="true">
-                        ⇩
-                    </span>
+                    <span aria-hidden="true">⇩</span>
                     অ্যাপ
                 </button>
 
@@ -281,14 +280,18 @@
             <div class="container mobile-menu-inner">
 
 
-                <div class="mobile-menu-location">
+                <div
+                    class="mobile-menu-location"
+                    aria-live="polite"
+                >
 
                     <span
-                        class="mobile-menu-location-icon"
+                        class="location-icon"
                         aria-hidden="true"
                     >
                         ⌖
                     </span>
+
 
                     <span>
 
@@ -352,7 +355,7 @@
 
 
         <!-- =================================================
-             HOME HERO
+             HOME
              ================================================= -->
 
         <section
@@ -445,7 +448,7 @@
 
 
                         <button
-                            type="button"
+                            type="submit"
                             id="searchButton"
                             class="search-button"
                         >
@@ -466,12 +469,14 @@
                             জনপ্রিয়:
                         </span>
 
+
                         <button
                             type="button"
                             data-search="Hospital"
                         >
                             হাসপাতাল
                         </button>
+
 
                         <button
                             type="button"
@@ -480,12 +485,14 @@
                             ডাক্তার
                         </button>
 
+
                         <button
                             type="button"
                             data-search="Ambulance"
                         >
                             অ্যাম্বুলেন্স
                         </button>
+
 
                         <button
                             type="button"
@@ -497,29 +504,40 @@
                     </div>
 
 
-                    <!-- HERO TRUST -->
+                    <!-- TRUST -->
 
                     <div class="hero-meta-row">
 
                         <span>
+
                             <i class="meta-check">
                                 ✓
                             </i>
+
                             দ্রুত খুঁজে নিন
+
                         </span>
 
+
                         <span>
+
                             <i class="meta-check">
                                 ✓
                             </i>
+
                             মোবাইলে সহজ
+
                         </span>
 
+
                         <span>
+
                             <i class="meta-check">
                                 ✓
                             </i>
+
                             তথ্যভিত্তিক
+
                         </span>
 
                     </div>
@@ -571,7 +589,10 @@
                     </div>
 
 
-                    <div class="emergency-banner-number">
+                    <div
+                        class="emergency-banner-number"
+                        aria-label="জরুরি নম্বর ৯৯৯"
+                    >
 
                         <span>
                             জরুরি নম্বর
@@ -586,18 +607,15 @@
 
                     <div class="emergency-banner-actions">
 
-
                         <button
                             type="button"
                             class="banner-call-btn"
                             id="quickEmergencyCall"
                         >
-
                             কল করুন
                             <span aria-hidden="true">
                                 →
                             </span>
-
                         </button>
 
 
@@ -675,8 +693,40 @@
                             class="service-icon"
                             aria-hidden="true"
                         >
-                            !
+
+                            <svg viewBox="0 0 64 64" fill="none">
+
+                                <path
+                                    d="M32 8 9 50h46L32 8Z"
+                                    fill="currentColor"
+                                    opacity=".12"
+                                />
+
+                                <path
+                                    d="M32 8 9 50h46L32 8Z"
+                                    stroke="currentColor"
+                                    stroke-width="3.5"
+                                    stroke-linejoin="round"
+                                />
+
+                                <path
+                                    d="M32 24v13"
+                                    stroke="currentColor"
+                                    stroke-width="4"
+                                    stroke-linecap="round"
+                                />
+
+                                <circle
+                                    cx="32"
+                                    cy="43"
+                                    r="2.5"
+                                    fill="currentColor"
+                                />
+
+                            </svg>
+
                         </span>
+
 
                         <span class="service-info">
 
@@ -691,6 +741,7 @@
                                 </small>
 
                             </span>
+
 
                             <span
                                 class="card-arrow"
@@ -773,6 +824,7 @@
 
                             </span>
 
+
                             <span
                                 class="card-arrow"
                                 aria-hidden="true"
@@ -852,6 +904,7 @@
                                 </small>
 
                             </span>
+
 
                             <span
                                 class="card-arrow"
@@ -944,6 +997,7 @@
 
                             </span>
 
+
                             <span
                                 class="card-arrow"
                                 aria-hidden="true"
@@ -1014,6 +1068,7 @@
                                 </small>
 
                             </span>
+
 
                             <span
                                 class="card-arrow"
@@ -1093,6 +1148,7 @@
 
                             </span>
 
+
                             <span
                                 class="card-arrow"
                                 aria-hidden="true"
@@ -1161,6 +1217,7 @@
                                 </small>
 
                             </span>
+
 
                             <span
                                 class="card-arrow"
@@ -1247,6 +1304,7 @@
 
                             </span>
 
+
                             <span
                                 class="card-arrow"
                                 aria-hidden="true"
@@ -1317,7 +1375,6 @@
 
 
                     <div class="location-form">
-
 
                         <label>
 
@@ -1431,7 +1488,6 @@
 
 
                 <div class="section-heading">
-
 
                     <div>
 
@@ -1582,10 +1638,6 @@
 
         <!-- =================================================
              SERVICE INTERFACE LAYER
-             =================================================
-
-             সব service interface Home Page-এর ভিতরেই থাকবে।
-             JS পরে selected interface খুলবে।
              ================================================= -->
 
         <section
@@ -1599,7 +1651,7 @@
 
 
                 <!-- =================================================
-                     ALL SERVICES INTERFACE
+                     ALL SERVICES
                      ================================================= -->
 
                 <section
@@ -1651,28 +1703,21 @@
 
                     <div class="all-services-interface-grid">
 
+
                         <button
                             type="button"
                             class="service-card is-emergency"
-                            data-service="emergency"
                             data-interface-open="emergency"
                         >
 
-                            <span
-                                class="service-icon"
-                                aria-hidden="true"
-                            >
+                            <span class="service-icon">
                                 !
                             </span>
 
                             <span class="service-info">
 
                                 <span class="service-info-main">
-
-                                    <strong>
-                                        জরুরি সেবা
-                                    </strong>
-
+                                    <strong>জরুরি সেবা</strong>
                                 </span>
 
                                 <span class="card-arrow">
@@ -1687,25 +1732,17 @@
                         <button
                             type="button"
                             class="service-card is-hospital"
-                            data-service="hospital"
                             data-interface-open="hospital"
                         >
 
-                            <span
-                                class="service-icon"
-                                aria-hidden="true"
-                            >
+                            <span class="service-icon">
                                 +
                             </span>
 
                             <span class="service-info">
 
                                 <span class="service-info-main">
-
-                                    <strong>
-                                        হাসপাতাল
-                                    </strong>
-
+                                    <strong>হাসপাতাল</strong>
                                 </span>
 
                                 <span class="card-arrow">
@@ -1720,25 +1757,17 @@
                         <button
                             type="button"
                             class="service-card is-doctor"
-                            data-service="doctor"
                             data-interface-open="doctor"
                         >
 
-                            <span
-                                class="service-icon"
-                                aria-hidden="true"
-                            >
+                            <span class="service-icon">
                                 D
                             </span>
 
                             <span class="service-info">
 
                                 <span class="service-info-main">
-
-                                    <strong>
-                                        ডাক্তার
-                                    </strong>
-
+                                    <strong>ডাক্তার</strong>
                                 </span>
 
                                 <span class="card-arrow">
@@ -1753,25 +1782,17 @@
                         <button
                             type="button"
                             class="service-card is-ambulance"
-                            data-service="ambulance"
                             data-interface-open="ambulance"
                         >
 
-                            <span
-                                class="service-icon"
-                                aria-hidden="true"
-                            >
+                            <span class="service-icon">
                                 A
                             </span>
 
                             <span class="service-info">
 
                                 <span class="service-info-main">
-
-                                    <strong>
-                                        অ্যাম্বুলেন্স
-                                    </strong>
-
+                                    <strong>অ্যাম্বুলেন্স</strong>
                                 </span>
 
                                 <span class="card-arrow">
@@ -1786,25 +1807,17 @@
                         <button
                             type="button"
                             class="service-card is-government"
-                            data-service="government"
                             data-interface-open="government"
                         >
 
-                            <span
-                                class="service-icon"
-                                aria-hidden="true"
-                            >
+                            <span class="service-icon">
                                 ৳
                             </span>
 
                             <span class="service-info">
 
                                 <span class="service-info-main">
-
-                                    <strong>
-                                        সরকারি সেবা
-                                    </strong>
-
+                                    <strong>সরকারি সেবা</strong>
                                 </span>
 
                                 <span class="card-arrow">
@@ -1819,25 +1832,17 @@
                         <button
                             type="button"
                             class="service-card is-tests"
-                            data-service="tests"
                             data-interface-open="tests"
                         >
 
-                            <span
-                                class="service-icon"
-                                aria-hidden="true"
-                            >
+                            <span class="service-icon">
                                 T
                             </span>
 
                             <span class="service-info">
 
                                 <span class="service-info-main">
-
-                                    <strong>
-                                        টেস্ট ও ফি
-                                    </strong>
-
+                                    <strong>টেস্ট ও ফি</strong>
                                 </span>
 
                                 <span class="card-arrow">
@@ -1852,25 +1857,17 @@
                         <button
                             type="button"
                             class="service-card is-blood"
-                            data-service="blood"
                             data-interface-open="blood"
                         >
 
-                            <span
-                                class="service-icon"
-                                aria-hidden="true"
-                            >
+                            <span class="service-icon">
                                 ♥
                             </span>
 
                             <span class="service-info">
 
                                 <span class="service-info-main">
-
-                                    <strong>
-                                        ব্লাড ব্যাংক
-                                    </strong>
-
+                                    <strong>ব্লাড ব্যাংক</strong>
                                 </span>
 
                                 <span class="card-arrow">
@@ -1885,25 +1882,17 @@
                         <button
                             type="button"
                             class="service-card is-pharmacy"
-                            data-service="pharmacy"
                             data-interface-open="pharmacy"
                         >
 
-                            <span
-                                class="service-icon"
-                                aria-hidden="true"
-                            >
+                            <span class="service-icon">
                                 Rx
                             </span>
 
                             <span class="service-info">
 
                                 <span class="service-info-main">
-
-                                    <strong>
-                                        ফার্মেসি
-                                    </strong>
-
+                                    <strong>ফার্মেসি</strong>
                                 </span>
 
                                 <span class="card-arrow">
@@ -1914,13 +1903,715 @@
 
                         </button>
 
+
                     </div>
 
                 </section>
 
 
                 <!-- =================================================
-                     LOCATION NAV INTERFACE
+                     EMERGENCY INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface"
+                    data-interface="emergency"
+                    id="emergencyInterface"
+                    hidden
+                    aria-labelledby="emergencyInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon is-emergency">
+                            !
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label emergency-label">
+                                জরুরি সেবা
+                            </span>
+
+                            <h2 id="emergencyInterfaceTitle">
+                                দ্রুত সহায়তা নিন
+                            </h2>
+
+                            <p>
+                                জরুরি নম্বর ও প্রয়োজনীয়
+                                যোগাযোগ এক জায়গায়।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="service-interface-actions">
+
+                        <a
+                            href="tel:999"
+                            class="interface-primary-action is-red"
+                        >
+                            📞 ৯৯৯ কল করুন
+                        </a>
+
+                    </div>
+
+
+                    <div
+                        class="interface-results"
+                        data-interface-results="emergency"
+                    ></div>
+
+                </section>
+
+
+                <!-- =================================================
+                     HOSPITAL INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface"
+                    data-interface="hospital"
+                    id="hospitalInterface"
+                    hidden
+                    aria-labelledby="hospitalInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon">
+                            +
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                স্বাস্থ্যসেবা
+                            </span>
+
+                            <h2 id="hospitalInterfaceTitle">
+                                হাসপাতাল খুঁজুন
+                            </h2>
+
+                            <p>
+                                আপনার এলাকার সরকারি ও
+                                বেসরকারি হাসপাতাল খুঁজে নিন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="interface-toolbar">
+
+                        <input
+                            type="search"
+                            data-interface-search="hospital"
+                            placeholder="হাসপাতালের নাম লিখুন..."
+                            aria-label="হাসপাতাল খুঁজুন"
+                        >
+
+                        <button
+                            type="button"
+                            data-interface-location="hospital"
+                        >
+                            ⌖ এলাকা
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="interface-results"
+                        data-interface-results="hospital"
+                    >
+
+                        <div class="interface-empty">
+                            হাসপাতালের তথ্য এখানে দেখানো হবে।
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     DOCTOR INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface"
+                    data-interface="doctor"
+                    id="doctorInterface"
+                    hidden
+                    aria-labelledby="doctorInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon">
+                            D
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                স্বাস্থ্যসেবা
+                            </span>
+
+                            <h2 id="doctorInterfaceTitle">
+                                ডাক্তার খুঁজুন
+                            </h2>
+
+                            <p>
+                                বিশেষজ্ঞ ও প্রয়োজনীয়
+                                ডাক্তার খুঁজে নিন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="interface-toolbar">
+
+                        <input
+                            type="search"
+                            data-interface-search="doctor"
+                            placeholder="ডাক্তার বা বিশেষজ্ঞের নাম..."
+                            aria-label="ডাক্তার খুঁজুন"
+                        >
+
+                        <button
+                            type="button"
+                            data-interface-location="doctor"
+                        >
+                            ⌖ এলাকা
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="interface-results"
+                        data-interface-results="doctor"
+                    >
+
+                        <div class="interface-empty">
+                            ডাক্তারদের তথ্য এখানে দেখানো হবে।
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     AMBULANCE INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface"
+                    data-interface="ambulance"
+                    id="ambulanceInterface"
+                    hidden
+                    aria-labelledby="ambulanceInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon is-amber">
+                            A
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                দ্রুত সহায়তা
+                            </span>
+
+                            <h2 id="ambulanceInterfaceTitle">
+                                অ্যাম্বুলেন্স খুঁজুন
+                            </h2>
+
+                            <p>
+                                কাছাকাছি অ্যাম্বুলেন্স
+                                ও যোগাযোগের তথ্য।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="interface-toolbar">
+
+                        <input
+                            type="search"
+                            data-interface-search="ambulance"
+                            placeholder="এলাকা বা সার্ভিসের নাম..."
+                            aria-label="অ্যাম্বুলেন্স খুঁজুন"
+                        >
+
+                        <button
+                            type="button"
+                            data-interface-location="ambulance"
+                        >
+                            ⌖ এলাকা
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="interface-results"
+                        data-interface-results="ambulance"
+                    >
+
+                        <div class="interface-empty">
+                            অ্যাম্বুলেন্সের তথ্য এখানে দেখানো হবে।
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     GOVERNMENT INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface"
+                    data-interface="government"
+                    id="governmentInterface"
+                    hidden
+                    aria-labelledby="governmentInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon is-purple">
+                            ৳
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                নাগরিক সেবা
+                            </span>
+
+                            <h2 id="governmentInterfaceTitle">
+                                সরকারি সেবা
+                            </h2>
+
+                            <p>
+                                সরকারি অফিস, ঠিকানা ও
+                                যোগাযোগের তথ্য খুঁজুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="interface-toolbar">
+
+                        <input
+                            type="search"
+                            data-interface-search="government"
+                            placeholder="অফিস বা সেবার নাম..."
+                            aria-label="সরকারি অফিস খুঁজুন"
+                        >
+
+                        <button
+                            type="button"
+                            data-interface-location="government"
+                        >
+                            ⌖ এলাকা
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="interface-results"
+                        data-interface-results="government"
+                    >
+
+                        <div class="interface-empty">
+                            সরকারি সেবার তথ্য এখানে দেখানো হবে।
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     TEST INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface"
+                    data-interface="tests"
+                    id="testsInterface"
+                    hidden
+                    aria-labelledby="testsInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon is-cyan">
+                            T
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                পরীক্ষা
+                            </span>
+
+                            <h2 id="testsInterfaceTitle">
+                                টেস্ট ও ফি
+                            </h2>
+
+                            <p>
+                                প্রয়োজনীয় পরীক্ষা ও
+                                হাসপাতালভিত্তিক ফি দেখুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="interface-toolbar">
+
+                        <input
+                            type="search"
+                            data-interface-search="tests"
+                            placeholder="যেমন: CBC, X-ray..."
+                            aria-label="টেস্ট খুঁজুন"
+                        >
+
+                        <button
+                            type="button"
+                            data-interface-location="tests"
+                        >
+                            ⌖ হাসপাতাল
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="interface-results"
+                        data-interface-results="tests"
+                    >
+
+                        <div class="interface-empty">
+                            টেস্ট ও ফি-এর তথ্য এখানে দেখানো হবে।
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     BLOOD INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface"
+                    data-interface="blood"
+                    id="bloodInterface"
+                    hidden
+                    aria-labelledby="bloodInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon is-red">
+                            ♥
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label emergency-label">
+                                রক্তসেবা
+                            </span>
+
+                            <h2 id="bloodInterfaceTitle">
+                                ব্লাড ব্যাংক
+                            </h2>
+
+                            <p>
+                                রক্তের গ্রুপ অনুযায়ী
+                                প্রয়োজনীয় তথ্য খুঁজুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="interface-blood-groups">
+
+                        <button
+                            type="button"
+                            data-blood-group="A+"
+                        >
+                            A+
+                        </button>
+
+                        <button
+                            type="button"
+                            data-blood-group="A-"
+                        >
+                            A−
+                        </button>
+
+                        <button
+                            type="button"
+                            data-blood-group="B+"
+                        >
+                            B+
+                        </button>
+
+                        <button
+                            type="button"
+                            data-blood-group="B-"
+                        >
+                            B−
+                        </button>
+
+                        <button
+                            type="button"
+                            data-blood-group="AB+"
+                        >
+                            AB+
+                        </button>
+
+                        <button
+                            type="button"
+                            data-blood-group="AB-"
+                        >
+                            AB−
+                        </button>
+
+                        <button
+                            type="button"
+                            data-blood-group="O+"
+                        >
+                            O+
+                        </button>
+
+                        <button
+                            type="button"
+                            data-blood-group="O-"
+                        >
+                            O−
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="interface-results"
+                        data-interface-results="blood"
+                    >
+
+                        <div class="interface-empty">
+                            রক্তের তথ্য এখানে দেখানো হবে।
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     PHARMACY INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface"
+                    data-interface="pharmacy"
+                    id="pharmacyInterface"
+                    hidden
+                    aria-labelledby="pharmacyInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon">
+                            Rx
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                ওষুধসেবা
+                            </span>
+
+                            <h2 id="pharmacyInterfaceTitle">
+                                ফার্মেসি খুঁজুন
+                            </h2>
+
+                            <p>
+                                আপনার এলাকার কাছাকাছি
+                                প্রয়োজনীয় ফার্মেসি খুঁজুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="interface-toolbar">
+
+                        <input
+                            type="search"
+                            data-interface-search="pharmacy"
+                            placeholder="ফার্মেসির নাম বা এলাকা..."
+                            aria-label="ফার্মেসি খুঁজুন"
+                        >
+
+                        <button
+                            type="button"
+                            data-interface-location="pharmacy"
+                        >
+                            ⌖ এলাকা
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="interface-results"
+                        data-interface-results="pharmacy"
+                    >
+
+                        <div class="interface-empty">
+                            ফার্মেসির তথ্য এখানে দেখানো হবে।
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     LOCATION INTERFACE
                      ================================================= -->
 
                 <section
@@ -2058,7 +2749,7 @@
 
 
                 <!-- =================================================
-                     SEARCH NAV INTERFACE
+                     SEARCH INTERFACE
                      ================================================= -->
 
                 <section
@@ -2119,6 +2810,7 @@
                                 ⌕
                             </span>
 
+
                             <input
                                 type="search"
                                 id="navSearchInput"
@@ -2147,12 +2839,14 @@
                             জনপ্রিয়
                         </span>
 
+
                         <button
                             type="button"
                             data-nav-search="হাসপাতাল"
                         >
                             হাসপাতাল
                         </button>
+
 
                         <button
                             type="button"
@@ -2161,12 +2855,14 @@
                             ডাক্তার
                         </button>
 
+
                         <button
                             type="button"
                             data-nav-search="অ্যাম্বুলেন্স"
                         >
                             অ্যাম্বুলেন্স
                         </button>
+
 
                         <button
                             type="button"
@@ -2183,691 +2879,6 @@
                         id="navSearchResults"
                         aria-live="polite"
                     ></div>
-
-                </section>
-
-
-                <!-- =================================================
-                     EMERGENCY INTERFACE
-                     ================================================= -->
-
-                <section
-                    class="service-interface"
-                    data-interface="emergency"
-                    id="emergencyInterface"
-                    hidden
-                    aria-labelledby="emergencyInterfaceTitle"
-                >
-
-                    <div class="service-interface-header">
-
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-                        <span class="service-interface-icon is-emergency">
-                            !
-                        </span>
-
-                        <div>
-
-                            <span class="section-label emergency-label">
-                                জরুরি সেবা
-                            </span>
-
-                            <h2 id="emergencyInterfaceTitle">
-                                দ্রুত সহায়তা নিন
-                            </h2>
-
-                            <p>
-                                জরুরি নম্বর ও প্রয়োজনীয়
-                                যোগাযোগ এক জায়গায়।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="service-interface-actions">
-
-                        <a
-                            href="tel:999"
-                            class="interface-primary-action is-red"
-                        >
-                            📞 ৯৯৯ কল করুন
-                        </a>
-
-                    </div>
-
-
-                    <div
-                        class="interface-results"
-                        data-interface-results="emergency"
-                    ></div>
-
-                </section>
-
-
-                <!-- =================================================
-                     HOSPITAL INTERFACE
-                     ================================================= -->
-
-                <section
-                    class="service-interface"
-                    data-interface="hospital"
-                    id="hospitalInterface"
-                    hidden
-                    aria-labelledby="hospitalInterfaceTitle"
-                >
-
-                    <div class="service-interface-header">
-
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-                        <span class="service-interface-icon">
-                            +
-                        </span>
-
-                        <div>
-
-                            <span class="section-label">
-                                স্বাস্থ্যসেবা
-                            </span>
-
-                            <h2 id="hospitalInterfaceTitle">
-                                হাসপাতাল খুঁজুন
-                            </h2>
-
-                            <p>
-                                আপনার এলাকার সরকারি ও
-                                বেসরকারি হাসপাতাল খুঁজে নিন।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="interface-toolbar">
-
-                        <input
-                            type="search"
-                            data-interface-search="hospital"
-                            placeholder="হাসপাতালের নাম লিখুন..."
-                            aria-label="হাসপাতাল খুঁজুন"
-                        >
-
-                        <button
-                            type="button"
-                            data-interface-location="hospital"
-                        >
-                            ⌖ এলাকা
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="interface-results"
-                        data-interface-results="hospital"
-                    >
-
-                        <div class="interface-empty">
-                            হাসপাতালের তথ্য এখানে দেখানো হবে।
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     DOCTOR INTERFACE
-                     ================================================= -->
-
-                <section
-                    class="service-interface"
-                    data-interface="doctor"
-                    id="doctorInterface"
-                    hidden
-                    aria-labelledby="doctorInterfaceTitle"
-                >
-
-                    <div class="service-interface-header">
-
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-                        <span class="service-interface-icon">
-                            D
-                        </span>
-
-                        <div>
-
-                            <span class="section-label">
-                                স্বাস্থ্যসেবা
-                            </span>
-
-                            <h2 id="doctorInterfaceTitle">
-                                ডাক্তার খুঁজুন
-                            </h2>
-
-                            <p>
-                                বিশেষজ্ঞ ও প্রয়োজনীয়
-                                ডাক্তার খুঁজে নিন।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="interface-toolbar">
-
-                        <input
-                            type="search"
-                            data-interface-search="doctor"
-                            placeholder="ডাক্তার বা বিশেষজ্ঞের নাম..."
-                            aria-label="ডাক্তার খুঁজুন"
-                        >
-
-                        <button
-                            type="button"
-                            data-interface-location="doctor"
-                        >
-                            ⌖ এলাকা
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="interface-results"
-                        data-interface-results="doctor"
-                    >
-
-                        <div class="interface-empty">
-                            ডাক্তারদের তথ্য এখানে দেখানো হবে।
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     AMBULANCE INTERFACE
-                     ================================================= -->
-
-                <section
-                    class="service-interface"
-                    data-interface="ambulance"
-                    id="ambulanceInterface"
-                    hidden
-                    aria-labelledby="ambulanceInterfaceTitle"
-                >
-
-                    <div class="service-interface-header">
-
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-                        <span class="service-interface-icon is-amber">
-                            A
-                        </span>
-
-                        <div>
-
-                            <span class="section-label">
-                                দ্রুত সহায়তা
-                            </span>
-
-                            <h2 id="ambulanceInterfaceTitle">
-                                অ্যাম্বুলেন্স খুঁজুন
-                            </h2>
-
-                            <p>
-                                কাছাকাছি অ্যাম্বুলেন্স
-                                ও যোগাযোগের তথ্য।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="interface-toolbar">
-
-                        <input
-                            type="search"
-                            data-interface-search="ambulance"
-                            placeholder="এলাকা বা সার্ভিসের নাম..."
-                            aria-label="অ্যাম্বুলেন্স খুঁজুন"
-                        >
-
-                        <button
-                            type="button"
-                            data-interface-location="ambulance"
-                        >
-                            ⌖ এলাকা
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="interface-results"
-                        data-interface-results="ambulance"
-                    >
-
-                        <div class="interface-empty">
-                            অ্যাম্বুলেন্সের তথ্য এখানে দেখানো হবে।
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     GOVERNMENT INTERFACE
-                     ================================================= -->
-
-                <section
-                    class="service-interface"
-                    data-interface="government"
-                    id="governmentInterface"
-                    hidden
-                    aria-labelledby="governmentInterfaceTitle"
-                >
-
-                    <div class="service-interface-header">
-
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-                        <span class="service-interface-icon is-purple">
-                            ৳
-                        </span>
-
-                        <div>
-
-                            <span class="section-label">
-                                নাগরিক সেবা
-                            </span>
-
-                            <h2 id="governmentInterfaceTitle">
-                                সরকারি সেবা
-                            </h2>
-
-                            <p>
-                                সরকারি অফিস, ঠিকানা ও
-                                যোগাযোগের তথ্য খুঁজুন।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="interface-toolbar">
-
-                        <input
-                            type="search"
-                            data-interface-search="government"
-                            placeholder="অফিস বা সেবার নাম..."
-                            aria-label="সরকারি অফিস খুঁজুন"
-                        >
-
-                        <button
-                            type="button"
-                            data-interface-location="government"
-                        >
-                            ⌖ এলাকা
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="interface-results"
-                        data-interface-results="government"
-                    >
-
-                        <div class="interface-empty">
-                            সরকারি সেবার তথ্য এখানে দেখানো হবে।
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     TEST INTERFACE
-                     ================================================= -->
-
-                <section
-                    class="service-interface"
-                    data-interface="tests"
-                    id="testsInterface"
-                    hidden
-                    aria-labelledby="testsInterfaceTitle"
-                >
-
-                    <div class="service-interface-header">
-
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-                        <span class="service-interface-icon is-cyan">
-                            T
-                        </span>
-
-                        <div>
-
-                            <span class="section-label">
-                                পরীক্ষা
-                            </span>
-
-                            <h2 id="testsInterfaceTitle">
-                                টেস্ট ও ফি
-                            </h2>
-
-                            <p>
-                                প্রয়োজনীয় পরীক্ষা ও
-                                হাসপাতালভিত্তিক ফি দেখুন।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="interface-toolbar">
-
-                        <input
-                            type="search"
-                            data-interface-search="tests"
-                            placeholder="যেমন: CBC, X-ray..."
-                            aria-label="টেস্ট খুঁজুন"
-                        >
-
-                        <button
-                            type="button"
-                            data-interface-location="tests"
-                        >
-                            ⌖ হাসপাতাল
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="interface-results"
-                        data-interface-results="tests"
-                    >
-
-                        <div class="interface-empty">
-                            টেস্ট ও ফি-এর তথ্য এখানে দেখানো হবে।
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     BLOOD INTERFACE
-                     ================================================= -->
-
-                <section
-                    class="service-interface"
-                    data-interface="blood"
-                    id="bloodInterface"
-                    hidden
-                    aria-labelledby="bloodInterfaceTitle"
-                >
-
-                    <div class="service-interface-header">
-
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-                        <span class="service-interface-icon is-red">
-                            ♥
-                        </span>
-
-                        <div>
-
-                            <span class="section-label emergency-label">
-                                রক্তসেবা
-                            </span>
-
-                            <h2 id="bloodInterfaceTitle">
-                                ব্লাড ব্যাংক
-                            </h2>
-
-                            <p>
-                                রক্তের গ্রুপ অনুযায়ী
-                                প্রয়োজনীয় তথ্য খুঁজুন।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="interface-blood-groups">
-
-                        <button
-                            type="button"
-                            data-blood-group="A+"
-                        >
-                            A+
-                        </button>
-
-                        <button
-                            type="button"
-                            data-blood-group="A-"
-                        >
-                            A−
-                        </button>
-
-                        <button
-                            type="button"
-                            data-blood-group="B+"
-                        >
-                            B+
-                        </button>
-
-                        <button
-                            type="button"
-                            data-blood-group="B-"
-                        >
-                            B−
-                        </button>
-
-                        <button
-                            type="button"
-                            data-blood-group="AB+"
-                        >
-                            AB+
-                        </button>
-
-                        <button
-                            type="button"
-                            data-blood-group="AB-"
-                        >
-                            AB−
-                        </button>
-
-                        <button
-                            type="button"
-                            data-blood-group="O+"
-                        >
-                            O+
-                        </button>
-
-                        <button
-                            type="button"
-                            data-blood-group="O-"
-                        >
-                            O−
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="interface-results"
-                        data-interface-results="blood"
-                    >
-
-                        <div class="interface-empty">
-                            রক্তের তথ্য এখানে দেখানো হবে।
-                        </div>
-
-                    </div>
-
-                </section>
-
-
-                <!-- =================================================
-                     PHARMACY INTERFACE
-                     ================================================= -->
-
-                <section
-                    class="service-interface"
-                    data-interface="pharmacy"
-                    id="pharmacyInterface"
-                    hidden
-                    aria-labelledby="pharmacyInterfaceTitle"
-                >
-
-                    <div class="service-interface-header">
-
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
-                            ←
-                            <span>
-                                হোমে ফিরুন
-                            </span>
-                        </button>
-
-                        <span class="service-interface-icon">
-                            Rx
-                        </span>
-
-                        <div>
-
-                            <span class="section-label">
-                                ওষুধসেবা
-                            </span>
-
-                            <h2 id="pharmacyInterfaceTitle">
-                                ফার্মেসি খুঁজুন
-                            </h2>
-
-                            <p>
-                                আপনার এলাকার কাছাকাছি
-                                প্রয়োজনীয় ফার্মেসি খুঁজুন।
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="interface-toolbar">
-
-                        <input
-                            type="search"
-                            data-interface-search="pharmacy"
-                            placeholder="ফার্মেসির নাম বা এলাকা..."
-                            aria-label="ফার্মেসি খুঁজুন"
-                        >
-
-                        <button
-                            type="button"
-                            data-interface-location="pharmacy"
-                        >
-                            ⌖ এলাকা
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        class="interface-results"
-                        data-interface-results="pharmacy"
-                    >
-
-                        <div class="interface-empty">
-                            ফার্মেসির তথ্য এখানে দেখানো হবে।
-                        </div>
-
-                    </div>
 
                 </section>
 
@@ -2921,6 +2932,7 @@
 
                     </span>
 
+
                     <span class="brand-text">
 
                         <strong>
@@ -2970,7 +2982,7 @@
 
 
     <!-- =====================================================
-         MOBILE BOTTOM NAV
+         PREMIUM MOBILE BOTTOM NAV
          ===================================================== -->
 
     <nav
@@ -2978,6 +2990,8 @@
         aria-label="মোবাইল নেভিগেশন"
     >
 
+
+        <!-- HOME -->
 
         <a
             href="#home"
@@ -2988,7 +3002,28 @@
         >
 
             <span aria-hidden="true">
-                ⌂
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <path
+                        d="M3 10.8 12 3l9 7.8v8.4a1.8 1.8 0 0 1-1.8 1.8H4.8A1.8 1.8 0 0 1 3 19.2v-8.4Z"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linejoin="round"
+                    />
+
+                    <path
+                        d="M9.2 21v-6.2h5.6V21"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linejoin="round"
+                    />
+
+                </svg>
+
             </span>
 
             <small>
@@ -2997,6 +3032,8 @@
 
         </a>
 
+
+        <!-- SERVICES -->
 
         <a
             href="#services"
@@ -3007,7 +3044,54 @@
         >
 
             <span aria-hidden="true">
-                ⊞
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <rect
+                        x="4"
+                        y="4"
+                        width="6"
+                        height="6"
+                        rx="1.2"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    />
+
+                    <rect
+                        x="14"
+                        y="4"
+                        width="6"
+                        height="6"
+                        rx="1.2"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    />
+
+                    <rect
+                        x="4"
+                        y="14"
+                        width="6"
+                        height="6"
+                        rx="1.2"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    />
+
+                    <rect
+                        x="14"
+                        y="14"
+                        width="6"
+                        height="6"
+                        rx="1.2"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    />
+
+                </svg>
+
             </span>
 
             <small>
@@ -3016,6 +3100,8 @@
 
         </a>
 
+
+        <!-- EMERGENCY -->
 
         <a
             href="#emergency"
@@ -3026,7 +3112,41 @@
         >
 
             <span aria-hidden="true">
-                !
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <path
+                        d="M12 3.5 3.5 18.2a1.3 1.3 0 0 0 1.13 1.95h14.74a1.3 1.3 0 0 0 1.13-1.95L12 3.5Z"
+                        fill="currentColor"
+                        opacity=".18"
+                    />
+
+                    <path
+                        d="M12 3.5 3.5 18.2a1.3 1.3 0 0 0 1.13 1.95h14.74a1.3 1.3 0 0 0 1.13-1.95L12 3.5Z"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linejoin="round"
+                    />
+
+                    <path
+                        d="M12 9v5"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                    />
+
+                    <circle
+                        cx="12"
+                        cy="17"
+                        r="1"
+                        fill="currentColor"
+                    />
+
+                </svg>
+
             </span>
 
             <small>
@@ -3035,6 +3155,8 @@
 
         </a>
 
+
+        <!-- LOCATION -->
 
         <a
             href="#location"
@@ -3045,7 +3167,29 @@
         >
 
             <span aria-hidden="true">
-                ⌖
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <path
+                        d="M20 10.2c0 5.4-8 10.3-8 10.3s-8-4.9-8-10.3a8 8 0 1 1 16 0Z"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linejoin="round"
+                    />
+
+                    <circle
+                        cx="12"
+                        cy="10"
+                        r="2.5"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    />
+
+                </svg>
+
             </span>
 
             <small>
@@ -3055,15 +3199,41 @@
         </a>
 
 
+        <!-- SEARCH -->
+
         <a
-            href="#home"
+            href="#search"
             class="bottom-nav-item"
             id="bottomSearchNav"
+            data-bottom-nav
+            data-section-target="search"
             aria-label="খুঁজুন"
         >
 
             <span aria-hidden="true">
-                ⌕
+
+                <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                >
+
+                    <circle
+                        cx="10.8"
+                        cy="10.8"
+                        r="6.3"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                    />
+
+                    <path
+                        d="m16 16 4.5 4.5"
+                        stroke="currentColor"
+                        stroke-width="1.8"
+                        stroke-linecap="round"
+                    />
+
+                </svg>
+
             </span>
 
             <small>
@@ -3096,6 +3266,7 @@
     ></script>
 
     <script src="js/config.js"></script>
+
     <script src="js/app.js"></script>
 
 
