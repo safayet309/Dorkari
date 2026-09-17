@@ -1037,6 +1037,1775 @@ function closeServiceInterface(
     }
 }
 
+// =========================================================
+// DOCTOR PUBLIC DATA
+// =========================================================
+
+let doctorState = {
+    doctors: [],
+    hospitals: [],
+    filtered: [],
+    loading: false,
+    loaded: false,
+    locationOnly: false,
+    currentPage: 1,
+    pageSize: 12
+};
+
+
+// =========================================================
+// DOCTOR DOM
+// =========================================================
+
+function getDoctorElements() {
+    return {
+        interface:
+            getServiceInterface("doctor"),
+
+        search:
+            document.querySelector(
+                '[data-interface-search="doctor"]'
+            ),
+
+        locationButton:
+            document.querySelector(
+                '[data-interface-location="doctor"]'
+            ),
+
+        specialtyFilter:
+            document.querySelector(
+                '[data-doctor-filter="specialty"]'
+            ),
+
+        hospitalFilter:
+            document.querySelector(
+                '[data-doctor-filter="hospital"]'
+            ),
+
+        divisionFilter:
+            document.querySelector(
+                '[data-doctor-filter="division"]'
+            ),
+
+        results:
+            document.querySelector(
+                '[data-interface-results="doctor"]'
+            )
+    };
+}
+
+
+// =========================================================
+// DOCTOR HOSPITAL LABEL
+// =========================================================
+
+function getDoctorHospitalNames(
+    doctor
+) {
+    return (
+        doctor?.hospitalAssignments || []
+    )
+        .map(
+            (assignment) =>
+                cleanText(
+                    assignment?.hospital?.name_bn
+                ) ||
+                cleanText(
+                    assignment?.hospital?.name
+                )
+        )
+        .filter(Boolean);
+}
+
+
+// =========================================================
+// DOCTOR LOCATION LABEL
+// =========================================================
+
+function getDoctorLocationLabel(
+    doctor
+) {
+    const divisionName =
+        getLocationNameById(
+            homeLocationState.divisions,
+            doctor?.division_id
+        );
+
+    const districtName =
+        getLocationNameById(
+            homeLocationState.districts,
+            doctor?.district_id
+        );
+
+    const upazilaName =
+        getLocationNameById(
+            homeLocationState.upazilas,
+            doctor?.upazila_id
+        );
+
+    return getLocationLabel(
+        divisionName,
+        districtName,
+        upazilaName
+    );
+}
+
+
+// =========================================================
+// DOCTOR SAVED LOCATION MATCH
+// =========================================================
+
+function doctorMatchesLocation(
+    doctor,
+    saved
+) {
+    if (!saved) {
+        return true;
+    }
+
+
+    if (saved.upazilaId) {
+        return (
+            String(
+                doctor?.upazila_id
+            ) ===
+            String(
+                saved.upazilaId
+            )
+        );
+    }
+
+
+    if (saved.districtId) {
+        return (
+            String(
+                doctor?.district_id
+            ) ===
+            String(
+                saved.districtId
+            )
+        );
+    }
+
+
+    if (saved.divisionId) {
+        return (
+            String(
+                doctor?.division_id
+            ) ===
+            String(
+                saved.divisionId
+            )
+        );
+    }
+
+
+    return true;
+}
+
+
+// =========================================================
+// DOCTOR FILTER OPTIONS
+// =========================================================
+
+function populateDoctorFilters() {
+
+    const {
+        specialtyFilter,
+        hospitalFilter,
+        divisionFilter
+    } =
+        getDoctorElements();
+
+
+    /*
+     * SPECIALIZATION
+     */
+
+    if (specialtyFilter) {
+
+        const specializations =
+            Array.from(
+                new Set(
+                    doctorState.doctors
+                        .map(
+                            (doctor) =>
+                                cleanText(
+                                    doctor.specialization
+                                )
+                        )
+                        .filter(Boolean)
+                )
+            ).sort(
+                (a, b) =>
+                    a.localeCompare(
+                        b,
+                        "bn"
+                    )
+            );
+
+
+        specialtyFilter.innerHTML = `
+            <option value="">
+                সব বিশেষজ্ঞতা
+            </option>
+        `;
+
+
+        specializations.forEach(
+            (specialization) => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    specialization;
+
+                option.textContent =
+                    specialization;
+
+                specialtyFilter.appendChild(
+                    option
+                );
+            }
+        );
+    }
+
+
+    /*
+     * HOSPITAL
+     */
+
+    if (hospitalFilter) {
+
+        const hospitals =
+            [...doctorState.hospitals]
+                .sort(
+                    (a, b) => {
+
+                        const aName =
+                            cleanText(
+                                a.name_bn
+                            ) ||
+                            cleanText(
+                                a.name
+                            );
+
+                        const bName =
+                            cleanText(
+                                b.name_bn
+                            ) ||
+                            cleanText(
+                                b.name
+                            );
+
+                        return aName.localeCompare(
+                            bName,
+                            "bn"
+                        );
+                    }
+                );
+
+
+        hospitalFilter.innerHTML = `
+            <option value="">
+                সব হাসপাতাল
+            </option>
+        `;
+
+
+        hospitals.forEach(
+            (hospital) => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    hospital.id;
+
+                option.textContent =
+                    cleanText(
+                        hospital.name_bn
+                    ) ||
+                    cleanText(
+                        hospital.name
+                    ) ||
+                    "নাম পাওয়া যায়নি";
+
+                hospitalFilter.appendChild(
+                    option
+                );
+            }
+        );
+    }
+
+
+    /*
+     * DIVISION
+     */
+
+    if (divisionFilter) {
+
+        fillLocationSelect(
+            divisionFilter,
+            homeLocationState.divisions,
+            "সব বিভাগ"
+        );
+
+        divisionFilter.disabled =
+            homeLocationState.divisions.length === 0;
+    }
+}
+
+
+// =========================================================
+// DOCTOR SEARCHABLE TEXT
+// =========================================================
+
+function getDoctorSearchText(
+    doctor
+) {
+
+    const hospitalNames =
+        getDoctorHospitalNames(
+            doctor
+        );
+
+
+    return [
+        doctor?.name,
+        doctor?.name_bn,
+        doctor?.degree,
+        doctor?.specialization,
+        doctor?.department,
+        doctor?.chamber_info,
+        doctor?.visiting_hours,
+        getDoctorLocationLabel(
+            doctor
+        ),
+        ...hospitalNames
+    ]
+        .map(cleanText)
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+}
+
+
+// =========================================================
+// DOCTOR FILTERING
+// =========================================================
+
+function applyDoctorFilters() {
+
+    const {
+        search,
+        specialtyFilter,
+        hospitalFilter,
+        divisionFilter
+    } =
+        getDoctorElements();
+
+
+    const searchText =
+        cleanText(
+            search?.value
+        ).toLowerCase();
+
+
+    const specialization =
+        cleanText(
+            specialtyFilter?.value
+        );
+
+
+    const hospitalId =
+        cleanText(
+            hospitalFilter?.value
+        );
+
+
+    const divisionId =
+        cleanText(
+            divisionFilter?.value
+        );
+
+
+    const savedLocation =
+        getSavedHomeLocation();
+
+
+    doctorState.filtered =
+        doctorState.doctors.filter(
+            (doctor) => {
+
+                /*
+                 * SPECIALIST
+                 */
+
+                if (
+                    specialization &&
+                    cleanText(
+                        doctor.specialization
+                    ) !==
+                    specialization
+                ) {
+                    return false;
+                }
+
+
+                /*
+                 * HOSPITAL
+                 */
+
+                if (hospitalId) {
+
+                    const matchesHospital =
+                        (
+                            doctor
+                                .hospitalAssignments ||
+                            []
+                        ).some(
+                            (assignment) =>
+                                String(
+                                    assignment?.hospital_id
+                                ) ===
+                                String(
+                                    hospitalId
+                                )
+                        );
+
+
+                    if (
+                        !matchesHospital
+                    ) {
+                        return false;
+                    }
+                }
+
+
+                /*
+                 * DIVISION
+                 */
+
+                if (
+                    divisionId &&
+                    String(
+                        doctor.division_id
+                    ) !==
+                    String(
+                        divisionId
+                    )
+                ) {
+                    return false;
+                }
+
+
+                /*
+                 * SAVED HOME LOCATION
+                 */
+
+                if (
+                    doctorState.locationOnly &&
+                    !doctorMatchesLocation(
+                        doctor,
+                        savedLocation
+                    )
+                ) {
+                    return false;
+                }
+
+
+                /*
+                 * TEXT SEARCH
+                 */
+
+                if (!searchText) {
+                    return true;
+                }
+
+
+                return getDoctorSearchText(
+                    doctor
+                ).includes(
+                    searchText
+                );
+            }
+        );
+
+
+    doctorState.currentPage =
+        1;
+
+
+    renderDoctorResults();
+}
+
+
+// =========================================================
+// DOCTOR CARD
+// =========================================================
+
+function buildDoctorCard(
+    doctor
+) {
+
+    const name =
+        getDisplayName(
+            doctor
+        );
+
+
+    const englishName =
+        cleanText(
+            doctor?.name
+        );
+
+
+    const degree =
+        cleanText(
+            doctor?.degree
+        );
+
+
+    const specialization =
+        cleanText(
+            doctor?.specialization
+        );
+
+
+    const department =
+        cleanText(
+            doctor?.department
+        );
+
+
+    const phone =
+        cleanText(
+            doctor?.phone
+        );
+
+
+    const chamberInfo =
+        cleanText(
+            doctor?.chamber_info
+        );
+
+
+    const visitingHours =
+        cleanText(
+            doctor?.visiting_hours
+        );
+
+
+    const locationLabel =
+        getDoctorLocationLabel(
+            doctor
+        );
+
+
+    const hospitalNames =
+        getDoctorHospitalNames(
+            doctor
+        );
+
+
+    const verifiedBadge =
+        doctor?.is_verified
+            ? `
+                <span
+                    class="doctor-interface-badge is-verified"
+                >
+                    ✓ যাচাইকৃত
+                </span>
+            `
+            : `
+                <span
+                    class="doctor-interface-badge"
+                >
+                    যাচাই চলমান
+                </span>
+            `;
+
+
+    const specialtyBadge =
+        specialization
+            ? `
+                <span
+                    class="doctor-interface-badge"
+                >
+                    ${escapeHTML(
+                specialization
+            )}
+                </span>
+            `
+            : "";
+
+
+    const phoneAction =
+        phone
+            ? `
+                <a
+                    href="tel:${escapeHTML(
+                normalizePhone(
+                    phone
+                )
+            )}"
+                    class="doctor-interface-action is-primary"
+                >
+                    ☎ কল করুন
+                </a>
+            `
+            : "";
+
+
+    const hospitalBlock =
+        hospitalNames.length
+            ? `
+                <div
+                    class="doctor-interface-meta"
+                >
+                    <span
+                        aria-hidden="true"
+                    >
+                        ♧
+                    </span>
+
+                    <span>
+                        ${hospitalNames
+                .map(
+                    (hospitalName) =>
+                        escapeHTML(
+                            hospitalName
+                        )
+                )
+                .join(
+                    " · "
+                )}
+                    </span>
+                </div>
+            `
+            : "";
+
+
+    const locationBlock =
+        locationLabel
+            ? `
+                <div
+                    class="doctor-interface-meta"
+                >
+                    <span
+                        aria-hidden="true"
+                    >
+                        ◇
+                    </span>
+
+                    <span>
+                        ${escapeHTML(
+                locationLabel
+            )}
+                    </span>
+                </div>
+            `
+            : "";
+
+
+    const phoneBlock =
+        phone
+            ? `
+                <div
+                    class="doctor-interface-phone"
+                >
+                    ${escapeHTML(
+                phone
+            )}
+                </div>
+            `
+            : "";
+
+
+    return `
+        <article
+            class="doctor-interface-card"
+        >
+
+            <div
+                class="doctor-interface-card-main"
+            >
+
+                <div
+                    class="doctor-interface-avatar"
+                    aria-hidden="true"
+                >
+                    D
+                </div>
+
+
+                <div
+                    class="doctor-interface-card-content"
+                >
+
+                    <div
+                        class="doctor-interface-card-heading"
+                    >
+
+                        <div>
+
+                            <h3
+                                class="doctor-interface-card-title"
+                            >
+                                ${escapeHTML(
+        name
+    )}
+                            </h3>
+
+
+                            ${englishName &&
+            englishName !== name
+            ? `
+                                        <p
+                                            class="doctor-interface-card-subtitle"
+                                        >
+                                            ${escapeHTML(
+                englishName
+            )}
+                                        </p>
+                                    `
+            : ""
+        }
+
+                        </div>
+
+
+                        <span
+                            class="doctor-interface-card-mark"
+                            aria-hidden="true"
+                        >
+                            ♡
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="doctor-interface-badges"
+                    >
+                        ${specialtyBadge}
+                        ${verifiedBadge}
+                    </div>
+
+
+                    ${degree
+            ? `
+                                <div
+                                    class="doctor-interface-qualification"
+                                >
+                                    ${escapeHTML(
+                degree
+            )}
+                                </div>
+                            `
+            : ""
+        }
+
+
+                    ${department
+            ? `
+                                <div
+                                    class="doctor-interface-department"
+                                >
+                                    ${escapeHTML(
+                department
+            )}
+                                </div>
+                            `
+            : ""
+        }
+
+                </div>
+
+            </div>
+
+
+            ${hospitalBlock}
+            ${locationBlock}
+            ${phoneBlock}
+
+
+            <div
+                class="doctor-interface-actions"
+            >
+                ${phoneAction}
+            </div>
+
+
+            <details
+                class="doctor-interface-details"
+            >
+
+                <summary>
+                    বিস্তারিত দেখুন
+                </summary>
+
+
+                <div
+                    class="doctor-interface-details-body"
+                >
+
+                    ${degree
+            ? `
+                                <p>
+                                    <strong>
+                                        ডিগ্রি:
+                                    </strong>
+
+                                    ${escapeHTML(
+                degree
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+
+                    ${specialization
+            ? `
+                                <p>
+                                    <strong>
+                                        বিশেষজ্ঞতা:
+                                    </strong>
+
+                                    ${escapeHTML(
+                specialization
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+
+                    ${department
+            ? `
+                                <p>
+                                    <strong>
+                                        বিভাগ:
+                                    </strong>
+
+                                    ${escapeHTML(
+                department
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+
+                    ${hospitalNames.length
+            ? `
+                                <p>
+                                    <strong>
+                                        হাসপাতাল:
+                                    </strong>
+
+                                    ${hospitalNames
+                .map(
+                    (
+                        hospitalName
+                    ) =>
+                        escapeHTML(
+                            hospitalName
+                        )
+                )
+                .join(
+                    " · "
+                )}
+                                </p>
+                            `
+            : ""
+        }
+
+
+                    ${chamberInfo
+            ? `
+                                <p>
+                                    <strong>
+                                        চেম্বার:
+                                    </strong>
+
+                                    ${escapeHTML(
+                chamberInfo
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+
+                    ${visitingHours
+            ? `
+                                <p>
+                                    <strong>
+                                        ভিজিটিং সময়:
+                                    </strong>
+
+                                    ${escapeHTML(
+                visitingHours
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+
+                    ${locationLabel
+            ? `
+                                <p>
+                                    <strong>
+                                        লোকেশন:
+                                    </strong>
+
+                                    ${escapeHTML(
+                locationLabel
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+
+                    ${phone
+            ? `
+                                <p>
+                                    <strong>
+                                        ফোন:
+                                    </strong>
+
+                                    <a
+                                        href="tel:${escapeHTML(
+                normalizePhone(
+                    phone
+                )
+            )}"
+                                    >
+                                        ${escapeHTML(
+                phone
+            )}
+                                    </a>
+                                </p>
+                            `
+            : ""
+        }
+
+                </div>
+
+            </details>
+
+        </article>
+    `;
+}
+
+
+// =========================================================
+// DOCTOR PAGINATION
+// =========================================================
+
+function renderDoctorPagination(
+    totalPages
+) {
+
+    if (
+        totalPages <= 1
+    ) {
+        return "";
+    }
+
+
+    const currentPage =
+        doctorState.currentPage;
+
+
+    const pageButtons = [];
+
+
+    const startPage =
+        Math.max(
+            1,
+            currentPage - 2
+        );
+
+
+    const endPage =
+        Math.min(
+            totalPages,
+            startPage + 4
+        );
+
+
+    for (
+        let page = startPage;
+        page <= endPage;
+        page++
+    ) {
+
+        pageButtons.push(`
+            <button
+                type="button"
+                class="doctor-interface-page ${page === currentPage
+                ? "is-active"
+                : ""
+            }"
+                data-doctor-page="${page}"
+                aria-label="পৃষ্ঠা ${page}"
+                ${page === currentPage
+                ? 'aria-current="page"'
+                : ""
+            }
+            >
+                ${page}
+            </button>
+        `);
+    }
+
+
+    return `
+        <div
+            class="doctor-interface-pagination"
+        >
+
+            <button
+                type="button"
+                class="doctor-interface-page"
+                data-doctor-page="${Math.max(
+        1,
+        currentPage - 1
+    )
+        }"
+                ${currentPage === 1
+            ? "disabled"
+            : ""
+        }
+                aria-label="আগের পৃষ্ঠা"
+            >
+                ←
+            </button>
+
+
+            ${pageButtons.join("")}
+
+
+            <button
+                type="button"
+                class="doctor-interface-page"
+                data-doctor-page="${Math.min(
+            totalPages,
+            currentPage + 1
+        )
+        }"
+                ${currentPage === totalPages
+            ? "disabled"
+            : ""
+        }
+                aria-label="পরের পৃষ্ঠা"
+            >
+                →
+            </button>
+
+        </div>
+    `;
+}
+
+
+// =========================================================
+// DOCTOR RESULTS
+// =========================================================
+
+function renderDoctorResults() {
+
+    const {
+        results
+    } =
+        getDoctorElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    if (
+        doctorState.filtered.length === 0
+    ) {
+
+        let message =
+            "কোনো ডাক্তারের তথ্য পাওয়া যায়নি।";
+
+
+        if (
+            doctorState.locationOnly
+        ) {
+            message =
+                "আপনার নির্বাচিত এলাকায় কোনো ডাক্তার পাওয়া যায়নি।";
+        }
+
+
+        results.innerHTML = `
+            <div
+                class="interface-empty"
+            >
+                ${escapeHTML(
+            message
+        )}
+            </div>
+        `;
+
+
+        return;
+    }
+
+
+    const total =
+        doctorState.filtered.length;
+
+
+    const totalPages =
+        Math.ceil(
+            total /
+            doctorState.pageSize
+        );
+
+
+    if (
+        doctorState.currentPage >
+        totalPages
+    ) {
+        doctorState.currentPage =
+            totalPages;
+    }
+
+
+    const startIndex =
+        (
+            doctorState.currentPage -
+            1
+        ) *
+        doctorState.pageSize;
+
+
+    const currentDoctors =
+        doctorState.filtered.slice(
+            startIndex,
+            startIndex +
+            doctorState.pageSize
+        );
+
+
+    results.innerHTML = `
+        <div
+            class="doctor-interface-results-head"
+        >
+            <div>
+                <strong>
+                    ${total}
+                </strong>
+
+                <span>
+                    জন ডাক্তার পাওয়া গেছে
+                </span>
+            </div>
+        </div>
+
+
+        <div
+            class="doctor-interface-list"
+        >
+            ${currentDoctors
+            .map(
+                buildDoctorCard
+            )
+            .join("")}
+        </div>
+
+
+        ${renderDoctorPagination(
+                totalPages
+            )}
+    `;
+}
+
+
+// =========================================================
+// DOCTOR LOCATION FILTER SYNC
+// =========================================================
+
+function syncDoctorDivisionFilter() {
+
+    const {
+        divisionFilter
+    } =
+        getDoctorElements();
+
+
+    if (!divisionFilter) {
+        return;
+    }
+
+
+    fillLocationSelect(
+        divisionFilter,
+        homeLocationState.divisions,
+        "সব বিভাগ"
+    );
+
+
+    divisionFilter.disabled =
+        homeLocationState.divisions.length === 0;
+}
+
+
+// =========================================================
+// LOAD DOCTORS
+// =========================================================
+
+async function loadDoctorData() {
+
+    const {
+        results
+    } =
+        getDoctorElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    if (
+        doctorState.loading
+    ) {
+        return;
+    }
+
+
+    if (
+        doctorState.loaded
+    ) {
+        applyDoctorFilters();
+        return;
+    }
+
+
+    if (!dorkariSupabase) {
+
+        results.innerHTML = `
+            <div
+                class="interface-empty"
+            >
+                Supabase সংযোগ পাওয়া যায়নি।
+            </div>
+        `;
+
+        return;
+    }
+
+
+    doctorState.loading =
+        true;
+
+
+    results.innerHTML = `
+        <div
+            class="interface-empty"
+        >
+            ডাক্তারদের তথ্য লোড হচ্ছে...
+        </div>
+    `;
+
+
+    try {
+
+        const [
+            doctorsResult,
+            hospitalsResult,
+            relationshipResult
+        ] =
+            await Promise.all([
+
+                dorkariSupabase
+                    .from("doctors")
+                    .select(`
+                        id,
+                        name,
+                        name_bn,
+                        degree,
+                        specialization,
+                        department,
+                        phone,
+                        email,
+                        chamber_info,
+                        visiting_hours,
+                        division_id,
+                        district_id,
+                        upazila_id,
+                        is_verified,
+                        is_active
+                    `)
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name_bn",
+                        {
+                            ascending: true
+                        }
+                    ),
+
+
+                dorkariSupabase
+                    .from("hospitals")
+                    .select(`
+                        id,
+                        name,
+                        name_bn,
+                        division_id,
+                        district_id,
+                        upazila_id,
+                        address
+                    `)
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name_bn",
+                        {
+                            ascending: true
+                        }
+                    ),
+
+
+                dorkariSupabase
+                    .from("doctor_hospitals")
+                    .select(`
+                        id,
+                        doctor_id,
+                        hospital_id,
+                        department,
+                        designation,
+                        visiting_days,
+                        visiting_hours
+                    `)
+            ]);
+
+
+        if (
+            doctorsResult.error
+        ) {
+            throw doctorsResult.error;
+        }
+
+
+        if (
+            hospitalsResult.error
+        ) {
+            throw hospitalsResult.error;
+        }
+
+
+        if (
+            relationshipResult.error
+        ) {
+            throw relationshipResult.error;
+        }
+
+
+        const doctors =
+            doctorsResult.data || [];
+
+
+        const hospitals =
+            hospitalsResult.data || [];
+
+
+        const relationships =
+            relationshipResult.data || [];
+
+
+        const hospitalById =
+            new Map(
+                hospitals.map(
+                    (hospital) => [
+                        String(
+                            hospital.id
+                        ),
+                        hospital
+                    ]
+                )
+            );
+
+
+        const assignmentsByDoctor =
+            new Map();
+
+
+        relationships.forEach(
+            (assignment) => {
+
+                const doctorId =
+                    String(
+                        assignment.doctor_id
+                    );
+
+
+                const hospital =
+                    hospitalById.get(
+                        String(
+                            assignment.hospital_id
+                        )
+                    );
+
+
+                if (!hospital) {
+                    return;
+                }
+
+
+                if (
+                    !assignmentsByDoctor.has(
+                        doctorId
+                    )
+                ) {
+                    assignmentsByDoctor.set(
+                        doctorId,
+                        []
+                    );
+                }
+
+
+                assignmentsByDoctor
+                    .get(
+                        doctorId
+                    )
+                    .push({
+                        ...assignment,
+                        hospital
+                    });
+            }
+        );
+
+
+        doctorState.hospitals =
+            hospitals;
+
+
+        doctorState.doctors =
+            doctors.map(
+                (doctor) => ({
+                    ...doctor,
+                    hospitalAssignments:
+                        assignmentsByDoctor.get(
+                            String(
+                                doctor.id
+                            )
+                        ) || []
+                })
+            );
+
+
+        doctorState.loaded =
+            true;
+
+        doctorState.loading =
+            false;
+
+
+        populateDoctorFilters();
+        applyDoctorFilters();
+
+
+        console.info(
+            "Dorkari public doctors loaded:",
+            doctorState.doctors.length
+        );
+
+
+    } catch (error) {
+
+        doctorState.loading =
+            false;
+
+
+        console.error(
+            "Doctor public data load failed:",
+            error
+        );
+
+
+        results.innerHTML = `
+            <div
+                class="interface-empty"
+            >
+                ডাক্তারদের তথ্য লোড করতে সমস্যা হয়েছে।
+            </div>
+        `;
+
+
+        showToast(
+            "ডাক্তারদের তথ্য লোড করা যায়নি"
+        );
+    }
+}
+
+
+// =========================================================
+// INITIALIZE DOCTOR INTERFACE
+// =========================================================
+
+function initializeDoctorInterface() {
+
+    const {
+        search,
+        locationButton,
+        specialtyFilter,
+        hospitalFilter,
+        divisionFilter,
+        results
+    } =
+        getDoctorElements();
+
+
+    /*
+     * Home location data পরে আসবে।
+     */
+    syncDoctorDivisionFilter();
+
+
+    document.addEventListener(
+        "dorkari:locations-loaded",
+        () => {
+            syncDoctorDivisionFilter();
+
+            if (
+                doctorState.loaded
+            ) {
+                renderDoctorResults();
+            }
+        }
+    );
+
+
+    /*
+     * SEARCH
+     */
+
+    search?.addEventListener(
+        "input",
+        () => {
+
+            doctorState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            applyDoctorFilters();
+        }
+    );
+
+
+    /*
+     * SPECIALTY
+     */
+
+    specialtyFilter?.addEventListener(
+        "change",
+        () => {
+
+            doctorState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            applyDoctorFilters();
+        }
+    );
+
+
+    /*
+     * HOSPITAL
+     */
+
+    hospitalFilter?.addEventListener(
+        "change",
+        () => {
+
+            doctorState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            applyDoctorFilters();
+        }
+    );
+
+
+    /*
+     * DIVISION
+     */
+
+    divisionFilter?.addEventListener(
+        "change",
+        () => {
+
+            doctorState.locationOnly =
+                false;
+
+
+            if (locationButton) {
+                locationButton.textContent =
+                    "⌖ এলাকা";
+            }
+
+
+            applyDoctorFilters();
+        }
+    );
+
+
+    /*
+     * MY AREA
+     */
+
+    locationButton?.addEventListener(
+        "click",
+        () => {
+
+            const saved =
+                getSavedHomeLocation();
+
+
+            if (!saved) {
+
+                showToast(
+                    "আগে Home থেকে আপনার লোকেশন সেট করুন"
+                );
+
+                return;
+            }
+
+
+            doctorState.locationOnly =
+                !doctorState.locationOnly;
+
+
+            if (
+                doctorState.locationOnly
+            ) {
+
+                locationButton.textContent =
+                    "✓ আমার এলাকা";
+
+
+                if (
+                    divisionFilter &&
+                    saved.divisionId
+                ) {
+
+                    divisionFilter.value =
+                        saved.divisionId;
+                }
+
+            } else {
+
+                locationButton.textContent =
+                    "⌖ এলাকা";
+
+
+                if (divisionFilter) {
+                    divisionFilter.value =
+                        "";
+                }
+
+            }
+
+
+            applyDoctorFilters();
+        }
+    );
+
+
+    /*
+     * PAGINATION
+     */
+
+    results?.addEventListener(
+        "click",
+        (event) => {
+
+            const button =
+                event.target.closest(
+                    "[data-doctor-page]"
+                );
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const page =
+                Number(
+                    button.dataset.doctorPage
+                );
+
+
+            if (
+                !Number.isFinite(page) ||
+                page < 1
+            ) {
+                return;
+            }
+
+
+            doctorState.currentPage =
+                page;
+
+
+            renderDoctorResults();
+
+
+            const interfaceElement =
+                getServiceInterface(
+                    "doctor"
+                );
+
+
+            interfaceElement?.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    );
+}
+
 function initializeServiceInterfaces() {
     /*
      * =========================================================
@@ -2506,6 +4275,12 @@ function initializeServiceInterfaces() {
                     ) {
                         loadHospitalData();
                     }
+                    if (
+                        service ===
+                        "doctor"
+                    ) {
+                        loadDoctorData();
+                    }
                 }
             );
 
@@ -2589,7 +4364,6 @@ function initializeServiceInterfaces() {
                 )
         );
 
-
     if (
         initialHash &&
         getServiceInterface(
@@ -2609,7 +4383,16 @@ function initializeServiceInterfaces() {
                     initialHash ===
                     "hospital"
                 ) {
+
                     loadHospitalData();
+
+                } else if (
+                    initialHash ===
+                    "doctor"
+                ) {
+
+                    loadDoctorData();
+
                 }
 
             },
@@ -2617,6 +4400,7 @@ function initializeServiceInterfaces() {
         );
 
     }
+
 }
 
 
@@ -4411,9 +6195,9 @@ document.addEventListener(
         initializeSearch();
 
         initializeBottomSearch();
-
         initializeServiceCards();
         initializeServiceInterfaces();
+        initializeDoctorInterface();
 
         initializeHomeLocationEvents();
 
