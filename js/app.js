@@ -2380,16 +2380,48 @@ function closeMobileMenu() {
 }
 
 
+// =========================================================
+// DESKTOP / NORMAL ANCHOR NAVIGATION
+// Bottom navigation এবং service interface trigger
+// এখানে handle করা হবে না।
+// =========================================================
+
 function initializeSmoothNavigation() {
 
     document.addEventListener(
         "click",
         (event) => {
 
+            /*
+             * Bottom navigation নিজে handle করবে।
+             */
+            if (
+                event.target.closest(
+                    "[data-bottom-nav]"
+                )
+            ) {
+                return;
+            }
+
+
+            /*
+             * Service interface trigger
+             * নিজে handle করবে।
+             */
+            if (
+                event.target.closest(
+                    "[data-interface-open]"
+                )
+            ) {
+                return;
+            }
+
+
             const link =
                 event.target.closest(
                     'a[href^="#"]'
                 );
+
 
             if (!link) {
                 return;
@@ -2397,21 +2429,19 @@ function initializeSmoothNavigation() {
 
 
             const targetId =
-                link.getAttribute(
-                    "href"
-                );
+                cleanText(
+                    link.getAttribute("href")
+                )
+                .replace(/^#/, "");
 
 
-            if (
-                !targetId ||
-                targetId === "#"
-            ) {
+            if (!targetId) {
                 return;
             }
 
 
             const target =
-                document.querySelector(
+                document.getElementById(
                     targetId
                 );
 
@@ -2434,7 +2464,7 @@ function initializeSmoothNavigation() {
         }
     );
 }
-
+ 
 
 // =========================================================
 // BOTTOM NAVIGATION
@@ -2458,7 +2488,12 @@ function setActiveBottomNav(
             );
         });
 }
-
+ 
+// =========================================================
+// BOTTOM NAVIGATION — APP STYLE
+// এখানে কোনো scroll হবে না।
+// প্রতিটি button একটি আলাদা app view খুলবে।
+// =========================================================
 
 function initializeBottomNavigation() {
 
@@ -2475,84 +2510,169 @@ function initializeBottomNavigation() {
 
         item.addEventListener(
             "click",
-            () => {
+            (event) => {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
 
                 const targetId =
                     cleanText(
                         item.dataset.sectionTarget
                     );
 
-                if (targetId) {
-                    setActiveBottomNav(
-                        targetId
-                    );
+
+                if (!targetId) {
+                    return;
                 }
+
+
+                /*
+                 * HOME
+                 */
+
+                if (
+                    targetId === "home"
+                ) {
+
+                    closeServiceInterface(
+                        false
+                    );
+
+
+                    setActiveBottomNav(
+                        "home"
+                    );
+
+
+                    window.history.replaceState(
+                        {},
+                        "",
+                        window.location.pathname +
+                        window.location.search
+                    );
+
+
+                    window.requestAnimationFrame(
+                        () => {
+
+                            window.scrollTo({
+                                top: 0,
+                                behavior: "smooth"
+                            });
+
+                        }
+                    );
+
+
+                    return;
+                }
+
+
+                /*
+                 * SERVICES
+                 */
+
+                if (
+                    targetId === "services"
+                ) {
+
+                    setActiveBottomNav(
+                        "services"
+                    );
+
+
+                    openServiceInterface(
+                        "services"
+                    );
+
+
+                    return;
+                }
+
+
+                /*
+                 * EMERGENCY
+                 */
+
+                if (
+                    targetId === "emergency"
+                ) {
+
+                    setActiveBottomNav(
+                        "emergency"
+                    );
+
+
+                    openServiceInterface(
+                        "emergency"
+                    );
+
+
+                    return;
+                }
+
+
+                /*
+                 * LOCATION
+                 */
+
+                if (
+                    targetId === "location"
+                ) {
+
+                    setActiveBottomNav(
+                        "location"
+                    );
+
+
+                    openServiceInterface(
+                        "location"
+                    );
+
+
+                    return;
+                }
+
+
+                /*
+                 * SEARCH
+                 */
+
+                if (
+                    item.id ===
+                    "bottomSearchNav"
+                ) {
+
+                    openServiceInterface(
+                        "search"
+                    );
+
+
+                    return;
+                }
+
             }
         );
+
     });
 
 
-    const observedSections =
-        [
-            "home",
-            "services",
-            "emergency",
-            "location"
-        ]
-            .map(
-                (id) =>
-                    document.getElementById(id)
-            )
-            .filter(Boolean);
+    /*
+     * কোনো IntersectionObserver আর নেই।
+     *
+     * কারণ user scroll করলে bottom nav-এর
+     * active state আর বদলাবে না।
+     *
+     * Active state এখন navigation click-এর
+     * উপর নির্ভর করবে।
+     */
 
-
-    if (
-        "IntersectionObserver" in window &&
-        observedSections.length
-    ) {
-
-        const observer =
-            new IntersectionObserver(
-                (entries) => {
-
-                    const visible =
-                        entries
-                            .filter(
-                                (entry) =>
-                                    entry.isIntersecting
-                            )
-                            .sort(
-                                (a, b) =>
-                                    b.intersectionRatio -
-                                    a.intersectionRatio
-                            )[0];
-
-
-                    if (!visible) {
-                        return;
-                    }
-
-
-                    setActiveBottomNav(
-                        visible.target.id
-                    );
-                },
-                {
-                    root: null,
-                    threshold: [0.18, 0.35, 0.55],
-                    rootMargin:
-                        "-15% 0px -55% 0px"
-                }
-            );
-
-
-        observedSections.forEach(
-            (section) =>
-                observer.observe(section)
-        );
-    }
+    setActiveBottomNav(
+        "home"
+    );
 }
-
 
 // =========================================================
 // 999 QUICK ACTIONS
