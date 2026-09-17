@@ -6121,17 +6121,20 @@ summary::after {
    MOBILE
    ========================================================= */
 
-@media (max-width: 760px) {
+ @media (max-width: 760px) {
 
     .blood-guideline-modal {
         align-items:
-            flex-end;
+            center;
 
         padding:
-            10px
-            10px
-            max(10px, env(safe-area-inset-bottom))
-            10px;
+            20px
+            12px
+            90px
+            12px;
+
+        overflow-y:
+            auto;
     }
 
 
