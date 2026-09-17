@@ -1584,14 +1584,47 @@
 
 
                     <div class="interface-toolbar">
-
-                        <input type="search" data-interface-search="doctor" placeholder="ডাক্তার বা বিশেষজ্ঞের নাম..."
-                            aria-label="ডাক্তার খুঁজুন">
+                        <input type="search" data-interface-search="doctor"
+                            placeholder="ডাক্তারের নাম, বিশেষজ্ঞতা বা হাসপাতাল খুঁজুন..." aria-label="ডাক্তার খুঁজুন"
+                            autocomplete="off">
 
                         <button type="button" data-interface-location="doctor">
                             ⌖ এলাকা
                         </button>
+                    </div>
 
+                    <div class="doctor-filter-grid" aria-label="ডাক্তার ফিল্টার">
+                        <label class="doctor-filter-field">
+                            <span>বিশেষজ্ঞতা</span>
+
+                            <select id="doctorFilterSpecialty" data-doctor-filter="specialty">
+                                <option value="">
+                                    সব বিশেষজ্ঞতা
+                                </option>
+                            </select>
+                        </label>
+
+
+                        <label class="doctor-filter-field">
+                            <span>হাসপাতাল</span>
+
+                            <select id="doctorFilterHospital" data-doctor-filter="hospital">
+                                <option value="">
+                                    সব হাসপাতাল
+                                </option>
+                            </select>
+                        </label>
+
+
+                        <label class="doctor-filter-field">
+                            <span>বিভাগ</span>
+
+                            <select id="doctorFilterDivision" data-doctor-filter="division">
+                                <option value="">
+                                    সব বিভাগ
+                                </option>
+                            </select>
+                        </label>
                     </div>
 
 
