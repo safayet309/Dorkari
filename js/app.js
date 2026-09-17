@@ -4391,6 +4391,1802 @@ function initializeAmbulanceInterface() {
 
     void results;
 }
+// =========================================================
+// DORKARI — GOVERNMENT PUBLIC DATA
+// Public Government Office / Service Listing
+// =========================================================
+
+const governmentState = {
+    offices: [],
+    filtered: [],
+    divisions: [],
+    districts: [],
+    upazilas: [],
+    loading: false,
+    loaded: false,
+    locationOnly: false
+};
+
+
+function getGovernmentElements() {
+    return {
+        search: $(
+            '[data-interface-search="government"]'
+        ),
+
+        locationButton: $(
+            '[data-interface-location="government"]'
+        ),
+
+        results: $(
+            '[data-interface-results="government"]'
+        ),
+
+        serviceType: $(
+            "#governmentFilterServiceType"
+        ),
+
+        division: $(
+            "#governmentFilterDivision"
+        ),
+
+        district: $(
+            "#governmentFilterDistrict"
+        ),
+
+        upazila: $(
+            "#governmentFilterUpazila"
+        ),
+
+        sort: $(
+            "#governmentSort"
+        ),
+
+        resultCount: $(
+            "#governmentResultCount"
+        )
+    };
+}
+
+
+/* =========================================================
+   LOCATION HELPERS
+   ========================================================= */
+
+function getGovernmentDivisionName(id) {
+    const item =
+        governmentState.divisions.find(
+            (division) =>
+                String(division.id) === String(id)
+        );
+
+    return (
+        cleanText(item?.name_bn) ||
+        cleanText(item?.name) ||
+        ""
+    );
+}
+
+
+function getGovernmentDistrictName(id) {
+    const item =
+        governmentState.districts.find(
+            (district) =>
+                String(district.id) === String(id)
+        );
+
+    return (
+        cleanText(item?.name_bn) ||
+        cleanText(item?.name) ||
+        ""
+    );
+}
+
+
+function getGovernmentUpazilaName(id) {
+    const item =
+        governmentState.upazilas.find(
+            (upazila) =>
+                String(upazila.id) === String(id)
+        );
+
+    return (
+        cleanText(item?.name_bn) ||
+        cleanText(item?.name) ||
+        ""
+    );
+}
+
+
+function getGovernmentLocationLabel(
+    office
+) {
+    return [
+        getGovernmentDivisionName(
+            office?.division_id
+        ),
+
+        getGovernmentDistrictName(
+            office?.district_id
+        ),
+
+        getGovernmentUpazilaName(
+            office?.upazila_id
+        )
+    ]
+        .map(cleanText)
+        .filter(Boolean)
+        .join(" → ");
+}
+
+
+function getGovernmentSavedLocation() {
+    const saved =
+        getSavedHomeLocation();
+
+    if (!saved) {
+        return null;
+    }
+
+    return {
+        divisionId:
+            cleanText(
+                saved.divisionId
+            ),
+
+        districtId:
+            cleanText(
+                saved.districtId
+            ),
+
+        upazilaId:
+            cleanText(
+                saved.upazilaId
+            )
+    };
+}
+
+
+function governmentMatchesLocation(
+    office,
+    saved
+) {
+    if (!saved) {
+        return true;
+    }
+
+    if (
+        saved.upazilaId &&
+        String(office.upazila_id) ===
+        String(saved.upazilaId)
+    ) {
+        return true;
+    }
+
+    if (
+        saved.districtId &&
+        String(office.district_id) ===
+        String(saved.districtId)
+    ) {
+        return true;
+    }
+
+    if (
+        saved.divisionId &&
+        String(office.division_id) ===
+        String(saved.divisionId)
+    ) {
+        return true;
+    }
+
+    return false;
+}
+
+
+function getGovernmentLocationScore(
+    office,
+    saved
+) {
+    if (!saved) {
+        return 0;
+    }
+
+    if (
+        saved.upazilaId &&
+        String(office.upazila_id) ===
+        String(saved.upazilaId)
+    ) {
+        return 3;
+    }
+
+    if (
+        saved.districtId &&
+        String(office.district_id) ===
+        String(saved.districtId)
+    ) {
+        return 2;
+    }
+
+    if (
+        saved.divisionId &&
+        String(office.division_id) ===
+        String(saved.divisionId)
+    ) {
+        return 1;
+    }
+
+    return 0;
+}
+
+
+/* =========================================================
+   SEARCH TEXT
+   ========================================================= */
+
+function getGovernmentSearchText(
+    office
+) {
+    return [
+        office?.name_bn,
+        office?.name,
+        office?.office_type,
+        office?.address,
+        office?.phone,
+        office?.email,
+        office?.website,
+        office?.description,
+        getGovernmentLocationLabel(
+            office
+        )
+    ]
+        .map(cleanText)
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+}
+
+
+/* =========================================================
+   MAP
+   ========================================================= */
+
+function buildGovernmentMapUrl(
+    office
+) {
+    const searchText = [
+        cleanText(
+            office?.name_bn
+        ) ||
+        cleanText(
+            office?.name
+        ),
+
+        cleanText(
+            office?.address
+        ),
+
+        getGovernmentLocationLabel(
+            office
+        )
+    ]
+        .map(cleanText)
+        .filter(Boolean)
+        .join(", ");
+
+    if (!searchText) {
+        return "";
+    }
+
+    return (
+        "https://www.google.com/maps/search/?api=1" +
+        `&query=${encodeURIComponent(
+            searchText
+        )}`
+    );
+}
+
+
+/* =========================================================
+   FILTER OPTIONS
+   ========================================================= */
+
+function populateGovernmentServiceTypes() {
+    const {
+        serviceType
+    } =
+        getGovernmentElements();
+
+    if (!serviceType) {
+        return;
+    }
+
+    const currentValue =
+        cleanText(
+            serviceType.value
+        );
+
+    const types = Array.from(
+        new Set(
+            governmentState.offices
+                .map(
+                    (office) =>
+                        cleanText(
+                            office.office_type
+                        )
+                )
+                .filter(Boolean)
+        )
+    ).sort(
+        (a, b) =>
+            a.localeCompare(
+                b,
+                "bn"
+            )
+    );
+
+    serviceType.innerHTML = `
+        <option value="">
+            সব ধরনের সেবা
+        </option>
+        ${types
+            .map(
+                (type) => `
+                    <option
+                        value="${escapeHTML(
+                    type
+                )}"
+                    >
+                        ${escapeHTML(
+                    type
+                )}
+                    </option>
+                `
+            )
+            .join("")}
+    `;
+
+    if (
+        types.includes(
+            currentValue
+        )
+    ) {
+        serviceType.value =
+            currentValue;
+    }
+}
+
+
+function populateGovernmentDivisionFilter() {
+    const {
+        division
+    } =
+        getGovernmentElements();
+
+    if (!division) {
+        return;
+    }
+
+    const currentValue =
+        cleanText(
+            division.value
+        );
+
+    division.innerHTML = `
+        <option value="">
+            সব বিভাগ
+        </option>
+        ${governmentState.divisions
+            .map(
+                (item) => `
+                    <option
+                        value="${escapeHTML(
+                    item.id
+                )}"
+                    >
+                        ${escapeHTML(
+                    item.name_bn ||
+                    item.name
+                )}
+                    </option>
+                `
+            )
+            .join("")}
+    `;
+
+    if (
+        governmentState.divisions.some(
+            (item) =>
+                String(item.id) ===
+                String(currentValue)
+        )
+    ) {
+        division.value =
+            currentValue;
+    }
+}
+
+
+function populateGovernmentDistrictFilter() {
+    const {
+        division,
+        district
+    } =
+        getGovernmentElements();
+
+    if (!district) {
+        return;
+    }
+
+    const divisionId =
+        cleanText(
+            division?.value
+        );
+
+    const currentValue =
+        cleanText(
+            district.value
+        );
+
+    const districts =
+        governmentState.districts.filter(
+            (item) =>
+                !divisionId ||
+                String(
+                    item.division_id
+                ) ===
+                String(
+                    divisionId
+                )
+        );
+
+    district.innerHTML = `
+        <option value="">
+            সব জেলা
+        </option>
+        ${districts
+            .map(
+                (item) => `
+                    <option
+                        value="${escapeHTML(
+                    item.id
+                )}"
+                    >
+                        ${escapeHTML(
+                    item.name_bn ||
+                    item.name
+                )}
+                    </option>
+                `
+            )
+            .join("")}
+    `;
+
+    district.disabled =
+        districts.length === 0;
+
+    if (
+        districts.some(
+            (item) =>
+                String(item.id) ===
+                String(currentValue)
+        )
+    ) {
+        district.value =
+            currentValue;
+    }
+}
+
+
+function populateGovernmentUpazilaFilter() {
+    const {
+        district
+    } =
+        getGovernmentElements();
+
+    const {
+        upazila
+    } =
+        getGovernmentElements();
+
+    if (!upazila) {
+        return;
+    }
+
+    const districtId =
+        cleanText(
+            district?.value
+        );
+
+    const currentValue =
+        cleanText(
+            upazila.value
+        );
+
+    const upazilas =
+        governmentState.upazilas.filter(
+            (item) =>
+                !districtId ||
+                String(
+                    item.district_id
+                ) ===
+                String(
+                    districtId
+                )
+        );
+
+    upazila.innerHTML = `
+        <option value="">
+            সব উপজেলা
+        </option>
+        ${upazilas
+            .map(
+                (item) => `
+                    <option
+                        value="${escapeHTML(
+                    item.id
+                )}"
+                    >
+                        ${escapeHTML(
+                    item.name_bn ||
+                    item.name
+                )}
+                    </option>
+                `
+            )
+            .join("")}
+    `;
+
+    upazila.disabled =
+        upazilas.length === 0;
+
+    if (
+        upazilas.some(
+            (item) =>
+                String(item.id) ===
+                String(currentValue)
+        )
+    ) {
+        upazila.value =
+            currentValue;
+    }
+}
+
+
+/* =========================================================
+   CARD ICON
+   ========================================================= */
+
+function getGovernmentCardIcon(
+    officeType
+) {
+    const type =
+        cleanText(
+            officeType
+        ).toLowerCase();
+
+    if (
+        type.includes("শিক্ষা") ||
+        type.includes("education")
+    ) {
+        return `
+            <svg
+                viewBox="0 0 64 64"
+                fill="none"
+                aria-hidden="true"
+            >
+                <path
+                    d="m8 25 24-12 24 12-24 12L8 25Z"
+                    stroke="currentColor"
+                    stroke-width="3.5"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M18 31v12c0 3 6 7 14 7s14-4 14-7V31"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                    stroke-linecap="round"
+                />
+                <path
+                    d="M56 26v13"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                    stroke-linecap="round"
+                />
+            </svg>
+        `;
+    }
+
+    if (
+        type.includes("ভূমি") ||
+        type.includes("land")
+    ) {
+        return `
+            <svg
+                viewBox="0 0 64 64"
+                fill="none"
+                aria-hidden="true"
+            >
+                <path
+                    d="M16 9h25l10 10v36H16V9Z"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M41 9v11h10"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                    stroke-linejoin="round"
+                />
+                <path
+                    d="M24 28h18M24 36h18M24 44h12"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                    stroke-linecap="round"
+                />
+            </svg>
+        `;
+    }
+
+    if (
+        type.includes("কর") ||
+        type.includes("tax")
+    ) {
+        return `
+            <svg
+                viewBox="0 0 64 64"
+                fill="none"
+                aria-hidden="true"
+            >
+                <rect
+                    x="12"
+                    y="9"
+                    width="40"
+                    height="46"
+                    rx="6"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                />
+                <path
+                    d="M22 23h20M22 32h20M22 41h11"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                    stroke-linecap="round"
+                />
+                <path
+                    d="M39 40h6"
+                    stroke="currentColor"
+                    stroke-width="3.5"
+                    stroke-linecap="round"
+                />
+            </svg>
+        `;
+    }
+
+    if (
+        type.includes("পাসপোর্ট") ||
+        type.includes("passport") ||
+        type.includes("পরিচয়") ||
+        type.includes("nid")
+    ) {
+        return `
+            <svg
+                viewBox="0 0 64 64"
+                fill="none"
+                aria-hidden="true"
+            >
+                <rect
+                    x="10"
+                    y="13"
+                    width="44"
+                    height="38"
+                    rx="5"
+                    stroke="currentColor"
+                    stroke-width="3.2"
+                />
+                <circle
+                    cx="25"
+                    cy="26"
+                    r="5"
+                    stroke="currentColor"
+                    stroke-width="3"
+                />
+                <path
+                    d="M18 41c1-5 4-7 7-7s6 2 7 7M37 25h10M37 33h10M37 41h7"
+                    stroke="currentColor"
+                    stroke-width="3.1"
+                    stroke-linecap="round"
+                />
+            </svg>
+        `;
+    }
+
+    return `
+        <svg
+            viewBox="0 0 64 64"
+            fill="none"
+            aria-hidden="true"
+        >
+            <path
+                d="M10 27 32 14l22 13"
+                stroke="currentColor"
+                stroke-width="3.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+
+            <path
+                d="M14 29h36"
+                stroke="currentColor"
+                stroke-width="3.2"
+                stroke-linecap="round"
+            />
+
+            <path
+                d="M18 29v21M28 29v21M36 29v21M46 29v21"
+                stroke="currentColor"
+                stroke-width="3"
+                stroke-linecap="round"
+            />
+
+            <path
+                d="M11 51h42"
+                stroke="currentColor"
+                stroke-width="3.4"
+                stroke-linecap="round"
+            />
+        </svg>
+    `;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+function buildGovernmentCard(
+    office
+) {
+    const name =
+        cleanText(
+            office?.name_bn
+        ) ||
+        cleanText(
+            office?.name
+        ) ||
+        "নাম পাওয়া যায়নি";
+
+    const englishName =
+        cleanText(
+            office?.name
+        );
+
+    const officeType =
+        cleanText(
+            office?.office_type
+        );
+
+    const phone =
+        cleanText(
+            office?.phone
+        );
+
+    const email =
+        cleanText(
+            office?.email
+        );
+
+    const website =
+        cleanText(
+            office?.website
+        );
+
+    const address =
+        cleanText(
+            office?.address
+        );
+
+    const description =
+        cleanText(
+            office?.description
+        );
+
+    const locationLabel =
+        getGovernmentLocationLabel(
+            office
+        );
+
+    const mapUrl =
+        buildGovernmentMapUrl(
+            office
+        );
+
+    const verifiedBadge =
+        office?.is_verified
+            ? `
+                <span
+                    class="government-interface-badge is-verified"
+                >
+                    ✓ যাচাইকৃত
+                </span>
+            `
+            : "";
+
+    const serviceBadge =
+        officeType
+            ? `
+                <span
+                    class="government-interface-badge is-service"
+                >
+                    ${escapeHTML(
+                officeType
+            )}
+                </span>
+            `
+            : "";
+
+    const callAction =
+        phone
+            ? `
+                <a
+                    href="tel:${escapeHTML(
+                normalizePhone(
+                    phone
+                )
+            )}"
+                    class="government-interface-action is-primary"
+                >
+                    ☎ কল করুন
+                </a>
+            `
+            : `
+                <span
+                    class="government-interface-action"
+                    aria-disabled="true"
+                >
+                    ফোন নেই
+                </span>
+            `;
+
+    const mapAction =
+        mapUrl
+            ? `
+                <a
+                    href="${escapeHTML(
+                mapUrl
+            )}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="government-interface-action"
+                >
+                    ⌖ ম্যাপে দেখুন
+                </a>
+            `
+            : "";
+
+    return `
+        <article
+            class="government-interface-card"
+        >
+
+            <div
+                class="government-interface-card-top"
+            >
+
+                <div
+                    class="government-interface-card-icon"
+                    aria-hidden="true"
+                >
+                    ${getGovernmentCardIcon(
+        officeType
+    )}
+                </div>
+
+                <div
+                    class="government-interface-card-content"
+                >
+
+                    <h3
+                        class="government-interface-card-title"
+                    >
+                        ${escapeHTML(
+        name
+    )}
+                    </h3>
+
+                    ${englishName &&
+            englishName !== name
+            ? `
+                                <p
+                                    class="government-interface-card-subtitle"
+                                >
+                                    ${escapeHTML(
+                englishName
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+                </div>
+
+            </div>
+
+
+            <span
+                class="government-interface-card-mark"
+                aria-hidden="true"
+            >
+                +
+            </span>
+
+
+            <div
+                class="government-interface-badges"
+            >
+                ${serviceBadge}
+                ${verifiedBadge}
+            </div>
+
+
+            <div
+                class="government-interface-contact-row"
+            >
+
+                ${phone
+            ? `
+                            <div
+                                class="government-interface-contact-item"
+                            >
+                                <span
+                                    aria-hidden="true"
+                                >
+                                    ☎
+                                </span>
+
+                                <span>
+                                    ${escapeHTML(
+                phone
+            )}
+                                </span>
+                            </div>
+                        `
+            : ""
+        }
+
+                ${email
+            ? `
+                            <div
+                                class="government-interface-contact-item"
+                            >
+                                <span
+                                    aria-hidden="true"
+                                >
+                                    @
+                                </span>
+
+                                <span>
+                                    ${escapeHTML(
+                email
+            )}
+                                </span>
+                            </div>
+                        `
+            : ""
+        }
+
+            </div>
+
+
+            ${locationLabel
+            ? `
+                        <div
+                            class="government-interface-meta"
+                        >
+                            <span
+                                aria-hidden="true"
+                            >
+                                ⌖
+                            </span>
+
+                            <span>
+                                ${escapeHTML(
+                locationLabel
+            )}
+                            </span>
+                        </div>
+                    `
+            : ""
+        }
+
+
+            ${address
+            ? `
+                        <div
+                            class="government-interface-meta"
+                        >
+                            <span
+                                aria-hidden="true"
+                            >
+                                ⌂
+                            </span>
+
+                            <span>
+                                ${escapeHTML(
+                address
+            )}
+                            </span>
+                        </div>
+                    `
+            : ""
+        }
+
+
+            <div
+                class="government-interface-actions"
+            >
+                ${callAction}
+
+                ${mapAction}
+
+                ${website
+            ? `
+                            <a
+                                href="${escapeHTML(
+                website
+            )}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="government-interface-action"
+                            >
+                                ওয়েবসাইট
+                            </a>
+                        `
+            : `
+                            <button
+                                type="button"
+                                class="government-interface-action"
+                                data-government-details
+                            >
+                                বিস্তারিত
+                            </button>
+                        `
+        }
+            </div>
+
+
+            <details
+                class="government-interface-details"
+            >
+
+                <summary>
+                    বিস্তারিত দেখুন
+                </summary>
+
+                <div
+                    class="government-interface-details-content"
+                >
+
+                    ${description
+            ? `
+                                <p>
+                                    ${escapeHTML(
+                description
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+                    ${website
+            ? `
+                                <p>
+                                    <strong>
+                                        ওয়েবসাইট:
+                                    </strong>
+                                    <a
+                                        href="${escapeHTML(
+                website
+            )}"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        ${escapeHTML(
+                website
+            )}
+                                    </a>
+                                </p>
+                            `
+            : ""
+        }
+
+                    ${email
+            ? `
+                                <p>
+                                    <strong>
+                                        ইমেইল:
+                                    </strong>
+                                    ${escapeHTML(
+                email
+            )}
+                                </p>
+                            `
+            : ""
+        }
+
+                </div>
+
+            </details>
+
+        </article>
+    `;
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function renderGovernmentResults() {
+    const {
+        results,
+        resultCount
+    } =
+        getGovernmentElements();
+
+    if (!results) {
+        return;
+    }
+
+    const search =
+        cleanText(
+            getGovernmentElements()
+                .search
+                ?.value
+        ).toLowerCase();
+
+    const serviceType =
+        cleanText(
+            getGovernmentElements()
+                .serviceType
+                ?.value
+        );
+
+    const divisionId =
+        cleanText(
+            getGovernmentElements()
+                .division
+                ?.value
+        );
+
+    const districtId =
+        cleanText(
+            getGovernmentElements()
+                .district
+                ?.value
+        );
+
+    const upazilaId =
+        cleanText(
+            getGovernmentElements()
+                .upazila
+                ?.value
+        );
+
+    const saved =
+        getGovernmentSavedLocation();
+
+
+    governmentState.filtered =
+        governmentState.offices.filter(
+            (office) => {
+
+                if (
+                    governmentState.locationOnly &&
+                    !governmentMatchesLocation(
+                        office,
+                        saved
+                    )
+                ) {
+                    return false;
+                }
+
+
+                if (
+                    serviceType &&
+                    cleanText(
+                        office.office_type
+                    ) !==
+                    serviceType
+                ) {
+                    return false;
+                }
+
+
+                if (
+                    divisionId &&
+                    String(
+                        office.division_id
+                    ) !==
+                    String(
+                        divisionId
+                    )
+                ) {
+                    return false;
+                }
+
+
+                if (
+                    districtId &&
+                    String(
+                        office.district_id
+                    ) !==
+                    String(
+                        districtId
+                    )
+                ) {
+                    return false;
+                }
+
+
+                if (
+                    upazilaId &&
+                    String(
+                        office.upazila_id
+                    ) !==
+                    String(
+                        upazilaId
+                    )
+                ) {
+                    return false;
+                }
+
+
+                if (
+                    search &&
+                    !getGovernmentSearchText(
+                        office
+                    ).includes(
+                        search
+                    )
+                ) {
+                    return false;
+                }
+
+
+                return true;
+            }
+        );
+
+
+    const sortValue =
+        cleanText(
+            getGovernmentElements()
+                .sort
+                ?.value
+        ) || "nearest";
+
+
+    const sorted =
+        [...governmentState.filtered];
+
+
+    if (
+        sortValue === "nearest"
+    ) {
+        sorted.sort(
+            (a, b) => {
+
+                const scoreA =
+                    getGovernmentLocationScore(
+                        a,
+                        saved
+                    );
+
+                const scoreB =
+                    getGovernmentLocationScore(
+                        b,
+                        saved
+                    );
+
+                if (
+                    scoreA !== scoreB
+                ) {
+                    return (
+                        scoreB -
+                        scoreA
+                    );
+                }
+
+                if (
+                    Boolean(
+                        b.is_verified
+                    ) !==
+                    Boolean(
+                        a.is_verified
+                    )
+                ) {
+                    return (
+                        Number(
+                            Boolean(
+                                b.is_verified
+                            )
+                        ) -
+                        Number(
+                            Boolean(
+                                a.is_verified
+                            )
+                        )
+                    );
+                }
+
+                return (
+                    getDisplayName(
+                        a
+                    ).localeCompare(
+                        getDisplayName(
+                            b
+                        ),
+                        "bn"
+                    )
+                );
+            }
+        );
+    }
+
+
+    if (
+        sortValue === "name"
+    ) {
+        sorted.sort(
+            (a, b) =>
+                getDisplayName(
+                    a
+                ).localeCompare(
+                    getDisplayName(
+                        b
+                    ),
+                    "bn"
+                )
+        );
+    }
+
+
+    if (
+        sortValue ===
+        "service_type"
+    ) {
+        sorted.sort(
+            (a, b) =>
+                cleanText(
+                    a.office_type
+                ).localeCompare(
+                    cleanText(
+                        b.office_type
+                    ),
+                    "bn"
+                )
+        );
+    }
+
+
+    governmentState.filtered =
+        sorted;
+
+
+    if (resultCount) {
+        resultCount.textContent =
+            Number(
+                sorted.length
+            ).toLocaleString(
+                "bn-BD"
+            );
+    }
+
+
+    if (
+        sorted.length === 0
+    ) {
+        results.innerHTML = `
+            <div class="interface-empty">
+                ${governmentState.locationOnly
+                ? "আপনার নির্বাচিত এলাকায় কোনো সরকারি অফিস পাওয়া যায়নি।"
+                : "কোনো সরকারি অফিস বা সেবার তথ্য পাওয়া যায়নি।"
+            }
+            </div>
+        `;
+
+        return;
+    }
+
+
+    results.innerHTML = `
+        <div
+            class="government-interface-list"
+        >
+            ${sorted
+            .map(
+                buildGovernmentCard
+            )
+            .join("")}
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   LOAD DATA
+   ========================================================= */
+
+async function loadGovernmentData() {
+    const {
+        results
+    } =
+        getGovernmentElements();
+
+    if (!results) {
+        return;
+    }
+
+    if (
+        governmentState.loading
+    ) {
+        return;
+    }
+
+    if (
+        governmentState.loaded
+    ) {
+        renderGovernmentResults();
+        return;
+    }
+
+    if (
+        !dorkariSupabase
+    ) {
+        results.innerHTML = `
+            <div class="interface-empty">
+                Supabase সংযোগ পাওয়া যায়নি।
+            </div>
+        `;
+
+        return;
+    }
+
+
+    governmentState.loading =
+        true;
+
+
+    results.innerHTML = `
+        <div class="interface-empty">
+            সরকারি সেবার তথ্য লোড হচ্ছে...
+        </div>
+    `;
+
+
+    try {
+
+        const [
+            officesResult,
+            divisionsResult,
+            districtsResult,
+            upazilasResult
+        ] =
+            await Promise.all([
+
+                dorkariSupabase
+                    .from(
+                        "government_offices"
+                    )
+                    .select(`
+                        id,
+                        name,
+                        name_bn,
+                        office_type,
+                        division_id,
+                        district_id,
+                        upazila_id,
+                        address,
+                        phone,
+                        email,
+                        website,
+                        description,
+                        is_verified,
+                        is_active,
+                        created_at,
+                        updated_at
+                    `)
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name"
+                    ),
+
+                dorkariSupabase
+                    .from(
+                        "divisions"
+                    )
+                    .select(
+                        "id,name,name_bn"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name"
+                    ),
+
+                dorkariSupabase
+                    .from(
+                        "districts"
+                    )
+                    .select(
+                        "id,name,name_bn,division_id"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name"
+                    ),
+
+                dorkariSupabase
+                    .from(
+                        "upazilas"
+                    )
+                    .select(
+                        "id,name,name_bn,district_id"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name"
+                    )
+            ]);
+
+
+        if (
+            officesResult.error
+        ) {
+            throw (
+                officesResult.error
+            );
+        }
+
+        if (
+            divisionsResult.error
+        ) {
+            throw (
+                divisionsResult.error
+            );
+        }
+
+        if (
+            districtsResult.error
+        ) {
+            throw (
+                districtsResult.error
+            );
+        }
+
+        if (
+            upazilasResult.error
+        ) {
+            throw (
+                upazilasResult.error
+            );
+        }
+
+
+        governmentState.offices =
+            officesResult.data ||
+            [];
+
+        governmentState.divisions =
+            divisionsResult.data ||
+            [];
+
+        governmentState.districts =
+            districtsResult.data ||
+            [];
+
+        governmentState.upazilas =
+            upazilasResult.data ||
+            [];
+
+        governmentState.loaded =
+            true;
+
+
+        populateGovernmentServiceTypes();
+
+        populateGovernmentDivisionFilter();
+
+        populateGovernmentDistrictFilter();
+
+        populateGovernmentUpazilaFilter();
+
+        renderGovernmentResults();
+
+
+        console.info(
+            "Dorkari Government loaded:",
+            {
+                offices:
+                    governmentState
+                        .offices
+                        .length,
+                divisions:
+                    governmentState
+                        .divisions
+                        .length,
+                districts:
+                    governmentState
+                        .districts
+                        .length,
+                upazilas:
+                    governmentState
+                        .upazilas
+                        .length
+            }
+        );
+
+    } catch (
+    error
+    ) {
+
+        console.error(
+            "Government data load failed:",
+            error
+        );
+
+        results.innerHTML = `
+            <div class="interface-empty">
+                সরকারি সেবার তথ্য লোড করা যায়নি।
+            </div>
+        `;
+
+        showToast(
+            "সরকারি সেবার তথ্য লোড করা যায়নি"
+        );
+
+    } finally {
+
+        governmentState.loading =
+            false;
+
+    }
+}
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+function initializeGovernmentInterface() {
+    const {
+        search,
+        locationButton,
+        serviceType,
+        division,
+        district,
+        upazila,
+        sort
+    } =
+        getGovernmentElements();
+
+
+    search?.addEventListener(
+        "input",
+        () => {
+            renderGovernmentResults();
+        }
+    );
+
+
+    serviceType?.addEventListener(
+        "change",
+        () => {
+            renderGovernmentResults();
+        }
+    );
+
+
+    division?.addEventListener(
+        "change",
+        () => {
+
+            populateGovernmentDistrictFilter();
+
+            populateGovernmentUpazilaFilter();
+
+            renderGovernmentResults();
+
+        }
+    );
+
+
+    district?.addEventListener(
+        "change",
+        () => {
+
+            populateGovernmentUpazilaFilter();
+
+            renderGovernmentResults();
+
+        }
+    );
+
+
+    upazila?.addEventListener(
+        "change",
+        () => {
+            renderGovernmentResults();
+        }
+    );
+
+
+    sort?.addEventListener(
+        "change",
+        () => {
+            renderGovernmentResults();
+        }
+    );
+
+
+    locationButton?.addEventListener(
+        "click",
+        () => {
+
+            const saved =
+                getGovernmentSavedLocation();
+
+            if (!saved) {
+                showToast(
+                    "আগে আপনার এলাকা নির্বাচন করে সংরক্ষণ করুন"
+                );
+
+                return;
+            }
+
+
+            governmentState.locationOnly =
+                !governmentState.locationOnly;
+
+
+            locationButton.textContent =
+                governmentState.locationOnly
+                    ? "✓ আমার এলাকা"
+                    : "⌖ আমার এলাকা";
+
+
+            renderGovernmentResults();
+
+        }
+    );
+
+
+    document.addEventListener(
+        "dorkari:locations-loaded",
+        () => {
+
+            if (
+                governmentState.loaded
+            ) {
+                renderGovernmentResults();
+            }
+
+        }
+    );
+
+}
 
 function initializeServiceInterfaces() {
     /*
@@ -5873,6 +7669,9 @@ function initializeServiceInterfaces() {
                     ) {
                         loadAmbulanceData();
                     }
+                    if (service === "government") {
+                        loadGovernmentData();
+                    }
                 }
             );
 
@@ -5994,6 +7793,9 @@ function initializeServiceInterfaces() {
 
                     loadAmbulanceData();
 
+                }
+                if (initialHash === "government") {
+                    loadGovernmentData();
                 }
 
             },
@@ -7798,6 +9600,7 @@ document.addEventListener(
         initializeBottomSearch();
         initializeServiceCards();
         initializeServiceInterfaces();
+        initializeGovernmentInterface();
         initializeDoctorInterface();
         initializeAmbulanceInterface();
 
