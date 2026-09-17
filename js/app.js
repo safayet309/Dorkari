@@ -2372,20 +2372,74 @@ function initializeServiceInterfaces() {
                 hospitalState.locationOnly =
                     !hospitalState.locationOnly;
 
-
                 if (
                     hospitalState.locationOnly
                 ) {
-
                     locationButton.textContent =
                         "✓ আমার এলাকা";
 
-                } else {
+                    /*
+                     * Saved Home location-টাও
+                     * Hospital dropdown-এ দেখাই।
+                     */
+                    if (
+                        divisionFilter &&
+                        saved.divisionId
+                    ) {
+                        divisionFilter.value =
+                            saved.divisionId;
 
+                        populateHospitalDistrictFilter(
+                            saved.divisionId
+                        );
+                    }
+
+                    if (
+                        districtFilter &&
+                        saved.districtId
+                    ) {
+                        districtFilter.value =
+                            saved.districtId;
+
+                        populateHospitalUpazilaFilter(
+                            saved.districtId
+                        );
+                    }
+
+                    if (
+                        upazilaFilter &&
+                        saved.upazilaId
+                    ) {
+                        upazilaFilter.value =
+                            saved.upazilaId;
+                    }
+
+                } else {
                     locationButton.textContent =
                         "⌖ এলাকা";
-                }
 
+                    /*
+                     * "আমার এলাকা" mode বন্ধ করলে
+                     * manual dropdown-এর filter পরিষ্কার করি।
+                     */
+                    if (divisionFilter) {
+                        divisionFilter.value = "";
+                    }
+
+                    if (districtFilter) {
+                        resetLocationSelect(
+                            districtFilter,
+                            "সব জেলা"
+                        );
+                    }
+
+                    if (upazilaFilter) {
+                        resetLocationSelect(
+                            upazilaFilter,
+                            "সব উপজেলা"
+                        );
+                    }
+                }
 
                 renderHospitalResults();
             }
