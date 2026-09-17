@@ -4560,3 +4560,12 @@ body.service-interface-open .service-interface-layer {
         transition: none !important;
     }
 }
+/* =========================================================
+   SERVICE INTERFACE HEADING FOCUS
+   Programmatic focus should not show browser outline
+   ========================================================= */
+
+.service-interface h2[tabindex="-1"]:focus {
+    outline: none;
+    box-shadow: none;
+}
