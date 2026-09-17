@@ -1036,6 +1036,40 @@ function closeServiceInterface(
         );
     }
 }
+// =========================================================
+// GLOBAL LOCATION NAME HELPER
+// Doctor / Hospital public interface থেকে ব্যবহারযোগ্য
+// =========================================================
+
+function getLocationNameById(
+    collection,
+    id
+) {
+
+    if (!id) {
+        return "";
+    }
+
+
+    const item =
+        (collection || []).find(
+            (entry) =>
+                String(entry.id) ===
+                String(id)
+        );
+
+
+    if (!item) {
+        return "";
+    }
+
+
+    return (
+        cleanText(item.name_bn) ||
+        cleanText(item.name) ||
+        ""
+    );
+}
 
 // =========================================================
 // DOCTOR PUBLIC DATA
