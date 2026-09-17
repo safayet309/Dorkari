@@ -15,12 +15,12 @@ const supabaseConfig =
 
 const dorkariSupabase =
     window.supabase &&
-    supabaseConfig?.URL &&
-    supabaseConfig?.PUBLISHABLE_KEY
+        supabaseConfig?.URL &&
+        supabaseConfig?.PUBLISHABLE_KEY
         ? window.supabase.createClient(
-              supabaseConfig.URL,
-              supabaseConfig.PUBLISHABLE_KEY
-          )
+            supabaseConfig.URL,
+            supabaseConfig.PUBLISHABLE_KEY
+        )
         : null;
 
 
@@ -234,7 +234,7 @@ async function copyText(
         if (
             navigator.clipboard &&
             typeof navigator.clipboard.writeText ===
-                "function"
+            "function"
         ) {
 
             await navigator.clipboard.writeText(
@@ -1684,12 +1684,12 @@ function renderEmergencyRecords(
 
                                 <a
                                     href="tel:${escapeHTML(
-                                        safePhone
-                                    )}"
+                            safePhone
+                        )}"
                                     class="call-btn"
                                     aria-label="${escapeHTML(
-                                        `${name} - কল করুন`
-                                    )}"
+                            `${name} - কল করুন`
+                        )}"
                                 >
                                     📞 কল
                                 </a>
@@ -1698,11 +1698,11 @@ function renderEmergencyRecords(
                                     type="button"
                                     class="copy-btn"
                                     data-copy="${escapeHTML(
-                                        phone
-                                    )}"
+                            phone
+                        )}"
                                     aria-label="${escapeHTML(
-                                        `${name} - নম্বর কপি করুন`
-                                    )}"
+                            `${name} - নম্বর কপি করুন`
+                        )}"
                                 >
                                     ⧉ কপি
                                 </button>
@@ -1735,8 +1735,8 @@ function renderEmergencyRecords(
 
                                 <h3>
                                     ${escapeHTML(
-                                        name
-                                    )}
+                    name
+                )}
                                 </h3>
 
                                 ${verifiedBadge}
@@ -1746,8 +1746,8 @@ function renderEmergencyRecords(
 
                             <p>
                                 ${escapeHTML(
-                                    description
-                                )}
+                    description
+                )}
                             </p>
 
 
@@ -2289,6 +2289,52 @@ function initializeImageFallbacks() {
     });
 }
 
+// =========================================================
+// PWA SERVICE WORKER
+// =========================================================
+
+function initializeServiceWorker() {
+
+    if (
+        !("serviceWorker" in navigator)
+    ) {
+        return;
+    }
+
+
+    /*
+     * Local development এবং HTTPS production
+     * উভয় ক্ষেত্রেই browser service worker
+     * register করার চেষ্টা করবে।
+     */
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            navigator.serviceWorker
+                .register("./sw.js")
+                .then((registration) => {
+
+                    console.info(
+                        "Dorkari Service Worker registered:",
+                        registration.scope
+                    );
+
+                })
+                .catch((error) => {
+
+                    console.warn(
+                        "Dorkari Service Worker registration failed:",
+                        error
+                    );
+
+                });
+
+        }
+    );
+}
+
 
 // =========================================================
 // INITIALIZATION
@@ -2317,6 +2363,7 @@ document.addEventListener(
         initializeHeaderScroll();
 
         initializePWAInstall();
+        initializeServiceWorker();
 
         initializeImageFallbacks();
 
