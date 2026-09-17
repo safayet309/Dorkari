@@ -1599,6 +1599,595 @@
 
 
                 <!-- =================================================
+                     ALL SERVICES INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface app-nav-interface"
+                    data-interface="services"
+                    id="servicesNavInterface"
+                    hidden
+                    aria-labelledby="servicesNavInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon">
+                            ⊞
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                Dorkari সেবা
+                            </span>
+
+                            <h2 id="servicesNavInterfaceTitle">
+                                সব সেবা
+                            </h2>
+
+                            <p>
+                                আপনার প্রয়োজন অনুযায়ী
+                                একটি সেবা বেছে নিন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="all-services-interface-grid">
+
+                        <button
+                            type="button"
+                            class="service-card is-emergency"
+                            data-service="emergency"
+                            data-interface-open="emergency"
+                        >
+
+                            <span
+                                class="service-icon"
+                                aria-hidden="true"
+                            >
+                                !
+                            </span>
+
+                            <span class="service-info">
+
+                                <span class="service-info-main">
+
+                                    <strong>
+                                        জরুরি সেবা
+                                    </strong>
+
+                                </span>
+
+                                <span class="card-arrow">
+                                    ↗
+                                </span>
+
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="service-card is-hospital"
+                            data-service="hospital"
+                            data-interface-open="hospital"
+                        >
+
+                            <span
+                                class="service-icon"
+                                aria-hidden="true"
+                            >
+                                +
+                            </span>
+
+                            <span class="service-info">
+
+                                <span class="service-info-main">
+
+                                    <strong>
+                                        হাসপাতাল
+                                    </strong>
+
+                                </span>
+
+                                <span class="card-arrow">
+                                    ↗
+                                </span>
+
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="service-card is-doctor"
+                            data-service="doctor"
+                            data-interface-open="doctor"
+                        >
+
+                            <span
+                                class="service-icon"
+                                aria-hidden="true"
+                            >
+                                D
+                            </span>
+
+                            <span class="service-info">
+
+                                <span class="service-info-main">
+
+                                    <strong>
+                                        ডাক্তার
+                                    </strong>
+
+                                </span>
+
+                                <span class="card-arrow">
+                                    ↗
+                                </span>
+
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="service-card is-ambulance"
+                            data-service="ambulance"
+                            data-interface-open="ambulance"
+                        >
+
+                            <span
+                                class="service-icon"
+                                aria-hidden="true"
+                            >
+                                A
+                            </span>
+
+                            <span class="service-info">
+
+                                <span class="service-info-main">
+
+                                    <strong>
+                                        অ্যাম্বুলেন্স
+                                    </strong>
+
+                                </span>
+
+                                <span class="card-arrow">
+                                    ↗
+                                </span>
+
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="service-card is-government"
+                            data-service="government"
+                            data-interface-open="government"
+                        >
+
+                            <span
+                                class="service-icon"
+                                aria-hidden="true"
+                            >
+                                ৳
+                            </span>
+
+                            <span class="service-info">
+
+                                <span class="service-info-main">
+
+                                    <strong>
+                                        সরকারি সেবা
+                                    </strong>
+
+                                </span>
+
+                                <span class="card-arrow">
+                                    ↗
+                                </span>
+
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="service-card is-tests"
+                            data-service="tests"
+                            data-interface-open="tests"
+                        >
+
+                            <span
+                                class="service-icon"
+                                aria-hidden="true"
+                            >
+                                T
+                            </span>
+
+                            <span class="service-info">
+
+                                <span class="service-info-main">
+
+                                    <strong>
+                                        টেস্ট ও ফি
+                                    </strong>
+
+                                </span>
+
+                                <span class="card-arrow">
+                                    ↗
+                                </span>
+
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="service-card is-blood"
+                            data-service="blood"
+                            data-interface-open="blood"
+                        >
+
+                            <span
+                                class="service-icon"
+                                aria-hidden="true"
+                            >
+                                ♥
+                            </span>
+
+                            <span class="service-info">
+
+                                <span class="service-info-main">
+
+                                    <strong>
+                                        ব্লাড ব্যাংক
+                                    </strong>
+
+                                </span>
+
+                                <span class="card-arrow">
+                                    ↗
+                                </span>
+
+                            </span>
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="service-card is-pharmacy"
+                            data-service="pharmacy"
+                            data-interface-open="pharmacy"
+                        >
+
+                            <span
+                                class="service-icon"
+                                aria-hidden="true"
+                            >
+                                Rx
+                            </span>
+
+                            <span class="service-info">
+
+                                <span class="service-info-main">
+
+                                    <strong>
+                                        ফার্মেসি
+                                    </strong>
+
+                                </span>
+
+                                <span class="card-arrow">
+                                    ↗
+                                </span>
+
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     LOCATION NAV INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface app-nav-interface"
+                    data-interface="location"
+                    id="locationNavInterface"
+                    hidden
+                    aria-labelledby="locationNavInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon">
+                            ⌖
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                আপনার এলাকা
+                            </span>
+
+                            <h2 id="locationNavInterfaceTitle">
+                                লোকেশন
+                            </h2>
+
+                            <p>
+                                আপনার এলাকা নির্বাচন করুন এবং
+                                সেই এলাকার দরকারি তথ্য খুঁজুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="location-nav-card">
+
+                        <div class="location-form">
+
+                            <label>
+
+                                <span>
+                                    বিভাগ
+                                </span>
+
+                                <select
+                                    id="navDivision"
+                                    aria-label="বিভাগ নির্বাচন করুন"
+                                >
+
+                                    <option value="">
+                                        বিভাগ নির্বাচন করুন
+                                    </option>
+
+                                </select>
+
+                            </label>
+
+
+                            <label>
+
+                                <span>
+                                    জেলা
+                                </span>
+
+                                <select
+                                    id="navDistrict"
+                                    aria-label="জেলা নির্বাচন করুন"
+                                    disabled
+                                >
+
+                                    <option value="">
+                                        জেলা নির্বাচন করুন
+                                    </option>
+
+                                </select>
+
+                            </label>
+
+
+                            <label>
+
+                                <span>
+                                    উপজেলা
+                                </span>
+
+                                <select
+                                    id="navUpazila"
+                                    aria-label="উপজেলা নির্বাচন করুন"
+                                    disabled
+                                >
+
+                                    <option value="">
+                                        উপজেলা নির্বাচন করুন
+                                    </option>
+
+                                </select>
+
+                            </label>
+
+                        </div>
+
+
+                        <button
+                            type="button"
+                            class="location-action nav-location-save"
+                            id="navLocationSave"
+                        >
+
+                            লোকেশন সংরক্ষণ করুন
+
+                            <span>
+                                →
+                            </span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================================
+                     SEARCH NAV INTERFACE
+                     ================================================= -->
+
+                <section
+                    class="service-interface app-nav-interface"
+                    data-interface="search"
+                    id="searchNavInterface"
+                    hidden
+                    aria-labelledby="searchNavInterfaceTitle"
+                >
+
+                    <div class="service-interface-header">
+
+                        <button
+                            type="button"
+                            class="service-interface-back"
+                            data-interface-back
+                        >
+                            ←
+                            <span>
+                                হোমে ফিরুন
+                            </span>
+                        </button>
+
+
+                        <span class="service-interface-icon">
+                            ⌕
+                        </span>
+
+
+                        <div>
+
+                            <span class="section-label">
+                                Dorkari Search
+                            </span>
+
+                            <h2 id="searchNavInterfaceTitle">
+                                কী খুঁজছেন?
+                            </h2>
+
+                            <p>
+                                হাসপাতাল, ডাক্তার, অ্যাম্বুলেন্স
+                                বা প্রয়োজনীয় যেকোনো তথ্য খুঁজুন।
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <form
+                        class="nav-search-panel"
+                        id="navSearchForm"
+                    >
+
+                        <div class="nav-search-input-wrap">
+
+                            <span aria-hidden="true">
+                                ⌕
+                            </span>
+
+                            <input
+                                type="search"
+                                id="navSearchInput"
+                                placeholder="যেমন: খুলনা হাসপাতাল..."
+                                autocomplete="off"
+                                enterkeyhint="search"
+                                aria-label="Dorkari-তে অনুসন্ধান করুন"
+                            >
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="interface-primary-action"
+                        >
+                            খুঁজুন
+                        </button>
+
+                    </form>
+
+
+                    <div class="nav-search-suggestions">
+
+                        <span>
+                            জনপ্রিয়
+                        </span>
+
+                        <button
+                            type="button"
+                            data-nav-search="হাসপাতাল"
+                        >
+                            হাসপাতাল
+                        </button>
+
+                        <button
+                            type="button"
+                            data-nav-search="ডাক্তার"
+                        >
+                            ডাক্তার
+                        </button>
+
+                        <button
+                            type="button"
+                            data-nav-search="অ্যাম্বুলেন্স"
+                        >
+                            অ্যাম্বুলেন্স
+                        </button>
+
+                        <button
+                            type="button"
+                            data-nav-search="ব্লাড ব্যাংক"
+                        >
+                            ব্লাড ব্যাংক
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="nav-search-results"
+                        id="navSearchResults"
+                        aria-live="polite"
+                    ></div>
+
+                </section>
+
+
+                <!-- =================================================
                      EMERGENCY INTERFACE
                      ================================================= -->
 
