@@ -1210,3 +1210,439 @@
         transform: none;
     }
 }
+/* =========================================================
+   DORKARI — ALL SERVICES INTERFACE GRID
+   Service interface-এর ভিতরের card layout
+   ========================================================= */
+
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+.all-services-interface-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+
+    width: 100%;
+
+    margin-top: 22px;
+}
+
+
+/* Interface-এর ভিতরের card */
+
+.all-services-interface-grid .service-card {
+    min-width: 0;
+    min-height: 145px;
+
+    padding: 15px;
+
+    border-radius: 16px;
+}
+
+
+/* Icon */
+
+.all-services-interface-grid .service-icon {
+    width: 43px;
+    height: 43px;
+
+    border-radius: 13px;
+
+    font-size: 19px;
+}
+
+
+.all-services-interface-grid .service-icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+
+/* Card text */
+
+.all-services-interface-grid .service-info {
+    margin-top: 12px;
+}
+
+
+.all-services-interface-grid .service-info-main strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 11px;
+    font-weight: 950;
+
+    line-height: 1.35;
+}
+
+
+.all-services-interface-grid .service-info-main small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--text-muted);
+
+    font-size: 8px;
+
+    line-height: 1.5;
+}
+
+
+.all-services-interface-grid .card-arrow {
+    width: 24px;
+    height: 24px;
+
+    border-radius: 8px;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .all-services-interface-grid {
+        grid-template-columns:
+            repeat(4, minmax(0, 1fr));
+
+        gap: 9px;
+    }
+
+
+    .all-services-interface-grid .service-card {
+        min-height: 130px;
+
+        padding: 12px;
+
+        border-radius: 14px;
+    }
+
+
+    .all-services-interface-grid .service-icon {
+        width: 39px;
+        height: 39px;
+
+        border-radius: 11px;
+    }
+
+
+    .all-services-interface-grid .service-icon svg {
+        width: 21px;
+        height: 21px;
+    }
+
+
+    .all-services-interface-grid .service-info {
+        margin-top: 9px;
+    }
+
+
+    .all-services-interface-grid .service-info-main strong {
+        font-size: 10px;
+    }
+
+
+    .all-services-interface-grid .service-info-main small {
+        font-size: 7px;
+    }
+
+
+    .all-services-interface-grid .card-arrow {
+        width: 22px;
+        height: 22px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE — 5 COLUMNS
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .all-services-interface-grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 6px;
+
+        margin-top: 15px;
+    }
+
+
+    .all-services-interface-grid .service-card {
+        min-width: 0;
+
+        min-height: 102px;
+
+        padding: 8px 5px;
+
+        border-radius: 12px;
+    }
+
+
+    .all-services-interface-grid .service-icon {
+        width: 31px;
+        height: 31px;
+
+        margin: 0 auto;
+
+        border-radius: 9px;
+
+        font-size: 14px;
+    }
+
+
+    .all-services-interface-grid .service-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+
+
+    .all-services-interface-grid .service-info {
+        width: 100%;
+
+        margin-top: 6px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+    }
+
+
+    .all-services-interface-grid .service-info-main {
+        width: 100%;
+        min-width: 0;
+    }
+
+
+    .all-services-interface-grid .service-info-main strong {
+        display: block;
+
+        width: 100%;
+
+        overflow: hidden;
+
+        text-align: center;
+
+        font-size: 7.5px;
+        line-height: 1.3;
+
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+
+    .all-services-interface-grid .service-info-main small {
+        display: none;
+    }
+
+
+    .all-services-interface-grid .card-arrow {
+        width: 19px;
+        height: 19px;
+
+        margin-top: 5px;
+
+        border-radius: 6px;
+
+        font-size: 7px;
+    }
+}
+
+
+/* =========================================================
+   481px — 620px
+   ========================================================= */
+
+@media (max-width: 620px) and (min-width: 481px) {
+
+    .all-services-interface-grid {
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 7px;
+    }
+
+
+    .all-services-interface-grid .service-card {
+        min-height: 108px;
+
+        padding:
+            9px
+            6px;
+    }
+
+
+    .all-services-interface-grid .service-icon {
+        width: 33px;
+        height: 33px;
+    }
+
+
+    .all-services-interface-grid .service-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+
+    .all-services-interface-grid .service-info-main strong {
+        font-size: 8px;
+    }
+}
+
+
+/* =========================================================
+   381px — 480px
+   ========================================================= */
+
+@media (max-width: 480px) and (min-width: 381px) {
+
+    .all-services-interface-grid {
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 5px;
+    }
+
+
+    .all-services-interface-grid .service-card {
+        min-height: 98px;
+
+        padding:
+            8px
+            4px;
+
+        border-radius: 11px;
+    }
+
+
+    .all-services-interface-grid .service-icon {
+        width: 30px;
+        height: 30px;
+
+        border-radius: 9px;
+    }
+
+
+    .all-services-interface-grid .service-icon svg {
+        width: 17px;
+        height: 17px;
+    }
+
+
+    .all-services-interface-grid .service-info-main strong {
+        font-size: 7.2px;
+    }
+
+
+    .all-services-interface-grid .card-arrow {
+        width: 18px;
+        height: 18px;
+
+        font-size: 6.5px;
+    }
+}
+
+
+/* =========================================================
+   <= 380px
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .all-services-interface-grid {
+        grid-template-columns:
+            repeat(5, minmax(0, 1fr));
+
+        gap: 4px;
+    }
+
+
+    .all-services-interface-grid .service-card {
+        min-height: 92px;
+
+        padding:
+            7px
+            3px;
+
+        border-radius: 10px;
+    }
+
+
+    .all-services-interface-grid .service-icon {
+        width: 28px;
+        height: 28px;
+
+        border-radius: 8px;
+    }
+
+
+    .all-services-interface-grid .service-icon svg {
+        width: 16px;
+        height: 16px;
+    }
+
+
+    .all-services-interface-grid .service-info {
+        margin-top: 5px;
+    }
+
+
+    .all-services-interface-grid .service-info-main strong {
+        font-size: 6.7px;
+    }
+
+
+    .all-services-interface-grid .card-arrow {
+        width: 17px;
+        height: 17px;
+
+        margin-top: 4px;
+
+        font-size: 6px;
+    }
+}
+
+
+/* =========================================================
+   TOUCH DEVICE
+   ========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .all-services-interface-grid .service-card:hover {
+        transform: none;
+
+        box-shadow:
+            0 3px 10px
+            rgba(6, 58, 44, 0.055);
+    }
+
+
+    .all-services-interface-grid .service-card:active {
+        transform: scale(0.97);
+
+        border-color: #bfd8cb;
+
+        background: #fbfefd;
+
+        box-shadow:
+            0 4px 12px
+            rgba(6, 58, 44, 0.08);
+    }
+}
