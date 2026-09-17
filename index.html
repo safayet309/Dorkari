@@ -1772,6 +1772,10 @@
                      GOVERNMENT INTERFACE
                      ================================================= -->
 
+                <!-- =================================================
+     GOVERNMENT INTERFACE
+     ================================================= -->
+
                 <section class="service-interface" data-interface="government" id="governmentInterface" hidden
                     aria-labelledby="governmentInterfaceTitle">
 
@@ -1780,13 +1784,23 @@
                         <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
-                                হোমে ফিরুন
+                                সেবাসমূহে ফিরুন
                             </span>
                         </button>
 
 
-                        <span class="service-interface-icon is-purple">
-                            ৳
+                        <span class="service-interface-icon is-purple" aria-hidden="true">
+                            <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                                <path d="M10 27 32 14l22 13" stroke="currentColor" stroke-width="3.4"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+
+                                <path d="M14 29h36" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" />
+
+                                <path d="M18 29v21M28 29v21M36 29v21M46 29v21" stroke="currentColor" stroke-width="3"
+                                    stroke-linecap="round" />
+
+                                <path d="M11 51h42" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" />
+                            </svg>
                         </span>
 
 
@@ -1801,8 +1815,8 @@
                             </h2>
 
                             <p>
-                                সরকারি অফিস, ঠিকানা ও
-                                যোগাযোগের তথ্য খুঁজুন।
+                                সরকারি অফিস, নাগরিক সেবা ও প্রয়োজনীয়
+                                যোগাযোগের তথ্য এক জায়গায় খুঁজুন।
                             </p>
 
                         </div>
@@ -1810,19 +1824,144 @@
                     </div>
 
 
+                    <!-- =================================================
+         SEARCH TOOLBAR
+         ================================================= -->
+
                     <div class="interface-toolbar">
 
-                        <input type="search" data-interface-search="government" placeholder="অফিস বা সেবার নাম..."
-                            aria-label="সরকারি অফিস খুঁজুন">
+                        <input type="search" data-interface-search="government"
+                            placeholder="অফিস/সেবার নাম, এলাকা বা কীওয়ার্ড দিয়ে খুঁজুন..."
+                            aria-label="সরকারি অফিস ও সেবা খুঁজুন">
 
                         <button type="button" data-interface-location="government">
-                            ⌖ এলাকা
+                            ⌖ আমার এলাকা
                         </button>
 
                     </div>
 
 
-                    <div class="interface-results" data-interface-results="government">
+                    <!-- =================================================
+         FILTERS
+         ================================================= -->
+
+                    <div class="government-filter-grid" aria-label="সরকারি সেবার ফিল্টার">
+
+                        <label class="government-filter-field">
+
+                            <span>
+                                সেবা ধরন
+                            </span>
+
+                            <select data-government-filter="service_type" id="governmentFilterServiceType">
+                                <option value="">
+                                    সব ধরনের সেবা
+                                </option>
+                            </select>
+
+                        </label>
+
+
+                        <label class="government-filter-field">
+
+                            <span>
+                                বিভাগ
+                            </span>
+
+                            <select data-government-filter="division" id="governmentFilterDivision">
+                                <option value="">
+                                    সব বিভাগ
+                                </option>
+                            </select>
+
+                        </label>
+
+
+                        <label class="government-filter-field">
+
+                            <span>
+                                জেলা
+                            </span>
+
+                            <select data-government-filter="district" id="governmentFilterDistrict" disabled>
+                                <option value="">
+                                    সব জেলা
+                                </option>
+                            </select>
+
+                        </label>
+
+
+                        <label class="government-filter-field">
+
+                            <span>
+                                উপজেলা
+                            </span>
+
+                            <select data-government-filter="upazila" id="governmentFilterUpazila" disabled>
+                                <option value="">
+                                    সব উপজেলা
+                                </option>
+                            </select>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- =================================================
+         RESULTS HEADER
+         ================================================= -->
+
+                    <div class="government-interface-results-head">
+
+                        <div class="government-interface-result-summary">
+
+                            <span class="government-interface-result-icon" aria-hidden="true">
+                                ▦
+                            </span>
+
+                            <strong id="governmentResultCount">
+                                ০
+                            </strong>
+
+                            <span>
+                                টি সরকারি সেবা পাওয়া গেছে
+                            </span>
+
+                        </div>
+
+
+                        <label class="government-interface-sort">
+
+                            <span>
+                                সাজান
+                            </span>
+
+                            <select data-government-sort id="governmentSort" aria-label="সরকারি সেবা সাজান">
+                                <option value="nearest">
+                                    কাছেরটি আগে
+                                </option>
+
+                                <option value="name">
+                                    নাম অনুযায়ী
+                                </option>
+
+                                <option value="service_type">
+                                    সেবা ধরন অনুযায়ী
+                                </option>
+                            </select>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- =================================================
+         RESULTS
+         ================================================= -->
+
+                    <div class="interface-results government-interface-results" data-interface-results="government">
 
                         <div class="interface-empty">
                             সরকারি সেবার তথ্য এখানে দেখানো হবে।
