@@ -10,11 +10,16 @@
 // SUPABASE
 // =========================================================
 
-const supabaseConfig =
-    window.DORKARI_CONFIG?.SUPABASE || null;
+ const supabaseConfig =
+    typeof DORKARI_CONFIG !== "undefined" &&
+    DORKARI_CONFIG?.SUPABASE
+        ? DORKARI_CONFIG.SUPABASE
+        : null;
 
 const dorkariSupabase =
     window.supabase &&
+        typeof window.supabase.createClient ===
+            "function" &&
         supabaseConfig?.URL &&
         supabaseConfig?.PUBLISHABLE_KEY
         ? window.supabase.createClient(
