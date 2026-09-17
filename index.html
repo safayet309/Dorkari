@@ -5,61 +5,29 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-    >
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-    <meta
-        name="theme-color"
-        content="#0b6b4f"
-    >
+    <meta name="theme-color" content="#0b6b4f">
 
-    <meta
-        name="description"
-        content="Dorkari — বাংলাদেশের প্রয়োজনীয় তথ্য এক জায়গায়। হাসপাতাল, ডাক্তার, অ্যাম্বুলেন্স, জরুরি সেবা, সরকারি তথ্য ও আরও দরকারি সেবা।"
-    >
+    <meta name="description"
+        content="Dorkari — বাংলাদেশের প্রয়োজনীয় তথ্য এক জায়গায়। হাসপাতাল, ডাক্তার, অ্যাম্বুলেন্স, জরুরি সেবা, সরকারি তথ্য ও আরও দরকারি সেবা।">
 
-    <meta
-        name="application-name"
-        content="Dorkari"
-    >
+    <meta name="application-name" content="Dorkari">
 
-    <meta
-        name="mobile-web-app-capable"
-        content="yes"
-    >
+    <meta name="mobile-web-app-capable" content="yes">
 
-    <meta
-        name="apple-mobile-web-app-capable"
-        content="yes"
-    >
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <meta
-        name="apple-mobile-web-app-status-bar-style"
-        content="default"
-    >
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-    <meta
-        name="apple-mobile-web-app-title"
-        content="Dorkari"
-    >
+    <meta name="apple-mobile-web-app-title" content="Dorkari">
 
-    <link
-        rel="manifest"
-        href="manifest.webmanifest"
-    >
+    <link rel="manifest" href="manifest.webmanifest">
 
-    <link
-        rel="icon"
-        href="assets/images/icon-192.png"
-        type="image/png"
-    >
+    <link rel="icon" href="assets/images/icon-192.png" type="image/png">
 
-    <link
-        rel="apple-touch-icon"
-        href="assets/images/icon-192.png"
-    >
+    <link rel="apple-touch-icon" href="assets/images/icon-192.png">
 
     <title>Dorkari — দরকারি</title>
 
@@ -68,20 +36,27 @@
          CSS
          ===================================================== -->
 
-    <link
-        rel="stylesheet"
-        href="css/variables.css"
-    >
+    <link rel="stylesheet" href="css/variables.css">
 
-    <link
-        rel="stylesheet"
-        href="css/global.css"
-    >
+    <link rel="stylesheet" href="css/global.css">
 
-    <link
-        rel="stylesheet"
-        href="css/components.css"
-    >
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+    }
+
+    @media (max-width: 760px) {
+        body {
+            min-width: 0;
+        }
+    }
+</style>
 
 </head>
 
@@ -93,10 +68,7 @@
          ACCESSIBILITY
          ===================================================== -->
 
-    <a
-        href="#home"
-        class="skip-link"
-    >
+    <a href="#home" class="skip-link">
         মূল কনটেন্টে যান
     </a>
 
@@ -105,56 +77,30 @@
          HEADER
          ===================================================== -->
 
-    <header
-        class="site-header"
-        id="top"
-    >
+    <header class="site-header" id="top">
 
         <div class="container header-inner">
 
 
             <!-- BRAND -->
 
-            <a
-                href="#home"
-                class="brand"
-                aria-label="Dorkari হোম"
-            >
+            <a href="#home" class="brand" aria-label="Dorkari হোম">
 
-                <span
-                    class="brand-icon brand-icon-svg"
-                    aria-hidden="true"
-                >
+                <span class="brand-icon brand-icon-svg" aria-hidden="true">
 
-                    <svg
-                        viewBox="0 0 48 48"
-                        fill="none"
-                    >
+                    <svg viewBox="0 0 48 48" fill="none">
 
                         <path
                             d="M24 42C20 35 8 29 8 18.5C8 12.1 13.2 7 19.5 7C21.4 7 23 7.5 24 8.6C25 7.5 26.6 7 28.5 7C34.8 7 40 12.1 40 18.5C40 29 28 35 24 42Z"
-                            fill="currentColor"
-                        />
+                            fill="currentColor" />
 
                         <path
                             d="M24 30.5C20.8 26.1 17.3 22.9 17.3 18.7C17.3 15.2 20 12.5 23.5 12.5C25 12.5 26.4 13 27.4 14C28.4 13 29.8 12.5 31.3 12.5C34.8 12.5 37.5 15.2 37.5 18.7C37.5 22.9 34 26.1 30.8 30.5L27.4 35L24 30.5Z"
-                            fill="#ffffff"
-                            opacity=".96"
-                        />
+                            fill="#ffffff" opacity=".96" />
 
-                        <circle
-                            cx="27.4"
-                            cy="19.2"
-                            r="4"
-                            fill="#df3d45"
-                        />
+                        <circle cx="27.4" cy="19.2" r="4" fill="#df3d45" />
 
-                        <circle
-                            cx="27.4"
-                            cy="19.2"
-                            r="1.7"
-                            fill="#ffffff"
-                        />
+                        <circle cx="27.4" cy="19.2" r="1.7" fill="#ffffff" />
 
                     </svg>
 
@@ -178,37 +124,21 @@
 
             <!-- DESKTOP NAV -->
 
-            <nav
-                class="desktop-nav"
-                aria-label="প্রধান নেভিগেশন"
-            >
+            <nav class="desktop-nav" aria-label="প্রধান নেভিগেশন">
 
-                <a
-                    href="#home"
-                    class="active"
-                    data-section-link
-                >
+                <a href="#home" class="active" data-section-link>
                     হোম
                 </a>
 
-                <a
-                    href="#services"
-                    data-section-link
-                >
+                <a href="#services" data-section-link>
                     সেবা
                 </a>
 
-                <a
-                    href="#emergency"
-                    data-section-link
-                >
+                <a href="#emergency" data-section-link>
                     জরুরি
                 </a>
 
-                <a
-                    href="#location"
-                    data-section-link
-                >
+                <a href="#location" data-section-link>
                     লোকেশন
                 </a>
 
@@ -219,22 +149,13 @@
 
             <div class="header-actions">
 
-                <button
-                    type="button"
-                    class="header-install-btn"
-                    data-install-app
-                    hidden
-                >
+                <button type="button" class="header-install-btn" data-install-app hidden>
                     <span aria-hidden="true">⇩</span>
                     অ্যাপ
                 </button>
 
 
-                <a
-                    href="tel:999"
-                    class="header-emergency"
-                    aria-label="৯৯৯ জাতীয় জরুরি সেবা"
-                >
+                <a href="tel:999" class="header-emergency" aria-label="৯৯৯ জাতীয় জরুরি সেবা">
 
                     <span>
                         ৯৯৯
@@ -247,14 +168,8 @@
                 </a>
 
 
-                <button
-                    type="button"
-                    class="mobile-menu-btn"
-                    id="mobileMenuButton"
-                    aria-label="মেনু খুলুন"
-                    aria-expanded="false"
-                    aria-controls="mobileMenu"
-                >
+                <button type="button" class="mobile-menu-btn" id="mobileMenuButton" aria-label="মেনু খুলুন"
+                    aria-expanded="false" aria-controls="mobileMenu">
 
                     <span></span>
                     <span></span>
@@ -271,24 +186,14 @@
              MOBILE MENU
              ================================================= -->
 
-        <div
-            class="mobile-menu"
-            id="mobileMenu"
-            hidden
-        >
+        <div class="mobile-menu" id="mobileMenu" hidden>
 
             <div class="container mobile-menu-inner">
 
 
-                <div
-                    class="mobile-menu-location"
-                    aria-live="polite"
-                >
+                <div class="mobile-menu-location" aria-live="polite">
 
-                    <span
-                        class="location-icon"
-                        aria-hidden="true"
-                    >
+                    <span class="location-icon" aria-hidden="true">
                         ⌖
                     </span>
 
@@ -325,12 +230,7 @@
                 </a>
 
 
-                <button
-                    type="button"
-                    class="mobile-install-btn"
-                    data-install-app
-                    hidden
-                >
+                <button type="button" class="mobile-install-btn" data-install-app hidden>
 
                     <span aria-hidden="true">
                         ⇩
@@ -358,10 +258,7 @@
              HOME
              ================================================= -->
 
-        <section
-            class="hero-section"
-            id="home"
-        >
+        <section class="hero-section" id="home">
 
             <div class="container hero-grid">
 
@@ -371,10 +268,7 @@
 
                     <div class="eyebrow">
 
-                        <span
-                            class="eyebrow-dot"
-                            aria-hidden="true"
-                        ></span>
+                        <span class="eyebrow-dot" aria-hidden="true"></span>
 
                         বাংলাদেশের প্রয়োজনীয় তথ্য
 
@@ -405,53 +299,27 @@
 
                     <!-- SEARCH -->
 
-                    <form
-                        class="search-box"
-                        id="globalSearchForm"
-                        role="search"
-                    >
+                    <form class="search-box" id="globalSearchForm" role="search">
 
-                        <span
-                            class="search-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="search-icon" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                            >
+                            <svg viewBox="0 0 24 24" fill="none">
 
-                                <circle
-                                    cx="11"
-                                    cy="11"
-                                    r="6.8"
-                                ></circle>
+                                <circle cx="11" cy="11" r="6.8"></circle>
 
-                                <path
-                                    d="M16.2 16.2L21 21"
-                                ></path>
+                                <path d="M16.2 16.2L21 21"></path>
 
                             </svg>
 
                         </span>
 
 
-                        <input
-                            type="search"
-                            id="globalSearch"
-                            name="q"
-                            placeholder="কী খুঁজছেন? যেমন: হাসপাতাল, ডাক্তার..."
-                            autocomplete="off"
-                            enterkeyhint="search"
-                            aria-label="আপনার প্রয়োজনীয় তথ্য খুঁজুন"
-                        >
+                        <input type="search" id="globalSearch" name="q"
+                            placeholder="কী খুঁজছেন? যেমন: হাসপাতাল, ডাক্তার..." autocomplete="off"
+                            enterkeyhint="search" aria-label="আপনার প্রয়োজনীয় তথ্য খুঁজুন">
 
 
-                        <button
-                            type="submit"
-                            id="searchButton"
-                            class="search-button"
-                        >
+                        <button type="submit" id="searchButton" class="search-button">
                             খুঁজুন
                         </button>
 
@@ -460,44 +328,29 @@
 
                     <!-- POPULAR SEARCH -->
 
-                    <div
-                        class="search-suggestions"
-                        aria-label="জনপ্রিয় অনুসন্ধান"
-                    >
+                    <div class="search-suggestions" aria-label="জনপ্রিয় অনুসন্ধান">
 
                         <span class="suggestion-label">
                             জনপ্রিয়:
                         </span>
 
 
-                        <button
-                            type="button"
-                            data-search="Hospital"
-                        >
+                        <button type="button" data-search="Hospital">
                             হাসপাতাল
                         </button>
 
 
-                        <button
-                            type="button"
-                            data-search="Doctor"
-                        >
+                        <button type="button" data-search="Doctor">
                             ডাক্তার
                         </button>
 
 
-                        <button
-                            type="button"
-                            data-search="Ambulance"
-                        >
+                        <button type="button" data-search="Ambulance">
                             অ্যাম্বুলেন্স
                         </button>
 
 
-                        <button
-                            type="button"
-                            data-search="Blood Bank"
-                        >
+                        <button type="button" data-search="Blood Bank">
                             ব্লাড ব্যাংক
                         </button>
 
@@ -553,10 +406,7 @@
              QUICK EMERGENCY
              ================================================= -->
 
-        <section
-            class="quick-emergency-section"
-            aria-labelledby="quickEmergencyTitle"
-        >
+        <section class="quick-emergency-section" aria-labelledby="quickEmergencyTitle">
 
             <div class="container">
 
@@ -564,10 +414,7 @@
                 <article class="emergency-banner">
 
 
-                    <div
-                        class="emergency-banner-icon"
-                        aria-hidden="true"
-                    >
+                    <div class="emergency-banner-icon" aria-hidden="true">
                         !
                     </div>
 
@@ -589,10 +436,7 @@
                     </div>
 
 
-                    <div
-                        class="emergency-banner-number"
-                        aria-label="জরুরি নম্বর ৯৯৯"
-                    >
+                    <div class="emergency-banner-number" aria-label="জরুরি নম্বর ৯৯৯">
 
                         <span>
                             জরুরি নম্বর
@@ -607,11 +451,7 @@
 
                     <div class="emergency-banner-actions">
 
-                        <button
-                            type="button"
-                            class="banner-call-btn"
-                            id="quickEmergencyCall"
-                        >
+                        <button type="button" class="banner-call-btn" id="quickEmergencyCall">
                             কল করুন
                             <span aria-hidden="true">
                                 →
@@ -619,12 +459,7 @@
                         </button>
 
 
-                        <button
-                            type="button"
-                            class="banner-copy-btn"
-                            id="quickEmergencyCopy"
-                            data-copy="999"
-                        >
+                        <button type="button" class="banner-copy-btn" id="quickEmergencyCopy" data-copy="999">
                             ৯৯৯ কপি
                         </button>
 
@@ -641,11 +476,7 @@
              SERVICES
              ================================================= -->
 
-        <section
-            class="services-section"
-            id="services"
-            aria-labelledby="servicesTitle"
-        >
+        <section class="services-section" id="services" aria-labelledby="servicesTitle">
 
             <div class="container">
 
@@ -682,46 +513,21 @@
 
                     <!-- EMERGENCY -->
 
-                    <button
-                        type="button"
-                        class="service-card is-emergency"
-                        data-service="emergency"
-                        data-interface-open="emergency"
-                    >
+                    <button type="button" class="service-card is-emergency" data-service="emergency"
+                        data-interface-open="emergency">
 
-                        <span
-                            class="service-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="service-icon" aria-hidden="true">
 
                             <svg viewBox="0 0 64 64" fill="none">
 
-                                <path
-                                    d="M32 8 9 50h46L32 8Z"
-                                    fill="currentColor"
-                                    opacity=".12"
-                                />
+                                <path d="M32 8 9 50h46L32 8Z" fill="currentColor" opacity=".12" />
 
-                                <path
-                                    d="M32 8 9 50h46L32 8Z"
-                                    stroke="currentColor"
-                                    stroke-width="3.5"
-                                    stroke-linejoin="round"
-                                />
+                                <path d="M32 8 9 50h46L32 8Z" stroke="currentColor" stroke-width="3.5"
+                                    stroke-linejoin="round" />
 
-                                <path
-                                    d="M32 24v13"
-                                    stroke="currentColor"
-                                    stroke-width="4"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M32 24v13" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
 
-                                <circle
-                                    cx="32"
-                                    cy="43"
-                                    r="2.5"
-                                    fill="currentColor"
-                                />
+                                <circle cx="32" cy="43" r="2.5" fill="currentColor" />
 
                             </svg>
 
@@ -743,10 +549,7 @@
                             </span>
 
 
-                            <span
-                                class="card-arrow"
-                                aria-hidden="true"
-                            >
+                            <span class="card-arrow" aria-hidden="true">
                                 ↗
                             </span>
 
@@ -757,53 +560,23 @@
 
                     <!-- HOSPITAL -->
 
-                    <button
-                        type="button"
-                        class="service-card is-hospital"
-                        data-service="hospital"
-                        data-interface-open="hospital"
-                    >
+                    <button type="button" class="service-card is-hospital" data-service="hospital"
+                        data-interface-open="hospital">
 
-                        <span
-                            class="service-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="service-icon" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 64 64"
-                                fill="none"
-                            >
+                            <svg viewBox="0 0 64 64" fill="none">
 
-                                <rect
-                                    x="13"
-                                    y="18"
-                                    width="38"
-                                    height="34"
-                                    rx="5"
-                                    fill="currentColor"
-                                    opacity=".12"
-                                />
+                                <rect x="13" y="18" width="38" height="34" rx="5" fill="currentColor" opacity=".12" />
 
-                                <path
-                                    d="M21 52V15h22v37"
-                                    stroke="currentColor"
-                                    stroke-width="3.4"
-                                    stroke-linejoin="round"
-                                />
+                                <path d="M21 52V15h22v37" stroke="currentColor" stroke-width="3.4"
+                                    stroke-linejoin="round" />
 
-                                <path
-                                    d="M27 28h10M32 23v10"
-                                    stroke="currentColor"
-                                    stroke-width="3.8"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M27 28h10M32 23v10" stroke="currentColor" stroke-width="3.8"
+                                    stroke-linecap="round" />
 
-                                <path
-                                    d="M27 40h3M34 40h3M27 47h3M34 47h3"
-                                    stroke="currentColor"
-                                    stroke-width="2.6"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M27 40h3M34 40h3M27 47h3M34 47h3" stroke="currentColor" stroke-width="2.6"
+                                    stroke-linecap="round" />
 
                             </svg>
 
@@ -825,10 +598,7 @@
                             </span>
 
 
-                            <span
-                                class="card-arrow"
-                                aria-hidden="true"
-                            >
+                            <span class="card-arrow" aria-hidden="true">
                                 ↗
                             </span>
 
@@ -839,52 +609,22 @@
 
                     <!-- DOCTOR -->
 
-                    <button
-                        type="button"
-                        class="service-card is-doctor"
-                        data-service="doctor"
-                        data-interface-open="doctor"
-                    >
+                    <button type="button" class="service-card is-doctor" data-service="doctor"
+                        data-interface-open="doctor">
 
-                        <span
-                            class="service-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="service-icon" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 64 64"
-                                fill="none"
-                            >
+                            <svg viewBox="0 0 64 64" fill="none">
 
-                                <circle
-                                    cx="32"
-                                    cy="21"
-                                    r="8"
-                                    fill="currentColor"
-                                    opacity=".12"
-                                />
+                                <circle cx="32" cy="21" r="8" fill="currentColor" opacity=".12" />
 
-                                <circle
-                                    cx="32"
-                                    cy="21"
-                                    r="7"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                />
+                                <circle cx="32" cy="21" r="7" stroke="currentColor" stroke-width="3" />
 
-                                <path
-                                    d="M18 51c1-11 7-17 14-17s13 6 14 17"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M18 51c1-11 7-17 14-17s13 6 14 17" stroke="currentColor" stroke-width="3"
+                                    stroke-linecap="round" />
 
-                                <path
-                                    d="M42 35v11M36.5 40.5h11"
-                                    stroke="currentColor"
-                                    stroke-width="3.2"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M42 35v11M36.5 40.5h11" stroke="currentColor" stroke-width="3.2"
+                                    stroke-linecap="round" />
 
                             </svg>
 
@@ -906,10 +646,7 @@
                             </span>
 
 
-                            <span
-                                class="card-arrow"
-                                aria-hidden="true"
-                            >
+                            <span class="card-arrow" aria-hidden="true">
                                 ↗
                             </span>
 
@@ -920,63 +657,27 @@
 
                     <!-- AMBULANCE -->
 
-                    <button
-                        type="button"
-                        class="service-card is-ambulance"
-                        data-service="ambulance"
-                        data-interface-open="ambulance"
-                    >
+                    <button type="button" class="service-card is-ambulance" data-service="ambulance"
+                        data-interface-open="ambulance">
 
-                        <span
-                            class="service-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="service-icon" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 64 64"
-                                fill="none"
-                            >
+                            <svg viewBox="0 0 64 64" fill="none">
 
-                                <path
-                                    d="M8 28h48v18H8V28Z"
-                                    fill="currentColor"
-                                    opacity=".12"
-                                />
+                                <path d="M8 28h48v18H8V28Z" fill="currentColor" opacity=".12" />
 
-                                <path
-                                    d="M8 29V23a5 5 0 0 1 5-5h24v11"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linejoin="round"
-                                />
+                                <path d="M8 29V23a5 5 0 0 1 5-5h24v11" stroke="currentColor" stroke-width="3"
+                                    stroke-linejoin="round" />
 
-                                <path
-                                    d="M37 18h5l10 11H37V18Z"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linejoin="round"
-                                />
+                                <path d="M37 18h5l10 11H37V18Z" stroke="currentColor" stroke-width="3"
+                                    stroke-linejoin="round" />
 
-                                <path
-                                    d="M32 34v12M26 40h12"
-                                    stroke="currentColor"
-                                    stroke-width="3.2"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M32 34v12M26 40h12" stroke="currentColor" stroke-width="3.2"
+                                    stroke-linecap="round" />
 
-                                <circle
-                                    cx="18"
-                                    cy="48"
-                                    r="5"
-                                    fill="currentColor"
-                                />
+                                <circle cx="18" cy="48" r="5" fill="currentColor" />
 
-                                <circle
-                                    cx="47"
-                                    cy="48"
-                                    r="5"
-                                    fill="currentColor"
-                                />
+                                <circle cx="47" cy="48" r="5" fill="currentColor" />
 
                             </svg>
 
@@ -998,10 +699,7 @@
                             </span>
 
 
-                            <span
-                                class="card-arrow"
-                                aria-hidden="true"
-                            >
+                            <span class="card-arrow" aria-hidden="true">
                                 ↗
                             </span>
 
@@ -1012,43 +710,20 @@
 
                     <!-- GOVERNMENT -->
 
-                    <button
-                        type="button"
-                        class="service-card is-government"
-                        data-service="government"
-                        data-interface-open="government"
-                    >
+                    <button type="button" class="service-card is-government" data-service="government"
+                        data-interface-open="government">
 
-                        <span
-                            class="service-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="service-icon" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 64 64"
-                                fill="none"
-                            >
+                            <svg viewBox="0 0 64 64" fill="none">
 
-                                <path
-                                    d="m10 27 22-13 22 13"
-                                    stroke="currentColor"
-                                    stroke-width="3.4"
-                                    stroke-linejoin="round"
-                                />
+                                <path d="m10 27 22-13 22 13" stroke="currentColor" stroke-width="3.4"
+                                    stroke-linejoin="round" />
 
-                                <path
-                                    d="M15 29h34M18 29v21M28 29v21M36 29v21M46 29v21M12 51h40"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M15 29h34M18 29v21M28 29v21M36 29v21M46 29v21M12 51h40" stroke="currentColor"
+                                    stroke-width="3" stroke-linecap="round" />
 
-                                <path
-                                    d="M25 14h14"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M25 14h14" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
 
                             </svg>
 
@@ -1070,10 +745,7 @@
                             </span>
 
 
-                            <span
-                                class="card-arrow"
-                                aria-hidden="true"
-                            >
+                            <span class="card-arrow" aria-hidden="true">
                                 ↗
                             </span>
 
@@ -1084,50 +756,21 @@
 
                     <!-- TESTS -->
 
-                    <button
-                        type="button"
-                        class="service-card is-tests"
-                        data-service="tests"
-                        data-interface-open="tests"
-                    >
+                    <button type="button" class="service-card is-tests" data-service="tests"
+                        data-interface-open="tests">
 
-                        <span
-                            class="service-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="service-icon" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 64 64"
-                                fill="none"
-                            >
+                            <svg viewBox="0 0 64 64" fill="none">
 
-                                <path
-                                    d="M25 11h14M29 11v16L15 51a5 5 0 0 0 4 7h26a5 5 0 0 0 4-7L35 27V11"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linejoin="round"
-                                />
+                                <path d="M25 11h14M29 11v16L15 51a5 5 0 0 0 4 7h26a5 5 0 0 0 4-7L35 27V11"
+                                    stroke="currentColor" stroke-width="3" stroke-linejoin="round" />
 
-                                <path
-                                    d="M21 46h22"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M21 46h22" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
 
-                                <circle
-                                    cx="29"
-                                    cy="40"
-                                    r="2.4"
-                                    fill="currentColor"
-                                />
+                                <circle cx="29" cy="40" r="2.4" fill="currentColor" />
 
-                                <circle
-                                    cx="36"
-                                    cy="35"
-                                    r="2"
-                                    fill="currentColor"
-                                />
+                                <circle cx="36" cy="35" r="2" fill="currentColor" />
 
                             </svg>
 
@@ -1149,10 +792,7 @@
                             </span>
 
 
-                            <span
-                                class="card-arrow"
-                                aria-hidden="true"
-                            >
+                            <span class="card-arrow" aria-hidden="true">
                                 ↗
                             </span>
 
@@ -1163,41 +803,21 @@
 
                     <!-- BLOOD -->
 
-                    <button
-                        type="button"
-                        class="service-card is-blood"
-                        data-service="blood"
-                        data-interface-open="blood"
-                    >
+                    <button type="button" class="service-card is-blood" data-service="blood"
+                        data-interface-open="blood">
 
-                        <span
-                            class="service-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="service-icon" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 64 64"
-                                fill="none"
-                            >
+                            <svg viewBox="0 0 64 64" fill="none">
 
-                                <path
-                                    d="M32 10c-8 12-16 19-16 29a16 16 0 0 0 32 0c0-10-8-17-16-29Z"
-                                    fill="currentColor"
-                                    opacity=".12"
-                                />
+                                <path d="M32 10c-8 12-16 19-16 29a16 16 0 0 0 32 0c0-10-8-17-16-29Z" fill="currentColor"
+                                    opacity=".12" />
 
-                                <path
-                                    d="M32 10c-8 12-16 19-16 29a16 16 0 0 0 32 0c0-10-8-17-16-29Z"
-                                    stroke="currentColor"
-                                    stroke-width="3.2"
-                                />
+                                <path d="M32 10c-8 12-16 19-16 29a16 16 0 0 0 32 0c0-10-8-17-16-29Z"
+                                    stroke="currentColor" stroke-width="3.2" />
 
-                                <path
-                                    d="M32 30v16M24 38h16"
-                                    stroke="currentColor"
-                                    stroke-width="3.4"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M32 30v16M24 38h16" stroke="currentColor" stroke-width="3.4"
+                                    stroke-linecap="round" />
 
                             </svg>
 
@@ -1219,10 +839,7 @@
                             </span>
 
 
-                            <span
-                                class="card-arrow"
-                                aria-hidden="true"
-                            >
+                            <span class="card-arrow" aria-hidden="true">
                                 ↗
                             </span>
 
@@ -1233,57 +850,23 @@
 
                     <!-- PHARMACY -->
 
-                    <button
-                        type="button"
-                        class="service-card is-pharmacy"
-                        data-service="pharmacy"
-                        data-interface-open="pharmacy"
-                    >
+                    <button type="button" class="service-card is-pharmacy" data-service="pharmacy"
+                        data-interface-open="pharmacy">
 
-                        <span
-                            class="service-icon"
-                            aria-hidden="true"
-                        >
+                        <span class="service-icon" aria-hidden="true">
 
-                            <svg
-                                viewBox="0 0 64 64"
-                                fill="none"
-                            >
+                            <svg viewBox="0 0 64 64" fill="none">
 
-                                <rect
-                                    x="11"
-                                    y="20"
-                                    width="42"
-                                    height="24"
-                                    rx="12"
-                                    transform="rotate(-45 11 20)"
-                                    fill="currentColor"
-                                    opacity=".12"
-                                />
+                                <rect x="11" y="20" width="42" height="24" rx="12" transform="rotate(-45 11 20)"
+                                    fill="currentColor" opacity=".12" />
 
-                                <rect
-                                    x="11"
-                                    y="20"
-                                    width="42"
-                                    height="24"
-                                    rx="12"
-                                    transform="rotate(-45 11 20)"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                />
+                                <rect x="11" y="20" width="42" height="24" rx="12" transform="rotate(-45 11 20)"
+                                    stroke="currentColor" stroke-width="3" />
 
-                                <path
-                                    d="m23 23 18 18"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                />
+                                <path d="m23 23 18 18" stroke="currentColor" stroke-width="3" />
 
-                                <path
-                                    d="M29 25h12M35 19v12"
-                                    stroke="currentColor"
-                                    stroke-width="3"
-                                    stroke-linecap="round"
-                                />
+                                <path d="M29 25h12M35 19v12" stroke="currentColor" stroke-width="3"
+                                    stroke-linecap="round" />
 
                             </svg>
 
@@ -1305,10 +888,7 @@
                             </span>
 
 
-                            <span
-                                class="card-arrow"
-                                aria-hidden="true"
-                            >
+                            <span class="card-arrow" aria-hidden="true">
                                 ↗
                             </span>
 
@@ -1327,11 +907,7 @@
              LOCATION
              ================================================= -->
 
-        <section
-            class="location-section"
-            id="location"
-            aria-labelledby="locationTitle"
-        >
+        <section class="location-section" id="location" aria-labelledby="locationTitle">
 
             <div class="container">
 
@@ -1358,10 +934,7 @@
                     </div>
 
 
-                    <div
-                        class="location-badge"
-                        aria-hidden="true"
-                    >
+                    <div class="location-badge" aria-hidden="true">
 
                         <span>
                             ⌖
@@ -1382,10 +955,7 @@
                                 বিভাগ
                             </span>
 
-                            <select
-                                id="homeDivision"
-                                aria-label="বিভাগ নির্বাচন করুন"
-                            >
+                            <select id="homeDivision" aria-label="বিভাগ নির্বাচন করুন">
 
                                 <option value="">
                                     বিভাগ নির্বাচন করুন
@@ -1402,11 +972,7 @@
                                 জেলা
                             </span>
 
-                            <select
-                                id="homeDistrict"
-                                aria-label="জেলা নির্বাচন করুন"
-                                disabled
-                            >
+                            <select id="homeDistrict" aria-label="জেলা নির্বাচন করুন" disabled>
 
                                 <option value="">
                                     জেলা নির্বাচন করুন
@@ -1423,11 +989,7 @@
                                 উপজেলা
                             </span>
 
-                            <select
-                                id="homeUpazila"
-                                aria-label="উপজেলা নির্বাচন করুন"
-                                disabled
-                            >
+                            <select id="homeUpazila" aria-label="উপজেলা নির্বাচন করুন" disabled>
 
                                 <option value="">
                                     উপজেলা নির্বাচন করুন
@@ -1442,20 +1004,12 @@
 
                     <div class="location-card-footer">
 
-                        <span
-                            class="location-saved"
-                            id="locationSavedState"
-                            aria-live="polite"
-                        >
+                        <span class="location-saved" id="locationSavedState" aria-live="polite">
                             আপনার নির্বাচন এই ডিভাইসে মনে রাখা হবে।
                         </span>
 
 
-                        <button
-                            type="button"
-                            class="location-action"
-                            id="locationSearchButton"
-                        >
+                        <button type="button" class="location-action" id="locationSearchButton">
 
                             এলাকার তথ্য দেখুন
 
@@ -1478,11 +1032,7 @@
              EMERGENCY PREVIEW
              ================================================= -->
 
-        <section
-            class="emergency-preview"
-            id="emergency"
-            aria-labelledby="emergencyTitle"
-        >
+        <section class="emergency-preview" id="emergency" aria-labelledby="emergencyTitle">
 
             <div class="container">
 
@@ -1507,31 +1057,18 @@
                     </div>
 
 
-                    <button
-                        type="button"
-                        class="view-all interface-shortcut"
-                        data-interface-open="emergency"
-                    >
+                    <button type="button" class="view-all interface-shortcut" data-interface-open="emergency">
                         সব দেখুন →
                     </button>
 
                 </div>
 
 
-                <div
-                    class="emergency-list"
-                    id="emergencyPreviewList"
-                    aria-live="polite"
-                >
+                <div class="emergency-list" id="emergencyPreviewList" aria-live="polite">
 
-                    <article
-                        class="emergency-item emergency-item-loading"
-                    >
+                    <article class="emergency-item emergency-item-loading">
 
-                        <div
-                            class="emergency-item-icon"
-                            aria-hidden="true"
-                        >
+                        <div class="emergency-item-icon" aria-hidden="true">
                             !
                         </div>
 
@@ -1561,10 +1098,7 @@
              TRUST
              ================================================= -->
 
-        <section
-            class="trust-strip"
-            aria-label="Dorkari সম্পর্কে"
-        >
+        <section class="trust-strip" aria-label="Dorkari সম্পর্কে">
 
             <div class="container trust-grid">
 
@@ -1640,12 +1174,7 @@
              SERVICE INTERFACE LAYER
              ================================================= -->
 
-        <section
-            class="service-interface-layer"
-            id="serviceInterfaceLayer"
-            hidden
-            aria-hidden="true"
-        >
+        <section class="service-interface-layer" id="serviceInterfaceLayer" hidden aria-hidden="true">
 
             <div class="container">
 
@@ -1654,21 +1183,12 @@
                      ALL SERVICES
                      ================================================= -->
 
-                <section
-                    class="service-interface app-nav-interface"
-                    data-interface="services"
-                    id="servicesNavInterface"
-                    hidden
-                    aria-labelledby="servicesNavInterfaceTitle"
-                >
+                <section class="service-interface app-nav-interface" data-interface="services" id="servicesNavInterface"
+                    hidden aria-labelledby="servicesNavInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -1704,11 +1224,7 @@
                     <div class="all-services-interface-grid">
 
 
-                        <button
-                            type="button"
-                            class="service-card is-emergency"
-                            data-interface-open="emergency"
-                        >
+                        <button type="button" class="service-card is-emergency" data-interface-open="emergency">
 
                             <span class="service-icon">
                                 !
@@ -1729,11 +1245,7 @@
                         </button>
 
 
-                        <button
-                            type="button"
-                            class="service-card is-hospital"
-                            data-interface-open="hospital"
-                        >
+                        <button type="button" class="service-card is-hospital" data-interface-open="hospital">
 
                             <span class="service-icon">
                                 +
@@ -1754,11 +1266,7 @@
                         </button>
 
 
-                        <button
-                            type="button"
-                            class="service-card is-doctor"
-                            data-interface-open="doctor"
-                        >
+                        <button type="button" class="service-card is-doctor" data-interface-open="doctor">
 
                             <span class="service-icon">
                                 D
@@ -1779,11 +1287,7 @@
                         </button>
 
 
-                        <button
-                            type="button"
-                            class="service-card is-ambulance"
-                            data-interface-open="ambulance"
-                        >
+                        <button type="button" class="service-card is-ambulance" data-interface-open="ambulance">
 
                             <span class="service-icon">
                                 A
@@ -1804,11 +1308,7 @@
                         </button>
 
 
-                        <button
-                            type="button"
-                            class="service-card is-government"
-                            data-interface-open="government"
-                        >
+                        <button type="button" class="service-card is-government" data-interface-open="government">
 
                             <span class="service-icon">
                                 ৳
@@ -1829,11 +1329,7 @@
                         </button>
 
 
-                        <button
-                            type="button"
-                            class="service-card is-tests"
-                            data-interface-open="tests"
-                        >
+                        <button type="button" class="service-card is-tests" data-interface-open="tests">
 
                             <span class="service-icon">
                                 T
@@ -1854,11 +1350,7 @@
                         </button>
 
 
-                        <button
-                            type="button"
-                            class="service-card is-blood"
-                            data-interface-open="blood"
-                        >
+                        <button type="button" class="service-card is-blood" data-interface-open="blood">
 
                             <span class="service-icon">
                                 ♥
@@ -1879,11 +1371,7 @@
                         </button>
 
 
-                        <button
-                            type="button"
-                            class="service-card is-pharmacy"
-                            data-interface-open="pharmacy"
-                        >
+                        <button type="button" class="service-card is-pharmacy" data-interface-open="pharmacy">
 
                             <span class="service-icon">
                                 Rx
@@ -1913,21 +1401,12 @@
                      EMERGENCY INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface"
-                    data-interface="emergency"
-                    id="emergencyInterface"
-                    hidden
-                    aria-labelledby="emergencyInterfaceTitle"
-                >
+                <section class="service-interface" data-interface="emergency" id="emergencyInterface" hidden
+                    aria-labelledby="emergencyInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -1962,20 +1441,14 @@
 
                     <div class="service-interface-actions">
 
-                        <a
-                            href="tel:999"
-                            class="interface-primary-action is-red"
-                        >
+                        <a href="tel:999" class="interface-primary-action is-red">
                             📞 ৯৯৯ কল করুন
                         </a>
 
                     </div>
 
 
-                    <div
-                        class="interface-results"
-                        data-interface-results="emergency"
-                    ></div>
+                    <div class="interface-results" data-interface-results="emergency"></div>
 
                 </section>
 
@@ -1984,21 +1457,12 @@
                      HOSPITAL INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface"
-                    data-interface="hospital"
-                    id="hospitalInterface"
-                    hidden
-                    aria-labelledby="hospitalInterfaceTitle"
-                >
+                <section class="service-interface" data-interface="hospital" id="hospitalInterface" hidden
+                    aria-labelledby="hospitalInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2033,27 +1497,17 @@
 
                     <div class="interface-toolbar">
 
-                        <input
-                            type="search"
-                            data-interface-search="hospital"
-                            placeholder="হাসপাতালের নাম লিখুন..."
-                            aria-label="হাসপাতাল খুঁজুন"
-                        >
+                        <input type="search" data-interface-search="hospital" placeholder="হাসপাতালের নাম লিখুন..."
+                            aria-label="হাসপাতাল খুঁজুন">
 
-                        <button
-                            type="button"
-                            data-interface-location="hospital"
-                        >
+                        <button type="button" data-interface-location="hospital">
                             ⌖ এলাকা
                         </button>
 
                     </div>
 
 
-                    <div
-                        class="interface-results"
-                        data-interface-results="hospital"
-                    >
+                    <div class="interface-results" data-interface-results="hospital">
 
                         <div class="interface-empty">
                             হাসপাতালের তথ্য এখানে দেখানো হবে।
@@ -2068,21 +1522,12 @@
                      DOCTOR INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface"
-                    data-interface="doctor"
-                    id="doctorInterface"
-                    hidden
-                    aria-labelledby="doctorInterfaceTitle"
-                >
+                <section class="service-interface" data-interface="doctor" id="doctorInterface" hidden
+                    aria-labelledby="doctorInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2117,27 +1562,17 @@
 
                     <div class="interface-toolbar">
 
-                        <input
-                            type="search"
-                            data-interface-search="doctor"
-                            placeholder="ডাক্তার বা বিশেষজ্ঞের নাম..."
-                            aria-label="ডাক্তার খুঁজুন"
-                        >
+                        <input type="search" data-interface-search="doctor" placeholder="ডাক্তার বা বিশেষজ্ঞের নাম..."
+                            aria-label="ডাক্তার খুঁজুন">
 
-                        <button
-                            type="button"
-                            data-interface-location="doctor"
-                        >
+                        <button type="button" data-interface-location="doctor">
                             ⌖ এলাকা
                         </button>
 
                     </div>
 
 
-                    <div
-                        class="interface-results"
-                        data-interface-results="doctor"
-                    >
+                    <div class="interface-results" data-interface-results="doctor">
 
                         <div class="interface-empty">
                             ডাক্তারদের তথ্য এখানে দেখানো হবে।
@@ -2152,21 +1587,12 @@
                      AMBULANCE INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface"
-                    data-interface="ambulance"
-                    id="ambulanceInterface"
-                    hidden
-                    aria-labelledby="ambulanceInterfaceTitle"
-                >
+                <section class="service-interface" data-interface="ambulance" id="ambulanceInterface" hidden
+                    aria-labelledby="ambulanceInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2201,27 +1627,17 @@
 
                     <div class="interface-toolbar">
 
-                        <input
-                            type="search"
-                            data-interface-search="ambulance"
-                            placeholder="এলাকা বা সার্ভিসের নাম..."
-                            aria-label="অ্যাম্বুলেন্স খুঁজুন"
-                        >
+                        <input type="search" data-interface-search="ambulance" placeholder="এলাকা বা সার্ভিসের নাম..."
+                            aria-label="অ্যাম্বুলেন্স খুঁজুন">
 
-                        <button
-                            type="button"
-                            data-interface-location="ambulance"
-                        >
+                        <button type="button" data-interface-location="ambulance">
                             ⌖ এলাকা
                         </button>
 
                     </div>
 
 
-                    <div
-                        class="interface-results"
-                        data-interface-results="ambulance"
-                    >
+                    <div class="interface-results" data-interface-results="ambulance">
 
                         <div class="interface-empty">
                             অ্যাম্বুলেন্সের তথ্য এখানে দেখানো হবে।
@@ -2236,21 +1652,12 @@
                      GOVERNMENT INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface"
-                    data-interface="government"
-                    id="governmentInterface"
-                    hidden
-                    aria-labelledby="governmentInterfaceTitle"
-                >
+                <section class="service-interface" data-interface="government" id="governmentInterface" hidden
+                    aria-labelledby="governmentInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2285,27 +1692,17 @@
 
                     <div class="interface-toolbar">
 
-                        <input
-                            type="search"
-                            data-interface-search="government"
-                            placeholder="অফিস বা সেবার নাম..."
-                            aria-label="সরকারি অফিস খুঁজুন"
-                        >
+                        <input type="search" data-interface-search="government" placeholder="অফিস বা সেবার নাম..."
+                            aria-label="সরকারি অফিস খুঁজুন">
 
-                        <button
-                            type="button"
-                            data-interface-location="government"
-                        >
+                        <button type="button" data-interface-location="government">
                             ⌖ এলাকা
                         </button>
 
                     </div>
 
 
-                    <div
-                        class="interface-results"
-                        data-interface-results="government"
-                    >
+                    <div class="interface-results" data-interface-results="government">
 
                         <div class="interface-empty">
                             সরকারি সেবার তথ্য এখানে দেখানো হবে।
@@ -2320,21 +1717,12 @@
                      TEST INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface"
-                    data-interface="tests"
-                    id="testsInterface"
-                    hidden
-                    aria-labelledby="testsInterfaceTitle"
-                >
+                <section class="service-interface" data-interface="tests" id="testsInterface" hidden
+                    aria-labelledby="testsInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2369,27 +1757,17 @@
 
                     <div class="interface-toolbar">
 
-                        <input
-                            type="search"
-                            data-interface-search="tests"
-                            placeholder="যেমন: CBC, X-ray..."
-                            aria-label="টেস্ট খুঁজুন"
-                        >
+                        <input type="search" data-interface-search="tests" placeholder="যেমন: CBC, X-ray..."
+                            aria-label="টেস্ট খুঁজুন">
 
-                        <button
-                            type="button"
-                            data-interface-location="tests"
-                        >
+                        <button type="button" data-interface-location="tests">
                             ⌖ হাসপাতাল
                         </button>
 
                     </div>
 
 
-                    <div
-                        class="interface-results"
-                        data-interface-results="tests"
-                    >
+                    <div class="interface-results" data-interface-results="tests">
 
                         <div class="interface-empty">
                             টেস্ট ও ফি-এর তথ্য এখানে দেখানো হবে।
@@ -2404,21 +1782,12 @@
                      BLOOD INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface"
-                    data-interface="blood"
-                    id="bloodInterface"
-                    hidden
-                    aria-labelledby="bloodInterfaceTitle"
-                >
+                <section class="service-interface" data-interface="blood" id="bloodInterface" hidden
+                    aria-labelledby="bloodInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2453,69 +1822,42 @@
 
                     <div class="interface-blood-groups">
 
-                        <button
-                            type="button"
-                            data-blood-group="A+"
-                        >
+                        <button type="button" data-blood-group="A+">
                             A+
                         </button>
 
-                        <button
-                            type="button"
-                            data-blood-group="A-"
-                        >
+                        <button type="button" data-blood-group="A-">
                             A−
                         </button>
 
-                        <button
-                            type="button"
-                            data-blood-group="B+"
-                        >
+                        <button type="button" data-blood-group="B+">
                             B+
                         </button>
 
-                        <button
-                            type="button"
-                            data-blood-group="B-"
-                        >
+                        <button type="button" data-blood-group="B-">
                             B−
                         </button>
 
-                        <button
-                            type="button"
-                            data-blood-group="AB+"
-                        >
+                        <button type="button" data-blood-group="AB+">
                             AB+
                         </button>
 
-                        <button
-                            type="button"
-                            data-blood-group="AB-"
-                        >
+                        <button type="button" data-blood-group="AB-">
                             AB−
                         </button>
 
-                        <button
-                            type="button"
-                            data-blood-group="O+"
-                        >
+                        <button type="button" data-blood-group="O+">
                             O+
                         </button>
 
-                        <button
-                            type="button"
-                            data-blood-group="O-"
-                        >
+                        <button type="button" data-blood-group="O-">
                             O−
                         </button>
 
                     </div>
 
 
-                    <div
-                        class="interface-results"
-                        data-interface-results="blood"
-                    >
+                    <div class="interface-results" data-interface-results="blood">
 
                         <div class="interface-empty">
                             রক্তের তথ্য এখানে দেখানো হবে।
@@ -2530,21 +1872,12 @@
                      PHARMACY INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface"
-                    data-interface="pharmacy"
-                    id="pharmacyInterface"
-                    hidden
-                    aria-labelledby="pharmacyInterfaceTitle"
-                >
+                <section class="service-interface" data-interface="pharmacy" id="pharmacyInterface" hidden
+                    aria-labelledby="pharmacyInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2579,27 +1912,17 @@
 
                     <div class="interface-toolbar">
 
-                        <input
-                            type="search"
-                            data-interface-search="pharmacy"
-                            placeholder="ফার্মেসির নাম বা এলাকা..."
-                            aria-label="ফার্মেসি খুঁজুন"
-                        >
+                        <input type="search" data-interface-search="pharmacy" placeholder="ফার্মেসির নাম বা এলাকা..."
+                            aria-label="ফার্মেসি খুঁজুন">
 
-                        <button
-                            type="button"
-                            data-interface-location="pharmacy"
-                        >
+                        <button type="button" data-interface-location="pharmacy">
                             ⌖ এলাকা
                         </button>
 
                     </div>
 
 
-                    <div
-                        class="interface-results"
-                        data-interface-results="pharmacy"
-                    >
+                    <div class="interface-results" data-interface-results="pharmacy">
 
                         <div class="interface-empty">
                             ফার্মেসির তথ্য এখানে দেখানো হবে।
@@ -2614,21 +1937,12 @@
                      LOCATION INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface app-nav-interface"
-                    data-interface="location"
-                    id="locationNavInterface"
-                    hidden
-                    aria-labelledby="locationNavInterfaceTitle"
-                >
+                <section class="service-interface app-nav-interface" data-interface="location" id="locationNavInterface"
+                    hidden aria-labelledby="locationNavInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2671,10 +1985,7 @@
                                     বিভাগ
                                 </span>
 
-                                <select
-                                    id="navDivision"
-                                    aria-label="বিভাগ নির্বাচন করুন"
-                                >
+                                <select id="navDivision" aria-label="বিভাগ নির্বাচন করুন">
 
                                     <option value="">
                                         বিভাগ নির্বাচন করুন
@@ -2691,11 +2002,7 @@
                                     জেলা
                                 </span>
 
-                                <select
-                                    id="navDistrict"
-                                    aria-label="জেলা নির্বাচন করুন"
-                                    disabled
-                                >
+                                <select id="navDistrict" aria-label="জেলা নির্বাচন করুন" disabled>
 
                                     <option value="">
                                         জেলা নির্বাচন করুন
@@ -2712,11 +2019,7 @@
                                     উপজেলা
                                 </span>
 
-                                <select
-                                    id="navUpazila"
-                                    aria-label="উপজেলা নির্বাচন করুন"
-                                    disabled
-                                >
+                                <select id="navUpazila" aria-label="উপজেলা নির্বাচন করুন" disabled>
 
                                     <option value="">
                                         উপজেলা নির্বাচন করুন
@@ -2729,11 +2032,7 @@
                         </div>
 
 
-                        <button
-                            type="button"
-                            class="location-action nav-location-save"
-                            id="navLocationSave"
-                        >
+                        <button type="button" class="location-action nav-location-save" id="navLocationSave">
 
                             লোকেশন সংরক্ষণ করুন
 
@@ -2752,21 +2051,12 @@
                      SEARCH INTERFACE
                      ================================================= -->
 
-                <section
-                    class="service-interface app-nav-interface"
-                    data-interface="search"
-                    id="searchNavInterface"
-                    hidden
-                    aria-labelledby="searchNavInterfaceTitle"
-                >
+                <section class="service-interface app-nav-interface" data-interface="search" id="searchNavInterface"
+                    hidden aria-labelledby="searchNavInterfaceTitle">
 
                     <div class="service-interface-header">
 
-                        <button
-                            type="button"
-                            class="service-interface-back"
-                            data-interface-back
-                        >
+                        <button type="button" class="service-interface-back" data-interface-back>
                             ←
                             <span>
                                 হোমে ফিরুন
@@ -2799,10 +2089,7 @@
                     </div>
 
 
-                    <form
-                        class="nav-search-panel"
-                        id="navSearchForm"
-                    >
+                    <form class="nav-search-panel" id="navSearchForm">
 
                         <div class="nav-search-input-wrap">
 
@@ -2811,22 +2098,13 @@
                             </span>
 
 
-                            <input
-                                type="search"
-                                id="navSearchInput"
-                                placeholder="যেমন: খুলনা হাসপাতাল..."
-                                autocomplete="off"
-                                enterkeyhint="search"
-                                aria-label="Dorkari-তে অনুসন্ধান করুন"
-                            >
+                            <input type="search" id="navSearchInput" placeholder="যেমন: খুলনা হাসপাতাল..."
+                                autocomplete="off" enterkeyhint="search" aria-label="Dorkari-তে অনুসন্ধান করুন">
 
                         </div>
 
 
-                        <button
-                            type="submit"
-                            class="interface-primary-action"
-                        >
+                        <button type="submit" class="interface-primary-action">
                             খুঁজুন
                         </button>
 
@@ -2840,45 +2118,29 @@
                         </span>
 
 
-                        <button
-                            type="button"
-                            data-nav-search="হাসপাতাল"
-                        >
+                        <button type="button" data-nav-search="হাসপাতাল">
                             হাসপাতাল
                         </button>
 
 
-                        <button
-                            type="button"
-                            data-nav-search="ডাক্তার"
-                        >
+                        <button type="button" data-nav-search="ডাক্তার">
                             ডাক্তার
                         </button>
 
 
-                        <button
-                            type="button"
-                            data-nav-search="অ্যাম্বুলেন্স"
-                        >
+                        <button type="button" data-nav-search="অ্যাম্বুলেন্স">
                             অ্যাম্বুলেন্স
                         </button>
 
 
-                        <button
-                            type="button"
-                            data-nav-search="ব্লাড ব্যাংক"
-                        >
+                        <button type="button" data-nav-search="ব্লাড ব্যাংক">
                             ব্লাড ব্যাংক
                         </button>
 
                     </div>
 
 
-                    <div
-                        class="nav-search-results"
-                        id="navSearchResults"
-                        aria-live="polite"
-                    ></div>
+                    <div class="nav-search-results" id="navSearchResults" aria-live="polite"></div>
 
                 </section>
 
@@ -2900,33 +2162,17 @@
 
             <div class="footer-brand">
 
-                <a
-                    href="#home"
-                    class="brand"
-                    aria-label="Dorkari হোম"
-                >
+                <a href="#home" class="brand" aria-label="Dorkari হোম">
 
-                    <span
-                        class="brand-icon brand-icon-svg"
-                        aria-hidden="true"
-                    >
+                    <span class="brand-icon brand-icon-svg" aria-hidden="true">
 
-                        <svg
-                            viewBox="0 0 48 48"
-                            fill="none"
-                        >
+                        <svg viewBox="0 0 48 48" fill="none">
 
                             <path
                                 d="M24 42C20 35 8 29 8 18.5C8 12.1 13.2 7 19.5 7C21.4 7 23 7.5 24 8.6C25 7.5 26.6 7 28.5 7C34.8 7 40 12.1 40 18.5C40 29 28 35 24 42Z"
-                                fill="currentColor"
-                            />
+                                fill="currentColor" />
 
-                            <circle
-                                cx="27.4"
-                                cy="19.2"
-                                r="4"
-                                fill="#df3d45"
-                            />
+                            <circle cx="27.4" cy="19.2" r="4" fill="#df3d45" />
 
                         </svg>
 
@@ -2985,270 +2231,111 @@
          PREMIUM MOBILE BOTTOM NAV
          ===================================================== -->
 
-         <!-- =====================================================
+    <!-- =====================================================
      MOBILE BOTTOM NAV
      ===================================================== -->
-<nav
-    class="bottom-nav"
-    aria-label="মোবাইল নেভিগেশন"
->
-    <!-- HOME -->
-    <a
-        href="#home"
-        class="bottom-nav-item active"
-        data-bottom-nav
-        data-section-target="home"
-        aria-label="হোম"
-    >
-        <span
-            class="bottom-nav-icon"
-            aria-hidden="true"
-            style="display:inline-flex!important;align-items:center;justify-content:center;"
-        >
-            <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style="display:block!important;width:20px;height:20px;"
-            >
-                <path
-                    d="M3.5 10.5L12 3.5L20.5 10.5V19.5C20.5 20.0523 20.0523 20.5 19.5 20.5H4.5C3.94772 20.5 3.5 20.0523 3.5 19.5V10.5Z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linejoin="round"
-                />
-                <path
-                    d="M9 20.5V14H15V20.5"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linejoin="round"
-                />
-            </svg>
-        </span>
+    <nav class="bottom-nav" aria-label="মোবাইল নেভিগেশন">
+        <!-- HOME -->
+        <a href="#home" class="bottom-nav-item active" data-bottom-nav data-section-target="home" aria-label="হোম">
+            <span class="bottom-nav-icon" aria-hidden="true"
+                style="display:inline-flex!important;align-items:center;justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="display:block!important;width:20px;height:20px;">
+                    <path
+                        d="M3.5 10.5L12 3.5L20.5 10.5V19.5C20.5 20.0523 20.0523 20.5 19.5 20.5H4.5C3.94772 20.5 3.5 20.0523 3.5 19.5V10.5Z"
+                        stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                    <path d="M9 20.5V14H15V20.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                </svg>
+            </span>
 
-        <small>হোম</small>
-    </a>
+            <small>হোম</small>
+        </a>
 
 
-    <!-- SERVICES -->
-    <a
-        href="#services"
-        class="bottom-nav-item"
-        data-bottom-nav
-        data-section-target="services"
-        aria-label="সেবা"
-    >
-        <span
-            class="bottom-nav-icon"
-            aria-hidden="true"
-            style="display:inline-flex!important;align-items:center;justify-content:center;"
-        >
-            <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style="display:block!important;width:20px;height:20px;"
-            >
-                <rect
-                    x="4"
-                    y="4"
-                    width="6"
-                    height="6"
-                    rx="1.2"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                />
-                <rect
-                    x="14"
-                    y="4"
-                    width="6"
-                    height="6"
-                    rx="1.2"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                />
-                <rect
-                    x="4"
-                    y="14"
-                    width="6"
-                    height="6"
-                    rx="1.2"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                />
-                <rect
-                    x="14"
-                    y="14"
-                    width="6"
-                    height="6"
-                    rx="1.2"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                />
-            </svg>
-        </span>
+        <!-- SERVICES -->
+        <a href="#services" class="bottom-nav-item" data-bottom-nav data-section-target="services" aria-label="সেবা">
+            <span class="bottom-nav-icon" aria-hidden="true"
+                style="display:inline-flex!important;align-items:center;justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="display:block!important;width:20px;height:20px;">
+                    <rect x="4" y="4" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="1.6" />
+                    <rect x="14" y="4" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="1.6" />
+                    <rect x="4" y="14" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="1.6" />
+                    <rect x="14" y="14" width="6" height="6" rx="1.2" stroke="currentColor" stroke-width="1.6" />
+                </svg>
+            </span>
 
-        <small>সেবা</small>
-    </a>
+            <small>সেবা</small>
+        </a>
 
 
-    <!-- EMERGENCY -->
-    <a
-        href="#emergency"
-        class="bottom-nav-item bottom-nav-emergency"
-        data-bottom-nav
-        data-section-target="emergency"
-        aria-label="জরুরি সেবা"
-    >
-        <span
-            class="bottom-nav-icon"
-            aria-hidden="true"
-            style="display:inline-flex!important;align-items:center;justify-content:center;"
-        >
-            <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style="display:block!important;width:22px;height:22px;"
-            >
-                <path
-                    d="M12 4L3.8 18.2C3.42 18.86 3.9 19.7 4.66 19.7H19.34C20.1 19.7 20.58 18.86 20.2 18.2L12 4Z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linejoin="round"
-                />
-                <path
-                    d="M12 9V13.5"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linecap="round"
-                />
-                <circle
-                    cx="12"
-                    cy="16.8"
-                    r="0.8"
-                    stroke="currentColor"
-                    stroke-width="1.4"
-                />
-            </svg>
-        </span>
+        <!-- EMERGENCY -->
+        <a href="#emergency" class="bottom-nav-item bottom-nav-emergency" data-bottom-nav
+            data-section-target="emergency" aria-label="জরুরি সেবা">
+            <span class="bottom-nav-icon" aria-hidden="true"
+                style="display:inline-flex!important;align-items:center;justify-content:center;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="display:block!important;width:22px;height:22px;">
+                    <path d="M12 4L3.8 18.2C3.42 18.86 3.9 19.7 4.66 19.7H19.34C20.1 19.7 20.58 18.86 20.2 18.2L12 4Z"
+                        stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                    <path d="M12 9V13.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    <circle cx="12" cy="16.8" r="0.8" stroke="currentColor" stroke-width="1.4" />
+                </svg>
+            </span>
 
-        <small>জরুরি</small>
-    </a>
+            <small>জরুরি</small>
+        </a>
 
 
-    <!-- LOCATION -->
-    <a
-        href="#location"
-        class="bottom-nav-item"
-        data-bottom-nav
-        data-section-target="location"
-        aria-label="লোকেশন"
-    >
-        <span
-            class="bottom-nav-icon"
-            aria-hidden="true"
-            style="display:inline-flex!important;align-items:center;justify-content:center;"
-        >
-            <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style="display:block!important;width:20px;height:20px;"
-            >
-                <path
-                    d="M20 10.3C20 15.7 12 20.5 12 20.5C12 20.5 4 15.7 4 10.3C4 5.88 7.58 3.5 12 3.5C16.42 3.5 20 5.88 20 10.3Z"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linejoin="round"
-                />
-                <circle
-                    cx="12"
-                    cy="10"
-                    r="2.4"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                />
-            </svg>
-        </span>
+        <!-- LOCATION -->
+        <a href="#location" class="bottom-nav-item" data-bottom-nav data-section-target="location" aria-label="লোকেশন">
+            <span class="bottom-nav-icon" aria-hidden="true"
+                style="display:inline-flex!important;align-items:center;justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="display:block!important;width:20px;height:20px;">
+                    <path
+                        d="M20 10.3C20 15.7 12 20.5 12 20.5C12 20.5 4 15.7 4 10.3C4 5.88 7.58 3.5 12 3.5C16.42 3.5 20 5.88 20 10.3Z"
+                        stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                    <circle cx="12" cy="10" r="2.4" stroke="currentColor" stroke-width="1.6" />
+                </svg>
+            </span>
 
-        <small>লোকেশন</small>
-    </a>
+            <small>লোকেশন</small>
+        </a>
 
 
-    <!-- SEARCH -->
-    <a
-        href="#search"
-        class="bottom-nav-item"
-        id="bottomSearchNav"
-        data-bottom-nav
-        data-section-target="search"
-        aria-label="খুঁজুন"
-    >
-        <span
-            class="bottom-nav-icon"
-            aria-hidden="true"
-            style="display:inline-flex!important;align-items:center;justify-content:center;"
-        >
-            <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style="display:block!important;width:20px;height:20px;"
-            >
-                <circle
-                    cx="10.5"
-                    cy="10.5"
-                    r="6.2"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                />
-                <path
-                    d="M15.2 15.2L20 20"
-                    stroke="currentColor"
-                    stroke-width="1.6"
-                    stroke-linecap="round"
-                />
-            </svg>
-        </span>
+        <!-- SEARCH -->
+        <a href="#search" class="bottom-nav-item" id="bottomSearchNav" data-bottom-nav data-section-target="search"
+            aria-label="খুঁজুন">
+            <span class="bottom-nav-icon" aria-hidden="true"
+                style="display:inline-flex!important;align-items:center;justify-content:center;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    style="display:block!important;width:20px;height:20px;">
+                    <circle cx="10.5" cy="10.5" r="6.2" stroke="currentColor" stroke-width="1.6" />
+                    <path d="M15.2 15.2L20 20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                </svg>
+            </span>
 
-        <small>খুঁজুন</small>
-    </a>
+            <small>খুঁজুন</small>
+        </a>
 
-</nav>
+    </nav>
 
-     
+
 
 
     <!-- =====================================================
          TOAST
          ===================================================== -->
 
-    <div
-        class="toast"
-        id="toast"
-        role="status"
-        aria-live="polite"
-    ></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 
     <!-- =====================================================
          SCRIPTS
          ===================================================== -->
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="js/config.js"></script>
 
