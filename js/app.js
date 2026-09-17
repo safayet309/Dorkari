@@ -11154,3 +11154,175 @@ window.addEventListener(
         loadBloodData();
     }
 );
+/* =========================================================
+   DORKARI — BLOOD BANK GUIDELINE POPUP BEHAVIOR
+   ========================================================= */
+
+function initializeBloodGuidelinePopup() {
+
+    const modal =
+        document.querySelector(
+            "#bloodGuidelineModal"
+        );
+
+    const dialog =
+        modal?.querySelector(
+            ".blood-guideline-dialog"
+        );
+
+    if (!modal) {
+        return;
+    }
+
+
+    function openBloodGuideline() {
+
+        modal.hidden = false;
+
+        modal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        document.body.classList.add(
+            "blood-guideline-open"
+        );
+
+        /*
+         * Popup open হওয়ার পর close button-এ
+         * focus দিলে keyboard accessibility-ও ঠিক থাকে।
+         */
+        window.requestAnimationFrame(
+            () => {
+
+                modal
+                    .querySelector(
+                        ".blood-guideline-close"
+                    )
+                    ?.focus();
+
+            }
+        );
+
+    }
+
+
+    function closeBloodGuideline() {
+
+        modal.hidden = true;
+
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        document.body.classList.remove(
+            "blood-guideline-open"
+        );
+
+    }
+
+
+    /*
+     * X এবং "বুঝেছি, রক্ত খুঁজুন"
+     * — দুইটিই একই close handler ব্যবহার করবে।
+     */
+    modal
+        .querySelectorAll(
+            "[data-blood-guideline-close]"
+        )
+        .forEach(
+            (button) => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+                        closeBloodGuideline();
+                    }
+                );
+
+            }
+        );
+
+
+    /*
+     * Popup-এর বাইরের backdrop-এ click করলে close।
+     */
+    modal
+        .querySelector(
+            ".blood-guideline-backdrop"
+        )
+        ?.addEventListener(
+            "click",
+            () => {
+                closeBloodGuideline();
+            }
+        );
+
+
+    /*
+     * Dialog-এর ভেতরে click করলে যেন
+     * accidentally close না হয়।
+     */
+    dialog?.addEventListener(
+        "click",
+        (event) => {
+            event.stopPropagation();
+        }
+    );
+
+
+    /*
+     * ESC চাপলেও popup বন্ধ হবে।
+     */
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key !== "Escape"
+            ) {
+                return;
+            }
+
+
+            if (
+                modal.hidden
+            ) {
+                return;
+            }
+
+
+            closeBloodGuideline();
+
+        }
+    );
+
+
+    /*
+     * Blood Bank interface open হলেই
+     * popup দেখাবে।
+     */
+    window.addEventListener(
+        "dorkari:blood-open",
+        () => {
+
+            openBloodGuideline();
+
+        }
+    );
+
+
+    /*
+     * কিছু ক্ষেত্রে custom event-এর আগে interface
+     * already visible হয়ে যেতে পারে।
+     * তাই Blood Bank interface-এর direct open-ও
+     * support করছি।
+     */
+    window.openDorkariBloodGuideline =
+        openBloodGuideline;
+
+    window.closeDorkariBloodGuideline =
+        closeBloodGuideline;
+
+}
