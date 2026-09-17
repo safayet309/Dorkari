@@ -113,8 +113,21 @@ function getPhone(record) {
 
 function normalizePhone(phone) {
 
+    const bengaliDigits =
+        "০১২৩৪৫৬৭৮৯";
+
     return cleanText(phone)
-        .replace(/[^\d+]/g, "");
+        .replace(
+            /[০-৯]/g,
+            (digit) =>
+                bengaliDigits.indexOf(
+                    digit
+                )
+        )
+        .replace(
+            /[^\d+]/g,
+            ""
+        );
 }
 
 
