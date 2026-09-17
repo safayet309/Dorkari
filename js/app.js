@@ -7685,6 +7685,13 @@ function initializeServiceInterfaces() {
                     if (service === "government") {
                         loadGovernmentData();
                     }
+                    if (service === "blood") {
+                        loadBloodData();
+
+                        window.dispatchEvent(
+                            new Event("dorkari:blood-open")
+                        );
+                    }
                 }
             );
 
@@ -7809,6 +7816,9 @@ function initializeServiceInterfaces() {
                 }
                 if (initialHash === "government") {
                     loadGovernmentData();
+                }
+                if (initialHash === "blood") {
+                    loadBloodData();
                 }
 
             },
@@ -9613,6 +9623,7 @@ document.addEventListener(
         initializeBottomSearch();
         initializeServiceCards();
         initializeServiceInterfaces();
+        initializeBloodInterface();
         initializeGovernmentInterface();
         initializeDoctorInterface();
         initializeAmbulanceInterface();
@@ -9635,5 +9646,1511 @@ document.addEventListener(
         loadHomeLocations();
 
         loadEmergencyPreview();
+    }
+);
+/* =========================================================
+   DORKARI — BLOOD BANK PUBLIC INTERFACE
+   ========================================================= */
+
+const bloodBankState = {
+    banks: [],
+    filtered: [],
+    divisions: [],
+    districts: [],
+    upazilas: [],
+    selectedBloodGroup: "",
+    locationOnly: false,
+    loading: false,
+    loaded: false
+};
+
+
+/* =========================================================
+   BLOOD BANK — HELPERS
+   ========================================================= */
+
+function getBloodBankElements() {
+
+    return {
+        interface:
+            document.querySelector(
+                '[data-interface="blood"]'
+            ),
+
+        search:
+            document.querySelector(
+                '[data-interface-search="blood"]'
+            ),
+
+        locationButton:
+            document.querySelector(
+                '[data-interface-location="blood"]'
+            ),
+
+        resultCount:
+            document.querySelector(
+                "[data-blood-result-count]"
+            ),
+
+        results:
+            document.querySelector(
+                '[data-interface-results="blood"]'
+            ),
+
+        groupButtons:
+            Array.from(
+                document.querySelectorAll(
+                    "[data-blood-group]"
+                )
+            ),
+
+        clearGroup:
+            document.querySelector(
+                "[data-blood-group-clear]"
+            )
+    };
+
+}
+
+
+/* =========================================================
+   BLOOD GROUP NORMALIZATION
+   ========================================================= */
+
+function normalizeBloodGroupValue(value) {
+
+    return cleanText(value)
+        .replace(/[−–—]/g, "-")
+        .replace(/\s+/g, "")
+        .toUpperCase();
+
+}
+
+
+function extractBloodGroups(value) {
+
+    if (Array.isArray(value)) {
+
+        return value
+            .flatMap((item) =>
+                extractBloodGroups(item)
+            )
+            .filter(Boolean);
+
+    }
+
+
+    if (
+        value !== null &&
+        typeof value === "object"
+    ) {
+
+        return Object.values(value)
+            .flatMap((item) =>
+                extractBloodGroups(item)
+            )
+            .filter(Boolean);
+
+    }
+
+
+    const text =
+        cleanText(value);
+
+    if (!text) {
+        return [];
+    }
+
+
+    return text
+        .replace(/[()[\]{}"]/g, " ")
+        .split(/[,;|/]+/)
+        .map(normalizeBloodGroupValue)
+        .filter((group) =>
+            [
+                "A+",
+                "A-",
+                "B+",
+                "B-",
+                "AB+",
+                "AB-",
+                "O+",
+                "O-"
+            ].includes(group)
+        );
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — LOCATION
+   ========================================================= */
+
+function getBloodBankLocationLabel(
+    bank
+) {
+
+    const divisionName =
+        getLocationNameById(
+            bloodBankState.divisions,
+            bank.division_id
+        );
+
+    const districtName =
+        getLocationNameById(
+            bloodBankState.districts,
+            bank.district_id
+        );
+
+    const upazilaName =
+        getLocationNameById(
+            bloodBankState.upazilas,
+            bank.upazila_id
+        );
+
+
+    return getLocationLabel(
+        divisionName,
+        districtName,
+        upazilaName
+    );
+
+}
+
+
+function getSavedBloodBankLocation() {
+
+    const saved =
+        getSavedHomeLocation();
+
+    if (!saved) {
+        return null;
+    }
+
+
+    return {
+
+        divisionId:
+            cleanText(
+                saved.divisionId
+            ),
+
+        districtId:
+            cleanText(
+                saved.districtId
+            ),
+
+        upazilaId:
+            cleanText(
+                saved.upazilaId
+            ),
+
+        divisionName:
+            cleanText(
+                saved.divisionName
+            ),
+
+        districtName:
+            cleanText(
+                saved.districtName
+            ),
+
+        upazilaName:
+            cleanText(
+                saved.upazilaName
+            )
+    };
+
+}
+
+
+function bloodBankMatchesLocation(
+    bank,
+    saved
+) {
+
+    if (!saved) {
+        return true;
+    }
+
+
+    if (saved.upazilaId) {
+
+        return (
+            String(
+                bank.upazila_id
+            ) ===
+            String(
+                saved.upazilaId
+            )
+        );
+
+    }
+
+
+    if (saved.districtId) {
+
+        return (
+            String(
+                bank.district_id
+            ) ===
+            String(
+                saved.districtId
+            )
+        );
+
+    }
+
+
+    if (saved.divisionId) {
+
+        return (
+            String(
+                bank.division_id
+            ) ===
+            String(
+                saved.divisionId
+            )
+        );
+
+    }
+
+
+    return true;
+
+}
+
+
+function getBloodBankLocationScore(
+    bank,
+    saved
+) {
+
+    if (!saved) {
+        return 0;
+    }
+
+
+    if (
+        saved.upazilaId &&
+        String(
+            bank.upazila_id
+        ) ===
+        String(
+            saved.upazilaId
+        )
+    ) {
+        return 3;
+    }
+
+
+    if (
+        saved.districtId &&
+        String(
+            bank.district_id
+        ) ===
+        String(
+            saved.districtId
+        )
+    ) {
+        return 2;
+    }
+
+
+    if (
+        saved.divisionId &&
+        String(
+            bank.division_id
+        ) ===
+        String(
+            saved.divisionId
+        )
+    ) {
+        return 1;
+    }
+
+
+    return 0;
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — MAP
+   ========================================================= */
+
+function buildBloodBankMapUrl(
+    bank
+) {
+
+    const searchText = [
+        getDisplayName(bank),
+        bank.address,
+        getBloodBankLocationLabel(bank)
+    ]
+        .map(cleanText)
+        .filter(Boolean)
+        .join(", ");
+
+
+    if (!searchText) {
+        return "";
+    }
+
+
+    return (
+        "https://www.google.com/maps/search/?api=1" +
+        `&query=${encodeURIComponent(
+            searchText
+        )}`
+    );
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — CARD
+   ========================================================= */
+
+function buildBloodBankCard(
+    bank
+) {
+
+    const name =
+        getDisplayName(bank);
+
+    const englishName =
+        cleanText(
+            bank.name
+        );
+
+    const phone =
+        cleanText(
+            bank.phone
+        );
+
+    const safePhone =
+        normalizePhone(
+            phone
+        );
+
+    const address =
+        cleanText(
+            bank.address
+        );
+
+    const locationLabel =
+        getBloodBankLocationLabel(
+            bank
+        );
+
+    const mapUrl =
+        buildBloodBankMapUrl(
+            bank
+        );
+
+    const groups =
+        extractBloodGroups(
+            bank.blood_groups
+        );
+
+
+    const verifiedBadge =
+        bank.is_verified
+            ? `
+                <span
+                    class="blood-interface-badge is-verified"
+                >
+                    ✓ যাচাইকৃত
+                </span>
+            `
+            : "";
+
+
+    const groupBadges =
+        groups.length
+            ? groups
+                .map(
+                    (group) => `
+                        <span
+                            class="blood-interface-badge is-blood"
+                        >
+                            ${escapeHTML(group)}
+                        </span>
+                    `
+                )
+                .join("")
+            : `
+                <span
+                    class="blood-interface-badge"
+                >
+                    গ্রুপ তথ্য নেই
+                </span>
+            `;
+
+
+    const phoneAction =
+        safePhone
+            ? `
+                <a
+                    href="tel:${escapeHTML(
+                safePhone
+            )}"
+                    class="blood-interface-action is-primary"
+                >
+                    কল করুন
+                </a>
+            `
+            : "";
+
+
+    const copyAction =
+        phone
+            ? `
+                <button
+                    type="button"
+                    class="blood-interface-action"
+                    data-copy="${escapeHTML(
+                phone
+            )}"
+                >
+                    নম্বর কপি
+                </button>
+            `
+            : "";
+
+
+    const mapAction =
+        mapUrl
+            ? `
+                <a
+                    href="${escapeHTML(
+                mapUrl
+            )}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="blood-interface-action is-danger"
+                >
+                    ম্যাপে দেখুন
+                </a>
+            `
+            : "";
+
+
+    const englishNameMarkup =
+        englishName &&
+            englishName !== name
+            ? `
+                <p
+                    class="blood-interface-card-subtitle"
+                >
+                    ${escapeHTML(
+                englishName
+            )}
+                </p>
+            `
+            : "";
+
+
+    const phoneMarkup =
+        phone
+            ? `
+                <div
+                    class="blood-interface-phone"
+                >
+                    ${escapeHTML(phone)}
+                </div>
+            `
+            : "";
+
+
+    const locationMarkup =
+        locationLabel
+            ? `
+                <div
+                    class="blood-interface-meta"
+                >
+                    <span
+                        aria-hidden="true"
+                    >
+                        ◇
+                    </span>
+
+                    <span>
+                        ${escapeHTML(
+                locationLabel
+            )}
+                    </span>
+                </div>
+            `
+            : "";
+
+
+    const addressMarkup =
+        address
+            ? `
+                <div
+                    class="blood-interface-meta"
+                >
+                    <span
+                        aria-hidden="true"
+                    >
+                        ⌂
+                    </span>
+
+                    <span>
+                        ${escapeHTML(
+                address
+            )}
+                    </span>
+                </div>
+            `
+            : "";
+
+
+    const detailsMarkup = `
+        <details
+            class="blood-interface-details"
+        >
+            <summary>
+                বিস্তারিত দেখুন
+            </summary>
+
+            <div
+                class="blood-interface-details-body"
+            >
+                ${locationLabel
+            ? `
+                            <div>
+                                <strong>এলাকা:</strong>
+                                ${escapeHTML(
+                locationLabel
+            )}
+                            </div>
+                        `
+            : ""
+        }
+
+                ${address
+            ? `
+                            <div>
+                                <strong>ঠিকানা:</strong>
+                                ${escapeHTML(
+                address
+            )}
+                            </div>
+                        `
+            : ""
+        }
+
+                ${phone
+            ? `
+                            <div>
+                                <strong>ফোন:</strong>
+                                ${escapeHTML(
+                phone
+            )}
+                            </div>
+                        `
+            : ""
+        }
+
+                ${groups.length
+            ? `
+                            <div>
+                                <strong>রক্তের গ্রুপ:</strong>
+                                ${escapeHTML(
+                groups.join(
+                    ", "
+                )
+            )}
+                            </div>
+                        `
+            : ""
+        }
+            </div>
+        </details>
+    `;
+
+
+    return `
+        <article
+            class="blood-interface-card"
+        >
+
+            <div
+                class="blood-interface-card-top"
+            >
+
+                <div>
+
+                    <h3
+                        class="blood-interface-card-title"
+                    >
+                        ${escapeHTML(name)}
+                    </h3>
+
+                    ${englishNameMarkup}
+
+                </div>
+
+
+                <span
+                    class="blood-interface-card-mark"
+                    aria-hidden="true"
+                >
+                    ♥
+                </span>
+
+            </div>
+
+
+            <div
+                class="blood-interface-badges"
+            >
+
+                ${groupBadges}
+
+                ${verifiedBadge}
+
+            </div>
+
+
+            ${locationMarkup}
+
+            ${addressMarkup}
+
+            ${phoneMarkup}
+
+
+            ${groups.length
+            ? `
+                        <div
+                            class="blood-interface-groups"
+                        >
+                            ${groups
+                .map(
+                    (group) => `
+                                        <span
+                                            class="blood-interface-group-pill"
+                                        >
+                                            ${escapeHTML(
+                        group
+                    )}
+                                        </span>
+                                    `
+                )
+                .join("")}
+                        </div>
+                    `
+            : ""
+        }
+
+
+            <div
+                class="blood-interface-actions"
+            >
+
+                ${phoneAction}
+
+                ${copyAction}
+
+                ${mapAction}
+
+            </div>
+
+
+            ${detailsMarkup}
+
+        </article>
+    `;
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — EMPTY / LOADING
+   ========================================================= */
+
+function renderBloodBankMessage(
+    title,
+    message
+) {
+
+    const {
+        results
+    } =
+        getBloodBankElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    results.innerHTML = `
+        <div
+            class="blood-interface-empty"
+        >
+            <strong>
+                ${escapeHTML(title)}
+            </strong>
+
+            <span>
+                ${escapeHTML(message)}
+            </span>
+        </div>
+    `;
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — RESULT COUNT
+   ========================================================= */
+
+function formatBloodBankCount(
+    count
+) {
+
+    const bengaliDigits =
+        "০১২৩৪৫৬৭৮৯";
+
+
+    return String(count)
+        .replace(
+            /\d/g,
+            (digit) =>
+                bengaliDigits[
+                Number(digit)
+                ]
+        );
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — SEARCH MATCH
+   ========================================================= */
+
+function bloodBankMatchesSearch(
+    bank,
+    query
+) {
+
+    if (!query) {
+        return true;
+    }
+
+
+    const locationLabel =
+        getBloodBankLocationLabel(
+            bank
+        );
+
+    const bloodGroups =
+        extractBloodGroups(
+            bank.blood_groups
+        ).join(" ");
+
+
+    const haystack = [
+        bank.name,
+        bank.address,
+        bank.phone,
+        bloodGroups,
+        locationLabel
+    ]
+        .map(cleanText)
+        .join(" ")
+        .toLocaleLowerCase();
+
+
+    return haystack.includes(
+        query
+    );
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — RENDER RESULTS
+   ========================================================= */
+
+function renderBloodBankResults() {
+
+    const {
+        search,
+        locationButton,
+        resultCount,
+        results
+    } =
+        getBloodBankElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    const query =
+        cleanText(
+            search?.value
+        ).toLocaleLowerCase();
+
+
+    const saved =
+        getSavedBloodBankLocation();
+
+
+    let filtered =
+        bloodBankState.banks.filter(
+            (bank) => {
+
+                if (
+                    bloodBankState.selectedBloodGroup
+                ) {
+
+                    const groups =
+                        extractBloodGroups(
+                            bank.blood_groups
+                        );
+
+                    if (
+                        !groups.includes(
+                            normalizeBloodGroupValue(
+                                bloodBankState
+                                    .selectedBloodGroup
+                            )
+                        )
+                    ) {
+                        return false;
+                    }
+
+                }
+
+
+                if (
+                    bloodBankState.locationOnly
+                ) {
+
+                    if (!saved) {
+                        return false;
+                    }
+
+                    if (
+                        !bloodBankMatchesLocation(
+                            bank,
+                            saved
+                        )
+                    ) {
+                        return false;
+                    }
+
+                }
+
+
+                if (
+                    !bloodBankMatchesSearch(
+                        bank,
+                        query
+                    )
+                ) {
+                    return false;
+                }
+
+
+                return true;
+
+            }
+        );
+
+
+    filtered.sort(
+        (a, b) => {
+
+            const scoreA =
+                getBloodBankLocationScore(
+                    a,
+                    saved
+                );
+
+            const scoreB =
+                getBloodBankLocationScore(
+                    b,
+                    saved
+                );
+
+
+            if (
+                scoreA !== scoreB
+            ) {
+                return (
+                    scoreB -
+                    scoreA
+                );
+            }
+
+
+            return (
+                getDisplayName(a)
+                    .localeCompare(
+                        getDisplayName(b),
+                        "bn"
+                    )
+            );
+
+        }
+    );
+
+
+    bloodBankState.filtered =
+        filtered;
+
+
+    if (resultCount) {
+
+        resultCount.textContent =
+            `${formatBloodBankCount(
+                filtered.length
+            )}টি`;
+
+    }
+
+
+    if (locationButton) {
+
+        locationButton.setAttribute(
+            "aria-pressed",
+            bloodBankState.locationOnly
+                ? "true"
+                : "false"
+        );
+
+
+        locationButton.textContent =
+            bloodBankState.locationOnly
+                ? "✓ আমার এলাকা"
+                : "⌖ আমার এলাকা";
+
+    }
+
+
+    if (!filtered.length) {
+
+        renderBloodBankMessage(
+            "কোনো ব্লাড ব্যাংক পাওয়া যায়নি।",
+            bloodBankState.locationOnly &&
+                !saved
+                ? "আগে হোম পেজে আপনার এলাকা সংরক্ষণ করুন।"
+                : "অন্য রক্তের গ্রুপ, নাম বা এলাকা দিয়ে আবার চেষ্টা করুন।"
+        );
+
+        return;
+
+    }
+
+
+    results.innerHTML = `
+        <div
+            class="blood-interface-list"
+        >
+            ${filtered
+            .map(
+                (bank) =>
+                    buildBloodBankCard(
+                        bank
+                    )
+            )
+            .join("")}
+        </div>
+    `;
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — LOAD DATA
+   ========================================================= */
+
+async function loadBloodData() {
+
+    if (
+        bloodBankState.loaded ||
+        bloodBankState.loading
+    ) {
+        renderBloodBankResults();
+        return;
+    }
+
+
+    const {
+        results
+    } =
+        getBloodBankElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    if (!dorkariSupabase) {
+
+        renderBloodBankMessage(
+            "তথ্য লোড করা যাচ্ছে না।",
+            "Supabase সংযোগ পাওয়া যায়নি।"
+        );
+
+        return;
+
+    }
+
+
+    bloodBankState.loading =
+        true;
+
+
+    renderBloodBankMessage(
+        "ব্লাড ব্যাংকের তথ্য লোড হচ্ছে...",
+        "একটু অপেক্ষা করুন।"
+    );
+
+
+    try {
+
+        const [
+            banksResult,
+            divisionsResult,
+            districtsResult,
+            upazilasResult
+        ] =
+            await Promise.all([
+                dorkariSupabase
+                    .from("blood_banks")
+                    .select(`
+                        id,
+                        name,
+                        division_id,
+                        district_id,
+                        upazila_id,
+                        address,
+                        phone,
+                        blood_groups,
+                        is_verified,
+                        is_active,
+                        created_at,
+                        updated_at
+                    `)
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name"
+                    ),
+
+                dorkariSupabase
+                    .from("divisions")
+                    .select(
+                        "id,name,name_bn"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name"
+                    ),
+
+                dorkariSupabase
+                    .from("districts")
+                    .select(
+                        "id,name,name_bn,division_id"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name"
+                    ),
+
+                dorkariSupabase
+                    .from("upazilas")
+                    .select(
+                        "id,name,name_bn,district_id"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name"
+                    )
+            ]);
+
+
+        if (banksResult.error) {
+            throw banksResult.error;
+        }
+
+
+        if (divisionsResult.error) {
+            throw divisionsResult.error;
+        }
+
+
+        if (districtsResult.error) {
+            throw districtsResult.error;
+        }
+
+
+        if (upazilasResult.error) {
+            throw upazilasResult.error;
+        }
+
+
+        bloodBankState.banks =
+            banksResult.data || [];
+
+
+        bloodBankState.divisions =
+            divisionsResult.data || [];
+
+
+        bloodBankState.districts =
+            districtsResult.data || [];
+
+
+        bloodBankState.upazilas =
+            upazilasResult.data || [];
+
+
+        /*
+         * Home location tables ইতিমধ্যে
+         * load হয়ে থাকলে সেগুলোর data-কে
+         * fallback হিসেবে ব্যবহার করা যাবে।
+         */
+        if (
+            !bloodBankState.divisions.length &&
+            homeLocationState.divisions.length
+        ) {
+
+            bloodBankState.divisions =
+                homeLocationState.divisions;
+
+        }
+
+
+        if (
+            !bloodBankState.districts.length &&
+            homeLocationState.districts.length
+        ) {
+
+            bloodBankState.districts =
+                homeLocationState.districts;
+
+        }
+
+
+        if (
+            !bloodBankState.upazilas.length &&
+            homeLocationState.upazilas.length
+        ) {
+
+            bloodBankState.upazilas =
+                homeLocationState.upazilas;
+
+        }
+
+
+        bloodBankState.loaded =
+            true;
+
+
+        console.info(
+            "Dorkari Blood Bank data loaded:",
+            {
+                banks:
+                    bloodBankState
+                        .banks
+                        .length,
+
+                divisions:
+                    bloodBankState
+                        .divisions
+                        .length,
+
+                districts:
+                    bloodBankState
+                        .districts
+                        .length,
+
+                upazilas:
+                    bloodBankState
+                        .upazilas
+                        .length
+            }
+        );
+
+
+        renderBloodBankResults();
+
+    } catch (error) {
+
+        console.error(
+            "Blood Bank data load failed:",
+            error
+        );
+
+
+        renderBloodBankMessage(
+            "ব্লাড ব্যাংকের তথ্য লোড হয়নি।",
+            "পরে আবার চেষ্টা করুন।"
+        );
+
+    } finally {
+
+        bloodBankState.loading =
+            false;
+
+    }
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — INITIALIZE UI
+   ========================================================= */
+
+function initializeBloodInterface() {
+
+    const {
+        interface:
+        bloodInterface,
+        search,
+        locationButton,
+        groupButtons,
+        clearGroup
+    } =
+        getBloodBankElements();
+
+
+    if (!bloodInterface) {
+        return;
+    }
+
+
+    groupButtons.forEach(
+        (button) => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const group =
+                        normalizeBloodGroupValue(
+                            button.dataset
+                                .bloodGroup
+                        );
+
+
+                    if (
+                        bloodBankState
+                            .selectedBloodGroup ===
+                        group
+                    ) {
+
+                        bloodBankState
+                            .selectedBloodGroup =
+                            "";
+
+                    } else {
+
+                        bloodBankState
+                            .selectedBloodGroup =
+                            group;
+
+                    }
+
+
+                    groupButtons.forEach(
+                        (item) => {
+
+                            const itemGroup =
+                                normalizeBloodGroupValue(
+                                    item.dataset
+                                        .bloodGroup
+                                );
+
+                            const active =
+                                itemGroup ===
+                                bloodBankState
+                                    .selectedBloodGroup;
+
+
+                            item.setAttribute(
+                                "aria-pressed",
+                                active
+                                    ? "true"
+                                    : "false"
+                            );
+
+                        }
+                    );
+
+
+                    renderBloodBankResults();
+
+                }
+            );
+
+        }
+    );
+
+
+    clearGroup?.addEventListener(
+        "click",
+        () => {
+
+            bloodBankState
+                .selectedBloodGroup =
+                "";
+
+
+            groupButtons.forEach(
+                (button) => {
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        "false"
+                    );
+
+                }
+            );
+
+
+            renderBloodBankResults();
+
+        }
+    );
+
+
+    search?.addEventListener(
+        "input",
+        () => {
+            renderBloodBankResults();
+        }
+    );
+
+
+    locationButton?.addEventListener(
+        "click",
+        () => {
+
+            const saved =
+                getSavedBloodBankLocation();
+
+
+            if (!saved) {
+
+                bloodBankState
+                    .locationOnly =
+                    false;
+
+
+                locationButton.setAttribute(
+                    "aria-pressed",
+                    "false"
+                );
+
+
+                locationButton.textContent =
+                    "⌖ আমার এলাকা";
+
+
+                showToast(
+                    "আগে হোম পেজে আপনার এলাকা নির্বাচন করুন"
+                );
+
+
+                return;
+
+            }
+
+
+            bloodBankState
+                .locationOnly =
+                !bloodBankState
+                    .locationOnly;
+
+
+            renderBloodBankResults();
+
+        }
+    );
+
+
+    /*
+     * Interface খুলে যাওয়ার পর data না এলে
+     * প্রথমবার এখান থেকেই load হবে।
+     */
+    if (
+        !bloodBankState.loaded &&
+        !bloodBankState.loading
+    ) {
+
+        /*
+         * Data immediately load করছি না,
+         * যাতে Home initial load-এর উপর
+         * অপ্রয়োজনীয় Supabase request না পড়ে।
+         */
+    }
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — HASH / URL SUPPORT
+   ========================================================= */
+
+function initializeBloodInterfaceHashSupport() {
+
+    const initialHash =
+        cleanText(
+            window.location.hash
+        )
+            .replace(
+                /^#/,
+                ""
+            )
+            .toLowerCase();
+
+
+    if (
+        initialHash === "blood"
+    ) {
+
+        window.setTimeout(
+            () => {
+                loadBloodData();
+            },
+            0
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   BLOOD BANK — AUTO REFRESH WHEN OPENED
+   ========================================================= */
+
+window.addEventListener(
+    "dorkari:blood-open",
+    () => {
+        loadBloodData();
     }
 );
