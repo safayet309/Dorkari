@@ -1299,8 +1299,8 @@
                                 <span>“</span>
 
                                 <p>
-                                     “আপনার রক্তে বাঁচতে পারে প্রাণ, 
-                                     রক্তদান হোক মানবতার সম্মান।” ❤️
+                                    “আপনার রক্তে বাঁচতে পারে প্রাণ,
+                                    রক্তদান হোক মানবতার সম্মান।” ❤️
                                 </p>
 
                                 <span>”</span>
@@ -2277,7 +2277,7 @@
                         </button>
 
 
-                        <span class="service-interface-icon is-cyan">
+                        <span class="service-interface-icon is-cyan" aria-hidden="true">
                             T
                         </span>
 
@@ -2293,8 +2293,8 @@
                             </h2>
 
                             <p>
-                                প্রয়োজনীয় পরীক্ষা ও
-                                হাসপাতালভিত্তিক ফি দেখুন।
+                                প্রয়োজনীয় টেস্ট, হাসপাতালভিত্তিক ফি ও
+                                বর্তমান availability একসাথে দেখুন।
                             </p>
 
                         </div>
@@ -2302,32 +2302,133 @@
                     </div>
 
 
+                       <!-- =================================================
+                          SEARCH + LOCATION
+                          ================================================= -->
+
                     <div class="interface-toolbar">
 
-                        <input type="search" data-interface-search="tests" placeholder="যেমন: CBC, X-ray..."
-                            aria-label="টেস্ট খুঁজুন">
+                        <input type="search" data-interface-search="tests"
+                            placeholder="টেস্টের নাম বা হাসপাতালের নাম লিখুন..." aria-label="টেস্ট খুঁজুন">
 
-                        <button type="button" data-interface-location="tests">
-                            ⌖ হাসপাতাল
+
+                        <button type="button" data-interface-location="tests" aria-pressed="false">
+                            ⌖ আমার এলাকা
                         </button>
 
                     </div>
 
 
-                    <div class="interface-results" data-interface-results="tests">
+                       <!-- =================================================
+                        CATEGORY FILTER
+                              ================================================= -->
+
+                    <div class="tests-interface-filter">
+
+                        <div class="tests-interface-filter-heading">
+
+                            <strong>
+                                টেস্টের ধরন
+                            </strong>
+
+                            <button type="button" class="tests-interface-filter-clear" data-tests-category-clear>
+                                সব দেখুন
+                            </button>
+
+                        </div>
+
+
+                        <div class="tests-interface-categories" role="group" aria-label="টেস্টের ধরন">
+
+                            <button type="button" class="tests-interface-category is-active" data-tests-category=""
+                                aria-pressed="true">
+                                সব
+                            </button>
+
+
+                            <button type="button" class="tests-interface-category" data-tests-category="রুটিন"
+                                aria-pressed="false">
+                                রুটিন
+                            </button>
+
+
+                            <button type="button" class="tests-interface-category" data-tests-category="রেডিওলজি"
+                                aria-pressed="false">
+                                রেডিওলজি
+                            </button>
+
+
+                            <button type="button" class="tests-interface-category" data-tests-category="প্যাথলজি"
+                                aria-pressed="false">
+                                প্যাথলজি
+                            </button>
+
+
+                            <button type="button" class="tests-interface-category" data-tests-category="হরমোন"
+                                aria-pressed="false">
+                                হরমোন
+                            </button>
+
+
+                            <button type="button" class="tests-interface-category" data-tests-category="বিশেষ পরীক্ষা"
+                                aria-pressed="false">
+                                বিশেষ পরীক্ষা
+                            </button>
+
+
+                            <button type="button" class="tests-interface-category" data-tests-category="অন্যান্য"
+                                aria-pressed="false">
+                                অন্যান্য
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                         <!-- =================================================
+                          RESULT SUMMARY
+                          ================================================= -->
+
+                    <div class="interface-results-head">
+
+                        <div>
+
+                            <span class="section-label">
+                                পাওয়া তথ্য
+                            </span>
+
+                            <strong class="interface-result-count" data-tests-result-count>
+                                ০টি
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                     TEST RESULTS
+                     ================================================= -->
+
+                    <div class="interface-results" data-interface-results="tests" aria-live="polite">
 
                         <div class="interface-empty">
-                            টেস্ট ও ফি-এর তথ্য এখানে দেখানো হবে।
+
+                            <strong>
+                                টেস্ট ও ফি-এর তথ্য এখানে দেখানো হবে।
+                            </strong>
+
+                            <span>
+                                টেস্টের নাম, category অথবা আপনার এলাকার
+                                ভিত্তিতে প্রয়োজনীয় তথ্য খুঁজুন।
+                            </span>
+
                         </div>
 
                     </div>
 
                 </section>
-
-
-                <!-- =================================================
-                     BLOOD INTERFACE
-                     ================================================= -->
 
 
 
