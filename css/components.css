@@ -8426,3 +8426,987 @@ summary::after {
     }
 
 }
+/* =========================================================
+   DORKARI — TEST & FEES
+   PREMIUM CARD DESIGN — OPTION 3
+   ========================================================= */
+
+.tests-interface-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-top: 16px;
+}
+
+
+/* =========================================================
+   PREMIUM CARD
+   ========================================================= */
+
+.tests-interface-card {
+    position: relative;
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(285px, 335px);
+
+    gap: 0;
+
+    min-width: 0;
+
+    padding: 0;
+
+    overflow: hidden;
+
+    border: 1px solid #e5e4ef;
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #ffffff 0%,
+            #fcfbff 100%
+        );
+
+    box-shadow:
+        0 10px 30px
+        rgba(
+            40,
+            38,
+            70,
+            .07
+        );
+
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        border-color .2s ease;
+}
+
+
+.tests-interface-card:hover {
+    transform: translateY(-2px);
+
+    border-color: #d8d5eb;
+
+    box-shadow:
+        0 17px 38px
+        rgba(
+            40,
+            38,
+            70,
+            .11
+        );
+}
+
+
+/* =========================================================
+   LEFT / MAIN AREA
+   ========================================================= */
+
+.tests-interface-card-main {
+    min-width: 0;
+
+    padding: 21px;
+}
+
+
+/* =========================================================
+   TOP AREA
+   ========================================================= */
+
+.tests-interface-card-top {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: flex-start;
+
+    gap: 14px;
+}
+
+
+/* =========================================================
+   TEST ICON
+   ========================================================= */
+
+.tests-interface-card-mark {
+    flex: 0 0 auto;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 52px;
+    height: 52px;
+
+    margin-top: 2px;
+
+    border: 0;
+
+    border-radius: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #efe8ff 0%,
+            #e5dcff 100%
+        );
+
+    color: #6d4bd6;
+
+    font-size: 0;
+
+    box-shadow:
+        inset 0 0 0 1px
+        rgba(
+            120,
+            86,
+            210,
+            .05
+        );
+}
+
+
+.tests-interface-card-mark::before {
+    content: "⚗";
+
+    font-size: 27px;
+
+    line-height: 1;
+
+    color: #6c4ad4;
+}
+
+
+/* =========================================================
+   TITLE
+   ========================================================= */
+
+.tests-interface-card-title {
+    margin: 0;
+
+    color: #18233e;
+
+    font-size: 20px;
+
+    line-height: 1.35;
+
+    font-weight: 900;
+
+    letter-spacing:
+        -.015em;
+}
+
+
+.tests-interface-card-subtitle {
+    margin:
+        4px
+        0
+        0;
+
+    color: #718096;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.tests-interface-badges {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 10px;
+}
+
+
+.tests-interface-badge {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 26px;
+
+    padding:
+        5px
+        9px;
+
+    border:
+        1px solid
+        #e3dfef;
+
+    border-radius: 999px;
+
+    background: #faf9fe;
+
+    color: #697085;
+
+    font-size: 9.5px;
+
+    line-height: 1;
+
+    font-weight: 800;
+}
+
+
+.tests-interface-badge.is-category {
+    border-color: #d8cfff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #eee7ff 0%,
+            #e3d9ff 100%
+        );
+
+    color: #6744cf;
+}
+
+
+.tests-interface-badge.is-available {
+    border-color: #cde7d8;
+
+    background: #edf9f2;
+
+    color: #248356;
+}
+
+
+.tests-interface-badge.is-unavailable {
+    border-color: #efd7db;
+
+    background: #fff5f7;
+
+    color: #a24c5b;
+}
+
+
+.tests-interface-badge.is-verified {
+    border-color: #d3e7dc;
+
+    background: #f0f9f3;
+
+    color: #287c54;
+}
+
+
+/* =========================================================
+   INFORMATION ROWS
+   ========================================================= */
+
+.tests-interface-meta {
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    margin-top: 15px;
+
+    color: #5b687d;
+
+    font-size: 11px;
+
+    line-height: 1.5;
+}
+
+
+.tests-interface-meta > span:first-child {
+    flex: 0 0 auto;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 29px;
+    height: 29px;
+
+    border-radius: 9px;
+
+    background: #f1efff;
+
+    color: #6a51ca;
+
+    font-size: 13px;
+
+    font-weight: 900;
+}
+
+
+.tests-interface-meta > span:last-child {
+    min-width: 0;
+
+    padding-top: 1px;
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.tests-interface-description {
+    margin-top: 12px;
+
+    color: #747d90;
+
+    font-size: 10.5px;
+
+    line-height: 1.7;
+}
+
+
+.tests-interface-description p {
+    margin: 0;
+}
+
+
+/* =========================================================
+   HOSPITAL COUNT
+   ========================================================= */
+
+.tests-interface-hospital-count {
+    display: inline-flex;
+
+    align-items: center;
+
+    min-height: 29px;
+
+    margin-top: 13px;
+
+    padding:
+        5px
+        10px;
+
+    border:
+        1px solid
+        #dce9e2;
+
+    border-radius: 999px;
+
+    background: #f3faf6;
+
+    color: #4e7361;
+
+    font-size: 9.5px;
+
+    font-weight: 850;
+}
+
+
+/* =========================================================
+   RIGHT PREMIUM PANEL
+   ========================================================= */
+
+.tests-interface-price-panel {
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+    padding: 20px;
+
+    border-left:
+        1px solid
+        #ece9f4;
+
+    background:
+        linear-gradient(
+            160deg,
+            #fbfbff 0%,
+            #f4f7ff 100%
+        );
+}
+
+
+/* =========================================================
+   PRICE BOX
+   ========================================================= */
+
+.tests-interface-price-label {
+    color: #6d7890;
+
+    font-size: 10px;
+
+    font-weight: 800;
+}
+
+
+.tests-interface-price {
+    display: flex;
+
+    align-items: baseline;
+
+    flex-wrap: wrap;
+
+    gap: 5px;
+
+    margin-top: 4px;
+
+    color: #208d60;
+
+    font-size: 30px;
+
+    line-height: 1.15;
+
+    font-weight: 950;
+}
+
+
+.tests-interface-price-prefix {
+    font-size: 15px;
+
+    font-weight: 900;
+}
+
+
+.tests-interface-price-old {
+    margin-left: 2px;
+
+    color: #98a0ad;
+
+    font-size: 10px;
+
+    font-weight: 700;
+
+    text-decoration: line-through;
+}
+
+
+.tests-interface-price-note {
+    margin-top: 5px;
+
+    color: #788296;
+
+    font-size: 9.5px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   BEST PRICE
+   ========================================================= */
+
+.tests-interface-best-price {
+    display: inline-flex;
+
+    align-items: center;
+
+    width: fit-content;
+
+    margin-top: 10px;
+
+    min-height: 26px;
+
+    padding:
+        5px
+        9px;
+
+    border:
+        1px solid
+        #cce5d5;
+
+    border-radius: 999px;
+
+    background: #edf9f1;
+
+    color: #247e51;
+
+    font-size: 9.5px;
+
+    font-weight: 850;
+}
+
+
+/* =========================================================
+   PRICE COMPARISON
+   ========================================================= */
+
+.tests-interface-price-comparison {
+    display: grid;
+
+    gap: 6px;
+
+    margin-top: 12px;
+}
+
+
+.tests-interface-price-row {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 9px;
+
+    padding:
+        8px
+        9px;
+
+    border:
+        1px solid
+        #e8eaf1;
+
+    border-radius: 10px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .88
+        );
+}
+
+
+.tests-interface-price-row-name {
+    min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    color: #667186;
+
+    font-size: 9px;
+
+    font-weight: 750;
+}
+
+
+.tests-interface-price-row-value {
+    flex: 0 0 auto;
+
+    color: #27845c;
+
+    font-size: 10px;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   HOSPITAL DETAILS BOX
+   ========================================================= */
+
+.tests-interface-details {
+    margin-top: 13px;
+
+    padding-top: 11px;
+
+    border-top:
+        1px solid
+        #e8e8f0;
+}
+
+
+.tests-interface-details summary {
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    cursor: pointer;
+
+    list-style: none;
+
+    color: #5c55a8;
+
+    font-size: 10px;
+
+    font-weight: 850;
+
+    user-select: none;
+}
+
+
+.tests-interface-details summary::-webkit-details-marker {
+    display: none;
+}
+
+
+.tests-interface-details summary::before {
+    content: "⌑";
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 22px;
+    height: 22px;
+
+    border-radius: 7px;
+
+    background: #f0edff;
+
+    color: #6650c7;
+
+    font-size: 12px;
+}
+
+
+.tests-interface-details summary::after {
+    content: "⌄";
+
+    margin-left: 2px;
+
+    font-size: 11px;
+
+    transition:
+        transform .18s ease;
+}
+
+
+.tests-interface-details[open]
+summary::after {
+    transform:
+        rotate(180deg);
+}
+
+
+.tests-interface-details-body {
+    margin-top: 10px;
+
+    padding: 11px;
+
+    border:
+        1px solid
+        #e4e5ee;
+
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fafaff 0%,
+            #f6f8fc 100%
+        );
+}
+
+
+.tests-interface-details-body p {
+    margin: 0;
+
+    padding:
+        6px
+        0;
+
+    color: #707b8d;
+
+    font-size: 9.5px;
+
+    line-height: 1.65;
+}
+
+
+.tests-interface-details-body p + p {
+    border-top:
+        1px solid
+        #e7e8ef;
+}
+
+
+.tests-interface-details-body strong {
+    color: #27344b;
+
+    font-weight: 800;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.tests-interface-actions {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            2,
+            minmax(0, 1fr)
+        );
+
+    gap: 7px;
+
+    margin-top: auto;
+
+    padding-top: 14px;
+}
+
+
+.tests-interface-action {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-height: 40px;
+
+    padding:
+        7px
+        10px;
+
+    border:
+        1px solid
+        #d7dced;
+
+    border-radius: 11px;
+
+    background: #ffffff;
+
+    color: #5450a4;
+
+    font-family: inherit;
+
+    font-size: 10px;
+
+    font-weight: 850;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition:
+        background-color .18s ease,
+        border-color .18s ease,
+        color .18s ease,
+        transform .18s ease;
+}
+
+
+.tests-interface-action:hover {
+    transform: translateY(-1px);
+
+    border-color: #c7c9dc;
+
+    background: #fafaff;
+}
+
+
+.tests-interface-action.is-primary {
+    border-color: #cbe4d5;
+
+    background: #ffffff;
+
+    color: #25835a;
+}
+
+
+.tests-interface-action.is-primary:hover {
+    border-color: #b7d7c4;
+
+    background: #f0faf4;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .tests-interface-card {
+        grid-template-columns: 1fr;
+
+        border-radius: 19px;
+    }
+
+
+    .tests-interface-card-main {
+        padding: 16px;
+    }
+
+
+    .tests-interface-card-top {
+        gap: 11px;
+    }
+
+
+    .tests-interface-card-mark {
+        width: 45px;
+        height: 45px;
+
+        border-radius: 13px;
+    }
+
+
+    .tests-interface-card-mark::before {
+        font-size: 23px;
+    }
+
+
+    .tests-interface-card-title {
+        font-size: 17px;
+    }
+
+
+    .tests-interface-card-subtitle {
+        font-size: 10.5px;
+    }
+
+
+    .tests-interface-badges {
+        gap: 5px;
+
+        margin-top: 8px;
+    }
+
+
+    .tests-interface-badge {
+        min-height: 24px;
+
+        padding:
+            5px
+            8px;
+
+        font-size: 9px;
+    }
+
+
+    .tests-interface-meta {
+        margin-top: 12px;
+
+        font-size: 10px;
+    }
+
+
+    .tests-interface-meta > span:first-child {
+        width: 26px;
+        height: 26px;
+
+        border-radius: 8px;
+
+        font-size: 12px;
+    }
+
+
+    .tests-interface-description {
+        font-size: 10px;
+    }
+
+
+    .tests-interface-hospital-count {
+        font-size: 9px;
+    }
+
+
+    .tests-interface-price-panel {
+        padding: 15px;
+
+        border-top:
+            1px solid
+            #ece9f4;
+
+        border-left: 0;
+    }
+
+
+    .tests-interface-price {
+        font-size: 26px;
+    }
+
+
+    .tests-interface-price-prefix {
+        font-size: 14px;
+    }
+
+
+    .tests-interface-price-comparison {
+        gap: 5px;
+    }
+
+
+    .tests-interface-price-row {
+        padding:
+            7px
+            8px;
+    }
+
+
+    .tests-interface-actions {
+        padding-top: 11px;
+
+        gap: 6px;
+    }
+
+
+    .tests-interface-action {
+        min-height: 38px;
+
+        font-size: 9.5px;
+    }
+
+
+    .tests-interface-details-body {
+        padding: 9px;
+    }
+
+
+    .tests-interface-details-body p {
+        font-size: 9px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .tests-interface-card-main {
+        padding: 14px;
+    }
+
+
+    .tests-interface-card-mark {
+        width: 42px;
+        height: 42px;
+
+        border-radius: 12px;
+    }
+
+
+    .tests-interface-card-title {
+        font-size: 16px;
+    }
+
+
+    .tests-interface-price-panel {
+        padding: 13px;
+    }
+
+
+    .tests-interface-price {
+        font-size: 24px;
+    }
+
+
+    .tests-interface-actions {
+        grid-template-columns:
+            repeat(
+                2,
+                minmax(0, 1fr)
+            );
+    }
+
+}
