@@ -7692,6 +7692,15 @@ function initializeServiceInterfaces() {
                             new Event("dorkari:blood-open")
                         );
                     }
+                    if (service === "tests") {
+
+                        loadTestFeesData();
+
+                        window.dispatchEvent(
+                            new Event("dorkari:tests-open")
+                        );
+
+                    }
                 }
             );
 
@@ -7819,6 +7828,9 @@ function initializeServiceInterfaces() {
                 }
                 if (initialHash === "blood") {
                     loadBloodData();
+                }
+                if (initialHash === "tests") {
+                    loadTestFeesData();
                 }
 
             },
@@ -9625,6 +9637,7 @@ document.addEventListener(
         initializeServiceInterfaces();
         initializeBloodInterface();
         initializeBloodGuidelinePopup();
+        initializeTestFeesInterface();
         initializeGovernmentInterface();
         initializeDoctorInterface();
         initializeAmbulanceInterface();
@@ -11325,5 +11338,2303 @@ function initializeBloodGuidelinePopup() {
 
     window.closeDorkariBloodGuideline =
         closeBloodGuideline;
+
+}
+/* =========================================================
+   DORKARI — TEST & FEES PUBLIC INTERFACE
+   Public test listing + hospital-wise pricing
+   ========================================================= */
+
+const testFeesState = {
+
+    tests: [],
+
+    hospitalTests: [],
+
+    hospitals: [],
+
+    divisions: [],
+
+    districts: [],
+
+    upazilas: [],
+
+    filtered: [],
+
+    selectedCategory: "",
+
+    locationOnly: false,
+
+    loading: false,
+
+    loaded: false
+
+};
+
+
+/* =========================================================
+   TEST & FEES — DOM
+   ========================================================= */
+
+function getTestFeesElements() {
+
+    return {
+
+        interface:
+            document.querySelector(
+                '[data-interface="tests"]'
+            ),
+
+        search:
+            document.querySelector(
+                '[data-interface-search="tests"]'
+            ),
+
+        locationButton:
+            document.querySelector(
+                '[data-interface-location="tests"]'
+            ),
+
+        resultCount:
+            document.querySelector(
+                "[data-tests-result-count]"
+            ),
+
+        results:
+            document.querySelector(
+                '[data-interface-results="tests"]'
+            ),
+
+        categoryButtons:
+            Array.from(
+                document.querySelectorAll(
+                    "[data-tests-category]"
+                )
+            ),
+
+        categoryClear:
+            document.querySelector(
+                "[data-tests-category-clear]"
+            )
+
+    };
+
+}
+
+
+/* =========================================================
+   TEST & FEES — CATEGORY NORMALIZATION
+   ========================================================= */
+
+function normalizeTestCategory(value) {
+
+    const category =
+        cleanText(value)
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase();
+
+    const categoryMap = {
+
+        "routine":
+            "রুটিন",
+
+        "রুটিন":
+            "রুটিন",
+
+        "pathology":
+            "প্যাথলজি",
+
+        "প্যাথলজি":
+            "প্যাথলজি",
+
+        "radiology":
+            "রেডিওলজি",
+
+        "রেডিওলজি":
+            "রেডিওলজি",
+
+        "hormone":
+            "হরমোন",
+
+        "hormones":
+            "হরমোন",
+
+        "হরমোন":
+            "হরমোন",
+
+        "special":
+            "বিশেষ পরীক্ষা",
+
+        "special test":
+            "বিশেষ পরীক্ষা",
+
+        "special tests":
+            "বিশেষ পরীক্ষা",
+
+        "বিশেষ পরীক্ষা":
+            "বিশেষ পরীক্ষা",
+
+        "other":
+            "অন্যান্য",
+
+        "others":
+            "অন্যান্য",
+
+        "অন্যান্য":
+            "অন্যান্য"
+
+    };
+
+    return (
+        categoryMap[category] ||
+        cleanText(value) ||
+        "অন্যান্য"
+    );
+
+}
+
+
+/* =========================================================
+   TEST & FEES — NUMBER FORMAT
+   ========================================================= */
+
+function formatTestFeesNumber(value) {
+
+    const number =
+        Number(value);
+
+    if (!Number.isFinite(number)) {
+        return "";
+    }
+
+    const rounded =
+        Number.isInteger(number)
+            ? number.toString()
+            : number.toFixed(2).replace(
+                /\.?0+$/,
+                ""
+            );
+
+    const parts =
+        rounded.split(".");
+
+    const integerPart =
+        parts[0];
+
+    const decimalPart =
+        parts[1] || "";
+
+    const formattedInteger =
+        Number(integerPart).toLocaleString(
+            "en-US"
+        );
+
+    const bengaliDigits =
+        "০১২৩৪৫৬৭৮৯";
+
+    const convertToBengali =
+        (text) =>
+            String(text).replace(
+                /\d/g,
+                (digit) =>
+                    bengaliDigits[
+                    Number(digit)
+                    ]
+            );
+
+    return (
+        convertToBengali(
+            decimalPart
+                ? `${formattedInteger}.${decimalPart}`
+                : formattedInteger
+        )
+    );
+
+}
+
+
+/* =========================================================
+   TEST & FEES — DATE FORMAT
+   ========================================================= */
+
+function formatTestFeesDate(value) {
+
+    if (!value) {
+        return "";
+    }
+
+    const date =
+        new Date(value);
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+        return "";
+    }
+
+    try {
+
+        return new Intl.DateTimeFormat(
+            "bn-BD",
+            {
+                day: "numeric",
+                month: "short",
+                year: "numeric"
+            }
+        ).format(date);
+
+    } catch (error) {
+
+        return date.toLocaleDateString(
+            "bn-BD"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   TEST & FEES — LOCATION HELPERS
+   ========================================================= */
+
+function getTestFeesHospitalLocation(
+    hospital
+) {
+
+    const divisionName =
+        getLocationNameById(
+            testFeesState.divisions,
+            hospital?.division_id
+        );
+
+    const districtName =
+        getLocationNameById(
+            testFeesState.districts,
+            hospital?.district_id
+        );
+
+    const upazilaName =
+        getLocationNameById(
+            testFeesState.upazilas,
+            hospital?.upazila_id
+        );
+
+    return getLocationLabel(
+        divisionName,
+        districtName,
+        upazilaName
+    );
+
+}
+
+
+function testFeesMatchesLocation(
+    hospital,
+    saved
+) {
+
+    if (!saved) {
+        return true;
+    }
+
+    if (saved.upazilaId) {
+
+        return (
+            String(
+                hospital?.upazila_id
+            ) ===
+            String(
+                saved.upazilaId
+            )
+        );
+
+    }
+
+    if (saved.districtId) {
+
+        return (
+            String(
+                hospital?.district_id
+            ) ===
+            String(
+                saved.districtId
+            )
+        );
+
+    }
+
+    if (saved.divisionId) {
+
+        return (
+            String(
+                hospital?.division_id
+            ) ===
+            String(
+                saved.divisionId
+            )
+        );
+
+    }
+
+    return true;
+
+}
+
+
+/* =========================================================
+   TEST & FEES — RECORD HELPERS
+   ========================================================= */
+
+function getTestFeesHospitalById(
+    hospitalId
+) {
+
+    return (
+        testFeesState.hospitals.find(
+            (hospital) =>
+                String(hospital.id) ===
+                String(hospitalId)
+        ) ||
+        null
+    );
+
+}
+
+
+function getTestFeesHospitalRows(
+    testId
+) {
+
+    return testFeesState.hospitalTests
+
+        .filter(
+            (row) =>
+                String(row.test_id) ===
+                String(testId)
+        )
+
+        .map(
+            (row) => ({
+
+                ...row,
+
+                hospital:
+                    getTestFeesHospitalById(
+                        row.hospital_id
+                    )
+
+            })
+        )
+
+        .filter(
+            (row) =>
+                row.hospital
+        );
+
+}
+
+
+function getEffectiveTestPrice(
+    row
+) {
+
+    const price =
+        Number(row?.price);
+
+    const discountPrice =
+        Number(
+            row?.discount_price
+        );
+
+    if (
+        Number.isFinite(
+            discountPrice
+        ) &&
+        discountPrice > 0 &&
+        Number.isFinite(price) &&
+        discountPrice < price
+    ) {
+
+        return discountPrice;
+
+    }
+
+    return Number.isFinite(price)
+        ? price
+        : null;
+
+}
+
+
+function getLowestTestPrice(
+    rows
+) {
+
+    const availableRows =
+        rows.filter(
+            (row) =>
+                row?.is_available !== false
+        );
+
+    const prices =
+        availableRows
+
+            .map(
+                (row) =>
+                    getEffectiveTestPrice(
+                        row
+                    )
+            )
+
+            .filter(
+                (price) =>
+                    Number.isFinite(
+                        price
+                    )
+            );
+
+    if (!prices.length) {
+        return null;
+    }
+
+    return Math.min(
+        ...prices
+    );
+
+}
+
+
+function getLatestTestUpdate(
+    rows
+) {
+
+    const dates =
+        rows
+
+            .map(
+                (row) =>
+                    row?.last_updated ||
+                    row?.created_at
+            )
+
+            .filter(Boolean)
+
+            .map(
+                (value) =>
+                    new Date(value)
+            )
+
+            .filter(
+                (date) =>
+                    !Number.isNaN(
+                        date.getTime()
+                    )
+            );
+
+    if (!dates.length) {
+        return null;
+    }
+
+    return new Date(
+        Math.max(
+            ...dates.map(
+                (date) =>
+                    date.getTime()
+            )
+        )
+    ).toISOString();
+
+}
+
+
+/* =========================================================
+   TEST & FEES — SEARCH TEXT
+   ========================================================= */
+
+function getTestFeesSearchText(
+    test,
+    rows
+) {
+
+    const hospitalText =
+        rows
+
+            .map(
+                (row) =>
+                    row?.hospital
+            )
+
+            .filter(Boolean)
+
+            .flatMap(
+                (hospital) => [
+
+                    hospital?.name,
+
+                    hospital?.name_bn,
+
+                    hospital?.address,
+
+                    getTestFeesHospitalLocation(
+                        hospital
+                    )
+
+                ]
+            );
+
+    return [
+
+        test?.name,
+
+        test?.name_bn,
+
+        test?.category,
+
+        normalizeTestCategory(
+            test?.category
+        ),
+
+        test?.description,
+
+        ...hospitalText
+
+    ]
+
+        .map(cleanText)
+
+        .filter(Boolean)
+
+        .join(" ")
+
+        .toLowerCase();
+
+}
+
+
+function testFeesMatchesSearch(
+    test,
+    rows,
+    searchText
+) {
+
+    if (!searchText) {
+        return true;
+    }
+
+    return getTestFeesSearchText(
+        test,
+        rows
+    ).includes(
+        searchText
+    );
+
+}
+
+
+/* =========================================================
+   TEST & FEES — LOCATION FILTER
+   ========================================================= */
+
+function getTestFeesSavedLocation() {
+
+    return getSavedHomeLocation();
+
+}
+
+
+function testFeesFilterRowsByLocation(
+    rows,
+    saved
+) {
+
+    if (!saved) {
+        return rows;
+    }
+
+    return rows.filter(
+        (row) =>
+            testFeesMatchesLocation(
+                row?.hospital,
+                saved
+            )
+    );
+
+}
+
+
+/* =========================================================
+   TEST & FEES — APPLY FILTERS
+   ========================================================= */
+
+function applyTestFeesFilters() {
+
+    const {
+        search
+    } =
+        getTestFeesElements();
+
+    const searchText =
+        cleanText(
+            search?.value
+        ).toLowerCase();
+
+    const savedLocation =
+        getTestFeesSavedLocation();
+
+    testFeesState.filtered =
+        testFeesState.tests.filter(
+            (test) => {
+
+                const normalizedCategory =
+                    normalizeTestCategory(
+                        test?.category
+                    );
+
+                if (
+                    testFeesState
+                        .selectedCategory &&
+                    normalizedCategory !==
+                    testFeesState
+                        .selectedCategory
+                ) {
+
+                    return false;
+
+                }
+
+                let rows =
+                    getTestFeesHospitalRows(
+                        test.id
+                    );
+
+                if (
+                    testFeesState
+                        .locationOnly
+                ) {
+
+                    if (!savedLocation) {
+                        return false;
+                    }
+
+                    rows =
+                        testFeesFilterRowsByLocation(
+                            rows,
+                            savedLocation
+                        );
+
+                }
+
+                if (
+                    !testFeesMatchesSearch(
+                        test,
+                        rows,
+                        searchText
+                    )
+                ) {
+
+                    return false;
+
+                }
+
+                return true;
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   TEST & FEES — PRICE ROW
+   ========================================================= */
+
+function buildTestFeesPriceRow(
+    row
+) {
+
+    const hospital =
+        row?.hospital;
+
+    if (!hospital) {
+        return "";
+    }
+
+    const hospitalName =
+        getDisplayName(
+            hospital
+        );
+
+    const price =
+        Number(
+            row?.price
+        );
+
+    const discountPrice =
+        Number(
+            row?.discount_price
+        );
+
+    const hasDiscount =
+        Number.isFinite(
+            discountPrice
+        ) &&
+        discountPrice > 0 &&
+        Number.isFinite(price) &&
+        discountPrice < price;
+
+    const effectivePrice =
+        hasDiscount
+            ? discountPrice
+            : price;
+
+    const availability =
+        row?.is_available !== false;
+
+    return `
+
+        <div class="tests-interface-price-row">
+
+            <span
+                class="tests-interface-price-row-name"
+                title="${escapeHTML(
+        hospitalName
+    )}"
+            >
+                ${escapeHTML(
+        hospitalName
+    )}
+            </span>
+
+            <span
+                class="tests-interface-price-row-value"
+            >
+                ${Number.isFinite(
+        effectivePrice
+    )
+            ? `৳ ${formatTestFeesNumber(
+                effectivePrice
+            )}`
+            : "ফি নেই"
+        }
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TEST & FEES — HOSPITAL DETAIL
+   ========================================================= */
+
+function buildTestFeesHospitalDetail(
+    row
+) {
+
+    const hospital =
+        row?.hospital;
+
+    if (!hospital) {
+        return "";
+    }
+
+    const hospitalName =
+        getDisplayName(
+            hospital
+        );
+
+    const phone =
+        cleanText(
+            hospital?.phone
+        );
+
+    const address =
+        cleanText(
+            hospital?.address
+        );
+
+    const locationLabel =
+        getTestFeesHospitalLocation(
+            hospital
+        );
+
+    const price =
+        Number(
+            row?.price
+        );
+
+    const discountPrice =
+        Number(
+            row?.discount_price
+        );
+
+    const hasDiscount =
+        Number.isFinite(
+            discountPrice
+        ) &&
+        discountPrice > 0 &&
+        Number.isFinite(price) &&
+        discountPrice < price;
+
+    const effectivePrice =
+        hasDiscount
+            ? discountPrice
+            : price;
+
+    const availability =
+        row?.is_available !== false;
+
+    const callAction =
+        phone
+            ? `
+                <a
+                    href="tel:${escapeHTML(
+                normalizePhone(
+                    phone
+                )
+            )}"
+                    class="tests-interface-action is-primary"
+                >
+                    ☎ কল
+                </a>
+            `
+            : "";
+
+    return `
+
+        <div class="tests-interface-detail-hospital">
+
+            <div class="tests-interface-detail-hospital-head">
+
+                <strong>
+                    ${escapeHTML(
+        hospitalName
+    )}
+                </strong>
+
+                <span
+                    class="
+                        tests-interface-badge
+                        ${availability
+            ? "is-available"
+            : "is-unavailable"
+        }
+                    "
+                >
+                    ${availability
+            ? "✓ পাওয়া যাচ্ছে"
+            : "✕ বর্তমানে নেই"
+        }
+                </span>
+
+            </div>
+
+            <div class="tests-interface-detail-hospital-price">
+
+                <span>
+                    ফি
+                </span>
+
+                <strong>
+                    ${Number.isFinite(
+            effectivePrice
+        )
+            ? `৳ ${formatTestFeesNumber(
+                effectivePrice
+            )}`
+            : "তথ্য নেই"
+        }
+                </strong>
+
+                ${hasDiscount
+            ? `
+                            <span
+                                class="tests-interface-price-old"
+                            >
+                                ৳ ${formatTestFeesNumber(
+                price
+            )}
+                            </span>
+                        `
+            : ""
+        }
+
+            </div>
+
+            ${locationLabel
+            ? `
+                        <div
+                            class="tests-interface-meta"
+                        >
+                            <span>
+                                ◇
+                            </span>
+
+                            <span>
+                                ${escapeHTML(
+                locationLabel
+            )}
+                            </span>
+                        </div>
+                    `
+            : ""
+        }
+
+            ${address
+            ? `
+                        <div
+                            class="tests-interface-meta"
+                        >
+                            <span>
+                                ⌖
+                            </span>
+
+                            <span>
+                                ${escapeHTML(
+                address
+            )}
+                            </span>
+                        </div>
+                    `
+            : ""
+        }
+
+            ${phone
+            ? `
+                        <div
+                            class="tests-interface-meta"
+                        >
+                            <span>
+                                ☎
+                            </span>
+
+                            <span>
+                                ${escapeHTML(
+                phone
+            )}
+                            </span>
+                        </div>
+                    `
+            : ""
+        }
+
+            ${cleanText(
+            row?.notes
+        )
+            ? `
+                        <div
+                            class="tests-interface-description"
+                        >
+                            <p>
+                                <strong>
+                                    নোট:
+                                </strong>
+
+                                ${escapeHTML(
+                row.notes
+            )}
+                            </p>
+                        </div>
+                    `
+            : ""
+        }
+
+            <div
+                class="tests-interface-detail-actions"
+            >
+                ${callAction}
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TEST & FEES — CARD
+   ========================================================= */
+
+function buildTestFeesCard(
+    test
+) {
+
+    const allRows =
+        getTestFeesHospitalRows(
+            test.id
+        );
+
+    const savedLocation =
+        getTestFeesSavedLocation();
+
+    const visibleRows =
+        testFeesState.locationOnly &&
+            savedLocation
+            ? testFeesFilterRowsByLocation(
+                allRows,
+                savedLocation
+            )
+            : allRows;
+
+    const sortedRows =
+        [...visibleRows]
+            .sort(
+                (a, b) => {
+
+                    const priceA =
+                        getEffectiveTestPrice(
+                            a
+                        );
+
+                    const priceB =
+                        getEffectiveTestPrice(
+                            b
+                        );
+
+                    if (
+                        !Number.isFinite(
+                            priceA
+                        ) &&
+                        !Number.isFinite(
+                            priceB
+                        )
+                    ) {
+                        return 0;
+                    }
+
+                    if (
+                        !Number.isFinite(
+                            priceA
+                        )
+                    ) {
+                        return 1;
+                    }
+
+                    if (
+                        !Number.isFinite(
+                            priceB
+                        )
+                    ) {
+                        return -1;
+                    }
+
+                    return (
+                        priceA -
+                        priceB
+                    );
+
+                }
+            );
+
+    const availableRows =
+        sortedRows.filter(
+            (row) =>
+                row?.is_available !== false
+        );
+
+    const lowestPrice =
+        getLowestTestPrice(
+            sortedRows
+        );
+
+    const latestUpdate =
+        getLatestTestUpdate(
+            sortedRows
+        );
+
+    const normalizedCategory =
+        normalizeTestCategory(
+            test?.category
+        );
+
+    const englishName =
+        cleanText(
+            test?.name
+        );
+
+    const description =
+        cleanText(
+            test?.description
+        );
+
+    const hospitalCount =
+        new Set(
+            sortedRows.map(
+                (row) =>
+                    String(
+                        row.hospital_id
+                    )
+            )
+        ).size;
+
+    const availableCount =
+        availableRows.length;
+
+    const previewRows =
+        sortedRows
+            .slice(
+                0,
+                4
+            );
+
+    const detailsRows =
+        sortedRows;
+
+    const firstCallableHospital =
+        sortedRows.find(
+            (row) =>
+                cleanText(
+                    row?.hospital?.phone
+                )
+        );
+
+    const callAction =
+        firstCallableHospital
+            ? `
+                <a
+                    href="tel:${escapeHTML(
+                normalizePhone(
+                    firstCallableHospital
+                        .hospital
+                        .phone
+                )
+            )}"
+                    class="
+                        tests-interface-action
+                        is-primary
+                    "
+                >
+                    ☎ কল করুন
+                </a>
+            `
+            : "";
+
+    return `
+
+        <article
+            class="tests-interface-card"
+        >
+
+            <div
+                class="tests-interface-card-main"
+            >
+
+                <div
+                    class="tests-interface-card-top"
+                >
+
+                    <div>
+
+                        <h3
+                            class="tests-interface-card-title"
+                        >
+                            ${escapeHTML(
+        cleanText(
+            test?.name_bn
+        ) ||
+        englishName ||
+        "টেস্টের নাম পাওয়া যায়নি"
+    )}
+                        </h3>
+
+                        ${englishName &&
+            englishName !==
+            cleanText(
+                test?.name_bn
+            )
+            ? `
+                                    <p
+                                        class="
+                                            tests-interface-card-subtitle
+                                        "
+                                    >
+                                        ${escapeHTML(
+                englishName
+            )}
+                                    </p>
+                                `
+            : ""
+        }
+
+                    </div>
+
+                    <span
+                        class="tests-interface-card-mark"
+                        aria-hidden="true"
+                    >
+                        T
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="tests-interface-badges"
+                >
+
+                    ${normalizedCategory
+            ? `
+                                <span
+                                    class="
+                                        tests-interface-badge
+                                        is-category
+                                    "
+                                >
+                                    ${escapeHTML(
+                normalizedCategory
+            )}
+                                </span>
+                            `
+            : ""
+        }
+
+                    ${availableCount
+            ? `
+                                <span
+                                    class="
+                                        tests-interface-badge
+                                        is-available
+                                    "
+                                >
+                                    ✓ ${formatTestFeesNumber(
+                availableCount
+            )}টি কেন্দ্রে পাওয়া যাচ্ছে
+                                </span>
+                            `
+            : `
+                                <span
+                                    class="
+                                        tests-interface-badge
+                                        is-unavailable
+                                    "
+                                >
+                                    বর্তমানে availability নেই
+                                </span>
+                            `
+        }
+
+                </div>
+
+
+                ${description
+            ? `
+                            <div
+                                class="
+                                    tests-interface-description
+                                "
+                            >
+                                <p>
+                                    ${escapeHTML(
+                description
+            )}
+                                </p>
+                            </div>
+                        `
+            : ""
+        }
+
+
+                <div
+                    class="
+                        tests-interface-hospital-count
+                    "
+                >
+                    ${formatTestFeesNumber(
+            hospitalCount
+        )}টি হাসপাতালের তথ্য
+                </div>
+
+
+                <div
+                    class="tests-interface-price-comparison"
+                >
+
+                    ${previewRows.length
+            ? previewRows
+                .map(
+                    buildTestFeesPriceRow
+                )
+                .join("")
+            : `
+                                <div
+                                    class="
+                                        tests-interface-empty
+                                    "
+                                >
+                                    <strong>
+                                        হাসপাতালভিত্তিক ফি নেই
+                                    </strong>
+
+                                    <span>
+                                        এই টেস্টের ফি এখনো যুক্ত হয়নি।
+                                    </span>
+                                </div>
+                            `
+        }
+
+                </div>
+
+
+                <div
+                    class="tests-interface-actions"
+                >
+
+                    ${callAction}
+
+                </div>
+
+
+                ${latestUpdate
+            ? `
+                            <div
+                                class="
+                                    tests-interface-meta
+                                "
+                            >
+                                <span>
+                                    ↻
+                                </span>
+
+                                <span>
+                                    সর্বশেষ আপডেট:
+                                    ${escapeHTML(
+                formatTestFeesDate(
+                    latestUpdate
+                )
+            )}
+                                </span>
+                            </div>
+                        `
+            : ""
+        }
+
+
+                <details
+                    class="tests-interface-details"
+                >
+
+                    <summary>
+                        হাসপাতালভিত্তিক বিস্তারিত দেখুন
+                    </summary>
+
+                    <div
+                        class="
+                            tests-interface-details-body
+                        "
+                    >
+
+                        ${detailsRows.length
+            ? detailsRows
+                .map(
+                    buildTestFeesHospitalDetail
+                )
+                .join("")
+            : `
+                                    <p>
+                                        এই টেস্টের সঙ্গে কোনো হাসপাতাল যুক্ত নেই।
+                                    </p>
+                                `
+        }
+
+                    </div>
+
+                </details>
+
+            </div>
+
+
+            <aside
+                class="tests-interface-price-panel"
+            >
+
+                <span
+                    class="
+                        tests-interface-price-label
+                    "
+                >
+                    সর্বনিম্ন বর্তমান ফি
+                </span>
+
+
+                <div
+                    class="
+                        tests-interface-price
+                    "
+                >
+
+                    <span
+                        class="
+                            tests-interface-price-prefix
+                        "
+                    >
+                        ৳
+                    </span>
+
+                    <span>
+                        ${Number.isFinite(
+            lowestPrice
+        )
+            ? formatTestFeesNumber(
+                lowestPrice
+            )
+            : "—"
+        }
+                    </span>
+
+                </div>
+
+
+                ${Number.isFinite(
+            lowestPrice
+        )
+            ? `
+                            <span
+                                class="
+                                    tests-interface-best-price
+                                "
+                            >
+                                ✓ পাওয়া সর্বনিম্ন ফি
+                            </span>
+                        `
+            : `
+                            <span
+                                class="
+                                    tests-interface-price-note
+                                "
+                            >
+                                এখনো মূল্য তথ্য যুক্ত হয়নি
+                            </span>
+                        `
+        }
+
+            </aside>
+
+        </article>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TEST & FEES — EMPTY / ERROR
+   ========================================================= */
+
+function renderTestFeesMessage(
+    title,
+    message
+) {
+
+    const {
+        results
+    } =
+        getTestFeesElements();
+
+    if (!results) {
+        return;
+    }
+
+    results.innerHTML = `
+
+        <div
+            class="tests-interface-empty"
+        >
+
+            <strong>
+                ${escapeHTML(
+        title
+    )}
+            </strong>
+
+            <span>
+                ${escapeHTML(
+        message
+    )}
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TEST & FEES — RESULTS
+   ========================================================= */
+
+function renderTestFeesResults() {
+
+    const {
+        resultCount,
+        results,
+        locationButton
+    } =
+        getTestFeesElements();
+
+    if (!results) {
+        return;
+    }
+
+    applyTestFeesFilters();
+
+    if (resultCount) {
+
+        resultCount.textContent =
+            `${formatTestFeesNumber(
+                testFeesState
+                    .filtered
+                    .length
+            )}টি`;
+
+    }
+
+    if (locationButton) {
+
+        locationButton.setAttribute(
+            "aria-pressed",
+            testFeesState
+                .locationOnly
+                ? "true"
+                : "false"
+        );
+
+        locationButton.textContent =
+            testFeesState
+                .locationOnly
+                ? "✓ আমার এলাকা"
+                : "⌖ আমার এলাকা";
+
+    }
+
+    if (
+        !testFeesState
+            .filtered
+            .length
+    ) {
+
+        if (
+            testFeesState
+                .locationOnly &&
+            !getTestFeesSavedLocation()
+        ) {
+
+            renderTestFeesMessage(
+                "আগে আপনার এলাকা নির্বাচন করুন",
+                "Home থেকে বিভাগ, জেলা ও উপজেলা নির্বাচন করে আবার চেষ্টা করুন।"
+            );
+
+        } else {
+
+            renderTestFeesMessage(
+                "কোনো টেস্ট পাওয়া যায়নি",
+                "অন্য নাম, category বা হাসপাতালের নাম দিয়ে আবার চেষ্টা করুন।"
+            );
+
+        }
+
+        return;
+
+    }
+
+    results.innerHTML = `
+
+        <div
+            class="tests-interface-list"
+        >
+
+            ${testFeesState
+            .filtered
+            .map(
+                buildTestFeesCard
+            )
+            .join("")}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   TEST & FEES — LOAD DATA
+   ========================================================= */
+
+async function loadTestFeesData() {
+
+    if (
+        testFeesState.loaded ||
+        testFeesState.loading
+    ) {
+
+        renderTestFeesResults();
+
+        return;
+
+    }
+
+    const {
+        results
+    } =
+        getTestFeesElements();
+
+    if (!results) {
+        return;
+    }
+
+    if (!dorkariSupabase) {
+
+        renderTestFeesMessage(
+            "তথ্য লোড করা যাচ্ছে না",
+            "Supabase সংযোগ পাওয়া যায়নি।"
+        );
+
+        return;
+
+    }
+
+    testFeesState.loading =
+        true;
+
+    renderTestFeesMessage(
+        "টেস্ট ও ফি-এর তথ্য লোড হচ্ছে...",
+        "একটু অপেক্ষা করুন।"
+    );
+
+    try {
+
+        const [
+
+            testsResult,
+
+            hospitalTestsResult,
+
+            hospitalsResult,
+
+            divisionsResult,
+
+            districtsResult,
+
+            upazilasResult
+
+        ] =
+            await Promise.all([
+
+                dorkariSupabase
+                    .from("tests")
+                    .select(`
+                        id,
+                        name,
+                        name_bn,
+                        category,
+                        description,
+                        is_active,
+                        created_at
+                    `)
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name_bn",
+                        {
+                            ascending: true
+                        }
+                    ),
+
+
+                dorkariSupabase
+                    .from("hospital_tests")
+                    .select(`
+                        id,
+                        hospital_id,
+                        test_id,
+                        price,
+                        discount_price,
+                        notes,
+                        is_available,
+                        last_updated,
+                        created_at
+                    `)
+                    .order(
+                        "last_updated",
+                        {
+                            ascending: false
+                        }
+                    ),
+
+
+                dorkariSupabase
+                    .from("hospitals")
+                    .select(`
+                        id,
+                        name,
+                        name_bn,
+                        division_id,
+                        district_id,
+                        upazila_id,
+                        address,
+                        phone,
+                        is_verified,
+                        is_active
+                    `)
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name_bn",
+                        {
+                            ascending: true
+                        }
+                    ),
+
+
+                dorkariSupabase
+                    .from("divisions")
+                    .select(
+                        "id,name,name_bn"
+                    )
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name_bn",
+                        {
+                            ascending: true
+                        }
+                    ),
+
+
+                dorkariSupabase
+                    .from("districts")
+                    .select(`
+                        id,
+                        name,
+                        name_bn,
+                        division_id
+                    `)
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name_bn",
+                        {
+                            ascending: true
+                        }
+                    ),
+
+
+                dorkariSupabase
+                    .from("upazilas")
+                    .select(`
+                        id,
+                        name,
+                        name_bn,
+                        district_id
+                    `)
+                    .eq(
+                        "is_active",
+                        true
+                    )
+                    .order(
+                        "name_bn",
+                        {
+                            ascending: true
+                        }
+                    )
+
+            ]);
+
+
+        if (
+            testsResult.error
+        ) {
+            throw testsResult.error;
+        }
+
+        if (
+            hospitalTestsResult.error
+        ) {
+            throw hospitalTestsResult.error;
+        }
+
+        if (
+            hospitalsResult.error
+        ) {
+            throw hospitalsResult.error;
+        }
+
+        if (
+            divisionsResult.error
+        ) {
+            throw divisionsResult.error;
+        }
+
+        if (
+            districtsResult.error
+        ) {
+            throw districtsResult.error;
+        }
+
+        if (
+            upazilasResult.error
+        ) {
+            throw upazilasResult.error;
+        }
+
+
+        testFeesState.tests =
+            Array.isArray(
+                testsResult.data
+            )
+                ? testsResult.data
+                : [];
+
+
+        testFeesState.hospitalTests =
+            Array.isArray(
+                hospitalTestsResult.data
+            )
+                ? hospitalTestsResult.data
+                : [];
+
+
+        testFeesState.hospitals =
+            Array.isArray(
+                hospitalsResult.data
+            )
+                ? hospitalsResult.data
+                : [];
+
+
+        testFeesState.divisions =
+            Array.isArray(
+                divisionsResult.data
+            )
+                ? divisionsResult.data
+                : [];
+
+
+        testFeesState.districts =
+            Array.isArray(
+                districtsResult.data
+            )
+                ? districtsResult.data
+                : [];
+
+
+        testFeesState.upazilas =
+            Array.isArray(
+                upazilasResult.data
+            )
+                ? upazilasResult.data
+                : [];
+
+
+        /*
+         * Home location data আগে load হয়ে থাকলে
+         * fallback হিসেবে ব্যবহার করা যাবে।
+         */
+
+        if (
+            !testFeesState
+                .divisions
+                .length &&
+            homeLocationState
+                .divisions
+                .length
+        ) {
+
+            testFeesState.divisions =
+                homeLocationState
+                    .divisions;
+
+        }
+
+
+        if (
+            !testFeesState
+                .districts
+                .length &&
+            homeLocationState
+                .districts
+                .length
+        ) {
+
+            testFeesState.districts =
+                homeLocationState
+                    .districts;
+
+        }
+
+
+        if (
+            !testFeesState
+                .upazilas
+                .length &&
+            homeLocationState
+                .upazilas
+                .length
+        ) {
+
+            testFeesState.upazilas =
+                homeLocationState
+                    .upazilas;
+
+        }
+
+
+        testFeesState.loaded =
+            true;
+
+
+        console.info(
+            "Dorkari public Test & Fees loaded:",
+            {
+                tests:
+                    testFeesState
+                        .tests
+                        .length,
+
+                hospitalTests:
+                    testFeesState
+                        .hospitalTests
+                        .length,
+
+                hospitals:
+                    testFeesState
+                        .hospitals
+                        .length
+            }
+        );
+
+
+        renderTestFeesResults();
+
+    } catch (error) {
+
+        console.error(
+            "Test & Fees data load failed:",
+            error
+        );
+
+        renderTestFeesMessage(
+            "টেস্ট ও ফি-এর তথ্য লোড হয়নি",
+            "পরে আবার চেষ্টা করুন।"
+        );
+
+        showToast(
+            "টেস্ট ও ফি-এর তথ্য লোড করা যায়নি"
+        );
+
+    } finally {
+
+        testFeesState.loading =
+            false;
+
+    }
+
+}
+
+
+/* =========================================================
+   TEST & FEES — CATEGORY BUTTON STATE
+   ========================================================= */
+
+function updateTestFeesCategoryButtons() {
+
+    const {
+        categoryButtons
+    } =
+        getTestFeesElements();
+
+    categoryButtons
+        .forEach(
+            (button) => {
+
+                const category =
+                    normalizeTestCategory(
+                        button.dataset
+                            .testsCategory
+                    );
+
+                const active =
+                    testFeesState
+                        .selectedCategory ===
+                    category;
+
+                const isAll =
+                    !testFeesState
+                        .selectedCategory &&
+                    !cleanText(
+                        button.dataset
+                            .testsCategory
+                    );
+
+                button.classList.toggle(
+                    "is-active",
+                    active || isAll
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    active || isAll
+                        ? "true"
+                        : "false"
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   TEST & FEES — INITIALIZE INTERFACE
+   ========================================================= */
+
+function initializeTestFeesInterface() {
+
+    const {
+        interface:
+        testInterface,
+
+        search,
+
+        locationButton,
+
+        categoryButtons,
+
+        categoryClear
+
+    } =
+        getTestFeesElements();
+
+
+    if (!testInterface) {
+        return;
+    }
+
+
+    updateTestFeesCategoryButtons();
+
+
+    /*
+     * SEARCH
+     */
+
+    search?.addEventListener(
+        "input",
+        () => {
+
+            testFeesState
+                .locationOnly =
+                false;
+
+            if (locationButton) {
+
+                locationButton
+                    .textContent =
+                    "⌖ আমার এলাকা";
+
+                locationButton
+                    .setAttribute(
+                        "aria-pressed",
+                        "false"
+                    );
+
+            }
+
+            renderTestFeesResults();
+
+        }
+    );
+
+
+    /*
+     * CATEGORY
+     */
+
+    categoryButtons
+        .forEach(
+            (button) => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        const rawCategory =
+                            cleanText(
+                                button.dataset
+                                    .testsCategory
+                            );
+
+                        testFeesState
+                            .selectedCategory =
+                            rawCategory
+                                ? normalizeTestCategory(
+                                    rawCategory
+                                )
+                                : "";
+
+                        updateTestFeesCategoryButtons();
+
+                        renderTestFeesResults();
+
+                    }
+                );
+
+            }
+        );
+
+
+    /*
+     * CATEGORY CLEAR
+     */
+
+    categoryClear?.addEventListener(
+        "click",
+        () => {
+
+            testFeesState
+                .selectedCategory =
+                "";
+
+            updateTestFeesCategoryButtons();
+
+            renderTestFeesResults();
+
+        }
+    );
+
+
+    /*
+     * MY AREA
+     */
+
+    locationButton?.addEventListener(
+        "click",
+        () => {
+
+            const saved =
+                getTestFeesSavedLocation();
+
+            if (!saved) {
+
+                testFeesState
+                    .locationOnly =
+                    false;
+
+                locationButton
+                    .setAttribute(
+                        "aria-pressed",
+                        "false"
+                    );
+
+                locationButton
+                    .textContent =
+                    "⌖ আমার এলাকা";
+
+                showToast(
+                    "আগে হোম পেজে আপনার এলাকা নির্বাচন করুন"
+                );
+
+                return;
+
+            }
+
+
+            testFeesState
+                .locationOnly =
+                !testFeesState
+                    .locationOnly;
+
+
+            renderTestFeesResults();
+
+        }
+    );
+
+
+    /*
+     * Home location data পরে এলে
+     * result আবার render করি।
+     */
+
+    document.addEventListener(
+        "dorkari:locations-loaded",
+        () => {
+
+            if (
+                testFeesState.loaded
+            ) {
+
+                renderTestFeesResults();
+
+            }
+
+        }
+    );
+
+
+    /*
+     * Interface খুললে data load করার
+     * custom event handle করি।
+     */
+
+    window.addEventListener(
+        "dorkari:tests-open",
+        () => {
+
+            loadTestFeesData();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   TEST & FEES — INITIAL HASH SUPPORT
+   ========================================================= */
+
+function initializeTestFeesInterfaceHashSupport() {
+
+    const initialHash =
+        cleanText(
+            window.location.hash
+        )
+            .replace(
+                /^#/,
+                ""
+            )
+            .toLowerCase();
+
+    if (
+        initialHash ===
+        "tests"
+    ) {
+
+        window.setTimeout(
+            () => {
+
+                loadTestFeesData();
+
+            },
+            0
+        );
+
+    }
 
 }
