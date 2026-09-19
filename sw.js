@@ -1,6 +1,7 @@
 /* =========================================================
    DORKARI — SERVICE WORKER
-   PWA app-shell caching + offline fallback
+   Production PWA
+   App-shell caching + offline fallback + safe updates
    ========================================================= */
 
 "use strict";
@@ -11,7 +12,7 @@
    ========================================================= */
 
 const CACHE_NAME =
-    "dorkari-user-v1";
+    "dorkari-user-v2";
 
 
 /* =========================================================
@@ -40,7 +41,16 @@ const APP_SHELL = [
 
     "./assets/icons/emergency.png",
     "./assets/icons/emergency.svg"
+
 ];
+
+
+/* =========================================================
+   STATIC FILE EXTENSIONS
+   ========================================================= */
+
+const STATIC_FILE_PATTERN =
+    /\.(?:css|js|png|jpg|jpeg|webp|svg|gif|ico|woff2?|ttf|otf)$/i;
 
 
 /* =========================================================
@@ -54,26 +64,77 @@ self.addEventListener(
         event.waitUntil(
 
             caches
-                .open(CACHE_NAME)
-                .then((cache) => {
+                .open(
+                    CACHE_NAME
+                )
+                .then(
+                    async (cache) => {
 
-                    return cache.addAll(
-                        APP_SHELL
-                    );
+                        /*
+                         * একটি file missing থাকলেও
+                         * পুরো service worker install
+                         * যেন fail না করে।
+                         */
 
-                })
-                .then(() => {
+                        await Promise.allSettled(
 
-                    /*
-                     * নতুন service worker-কে
-                     * waiting অবস্থায় আটকে না রেখে
-                     * activate করার জন্য প্রস্তুত রাখি।
-                     */
+                            APP_SHELL.map(
+                                async (url) => {
 
-                    return self.skipWaiting();
+                                    try {
 
-                })
+                                        const response =
+                                            await fetch(
+                                                url,
+                                                {
+                                                    cache:
+                                                        "no-cache"
+                                                }
+                                            );
+
+                                        if (
+                                            !response ||
+                                            !response.ok
+                                        ) {
+                                            return;
+                                        }
+
+                                        await cache.put(
+                                            url,
+                                            response
+                                        );
+
+                                    } catch (error) {
+
+                                        console.warn(
+                                            "Dorkari SW cache skipped:",
+                                            url,
+                                            error
+                                        );
+                                    }
+
+                                }
+                            )
+
+                        );
+
+                    }
+                )
+                .then(
+                    () => {
+
+                        /*
+                         * নতুন worker-কে
+                         * waiting অবস্থায় আটকে রাখি না।
+                         */
+
+                        return self.skipWaiting();
+
+                    }
+                )
+
         );
+
     }
 );
 
@@ -94,44 +155,48 @@ self.addEventListener(
                  * পুরোনো Dorkari cache remove করি।
                  */
 
-                caches.keys().then(
-                    (cacheNames) => {
+                caches
+                    .keys()
+                    .then(
+                        (cacheNames) => {
 
-                        return Promise.all(
+                            return Promise.all(
 
-                            cacheNames
-                                .filter(
-                                    (cacheName) =>
-                                        cacheName !==
-                                        CACHE_NAME
-                                )
-                                .map(
-                                    (cacheName) =>
-                                        caches.delete(
-                                            cacheName
-                                        )
-                                )
+                                cacheNames
+                                    .filter(
+                                        (cacheName) =>
+                                            cacheName !==
+                                            CACHE_NAME
+                                    )
+                                    .map(
+                                        (cacheName) =>
+                                            caches.delete(
+                                                cacheName
+                                            )
+                                    )
 
-                        );
+                            );
 
-                    }
-                ),
+                        }
+                    ),
 
                 /*
                  * নতুন worker-কে
-                 * সব active client-এর নিয়ন্ত্রণ দিই।
+                 * active clients-এর control দিই।
                  */
 
                 self.clients.claim()
 
             ])
+
         );
+
     }
 );
 
 
 /* =========================================================
-   FETCH STRATEGY
+   FETCH
    ========================================================= */
 
 self.addEventListener(
@@ -162,11 +227,8 @@ self.addEventListener(
 
         /*
          * External resource
-         * যেমন Supabase/CDN
+         * যেমন Supabase / CDN
          * service worker cache করবে না।
-         *
-         * এগুলো normal browser network
-         * request হিসেবেই চলবে।
          */
 
         if (
@@ -177,26 +239,160 @@ self.addEventListener(
         }
 
 
+        /*
+         * Admin route cache করব না।
+         *
+         * Admin area always network-driven থাকবে।
+         */
+
+        if (
+            url.pathname ===
+                "/admin" ||
+            url.pathname.startsWith(
+                "/admin/"
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * Navigation request
+         * → Network first
+         * → Offline হলে cached index.html
+         */
+
+        if (
+            request.mode ===
+            "navigate"
+        ) {
+
+            event.respondWith(
+                handleNavigationRequest(
+                    request
+                )
+            );
+
+            return;
+        }
+
+
+        /*
+         * Static asset
+         * → Cache first
+         * → Background update
+         */
+
+        if (
+            STATIC_FILE_PATTERN.test(
+                url.pathname
+            )
+        ) {
+
+            event.respondWith(
+                handleStaticRequest(
+                    request
+                )
+            );
+
+            return;
+        }
+
+
+        /*
+         * অন্য same-origin GET
+         * → Network first
+         * → Cache fallback
+         */
+
         event.respondWith(
-            handleSameOriginRequest(
+            handleNetworkFirstRequest(
                 request
             )
         );
+
     }
 );
 
 
 /* =========================================================
-   SAME-ORIGIN REQUEST HANDLER
+   NAVIGATION REQUEST
    ========================================================= */
 
-async function handleSameOriginRequest(
+async function handleNavigationRequest(
     request
 ) {
 
-    /*
-     * আগে cache থেকে response নেওয়ার চেষ্টা।
-     */
+    try {
+
+        const networkResponse =
+            await fetch(
+                request,
+                {
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+        if (
+            networkResponse &&
+            networkResponse.ok
+        ) {
+
+            const cache =
+                await caches.open(
+                    CACHE_NAME
+                );
+
+            await cache.put(
+                "./index.html",
+                networkResponse.clone()
+            );
+
+        }
+
+
+        return networkResponse;
+
+    } catch (error) {
+
+        /*
+         * Offline হলে cached Home page।
+         */
+
+        const cachedHome =
+            await caches.match(
+                "./index.html"
+            );
+
+
+        if (cachedHome) {
+            return cachedHome;
+        }
+
+
+        /*
+         * একেবারেই কিছু না থাকলে
+         * error propagate করি।
+         */
+
+        throw error;
+
+    }
+
+}
+
+
+/* =========================================================
+   STATIC REQUEST
+   ========================================================= */
+
+async function handleStaticRequest(
+    request
+) {
 
     const cachedResponse =
         await caches.match(
@@ -205,17 +401,17 @@ async function handleSameOriginRequest(
 
 
     /*
-     * Cached file পাওয়া গেলে
-     * user-কে সঙ্গে সঙ্গে দিই।
-     *
-     * একইসাথে background-এ
-     * নতুন version network থেকে update করার
-     * চেষ্টা করা হবে।
+     * Cached version থাকলে
+     * সঙ্গে সঙ্গে সেটাই দিই।
      */
 
     if (cachedResponse) {
 
-        updateCacheInBackground(
+        /*
+         * Background update।
+         */
+
+        updateStaticCache(
             request
         );
 
@@ -224,7 +420,7 @@ async function handleSameOriginRequest(
 
 
     /*
-     * Cache-এ না থাকলে network।
+     * প্রথমবার network থেকে load।
      */
 
     try {
@@ -240,21 +436,16 @@ async function handleSameOriginRequest(
             networkResponse.ok
         ) {
 
-            /*
-             * Future request-এর জন্য
-             * successful same-origin response cache করি।
-             */
-
             const cache =
                 await caches.open(
                     CACHE_NAME
                 );
 
-
-            cache.put(
+            await cache.put(
                 request,
                 networkResponse.clone()
             );
+
         }
 
 
@@ -262,77 +453,143 @@ async function handleSameOriginRequest(
 
     } catch (error) {
 
-        /*
-         * Navigation request হলে
-         * offline Home Page ফেরত দিই।
-         */
-
-        if (
-            request.mode ===
-            "navigate"
-        ) {
-
-            const offlineHome =
-                await caches.match(
-                    "./index.html"
-                );
-
-
-            if (offlineHome) {
-                return offlineHome;
-            }
-        }
-
-
-        /*
-         * Image offline থাকলে
-         * cached asset না পাওয়া গেলে
-         * empty response না দিয়ে
-         * standard error reject করি।
-         */
-
         throw error;
+
     }
+
 }
 
 
 /* =========================================================
-   BACKGROUND CACHE UPDATE
+   NETWORK FIRST
    ========================================================= */
 
-function updateCacheInBackground(
+async function handleNetworkFirstRequest(
     request
 ) {
 
-    fetch(request)
-        .then((response) => {
+    try {
 
-            if (
-                !response ||
-                !response.ok
-            ) {
-                return;
-            }
+        const networkResponse =
+            await fetch(
+                request
+            );
 
 
-            return caches
-                .open(CACHE_NAME)
-                .then((cache) => {
+        if (
+            networkResponse &&
+            networkResponse.ok
+        ) {
 
-                    return cache.put(
-                        request,
-                        response
+            const cache =
+                await caches.open(
+                    CACHE_NAME
+                );
+
+            await cache.put(
+                request,
+                networkResponse.clone()
+            );
+
+        }
+
+
+        return networkResponse;
+
+    } catch (error) {
+
+        const cachedResponse =
+            await caches.match(
+                request
+            );
+
+
+        if (cachedResponse) {
+            return cachedResponse;
+        }
+
+
+        throw error;
+
+    }
+
+}
+
+
+/* =========================================================
+   BACKGROUND STATIC UPDATE
+   ========================================================= */
+
+function updateStaticCache(
+    request
+) {
+
+    fetch(
+        request,
+        {
+            cache:
+                "no-store"
+        }
+    )
+        .then(
+            (response) => {
+
+                if (
+                    !response ||
+                    !response.ok
+                ) {
+                    return;
+                }
+
+
+                return caches
+                    .open(
+                        CACHE_NAME
+                    )
+                    .then(
+                        (cache) => {
+
+                            return cache.put(
+                                request,
+                                response
+                            );
+
+                        }
                     );
 
-                });
+            }
+        )
+        .catch(
+            () => {
 
-        })
-        .catch(() => {
+                /*
+                 * Offline হলে
+                 * background update silently fail করবে।
+                 */
 
-            /*
-             * Offline হলে background update
-             * silently fail করবে।
-             */
+            }
+        );
 
-        });
 }
+
+
+/* =========================================================
+   MESSAGE — FORCE UPDATE
+   ========================================================= */
+
+self.addEventListener(
+    "message",
+    (event) => {
+
+        if (
+            event.data &&
+            event.data.type ===
+            "SKIP_WAITING"
+        ) {
+
+            self.skipWaiting();
+
+        }
+
+    }
+);
