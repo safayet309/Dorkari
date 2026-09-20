@@ -1,4 +1,4 @@
-// =========================================================
+ // =========================================================
 // DORKARI — PUBLIC HOME JAVASCRIPT
 // User-facing interactions, location state and emergency UI
 // =========================================================
@@ -13640,7 +13640,28 @@ function initializeTestFeesInterfaceHashSupport() {
 }
 /* =========================================================
    DORKARI — PWA LAUNCH SPLASH CONTROLLER
+   PWA / Installed App ONLY
    ========================================================= */
+
+function isDorkariInstalledApp() {
+
+    const standaloneMedia =
+        window.matchMedia(
+            [
+                "(display-mode: standalone)",
+                "(display-mode: fullscreen)",
+                "(display-mode: minimal-ui)",
+                "(display-mode: window-controls-overlay)"
+            ].join(", ")
+        );
+
+
+    return (
+        standaloneMedia.matches ||
+        window.navigator.standalone === true
+    );
+}
+
 
 function initializeDorkariSplash() {
 
@@ -13656,36 +13677,58 @@ function initializeDorkariSplash() {
 
 
     /*
-     * CSS animation-এর automatic timing
-     * JS দিয়ে control করার জন্য বন্ধ করছি।
+     * Normal browser / website হলে
+     * কোনো splash দেখাবো না।
      */
 
-    splash.style.animation =
-        "none";
+    if (!isDorkariInstalledApp()) {
+
+        splash.hidden =
+            true;
+
+        splash.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        splash.style.opacity =
+            "0";
+
+        splash.style.visibility =
+            "hidden";
+
+        splash.style.pointerEvents =
+            "none";
+
+        return;
+    }
 
 
-    splash.style.opacity =
-        "1";
+    /*
+     * Installed Dorkari App / PWA
+     * হলে splash চালু হবে।
+     */
 
-
-    splash.style.visibility =
-        "visible";
-
-
-    splash.style.pointerEvents =
-        "auto";
-
+    splash.hidden =
+        false;
 
     splash.setAttribute(
         "aria-hidden",
         "false"
     );
 
+    splash.style.animation =
+        "none";
 
-    /*
-     * Splash কমপক্ষে কিছুক্ষণ visible থাকবে,
-     * যাতে logo/branding চোখে ধরা পড়ে।
-     */
+    splash.style.opacity =
+        "1";
+
+    splash.style.visibility =
+        "visible";
+
+    splash.style.pointerEvents =
+        "auto";
+
 
     const splashStartTime =
         Date.now();
@@ -13731,9 +13774,7 @@ function initializeDorkariSplash() {
                         [
                             "opacity 550ms ease",
                             "visibility 550ms ease"
-                        ].join(
-                            ", "
-                        );
+                        ].join(", ");
 
 
                     splash.style.opacity =
@@ -13754,11 +13795,6 @@ function initializeDorkariSplash() {
                     );
 
 
-                    /*
-                     * Fade শেষ হওয়ার পর
-                     * DOM-এ display:none দিয়ে দিই।
-                     */
-
                     window.setTimeout(
                         () => {
 
@@ -13772,14 +13808,8 @@ function initializeDorkariSplash() {
                 },
                 remaining
             );
-
         };
 
-
-    /*
-     * Window সম্পূর্ণ load হলে
-     * Splash বন্ধ করার জন্য প্রস্তুত।
-     */
 
     if (
         document.readyState ===
@@ -13802,15 +13832,38 @@ function initializeDorkariSplash() {
 
 
     /*
-     * কোনো কারণে load event
-     * অনেক দেরি করলে Splash অনির্দিষ্টকাল
-     * আটকে থাকবে না।
+     * Safety timeout:
+     * কোনো কারণে load আটকে গেলেও
+     * splash সর্বোচ্চ 5 sec থাকবে।
      */
 
     window.setTimeout(
         hideSplash,
         5000
     );
+}
+
+
+/* =========================================================
+   SPLASH INITIALIZATION
+   ========================================================= */
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeDorkariSplash,
+        {
+            once: true
+        }
+    );
+
+} else {
+
+    initializeDorkariSplash();
 
 }
 
