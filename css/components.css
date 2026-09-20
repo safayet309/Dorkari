@@ -10358,3 +10358,731 @@ summary::after {
     }
 
 }
+/* =========================================================
+   DORKARI — PWA APP INSTALL POPUP
+   Premium Bottom Install Banner
+   ========================================================= */
+
+.pwa-install-popup {
+    position: fixed;
+
+    left: 50%;
+
+    bottom:
+        calc(
+            82px +
+            env(
+                safe-area-inset-bottom
+            )
+        );
+
+    z-index: 9990;
+
+    width:
+        min(
+            calc(
+                100% -
+                24px
+            ),
+            520px
+        );
+
+    transform:
+        translateX(-50%)
+        translateY(24px);
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+    transition:
+        opacity 280ms ease,
+        transform 280ms ease,
+        visibility 280ms ease;
+}
+
+
+/* =========================================================
+   ACTIVE STATE
+   ========================================================= */
+
+.pwa-install-popup.is-visible {
+    transform:
+        translateX(-50%)
+        translateY(0);
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+}
+
+
+/* =========================================================
+   INNER
+   ========================================================= */
+
+.pwa-install-popup-inner {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns:
+        auto
+        minmax(0, 1fr)
+        auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    min-width: 0;
+
+    padding:
+        12px
+        13px;
+
+    border:
+        1px solid
+        rgba(
+            19,
+            107,
+            113,
+            .14
+        );
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(
+                255,
+                255,
+                255,
+                .98
+            ) 0%,
+            rgba(
+                246,
+                252,
+                252,
+                .98
+            ) 100%
+        );
+
+    box-shadow:
+        0
+        14px
+        42px
+        rgba(
+            18,
+            54,
+            62,
+            .16
+        );
+
+    backdrop-filter:
+        blur(16px);
+
+    -webkit-backdrop-filter:
+        blur(16px);
+
+    overflow:
+        hidden;
+}
+
+
+/* =========================================================
+   TOP ACCENT
+   ========================================================= */
+
+.pwa-install-popup-inner::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0b6b4f 0%,
+            #16a6a1 48%,
+            #7ac943 100%
+        );
+}
+
+
+/* =========================================================
+   LOGO WRAPPER
+   ========================================================= */
+
+.pwa-install-popup-logo-wrap {
+    position: relative;
+
+    flex: 0 0 auto;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 48px;
+    height: 48px;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f1fbfb 0%,
+            #e4f5f3 100%
+        );
+
+    border:
+        1px solid
+        #d6ebe8;
+
+    box-shadow:
+        inset
+        0
+        1px
+        0
+        rgba(
+            255,
+            255,
+            255,
+            .95
+        );
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.pwa-install-popup-logo {
+    display: block;
+
+    width: 40px;
+    height: 40px;
+
+    object-fit: contain;
+
+    border-radius: 11px;
+}
+
+
+/* =========================================================
+   CONTENT
+   ========================================================= */
+
+.pwa-install-popup-content {
+    min-width: 0;
+
+    padding-right: 2px;
+}
+
+
+.pwa-install-popup-content strong {
+    display: block;
+
+    overflow: hidden;
+
+    color:
+        #183b45;
+
+    font-size: 13px;
+
+    font-weight: 900;
+
+    line-height: 1.3;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+}
+
+
+.pwa-install-popup-content p {
+    margin:
+        3px
+        0
+        0;
+
+    color:
+        #6b7f85;
+
+    font-size: 9.5px;
+
+    line-height: 1.55;
+}
+
+
+/* =========================================================
+   CLOSE BUTTON
+   ========================================================= */
+
+.pwa-install-popup-close {
+    position: absolute;
+
+    top: 7px;
+
+    right: 7px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 23px;
+    height: 23px;
+
+    padding: 0;
+
+    border:
+        1px solid
+        #e0eaea;
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .92
+        );
+
+    color:
+        #71858a;
+
+    font-family:
+        inherit;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+
+.pwa-install-popup-close:hover {
+    border-color:
+        #cddfdf;
+
+    background:
+        #f5fbfb;
+
+    color:
+        #315d65;
+
+    transform:
+        scale(1.04);
+}
+
+
+.pwa-install-popup-close:active {
+    transform:
+        scale(.94);
+}
+
+
+/* =========================================================
+   INSTALL BUTTON
+   ========================================================= */
+
+.pwa-install-popup-install {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    min-width: 72px;
+
+    min-height: 38px;
+
+    margin-right: 2px;
+
+    padding:
+        8px
+        13px;
+
+    border:
+        1px solid
+        #0b7458;
+
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0b6b4f 0%,
+            #149783 100%
+        );
+
+    color:
+        #ffffff;
+
+    font-family:
+        inherit;
+
+    font-size: 10px;
+
+    font-weight: 900;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    box-shadow:
+        0
+        6px
+        14px
+        rgba(
+            11,
+            107,
+            79,
+            .17
+        );
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        filter 180ms ease;
+}
+
+
+.pwa-install-popup-install:hover {
+    transform:
+        translateY(-1px);
+
+    box-shadow:
+        0
+        9px
+        18px
+        rgba(
+            11,
+            107,
+            79,
+            .21
+        );
+
+    filter:
+        brightness(
+            1.02
+        );
+}
+
+
+.pwa-install-popup-install:active {
+    transform:
+        translateY(1px)
+        scale(.98);
+}
+
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+.pwa-install-popup-close:focus-visible,
+.pwa-install-popup-install:focus-visible {
+    outline:
+        3px solid
+        rgba(
+            22,
+            166,
+            161,
+            .22
+        );
+
+    outline-offset:
+        2px;
+}
+
+
+/* =========================================================
+   TABLET / DESKTOP
+   ========================================================= */
+
+@media (min-width: 761px) {
+
+    .pwa-install-popup {
+        bottom:
+            24px;
+    }
+
+
+    .pwa-install-popup-inner {
+        min-height: 68px;
+
+        padding:
+            13px
+            15px;
+
+        border-radius: 20px;
+    }
+
+
+    .pwa-install-popup-logo-wrap {
+        width: 50px;
+        height: 50px;
+    }
+
+
+    .pwa-install-popup-logo {
+        width: 42px;
+        height: 42px;
+    }
+
+
+    .pwa-install-popup-content strong {
+        font-size: 14px;
+    }
+
+
+    .pwa-install-popup-content p {
+        font-size: 10px;
+    }
+
+
+    .pwa-install-popup-install {
+        min-width: 82px;
+
+        min-height: 40px;
+
+        font-size: 11px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .pwa-install-popup {
+        bottom:
+            calc(
+                76px +
+                env(
+                    safe-area-inset-bottom
+                )
+            );
+
+        width:
+            calc(
+                100% -
+                16px
+            );
+    }
+
+
+    .pwa-install-popup-inner {
+        grid-template-columns:
+            auto
+            minmax(0, 1fr)
+            auto;
+
+        gap: 9px;
+
+        padding:
+            11px
+            10px;
+    }
+
+
+    .pwa-install-popup-logo-wrap {
+        width: 43px;
+        height: 43px;
+
+        border-radius: 12px;
+    }
+
+
+    .pwa-install-popup-logo {
+        width: 36px;
+        height: 36px;
+
+        border-radius: 10px;
+    }
+
+
+    .pwa-install-popup-content strong {
+        font-size: 12px;
+    }
+
+
+    .pwa-install-popup-content p {
+        max-width: 190px;
+
+        font-size: 8.5px;
+
+        line-height: 1.5;
+    }
+
+
+    .pwa-install-popup-install {
+        min-width: 67px;
+
+        min-height: 36px;
+
+        padding:
+            7px
+            9px;
+
+        border-radius: 10px;
+
+        font-size: 9.5px;
+    }
+
+
+    .pwa-install-popup-close {
+        top: 5px;
+
+        right: 5px;
+
+        width: 20px;
+        height: 20px;
+
+        font-size: 13px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONE
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .pwa-install-popup {
+        width:
+            calc(
+                100% -
+                12px
+            );
+
+        bottom:
+            calc(
+                73px +
+                env(
+                    safe-area-inset-bottom
+                )
+            );
+    }
+
+
+    .pwa-install-popup-inner {
+        gap: 7px;
+
+        padding:
+            10px
+            8px;
+
+        border-radius: 16px;
+    }
+
+
+    .pwa-install-popup-logo-wrap {
+        width: 39px;
+        height: 39px;
+
+        border-radius: 11px;
+    }
+
+
+    .pwa-install-popup-logo {
+        width: 33px;
+        height: 33px;
+
+        border-radius: 9px;
+    }
+
+
+    .pwa-install-popup-content strong {
+        font-size: 11px;
+    }
+
+
+    .pwa-install-popup-content p {
+        max-width: 150px;
+
+        font-size: 8px;
+    }
+
+
+    .pwa-install-popup-install {
+        min-width: 61px;
+
+        min-height: 34px;
+
+        padding:
+            6px
+            8px;
+
+        font-size: 9px;
+    }
+
+}
+
+
+/* =========================================================
+   TOUCH DEVICES
+   ========================================================= */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .pwa-install-popup-install:hover {
+        transform: none;
+
+        box-shadow:
+            0
+            6px
+            14px
+            rgba(
+                11,
+                107,
+                79,
+                .17
+            );
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pwa-install-popup,
+    .pwa-install-popup-close,
+    .pwa-install-popup-install {
+        transition: none !important;
+    }
+
+}
