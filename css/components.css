@@ -9376,3 +9376,985 @@ summary::after {
     }
 
 }
+/* =========================================================
+   DORKARI — PWA LAUNCH SPLASH SCREEN
+   White + Blue-Green Premium Style
+   ========================================================= */
+
+.dorkari-splash {
+    position: fixed;
+    inset: 0;
+
+    z-index: 99999;
+
+    width: 100%;
+    min-height: 100dvh;
+
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(
+            circle at 50% 28%,
+            rgba(221, 246, 248, .95) 0%,
+            rgba(246, 251, 252, .92) 28%,
+            #ffffff 68%,
+            #ffffff 100%
+        );
+
+    color: #123d4a;
+
+    opacity: 1;
+    visibility: visible;
+
+    animation:
+        dorkariSplashExit
+        900ms
+        ease
+        2500ms
+        forwards;
+
+    pointer-events: auto;
+}
+
+
+.dorkari-splash-inner {
+    position: relative;
+
+    width: min(
+        100%,
+        520px
+    );
+
+    min-height: 100dvh;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding:
+        44px
+        26px
+        calc(
+            28px +
+            env(
+                safe-area-inset-bottom
+            )
+        );
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   SOFT BACKGROUND GLOW
+   ========================================================= */
+
+.dorkari-splash-inner::before {
+    content: "";
+
+    position: absolute;
+
+    width: 330px;
+    height: 330px;
+
+    top: 17%;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(72, 202, 193, .14) 0%,
+            rgba(72, 202, 193, .055) 42%,
+            transparent 72%
+        );
+
+    filter:
+        blur(3px);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.dorkari-splash-brand {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    margin-top: 8px;
+
+    animation:
+        dorkariSplashLogo
+        900ms
+        cubic-bezier(
+            .2,
+            .8,
+            .2,
+            1
+        )
+        both;
+}
+
+
+.dorkari-splash-logo {
+    display: block;
+
+    width: min(
+        300px,
+        76vw
+    );
+
+    height: auto;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0
+            12px
+            25px
+            rgba(
+                20,
+                93,
+                108,
+                .08
+            )
+        );
+}
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+.dorkari-splash-message {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 5px;
+
+    margin-top: -10px;
+
+    animation:
+        dorkariSplashMessage
+        800ms
+        ease
+        200ms
+        both;
+}
+
+
+.dorkari-splash-message span {
+    color:
+        #67808a;
+
+    font-size: 12px;
+
+    line-height: 1.55;
+
+    font-weight: 650;
+
+    letter-spacing:
+        .01em;
+}
+
+
+.dorkari-splash-message strong {
+    color:
+        #16727a;
+
+    font-size: 19px;
+
+    line-height: 1.35;
+
+    font-weight: 900;
+
+    letter-spacing:
+        -.02em;
+}
+
+
+/* =========================================================
+   VISUAL AREA
+   ========================================================= */
+
+.dorkari-splash-visual {
+    position: relative;
+
+    z-index: 1;
+
+    width: 100%;
+
+    min-height: 285px;
+
+    margin-top: 8px;
+
+    overflow: hidden;
+
+    border-radius:
+        36px
+        36px
+        0
+        0;
+
+    background:
+        linear-gradient(
+            180deg,
+            #edfafd 0%,
+            #f5fbfc 46%,
+            #eef9f7 100%
+        );
+
+    box-shadow:
+        inset
+        0
+        1px
+        0
+        rgba(
+            255,
+            255,
+            255,
+            .9
+        );
+}
+
+
+/* =========================================================
+   SKY
+   ========================================================= */
+
+.dorkari-splash-sky {
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at 20% 32%,
+            rgba(
+                255,
+                255,
+                255,
+                .95
+            ) 0,
+            rgba(
+                255,
+                255,
+                255,
+                0
+            ) 24%
+        ),
+        radial-gradient(
+            circle at 85% 23%,
+            rgba(
+                255,
+                255,
+                255,
+                .85
+            ) 0,
+            rgba(
+                255,
+                255,
+                255,
+                0
+            ) 22%
+        );
+}
+
+
+/* =========================================================
+   CITY
+   ========================================================= */
+
+.dorkari-splash-city {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 58px;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    opacity: .36;
+}
+
+
+.dorkari-splash-city span {
+    display: block;
+
+    width: clamp(
+        14px,
+        5vw,
+        24px
+    );
+
+    border-radius:
+        4px
+        4px
+        0
+        0;
+
+    background:
+        linear-gradient(
+            180deg,
+            #b8dce4 0%,
+            #96c5d0 100%
+        );
+}
+
+
+.dorkari-splash-city span:nth-child(1) {
+    height: 45px;
+}
+
+
+.dorkari-splash-city span:nth-child(2) {
+    height: 70px;
+}
+
+
+.dorkari-splash-city span:nth-child(3) {
+    height: 52px;
+}
+
+
+.dorkari-splash-city span:nth-child(4) {
+    height: 92px;
+}
+
+
+.dorkari-splash-city span:nth-child(5) {
+    height: 60px;
+}
+
+
+.dorkari-splash-city span:nth-child(6) {
+    height: 76px;
+}
+
+
+/* =========================================================
+   LANDMARK
+   ========================================================= */
+
+.dorkari-splash-landmark {
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 42px;
+
+    width: 122px;
+    height: 138px;
+
+    transform:
+        translateX(-50%);
+
+    filter:
+        drop-shadow(
+            0
+            7px
+            10px
+            rgba(
+                43,
+                91,
+                103,
+                .10
+            )
+        );
+}
+
+
+.dorkari-splash-landmark::before {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+
+    width: 86px;
+    height: 17px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        rgba(
+            53,
+            108,
+            121,
+            .12
+        );
+
+    filter:
+        blur(2px);
+}
+
+
+.dorkari-splash-landmark i {
+    position: absolute;
+
+    bottom: 7px;
+
+    left: 50%;
+
+    display: block;
+
+    width: 3px;
+
+    height: 123px;
+
+    transform-origin:
+        bottom center;
+
+    border-radius:
+        999px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #8bb6c1 0%,
+            #487d8a 100%
+        );
+}
+
+
+.dorkari-splash-landmark i:nth-child(1) {
+    transform:
+        translateX(-50%)
+        rotate(-18deg);
+}
+
+
+.dorkari-splash-landmark i:nth-child(2) {
+    transform:
+        translateX(-50%)
+        rotate(-7deg);
+}
+
+
+.dorkari-splash-landmark i:nth-child(3) {
+    transform:
+        translateX(-50%)
+        rotate(7deg);
+}
+
+
+.dorkari-splash-landmark i:nth-child(4) {
+    transform:
+        translateX(-50%)
+        rotate(18deg);
+}
+
+
+.dorkari-splash-landmark::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+
+    top: 8px;
+
+    width: 10px;
+    height: 10px;
+
+    transform:
+        translateX(-50%);
+
+    border-radius: 50%;
+
+    background:
+        #8bcfd0;
+
+    box-shadow:
+        0
+        0
+        0
+        5px
+        rgba(
+            139,
+            207,
+            208,
+            .13
+        );
+}
+
+
+/* =========================================================
+   WATER
+   ========================================================= */
+
+.dorkari-splash-water {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 0;
+
+    height: 74px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(
+                208,
+                238,
+                239,
+                .65
+            ) 0%,
+            rgba(
+                174,
+                220,
+                225,
+                .86
+            ) 100%
+        );
+}
+
+
+.dorkari-splash-water::before,
+.dorkari-splash-water::after {
+    content: "";
+
+    position: absolute;
+
+    left: -5%;
+
+    width: 110%;
+
+    height: 24px;
+
+    border-radius: 50%;
+}
+
+
+.dorkari-splash-water::before {
+    top: 8px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            .58
+        );
+}
+
+
+.dorkari-splash-water::after {
+    top: 22px;
+
+    border-top:
+        1px solid
+        rgba(
+            74,
+            142,
+            154,
+            .13
+        );
+}
+
+
+/* =========================================================
+   GREEN WAVE
+   ========================================================= */
+
+.dorkari-splash-wave {
+    position: absolute;
+
+    left: -8%;
+    right: -8%;
+
+    bottom: -18px;
+
+    height: 86px;
+
+    border-radius:
+        50%
+        50%
+        0
+        0;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0b6b4f 0%,
+            #14a79a 46%,
+            #67c93f 100%
+        );
+
+    transform:
+        rotate(
+            -2deg
+        );
+
+    box-shadow:
+        0
+        -5px
+        14px
+        rgba(
+            20,
+            126,
+            104,
+            .10
+        );
+}
+
+
+.dorkari-splash-wave::before {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    top: -7px;
+
+    width: 100%;
+
+    height: 13px;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(
+                255,
+                255,
+                255,
+                .42
+            ),
+            rgba(
+                255,
+                255,
+                255,
+                0
+            )
+        );
+}
+
+
+/* =========================================================
+   FOOTER TEXT
+   ========================================================= */
+
+.dorkari-splash-footer {
+    position: relative;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    margin-top: 4px;
+
+    color:
+        #57727b;
+
+    font-size: 10px;
+
+    line-height: 1;
+
+    font-weight: 750;
+
+    letter-spacing:
+        .03em;
+
+    animation:
+        dorkariSplashFooter
+        700ms
+        ease
+        450ms
+        both;
+}
+
+
+.dorkari-splash-footer b {
+    color:
+        #1ba389;
+
+    font-size: 12px;
+
+    font-weight: 900;
+}
+
+
+/* =========================================================
+   ANIMATIONS
+   ========================================================= */
+
+@keyframes dorkariSplashLogo {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(18px)
+            scale(.96);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+}
+
+
+@keyframes dorkariSplashMessage {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+
+}
+
+
+@keyframes dorkariSplashFooter {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes dorkariSplashExit {
+
+    0% {
+        opacity: 1;
+
+        visibility: visible;
+    }
+
+    80% {
+        opacity: 1;
+
+        visibility: visible;
+    }
+
+    100% {
+        opacity: 0;
+
+        visibility: hidden;
+
+        pointer-events: none;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .dorkari-splash-inner {
+        padding:
+            34px
+            18px
+            calc(
+                24px +
+                env(
+                    safe-area-inset-bottom
+                )
+            );
+    }
+
+
+    .dorkari-splash-logo {
+        width:
+            min(
+                280px,
+                78vw
+            );
+    }
+
+
+    .dorkari-splash-message {
+        margin-top: -2px;
+    }
+
+
+    .dorkari-splash-message span {
+        font-size: 11px;
+    }
+
+
+    .dorkari-splash-message strong {
+        font-size: 17px;
+    }
+
+
+    .dorkari-splash-visual {
+        min-height: 270px;
+
+        margin-top: 3px;
+
+        border-radius:
+            30px
+            30px
+            0
+            0;
+    }
+
+
+    .dorkari-splash-landmark {
+        transform:
+            translateX(-50%)
+            scale(.92);
+
+        transform-origin:
+            bottom center;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .dorkari-splash-inner {
+        padding:
+            28px
+            14px
+            calc(
+                20px +
+                env(
+                    safe-area-inset-bottom
+                )
+            );
+    }
+
+
+    .dorkari-splash-logo {
+        width:
+            min(
+                255px,
+                78vw
+            );
+    }
+
+
+    .dorkari-splash-message strong {
+        font-size: 16px;
+    }
+
+
+    .dorkari-splash-visual {
+        min-height: 245px;
+
+        border-radius:
+            26px
+            26px
+            0
+            0;
+    }
+
+
+    .dorkari-splash-landmark {
+        transform:
+            translateX(-50%)
+            scale(.78);
+    }
+
+
+    .dorkari-splash-footer {
+        font-size: 9px;
+    }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .dorkari-splash,
+    .dorkari-splash-brand,
+    .dorkari-splash-message,
+    .dorkari-splash-footer {
+        animation: none !important;
+    }
+
+
+    .dorkari-splash {
+        opacity: 0;
+
+        visibility: hidden;
+
+        pointer-events: none;
+    }
+
+}
