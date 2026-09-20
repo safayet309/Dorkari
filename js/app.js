@@ -13638,3 +13638,202 @@ function initializeTestFeesInterfaceHashSupport() {
     }
 
 }
+/* =========================================================
+   DORKARI — PWA LAUNCH SPLASH CONTROLLER
+   ========================================================= */
+
+function initializeDorkariSplash() {
+
+    const splash =
+        document.querySelector(
+            "#dorkariSplash"
+        );
+
+
+    if (!splash) {
+        return;
+    }
+
+
+    /*
+     * CSS animation-এর automatic timing
+     * JS দিয়ে control করার জন্য বন্ধ করছি।
+     */
+
+    splash.style.animation =
+        "none";
+
+
+    splash.style.opacity =
+        "1";
+
+
+    splash.style.visibility =
+        "visible";
+
+
+    splash.style.pointerEvents =
+        "auto";
+
+
+    splash.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+
+    /*
+     * Splash কমপক্ষে কিছুক্ষণ visible থাকবে,
+     * যাতে logo/branding চোখে ধরা পড়ে।
+     */
+
+    const splashStartTime =
+        Date.now();
+
+
+    const minimumDisplayTime =
+        1600;
+
+
+    let splashClosed =
+        false;
+
+
+    const hideSplash =
+        () => {
+
+            if (splashClosed) {
+                return;
+            }
+
+
+            splashClosed =
+                true;
+
+
+            const elapsed =
+                Date.now() -
+                splashStartTime;
+
+
+            const remaining =
+                Math.max(
+                    0,
+                    minimumDisplayTime -
+                    elapsed
+                );
+
+
+            window.setTimeout(
+                () => {
+
+                    splash.style.transition =
+                        [
+                            "opacity 550ms ease",
+                            "visibility 550ms ease"
+                        ].join(
+                            ", "
+                        );
+
+
+                    splash.style.opacity =
+                        "0";
+
+
+                    splash.style.visibility =
+                        "hidden";
+
+
+                    splash.style.pointerEvents =
+                        "none";
+
+
+                    splash.setAttribute(
+                        "aria-hidden",
+                        "true"
+                    );
+
+
+                    /*
+                     * Fade শেষ হওয়ার পর
+                     * DOM-এ display:none দিয়ে দিই।
+                     */
+
+                    window.setTimeout(
+                        () => {
+
+                            splash.hidden =
+                                true;
+
+                        },
+                        600
+                    );
+
+                },
+                remaining
+            );
+
+        };
+
+
+    /*
+     * Window সম্পূর্ণ load হলে
+     * Splash বন্ধ করার জন্য প্রস্তুত।
+     */
+
+    if (
+        document.readyState ===
+        "complete"
+    ) {
+
+        hideSplash();
+
+    } else {
+
+        window.addEventListener(
+            "load",
+            hideSplash,
+            {
+                once: true
+            }
+        );
+
+    }
+
+
+    /*
+     * কোনো কারণে load event
+     * অনেক দেরি করলে Splash অনির্দিষ্টকাল
+     * আটকে থাকবে না।
+     */
+
+    window.setTimeout(
+        hideSplash,
+        5000
+    );
+
+}
+
+
+/* =========================================================
+   SPLASH INITIALIZATION
+   ========================================================= */
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeDorkariSplash,
+        {
+            once: true
+        }
+    );
+
+} else {
+
+    initializeDorkariSplash();
+
+}
