@@ -2126,6 +2126,19 @@ select {
         font-size: 9px;
     }
 
+    .footer-contact {
+        justify-content: flex-start;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .footer-contact-link {
+        min-height: 34px;
+        padding: 0 9px;
+        border-radius: 10px;
+        font-size: 9px;
+    }
+
     .copyright {
         font-size: 8px;
     }
@@ -4592,4 +4605,96 @@ body.service-interface-open .service-interface-layer {
 .service-interface h2[tabindex="-1"]:focus {
     outline: none;
     box-shadow: none;
+}
+
+
+/* =========================================================
+   DORKARI PATCH — EMERGENCY ACTIONS / FOOTER CONTACTS
+   ========================================================= */
+
+.emergency-item,
+.emergency-item-content,
+.emergency-actions {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 760px) {
+
+    .emergency-actions {
+        grid-column: 1 / -1;
+        width: auto;
+        margin-left: 54px;
+        min-width: 0;
+    }
+
+    .call-btn,
+    .copy-btn {
+        min-width: 0;
+        flex: 1 1 0;
+        width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.footer-contact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.footer-contact-link {
+    min-height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--text-soft);
+    font-size: 9px;
+    font-weight: 900;
+    transition:
+        background var(--transition),
+        border-color var(--transition),
+        color var(--transition),
+        transform var(--transition);
+}
+
+.footer-contact-link:hover {
+    background: var(--primary-light);
+    border-color: var(--border-strong);
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.footer-contact-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 7px;
+    background: var(--primary-light);
+    color: var(--primary);
+    flex: 0 0 auto;
+}
+
+.footer-contact-icon svg {
+    width: 13px;
+    height: 13px;
+    display: block;
+}
+
+.footer-contact-link.is-facebook:hover .footer-contact-icon,
+.footer-contact-link.is-email:hover .footer-contact-icon,
+.footer-contact-link.is-whatsapp:hover .footer-contact-icon {
+    background: var(--primary);
+    color: #ffffff;
 }
