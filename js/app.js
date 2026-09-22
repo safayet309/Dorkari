@@ -1,4 +1,4 @@
-// =========================================================
+ // =========================================================
 // DORKARI — PUBLIC HOME JAVASCRIPT
 // User-facing interactions, location state and emergency UI
 // =========================================================
@@ -771,8 +771,12 @@ function getServiceInterface(
 
 
 function openServiceInterface(
-    service
+    service,
+    options = {}
 ) {
+
+    const pushHistory =
+        options.pushHistory !== false;
 
     const layer =
         getServiceInterfaceLayer();
@@ -920,23 +924,26 @@ function openServiceInterface(
      * interface বন্ধ করা যাবে।
      */
 
-    try {
+    if (pushHistory) {
 
-        window.history.pushState(
-            {
-                dorkariService:
-                    service
-            },
-            "",
-            `#${service}`
-        );
+        try {
 
-    } catch (error) {
+            window.history.pushState(
+                {
+                    dorkariService:
+                        service
+                },
+                "",
+                `#${service}`
+            );
 
-        console.warn(
-            "History state failed:",
-            error
-        );
+        } catch (error) {
+
+            console.warn(
+                "History state failed:",
+                error
+            );
+        }
     }
 
 
@@ -1001,6 +1008,11 @@ function closeServiceInterface(
 
     activeServiceInterface =
         null;
+
+
+    if (typeof setActiveBottomNav === "function") {
+        setActiveBottomNav("home");
+    }
 
 
     /*
@@ -7720,6 +7732,18 @@ function initializeServiceInterfaces() {
                 "click",
                 () => {
 
+                    const currentState =
+                        window.history.state;
+
+                    if (
+                        activeServiceInterface &&
+                        currentState &&
+                        currentState.dorkariService
+                    ) {
+                        window.history.back();
+                        return;
+                    }
+
                     closeServiceInterface(
                         true
                     );
@@ -7737,6 +7761,43 @@ function initializeServiceInterfaces() {
     window.addEventListener(
         "popstate",
         () => {
+
+            const targetService =
+                cleanText(
+                    window.location.hash.replace(
+                        "#",
+                        ""
+                    )
+                );
+
+            /*
+             * Doctor/Hospital ইত্যাদি থেকে browser বা
+             * interface back করলে #services-এ ফিরে এলে
+             * আগের Services screen-টাই আবার দেখাই।
+             */
+            if (
+                targetService &&
+                getServiceInterface(targetService)
+            ) {
+
+                if (targetService === "services") {
+                    setActiveBottomNav("services");
+                } else if (targetService === "emergency") {
+                    setActiveBottomNav("emergency");
+                } else if (targetService === "location") {
+                    setActiveBottomNav("location");
+                }
+
+                openServiceInterface(
+                    targetService,
+                    {
+                        pushHistory: false
+                    }
+                );
+
+                return;
+            }
+
 
             if (
                 activeServiceInterface
@@ -7795,7 +7856,10 @@ function initializeServiceInterfaces() {
             () => {
 
                 openServiceInterface(
-                    initialHash
+                    initialHash,
+                    {
+                        pushHistory: false
+                    }
                 );
 
 
@@ -7892,60 +7956,6 @@ function initializeServiceCards() {
             );
 
         });
-}
-
-// =========================================================
-// MORE SERVICES TOGGLE
-// প্রথম ৮টি service visible থাকবে,
-// extra service buttonগুলো "আরও দেখুন" এ প্রকাশ হবে.
-// =========================================================
-
-function initializeMoreServicesToggle() {
-
-    const serviceGrid =
-        document.querySelector(".service-grid");
-
-    const moreButton =
-        document.querySelector("#servicesMoreButton");
-
-    const moreLabel =
-        moreButton?.querySelector(
-            ".services-more-label"
-        );
-
-    if (!serviceGrid || !moreButton || !moreLabel) {
-        return;
-    }
-
-
-    moreButton.addEventListener(
-        "click",
-        () => {
-
-            const isExpanded =
-                serviceGrid.classList.toggle(
-                    "is-expanded"
-                );
-
-
-            moreButton.classList.toggle(
-                "is-open",
-                isExpanded
-            );
-
-
-            moreButton.setAttribute(
-                "aria-expanded",
-                String(isExpanded)
-            );
-
-
-            moreLabel.textContent =
-                isExpanded
-                    ? "কম দেখুন"
-                    : "আরও দেখুন";
-        }
-    );
 }
 
 
@@ -9717,7 +9727,7 @@ function initializeServiceWorker() {
         }
     );
 }
-
+ 
 
 // =========================================================
 // INITIALIZATION
@@ -9733,7 +9743,6 @@ document.addEventListener(
 
         initializeBottomSearch();
         initializeServiceCards();
-        initializeMoreServicesToggle();
         initializeServiceInterfaces();
         initializeBloodInterface();
         initializeBloodGuidelinePopup();
@@ -13738,3 +13747,4 @@ function initializeTestFeesInterfaceHashSupport() {
     }
 
 }
+ 
