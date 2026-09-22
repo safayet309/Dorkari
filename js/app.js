@@ -9576,13 +9576,58 @@ function initializeImageFallbacks() {
 // =========================================================
 // PWA SERVICE WORKER
 // =========================================================
-
 function initializeServiceWorker() {
 
     if (
         !("serviceWorker" in navigator)
     ) {
         return;
+    }
+
+
+    // =====================================================
+    // NETWORK STATUS
+    // =====================================================
+
+    function showOfflineNotice() {
+
+        showToast(
+            "⚠ You are offline — live data is unavailable."
+        );
+    }
+
+
+    window.addEventListener(
+        "offline",
+        showOfflineNotice
+    );
+
+
+    window.addEventListener(
+        "online",
+        () => {
+
+            showToast(
+                "✓ You are now connected "
+            );
+        }
+    );
+
+
+    /*
+     * App যদি শুরু হওয়ার সময়ই offline থাকে,
+     * তাহলে offline event নাও fire করতে পারে।
+     * তাই initial state-ও check করি।
+     */
+
+    if (
+        !navigator.onLine
+    ) {
+
+        window.setTimeout(
+            showOfflineNotice,
+            300
+        );
     }
 
 
@@ -9618,7 +9663,7 @@ function initializeServiceWorker() {
         }
     );
 }
-
+ 
 
 // =========================================================
 // INITIALIZATION
