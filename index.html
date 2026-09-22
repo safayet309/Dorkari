@@ -515,19 +515,39 @@
 
                     <button type="button" class="service-card is-emergency" data-service="emergency"
                         data-interface-open="emergency">
-
                         <span class="service-icon" aria-hidden="true">
 
-                            <svg viewBox="0 0 64 64" fill="none">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                                <path d="M32 8 9 50h46L32 8Z" fill="currentColor" opacity=".12" />
+                                <!-- Emergency light rays -->
 
-                                <path d="M32 8 9 50h46L32 8Z" stroke="currentColor" stroke-width="3.5"
-                                    stroke-linejoin="round" />
+                                <path d="M12 17L8 13" stroke="#EF4444" stroke-width="3.8" stroke-linecap="round" />
 
-                                <path d="M32 24v13" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+                                <path d="M20 10L18 5" stroke="#EF4444" stroke-width="3.8" stroke-linecap="round" />
 
-                                <circle cx="32" cy="43" r="2.5" fill="currentColor" />
+                                <path d="M32 8V3" stroke="#EF4444" stroke-width="3.8" stroke-linecap="round" />
+
+                                <path d="M44 10L46 5" stroke="#EF4444" stroke-width="3.8" stroke-linecap="round" />
+
+                                <path d="M52 17L56 13" stroke="#EF4444" stroke-width="3.8" stroke-linecap="round" />
+
+
+                                <!-- Siren body -->
+
+                                <path d="M17 31C17 21.6 23.7 16 32 16C40.3 16 47 21.6 47 31V43H17V31Z" fill="#EF4444" />
+
+
+                                <!-- Siren highlight -->
+
+                                <path d="M24 29C24 24.3 27.1 21 32 20" stroke="#FFFFFF" stroke-width="3"
+                                    stroke-linecap="round" opacity=".95" />
+
+
+                                <!-- Siren base -->
+
+                                <rect x="11" y="42" width="42" height="9" rx="4.5" fill="#064E3B" />
+
+                                <rect x="17" y="49" width="30" height="4" rx="2" fill="#064E3B" />
 
                             </svg>
 
@@ -565,17 +585,39 @@
 
                         <span class="service-icon" aria-hidden="true">
 
-                            <svg viewBox="0 0 64 64" fill="none">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                                <rect x="13" y="18" width="38" height="34" rx="5" fill="currentColor" opacity=".12" />
+                                <!-- Hospital building -->
 
-                                <path d="M21 52V15h22v37" stroke="currentColor" stroke-width="3.4"
-                                    stroke-linejoin="round" />
+                                <path d="M15 51V22C15 20.34 16.34 19 18 19H46C47.66 19 49 20.34 49 22V51"
+                                    fill="#0B6B4F" />
 
-                                <path d="M27 28h10M32 23v10" stroke="currentColor" stroke-width="3.8"
-                                    stroke-linecap="round" />
+                                <!-- Building top -->
 
-                                <path d="M27 40h3M34 40h3M27 47h3M34 47h3" stroke="currentColor" stroke-width="2.6"
+                                <path d="M11 51H53" stroke="#064E3B" stroke-width="4" stroke-linecap="round" />
+
+                                <!-- Windows -->
+
+                                <rect x="20" y="31" width="5" height="5" rx="1.2" fill="#22C55E" />
+                                <rect x="29.5" y="31" width="5" height="5" rx="1.2" fill="#22C55E" />
+                                <rect x="39" y="31" width="5" height="5" rx="1.2" fill="#22C55E" />
+
+                                <rect x="20" y="40" width="5" height="5" rx="1.2" fill="#22C55E" />
+                                <rect x="29.5" y="40" width="5" height="5" rx="1.2" fill="#22C55E" />
+                                <rect x="39" y="40" width="5" height="5" rx="1.2" fill="#22C55E" />
+
+                                <!-- Entrance -->
+
+                                <path d="M28 51V45C28 43.34 29.34 42 31 42H33C34.66 42 36 43.34 36 45V51"
+                                    fill="#064E3B" />
+
+                                <!-- Medical cross badge -->
+
+                                <circle cx="42" cy="17" r="11" fill="#FFFFFF" />
+
+                                <circle cx="42" cy="17" r="9" fill="#0B6B4F" />
+
+                                <path d="M42 11.5V22.5M36.5 17H47.5" stroke="#FFFFFF" stroke-width="3.2"
                                     stroke-linecap="round" />
 
                             </svg>
@@ -614,16 +656,58 @@
 
                         <span class="service-icon" aria-hidden="true">
 
-                            <svg viewBox="0 0 64 64" fill="none">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                                <circle cx="32" cy="21" r="8" fill="currentColor" opacity=".12" />
+                                <!-- Doctor head / hair -->
 
-                                <circle cx="32" cy="21" r="7" stroke="currentColor" stroke-width="3" />
+                                <path
+                                    d="M22 20.5C22 13.9 26.4 9 32 9C37.6 9 42 13.9 42 20.5V24C42 30.1 37.5 34 32 34C26.5 34 22 30.1 22 24V20.5Z"
+                                    fill="#064E3B" />
 
-                                <path d="M18 51c1-11 7-17 14-17s13 6 14 17" stroke="currentColor" stroke-width="3"
+                                <!-- Face -->
+
+                                <path
+                                    d="M25 21.5C25 17.5 28 14 32 14C36 14 39 17.5 39 21.5V24C39 28.2 36 31 32 31C28 31 25 28.2 25 24V21.5Z"
+                                    fill="#FFFFFF" />
+
+                                <!-- Neck -->
+
+                                <path d="M28 30V37H36V30" fill="#FFFFFF" />
+
+                                <!-- Doctor coat -->
+
+                                <path d="M18 53C18.8 43.5 22.8 37.5 28.5 35L32 40L35.5 35C41.2 37.5 45.2 43.5 46 53H18Z"
+                                    fill="#0B6B4F" />
+
+                                <!-- Coat center -->
+
+                                <path d="M28.5 35L32 40L35.5 35" stroke="#E6F7EF" stroke-width="2.4"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+
+                                <!-- Stethoscope tube -->
+
+                                <path d="M23 36V42.5C23 47 26.6 49.5 30 49.5C33.4 49.5 36 47 36 43V41" stroke="#22C55E"
+                                    stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" />
+
+                                <!-- Stethoscope chest piece -->
+
+                                <circle cx="36" cy="41" r="3.2" fill="#22C55E" />
+
+                                <circle cx="36" cy="41" r="1.2" fill="#FFFFFF" />
+
+                                <!-- Coat / shoulder accents -->
+
+                                <path d="M20 44C21.5 41.5 23 39.5 25 38" stroke="#22C55E" stroke-width="2.5"
                                     stroke-linecap="round" />
 
-                                <path d="M42 35v11M36.5 40.5h11" stroke="currentColor" stroke-width="3.2"
+                                <path d="M44 44C42.5 41.5 41 39.5 39 38" stroke="#22C55E" stroke-width="2.5"
+                                    stroke-linecap="round" />
+
+                                <!-- Small medical badge -->
+
+                                <circle cx="40.5" cy="36.5" r="4" fill="#FFFFFF" />
+
+                                <path d="M40.5 34.7V38.3M38.7 36.5H42.3" stroke="#22C55E" stroke-width="1.8"
                                     stroke-linecap="round" />
 
                             </svg>
@@ -662,22 +746,54 @@
 
                         <span class="service-icon" aria-hidden="true">
 
-                            <svg viewBox="0 0 64 64" fill="none">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                                <path d="M8 28h48v18H8V28Z" fill="currentColor" opacity=".12" />
+                                <!-- Ambulance body -->
 
-                                <path d="M8 29V23a5 5 0 0 1 5-5h24v11" stroke="currentColor" stroke-width="3"
-                                    stroke-linejoin="round" />
+                                <path d="M8 25C8 22.24 10.24 20 13 20H38V46H8V25Z" fill="#0B6B4F" />
 
-                                <path d="M37 18h5l10 11H37V18Z" stroke="currentColor" stroke-width="3"
-                                    stroke-linejoin="round" />
+                                <!-- Ambulance cabin -->
 
-                                <path d="M32 34v12M26 40h12" stroke="currentColor" stroke-width="3.2"
+                                <path d="M38 25H44L54 35V46H38V25Z" fill="#064E3B" />
+
+                                <!-- Windows -->
+
+                                <path d="M41 25H44L50 32H41V25Z" fill="#E6F7EF" />
+
+                                <!-- Windshield divider -->
+
+                                <path d="M48 33H41" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" />
+
+                                <!-- Emergency cross -->
+
+                                <rect x="18" y="27" width="16" height="13" rx="3" fill="#FFFFFF" />
+
+                                <path d="M26 29.5V37.5M22 33.5H30" stroke="#EF4444" stroke-width="3"
                                     stroke-linecap="round" />
 
-                                <circle cx="18" cy="48" r="5" fill="currentColor" />
+                                <!-- Ambulance lower body -->
 
-                                <circle cx="47" cy="48" r="5" fill="currentColor" />
+                                <path d="M8 42H54V48C54 49.1 53.1 50 52 50H10C8.9 50 8 49.1 8 48V42Z" fill="#0B6B4F" />
+
+                                <!-- Wheels -->
+
+                                <circle cx="18" cy="49" r="7" fill="#064E3B" />
+
+                                <circle cx="18" cy="49" r="3" fill="#E6F7EF" />
+
+                                <circle cx="46" cy="49" r="7" fill="#064E3B" />
+
+                                <circle cx="46" cy="49" r="3" fill="#E6F7EF" />
+
+                                <!-- Emergency light -->
+
+                                <rect x="25" y="14" width="14" height="6" rx="3" fill="#EF4444" />
+
+                                <rect x="28" y="11" width="8" height="4" rx="2" fill="#EF4444" />
+
+                                <!-- Small green detail -->
+
+                                <path d="M42 39H48" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" />
 
                             </svg>
 
@@ -715,15 +831,46 @@
 
                         <span class="service-icon" aria-hidden="true">
 
-                            <svg viewBox="0 0 64 64" fill="none">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                                <path d="m10 27 22-13 22 13" stroke="currentColor" stroke-width="3.4"
+                                <!-- Government building roof -->
+
+                                <path d="M10 25L32 11L54 25" stroke="#064E3B" stroke-width="4" stroke-linecap="round"
                                     stroke-linejoin="round" />
 
-                                <path d="M15 29h34M18 29v21M28 29v21M36 29v21M46 29v21M12 51h40" stroke="currentColor"
-                                    stroke-width="3" stroke-linecap="round" />
+                                <path d="M15 25H49" stroke="#0B6B4F" stroke-width="4" stroke-linecap="round" />
 
-                                <path d="M25 14h14" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                                <!-- Main building -->
+
+                                <path d="M17 28H47V49H17V28Z" fill="#0B6B4F" />
+
+                                <!-- Pillars -->
+
+                                <rect x="21" y="30" width="5" height="17" rx="2.2" fill="#E6F7EF" />
+
+                                <rect x="29.5" y="30" width="5" height="17" rx="2.2" fill="#E6F7EF" />
+
+                                <rect x="38" y="30" width="5" height="17" rx="2.2" fill="#E6F7EF" />
+
+                                <!-- Government entrance -->
+
+                                <path d="M27 49V43C27 41.34 28.34 40 30 40H34C35.66 40 37 41.34 37 43V49"
+                                    fill="#064E3B" />
+
+                                <!-- Front base -->
+
+                                <path d="M12 49H52" stroke="#064E3B" stroke-width="4" stroke-linecap="round" />
+
+                                <!-- Small official accent -->
+
+                                <circle cx="32" cy="19" r="4" fill="#22C55E" />
+
+                                <path d="M30.3 19H33.7M32 17.3V20.7" stroke="#FFFFFF" stroke-width="1.6"
+                                    stroke-linecap="round" />
+
+                                <!-- Small green roof accent -->
+
+                                <path d="M25 15.5H39" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" />
 
                             </svg>
 
@@ -761,16 +908,45 @@
 
                         <span class="service-icon" aria-hidden="true">
 
-                            <svg viewBox="0 0 64 64" fill="none">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                                <path d="M25 11h14M29 11v16L15 51a5 5 0 0 0 4 7h26a5 5 0 0 0 4-7L35 27V11"
-                                    stroke="currentColor" stroke-width="3" stroke-linejoin="round" />
+                                <!-- Microscope body -->
 
-                                <path d="M21 46h22" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+                                <path d="M28 12H38L34 25H27L28 12Z" fill="#064E3B" />
 
-                                <circle cx="29" cy="40" r="2.4" fill="currentColor" />
+                                <!-- Eyepiece -->
 
-                                <circle cx="36" cy="35" r="2" fill="currentColor" />
+                                <path d="M30 8H39" stroke="#064E3B" stroke-width="4" stroke-linecap="round" />
+
+                                <!-- Objective / lower tube -->
+
+                                <path d="M28 24L20 35" stroke="#0B6B4F" stroke-width="5" stroke-linecap="round" />
+
+                                <!-- Microscope stage -->
+
+                                <path d="M18 36H39" stroke="#0B6B4F" stroke-width="4" stroke-linecap="round" />
+
+                                <rect x="28" y="34" width="12" height="5" rx="2.5" fill="#22C55E" />
+
+                                <!-- Stand -->
+
+                                <path d="M35 27C41 29 45 34 45 41C45 46 42 50 38 52" stroke="#064E3B" stroke-width="5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+
+                                <!-- Base -->
+
+                                <path d="M20 52H48" stroke="#064E3B" stroke-width="5" stroke-linecap="round" />
+
+                                <!-- Focus knob -->
+
+                                <circle cx="36" cy="25" r="4" fill="#22C55E" />
+
+                                <circle cx="36" cy="25" r="1.5" fill="#E6F7EF" />
+
+                                <!-- Small laboratory accent -->
+
+                                <path d="M20 35C22 30 26 28 30 28" stroke="#22C55E" stroke-width="2.5"
+                                    stroke-linecap="round" />
 
                             </svg>
 
@@ -808,16 +984,29 @@
 
                         <span class="service-icon" aria-hidden="true">
 
-                            <svg viewBox="0 0 64 64" fill="none">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                                <path d="M32 10c-8 12-16 19-16 29a16 16 0 0 0 32 0c0-10-8-17-16-29Z" fill="currentColor"
-                                    opacity=".12" />
+                                <!-- Blood drop -->
 
-                                <path d="M32 10c-8 12-16 19-16 29a16 16 0 0 0 32 0c0-10-8-17-16-29Z"
-                                    stroke="currentColor" stroke-width="3.2" />
+                                <path
+                                    d="M32 8C24 20 16 27 16 38C16 47.94 23.16 56 32 56C40.84 56 48 47.94 48 38C48 27 40 20 32 8Z"
+                                    fill="#EF4444" />
 
-                                <path d="M32 30v16M24 38h16" stroke="currentColor" stroke-width="3.4"
-                                    stroke-linecap="round" />
+                                <!-- Soft highlight -->
+
+                                <path d="M25 27C22.7 30.8 21 34.4 21 38.5C21 43.9 24.5 48.3 29 49.7" stroke="#FFFFFF"
+                                    stroke-width="3" stroke-linecap="round" opacity=".9" />
+
+                                <!-- Medical cross -->
+
+                                <path d="M32 29V45" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+
+                                <path d="M24 37H40" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" />
+
+                                <!-- Small green base accent -->
+
+                                <path d="M22 53C25 55 28.5 56 32 56C35.5 56 39 55 42 53" stroke="#0B6B4F"
+                                    stroke-width="3" stroke-linecap="round" />
 
                             </svg>
 
@@ -855,18 +1044,42 @@
 
                         <span class="service-icon" aria-hidden="true">
 
-                            <svg viewBox="0 0 64 64" fill="none">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-                                <rect x="11" y="20" width="42" height="24" rx="12" transform="rotate(-45 11 20)"
-                                    fill="currentColor" opacity=".12" />
+                                <!-- Pharmacy storefront -->
 
-                                <rect x="11" y="20" width="42" height="24" rx="12" transform="rotate(-45 11 20)"
-                                    stroke="currentColor" stroke-width="3" />
+                                <path d="M13 24H51V51C51 52.1 50.1 53 49 53H15C13.9 53 13 52.1 13 51V24Z"
+                                    fill="#0B6B4F" />
 
-                                <path d="m23 23 18 18" stroke="currentColor" stroke-width="3" />
+                                <!-- Awning -->
 
-                                <path d="M29 25h12M35 19v12" stroke="currentColor" stroke-width="3"
-                                    stroke-linecap="round" />
+                                <path d="M10 20H54L50 29H14L10 20Z" fill="#064E3B" />
+
+                                <!-- Awning highlights -->
+
+                                <path d="M17 21L19 28" stroke="#22C55E" stroke-width="3" stroke-linecap="round" />
+
+                                <path d="M27 21L28 28" stroke="#22C55E" stroke-width="3" stroke-linecap="round" />
+
+                                <path d="M37 21L36 28" stroke="#22C55E" stroke-width="3" stroke-linecap="round" />
+
+                                <path d="M47 21L45 28" stroke="#22C55E" stroke-width="3" stroke-linecap="round" />
+
+                                <!-- Pharmacy symbol -->
+
+                                <circle cx="32" cy="38" r="10" fill="#FFFFFF" />
+
+                                <path d="M32 32V44" stroke="#22C55E" stroke-width="3.5" stroke-linecap="round" />
+
+                                <path d="M26 38H38" stroke="#22C55E" stroke-width="3.5" stroke-linecap="round" />
+
+                                <!-- Door -->
+
+                                <rect x="27" y="44" width="10" height="9" rx="2.5" fill="#064E3B" />
+
+                                <!-- Small glass detail -->
+
+                                <path d="M41 33V42" stroke="#E6F7EF" stroke-width="2.5" stroke-linecap="round" />
 
                             </svg>
 
