@@ -1,4 +1,4 @@
- // =========================================================
+// =========================================================
 // DORKARI — PUBLIC HOME JAVASCRIPT
 // User-facing interactions, location state and emergency UI
 // =========================================================
@@ -7894,6 +7894,60 @@ function initializeServiceCards() {
         });
 }
 
+// =========================================================
+// MORE SERVICES TOGGLE
+// প্রথম ৮টি service visible থাকবে,
+// extra service buttonগুলো "আরও দেখুন" এ প্রকাশ হবে.
+// =========================================================
+
+function initializeMoreServicesToggle() {
+
+    const serviceGrid =
+        document.querySelector(".service-grid");
+
+    const moreButton =
+        document.querySelector("#servicesMoreButton");
+
+    const moreLabel =
+        moreButton?.querySelector(
+            ".services-more-label"
+        );
+
+    if (!serviceGrid || !moreButton || !moreLabel) {
+        return;
+    }
+
+
+    moreButton.addEventListener(
+        "click",
+        () => {
+
+            const isExpanded =
+                serviceGrid.classList.toggle(
+                    "is-expanded"
+                );
+
+
+            moreButton.classList.toggle(
+                "is-open",
+                isExpanded
+            );
+
+
+            moreButton.setAttribute(
+                "aria-expanded",
+                String(isExpanded)
+            );
+
+
+            moreLabel.textContent =
+                isExpanded
+                    ? "কম দেখুন"
+                    : "আরও দেখুন";
+        }
+    );
+}
+
 
 
 
@@ -9663,7 +9717,7 @@ function initializeServiceWorker() {
         }
     );
 }
- 
+
 
 // =========================================================
 // INITIALIZATION
@@ -9679,6 +9733,7 @@ document.addEventListener(
 
         initializeBottomSearch();
         initializeServiceCards();
+        initializeMoreServicesToggle();
         initializeServiceInterfaces();
         initializeBloodInterface();
         initializeBloodGuidelinePopup();
@@ -13683,4 +13738,3 @@ function initializeTestFeesInterfaceHashSupport() {
     }
 
 }
- 
