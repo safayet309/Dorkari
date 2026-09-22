@@ -338,13 +338,37 @@ select {
 /* =========================================================
    MOBILE MENU
    ========================================================= */
-
 .mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
     overflow: hidden;
     border-top: 1px solid var(--border);
-    background: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 16px 30px rgba(6, 58, 44, 0.06);
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.98
+        );
+
+    box-shadow:
+        0
+        16px
+        30px
+        rgba(
+            6,
+            58,
+            44,
+            0.06
+        );
+
+    z-index: 1100;
 }
+ 
 
 .mobile-menu-inner {
     display: grid;
