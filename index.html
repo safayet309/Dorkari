@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="bn-BD">
 
 <head>
@@ -28,6 +27,7 @@
     <link href="css/variables.css" rel="stylesheet" />
     <link href="css/global.css" rel="stylesheet" />
     <link href="css/components.css" rel="stylesheet" />
+    <link href="css/dorkari-redesign.css" rel="stylesheet" />
     <style>
         html,
         body {
@@ -556,81 +556,287 @@
              HOME
              ================================================= -->
         <section class="hero-section" id="home">
-            <div class="container hero-grid">
-                <div class="hero-content">
-                    <div class="eyebrow">
-                        <span aria-hidden="true" class="eyebrow-dot">
-                        </span>
-                        বাংলাদেশের প্রয়োজনীয় তথ্য
+            <div class="container">
+                <div class="hero-grid">
+
+                    <!-- ==============================
+                 HERO CONTENT
+                 ============================== -->
+                    <div class="hero-content">
+
+                        <div class="eyebrow">
+                            <span aria-hidden="true" class="eyebrow-dot"></span>
+                            আপনার দৈনন্দিন জীবনের সব দরকারি সেবা
+                        </div>
+
+                        <h1>
+                            দরকারি সেবা এখন
+                            <br />
+                            <span>
+                                আপনার হাতের মুঠোয়।
+                            </span>
+                        </h1>
+
+                        <p class="hero-description">
+                            হাসপাতাল, ডাক্তার, অ্যাম্বুলেন্স, জরুরি নম্বর, সরকারি সেবা—
+                            আপনার প্রয়োজনের তথ্য এক জায়গা থেকেই সহজে খুঁজে নিন।
+                        </p>
+
+                        <!-- ==============================
+                     EXISTING SEARCH
+                     IMPORTANT:
+                     IDs MUST NOT CHANGE
+                     ============================== -->
+                        <form class="search-box" id="globalSearchForm" role="search">
+                            <span aria-hidden="true" class="search-icon">
+                                <svg fill="none" viewBox="0 0 24 24">
+                                    <circle cx="11" cy="11" r="6.8"></circle>
+
+                                    <path d="M16.2 16.2L21 21"></path>
+                                </svg>
+                            </span>
+
+                            <input aria-label="আপনার প্রয়োজনীয় তথ্য খুঁজুন" autocomplete="off" enterkeyhint="search"
+                                id="globalSearch" name="q" placeholder="কী খুঁজছেন? যেমন: হাসপাতাল, ডাক্তার..."
+                                type="search" />
+
+                            <button class="search-button" id="searchButton" type="submit">
+                                খুঁজুন
+                            </button>
+                        </form>
+
+
+                        <!-- ==============================
+                     POPULAR SEARCH
+                     EXISTING BUTTONS PRESERVED
+                     ============================== -->
+                        <div aria-label="জনপ্রিয় অনুসন্ধান" class="search-suggestions">
+                            <span class="suggestion-label">
+                                জনপ্রিয়:
+                            </span>
+
+                            <button data-search="Hospital" type="button">
+                                হাসপাতাল
+                            </button>
+
+                            <button data-search="Doctor" type="button">
+                                ডাক্তার
+                            </button>
+
+                            <button data-search="Ambulance" type="button">
+                                অ্যাম্বুলেন্স
+                            </button>
+
+                            <button data-search="Blood Bank" type="button">
+                                ব্লাড ব্যাংক
+                            </button>
+                        </div>
+
+
+                        <!-- ==============================
+                     HERO TRUST ITEMS
+                     ============================== -->
+                        <div class="hero-meta-row">
+
+                            <span>
+                                <i class="meta-check">
+                                    &checkmark;
+                                </i>
+
+                                দ্রুত খুঁজে নিন
+                            </span>
+
+                            <span>
+                                <i class="meta-check">
+                                    &checkmark;
+                                </i>
+
+                                মোবাইলে সহজ
+                            </span>
+
+                            <span>
+                                <i class="meta-check">
+                                    &checkmark;
+                                </i>
+
+                                তথ্যভিত্তিক
+                            </span>
+
+                        </div>
+
                     </div>
-                    <h1>
-                        আপনার প্রয়োজনীয় তথ্য
-                        <br />
-                        <span>
-                            এক জায়গায়।
-                        </span>
-                    </h1>
-                    <p class="hero-description">
-                        হাসপাতাল, ডাক্তার, অ্যাম্বুলেন্স,
-                        জরুরি নম্বর, সরকারি সেবা&mdash;
-                        যা দরকার, সহজে খুঁজে নিন।
-                    </p>
-                    <!-- SEARCH -->
-                    <form class="search-box" id="globalSearchForm" role="search">
-                        <span aria-hidden="true" class="search-icon">
-                            <svg fill="none" viewbox="0 0 24 24">
-                                <circle cx="11" cy="11" r="6.8">
-                                </circle>
-                                <path d="M16.2 16.2L21 21">
-                                </path>
-                            </svg>
-                        </span>
-                        <input aria-label="আপনার প্রয়োজনীয় তথ্য খুঁজুন" autocomplete="off" enterkeyhint="search"
-                            id="globalSearch" name="q" placeholder="কী খুঁজছেন? যেমন: হাসপাতাল, ডাক্তার..."
-                            type="search" />
-                        <button class="search-button" id="searchButton" type="submit">
-                            খুঁজুন
-                        </button>
-                    </form>
-                    <!-- POPULAR SEARCH -->
-                    <div aria-label="জনপ্রিয় অনুসন্ধান" class="search-suggestions">
-                        <span class="suggestion-label">
-                            জনপ্রিয়:
-                        </span>
-                        <button data-search="Hospital" type="button">
-                            হাসপাতাল
-                        </button>
-                        <button data-search="Doctor" type="button">
-                            ডাক্তার
-                        </button>
-                        <button data-search="Ambulance" type="button">
-                            অ্যাম্বুলেন্স
-                        </button>
-                        <button data-search="Blood Bank" type="button">
-                            ব্লাড ব্যাংক
-                        </button>
+
+
+                    <!-- ==============================
+                 HERO VISUAL
+                 PURELY PRESENTATIONAL
+                 NO JS HOOK
+                 ============================== -->
+                    <div class="hero-visual" aria-hidden="true">
+
+                        <div class="hero-glow hero-glow-a"></div>
+                        <div class="hero-glow hero-glow-b"></div>
+
+                        <div class="hero-illustration">
+
+                            <!-- Floating Location Pin -->
+                            <div class="hero-map-pin hero-map-pin-a">
+                                ⌖
+                            </div>
+
+                            <div class="hero-map-pin hero-map-pin-b">
+                                ⌖
+                            </div>
+
+
+                            <!-- Phone Shadow -->
+                            <div class="hero-phone-shadow"></div>
+
+
+                            <!-- Phone -->
+                            <div class="hero-phone">
+
+                                <div class="hero-phone-speaker"></div>
+
+                                <div class="hero-phone-screen">
+
+                                    <!-- Phone top -->
+                                    <div class="hero-phone-topbar">
+
+                                        <span class="hero-phone-brand-dot">
+                                            D
+                                        </span>
+
+                                        <span class="hero-phone-status">
+                                            •••
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- Phone search -->
+                                    <div class="hero-phone-search">
+
+                                        <span>
+                                            ⌕
+                                        </span>
+
+                                        <small>
+                                            সেবা খুঁজুন...
+                                        </small>
+
+                                    </div>
+
+
+                                    <!-- Mini service grid -->
+                                    <div class="hero-phone-grid">
+
+                                        <span>
+                                            <b>✦</b>
+                                            <small>
+                                                প্রয়োজন
+                                            </small>
+                                        </span>
+
+                                        <span>
+                                            <b>ϟ</b>
+                                            <small>
+                                                জরুরি
+                                            </small>
+                                        </span>
+
+                                        <span>
+                                            <b>＋</b>
+                                            <small>
+                                                ডাক্তার
+                                            </small>
+                                        </span>
+
+                                        <span>
+                                            <b>⌂</b>
+                                            <small>
+                                                হোম সেবা
+                                            </small>
+                                        </span>
+
+                                        <span>
+                                            <b>▣</b>
+                                            <small>
+                                                হাসপাতাল
+                                            </small>
+                                        </span>
+
+                                        <span>
+                                            <b>•••</b>
+                                            <small>
+                                                আরও
+                                            </small>
+                                        </span>
+
+                                    </div>
+
+
+                                    <!-- Phone bottom card -->
+                                    <div class="hero-phone-footer-card">
+
+                                        <span>
+                                            নিকটস্থ সেবা
+                                        </span>
+
+                                        <strong>
+                                            আপনার এলাকার তথ্য
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Floating location card -->
+                            <div class="hero-float-card hero-float-card-one">
+
+                                <span class="hero-float-icon">
+                                    ⌖
+                                </span>
+
+                                <span>
+                                    <small>
+                                        লোকেশন
+                                    </small>
+
+                                    <strong>
+                                        আপনার এলাকায়
+                                    </strong>
+                                </span>
+
+                            </div>
+
+
+                            <!-- Floating emergency card -->
+                            <div class="hero-float-card hero-float-card-two">
+
+                                <span class="hero-float-icon is-red">
+                                    ⚡
+                                </span>
+
+                                <span>
+                                    <small>
+                                        জরুরি
+                                    </small>
+
+                                    <strong>
+                                        ৯৯৯
+                                    </strong>
+                                </span>
+
+                            </div>
+
+                        </div>
+
                     </div>
-                    <!-- TRUST -->
-                    <div class="hero-meta-row">
-                        <span>
-                            <i class="meta-check">
-                                &checkmark;
-                            </i>
-                            দ্রুত খুঁজে নিন
-                        </span>
-                        <span>
-                            <i class="meta-check">
-                                &checkmark;
-                            </i>
-                            মোবাইলে সহজ
-                        </span>
-                        <span>
-                            <i class="meta-check">
-                                &checkmark;
-                            </i>
-                            তথ্যভিত্তিক
-                        </span>
-                    </div>
+
                 </div>
             </div>
         </section>
@@ -694,8 +900,9 @@
                             সেখান থেকেই শুরু করুন।
                         </p>
                     </div>
-                    <span class="section-count">
+                    <span class="section-count services-heading-badge">
                         ০৮টি সেবা
+                        <span aria-hidden="true">→</span>
                     </span>
                 </div>
                 <div class="service-grid">
@@ -1146,113 +1353,117 @@
         <!-- =================================================
              LOCATION
              ================================================= -->
-        <section aria-labelledby="locationTitle" class="location-section" id="location">
-            <div class="container">
-                <article class="location-card">
-                    <div class="location-card-copy">
-                        <span class="section-label">
-                            ব্যক্তিগত করুন
-                        </span>
-                        <h2 id="locationTitle">
-                            আপনার এলাকার তথ্য দেখুন
-                        </h2>
-                        <p>
-                            আপনার এলাকা বেছে নিলে
-                            সেই এলাকার প্রয়োজনীয় সেবা
-                            আরও দ্রুত খুঁজে পাওয়া যাবে।
-                        </p>
+        <section aria-label="লোকেশন ও জরুরি তথ্য" class="discovery-section">
+            <div class="container discovery-grid">
+                <section aria-labelledby="locationTitle" class="location-section" id="location">
+                    <div class="container">
+                        <article class="location-card">
+                            <div class="location-card-copy">
+                                <span class="section-label">
+                                    ব্যক্তিগত করুন
+                                </span>
+                                <h2 id="locationTitle">
+                                    আপনার এলাকার তথ্য দেখুন
+                                </h2>
+                                <p>
+                                    আপনার এলাকা বেছে নিলে
+                                    সেই এলাকার প্রয়োজনীয় সেবা
+                                    আরও দ্রুত খুঁজে পাওয়া যাবে।
+                                </p>
+                            </div>
+                            <div aria-hidden="true" class="location-badge">
+                                <span>
+                                    &target;
+                                </span>
+                                <small>
+                                    লোকেশন
+                                </small>
+                            </div>
+                            <div class="location-form">
+                                <label>
+                                    <span>
+                                        বিভাগ
+                                    </span>
+                                    <select aria-label="বিভাগ নির্বাচন করুন" id="homeDivision">
+                                        <option value="">
+                                            বিভাগ নির্বাচন করুন
+                                        </option>
+                                    </select>
+                                </label>
+                                <label>
+                                    <span>
+                                        জেলা
+                                    </span>
+                                    <select aria-label="জেলা নির্বাচন করুন" disabled="" id="homeDistrict">
+                                        <option value="">
+                                            জেলা নির্বাচন করুন
+                                        </option>
+                                    </select>
+                                </label>
+                                <label>
+                                    <span>
+                                        উপজেলা
+                                    </span>
+                                    <select aria-label="উপজেলা নির্বাচন করুন" disabled="" id="homeUpazila">
+                                        <option value="">
+                                            উপজেলা নির্বাচন করুন
+                                        </option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="location-card-footer">
+                                <span aria-live="polite" class="location-saved" id="locationSavedState">
+                                    আপনার নির্বাচন এই ডিভাইসে মনে রাখা হবে।
+                                </span>
+                                <button class="location-action" id="locationSearchButton" type="button">
+                                    এলাকার তথ্য দেখুন
+                                    <span aria-hidden="true">
+                                        &rarr;
+                                    </span>
+                                </button>
+                            </div>
+                        </article>
                     </div>
-                    <div aria-hidden="true" class="location-badge">
-                        <span>
-                            &target;
-                        </span>
-                        <small>
-                            লোকেশন
-                        </small>
-                    </div>
-                    <div class="location-form">
-                        <label>
-                            <span>
-                                বিভাগ
-                            </span>
-                            <select aria-label="বিভাগ নির্বাচন করুন" id="homeDivision">
-                                <option value="">
-                                    বিভাগ নির্বাচন করুন
-                                </option>
-                            </select>
-                        </label>
-                        <label>
-                            <span>
-                                জেলা
-                            </span>
-                            <select aria-label="জেলা নির্বাচন করুন" disabled="" id="homeDistrict">
-                                <option value="">
-                                    জেলা নির্বাচন করুন
-                                </option>
-                            </select>
-                        </label>
-                        <label>
-                            <span>
-                                উপজেলা
-                            </span>
-                            <select aria-label="উপজেলা নির্বাচন করুন" disabled="" id="homeUpazila">
-                                <option value="">
-                                    উপজেলা নির্বাচন করুন
-                                </option>
-                            </select>
-                        </label>
-                    </div>
-                    <div class="location-card-footer">
-                        <span aria-live="polite" class="location-saved" id="locationSavedState">
-                            আপনার নির্বাচন এই ডিভাইসে মনে রাখা হবে।
-                        </span>
-                        <button class="location-action" id="locationSearchButton" type="button">
-                            এলাকার তথ্য দেখুন
-                            <span aria-hidden="true">
-                                &rarr;
-                            </span>
-                        </button>
-                    </div>
-                </article>
-            </div>
-        </section>
-        <!-- =================================================
+                </section>
+                <!-- =================================================
              EMERGENCY PREVIEW
              ================================================= -->
-        <section aria-labelledby="emergencyTitle" class="emergency-preview" id="emergency">
-            <div class="container">
-                <div class="section-heading">
-                    <div>
-                        <span class="section-label emergency-label">
-                            জরুরি প্রয়োজনে
-                        </span>
-                        <h2 id="emergencyTitle">
-                            গুরুত্বপূর্ণ নম্বর
-                        </h2>
-                        <p>
-                            প্রয়োজনীয় জরুরি যোগাযোগ
-                            দ্রুত কল বা কপি করুন।
-                        </p>
+                <section aria-labelledby="emergencyTitle" class="emergency-preview" id="emergency">
+                    <div class="container">
+                        <div class="section-heading">
+                            <div>
+                                <span class="section-label emergency-label">
+                                    জরুরি প্রয়োজনে
+                                </span>
+                                <h2 id="emergencyTitle">
+                                    গুরুত্বপূর্ণ নম্বর
+                                </h2>
+                                <p>
+                                    প্রয়োজনীয় জরুরি যোগাযোগ
+                                    দ্রুত কল বা কপি করুন।
+                                </p>
+                            </div>
+                            <button class="view-all interface-shortcut" data-interface-open="emergency" type="button">
+                                সব দেখুন &rarr;
+                            </button>
+                        </div>
+                        <div aria-live="polite" class="emergency-list" id="emergencyPreviewList">
+                            <article class="emergency-item emergency-item-loading">
+                                <div aria-hidden="true" class="emergency-item-icon">
+                                    !
+                                </div>
+                                <div class="emergency-item-content">
+                                    <h3>
+                                        জরুরি তথ্য লোড হচ্ছে...
+                                    </h3>
+                                    <p>
+                                        একটু অপেক্ষা করুন।
+                                    </p>
+                                </div>
+                            </article>
+                        </div>
                     </div>
-                    <button class="view-all interface-shortcut" data-interface-open="emergency" type="button">
-                        সব দেখুন &rarr;
-                    </button>
-                </div>
-                <div aria-live="polite" class="emergency-list" id="emergencyPreviewList">
-                    <article class="emergency-item emergency-item-loading">
-                        <div aria-hidden="true" class="emergency-item-icon">
-                            !
-                        </div>
-                        <div class="emergency-item-content">
-                            <h3>
-                                জরুরি তথ্য লোড হচ্ছে...
-                            </h3>
-                            <p>
-                                একটু অপেক্ষা করুন।
-                            </p>
-                        </div>
-                    </article>
-                </div>
+                </section>
             </div>
         </section>
         <!-- =================================================
@@ -3069,20 +3280,13 @@
 
                     <!-- FACEBOOK
                          YOUR_FACEBOOK_PAGE-এর জায়গায় নিজের Facebook Page/Profile link দিন -->
-                    <a
-                        class="footer-contact-link"
-                        href="https://www.facebook.com/mdsafayethossann"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Facebook"
-                        title="Facebook"
-                    >
+                    <a class="footer-contact-link" href="https://www.facebook.com/mdsafayethossann" target="_blank"
+                        rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
                         <span class="footer-contact-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M14 8H16.5V4.3C16.07 4.24 15.18 4.18 14.15 4.18C12.03 4.18 10.58 5.47 10.58 7.86V10H8V14H10.58V20H14V14H16.77L17.13 10H14V8Z"
-                                    fill="currentColor"
-                                />
+                                    fill="currentColor" />
                             </svg>
                         </span>
                         <span>Facebook</span>
@@ -3090,30 +3294,13 @@
 
                     <!-- GMAIL
                          YOUR_GMAIL@gmail.com-এর জায়গায় নিজের Gmail address দিন -->
-                    <a
-                        class="footer-contact-link"
-                        href="safayethossain309@gmail.com"
-                        aria-label="Gmail"
-                        title="Gmail"
-                    >
+                    <a class="footer-contact-link" href="safayethossain309@gmail.com" aria-label="Gmail" title="Gmail">
                         <span class="footer-contact-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect
-                                    x="3.5"
-                                    y="5"
-                                    width="17"
-                                    height="14"
-                                    rx="2.5"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                />
-                                <path
-                                    d="M5 7L12 13L19 7"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                />
+                                <rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor"
+                                    stroke-width="1.8" />
+                                <path d="M5 7L12 13L19 7" stroke="currentColor" stroke-width="1.8"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </span>
                         <span>Gmail</span>
@@ -3122,28 +3309,16 @@
                     <!-- WHATSAPP
                          YOUR_WHATSAPP_NUMBER-এর জায়গায় country code-সহ number দিন।
                          উদাহরণ: 8801XXXXXXXXX -->
-                    <a
-                        class="footer-contact-link"
-                        href="https://wa.me/+8801571527789"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="WhatsApp"
-                        title="WhatsApp"
-                    >
+                    <a class="footer-contact-link" href="https://wa.me/+8801571527789" target="_blank"
+                        rel="noopener noreferrer" aria-label="WhatsApp" title="WhatsApp">
                         <span class="footer-contact-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
                                     d="M12 3.5C7.31 3.5 3.5 7.13 3.5 11.6C3.5 13.18 4.03 14.7 5.04 15.99L4.15 19.5L7.78 18.55C9 19.27 10.46 19.65 12 19.65C16.69 19.65 20.5 16.02 20.5 11.6C20.5 7.13 16.69 3.5 12 3.5Z"
-                                    stroke="currentColor"
-                                    stroke-width="1.8"
-                                    stroke-linejoin="round"
-                                />
+                                    stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
                                 <path
                                     d="M9.1 8.8C9.32 8.39 9.5 8.36 9.82 8.36C9.96 8.36 10.1 8.37 10.23 8.65L10.86 10.06C10.95 10.26 10.9 10.43 10.78 10.59L10.34 11.1C10.22 11.25 10.2 11.4 10.31 11.58C10.61 12.09 11.19 12.65 11.7 12.95C11.88 13.06 12.03 13.04 12.18 12.92L12.69 12.48C12.85 12.36 13.02 12.31 13.22 12.4L14.63 13.03C14.91 13.16 14.92 13.3 14.92 13.44C14.92 13.76 14.89 13.94 14.48 14.16C14.1 14.37 13.55 14.49 13.22 14.4C11.84 14.01 10.66 13.35 9.75 12.44C8.84 11.53 8.18 10.35 7.79 8.97C7.7 8.64 7.82 8.1 8.03 7.72"
-                                    stroke="currentColor"
-                                    stroke-width="1.2"
-                                    stroke-linecap="round"
-                                />
+                                    stroke="currentColor" stroke-width="1.2" stroke-linecap="round" />
                             </svg>
                         </span>
                         <span>WhatsApp</span>
