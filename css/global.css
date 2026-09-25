@@ -4698,3 +4698,404 @@ body.service-interface-open .service-interface-layer {
     background: var(--primary);
     color: #ffffff;
 }
+/* =========================================================
+   DORKARI — GLOBAL UX POLISH
+   Header / Mobile navigation / Accessibility
+   Existing functionality preserved.
+   ========================================================= */
+
+
+/* =========================================================
+   GLOBAL FOCUS STATE
+   ========================================================= */
+
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible {
+    outline: 3px solid rgba(11, 122, 85, 0.18);
+    outline-offset: 3px;
+}
+
+
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-install-btn,
+.header-emergency {
+    min-height: 40px;
+
+    border-radius: 12px;
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease,
+        border-color 180ms ease;
+}
+
+.header-install-btn:hover,
+.header-emergency:hover {
+    transform: translateY(-1px);
+}
+
+.header-install-btn:active,
+.header-emergency:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
+
+.mobile-menu {
+    border-top: 1px solid rgba(219, 233, 226, 0.9);
+
+    background:
+        rgba(255, 255, 255, 0.97);
+
+    box-shadow:
+        0 18px 35px rgba(6, 58, 44, 0.09);
+
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.mobile-menu-inner {
+    padding-top: 12px;
+    padding-bottom: 18px;
+}
+
+.mobile-menu-inner a {
+    min-height: 48px;
+
+    border: 1px solid transparent;
+    border-radius: 14px;
+
+    font-size: 13px;
+
+    transition:
+        background 180ms ease,
+        border-color 180ms ease,
+        color 180ms ease,
+        transform 180ms ease;
+}
+
+.mobile-menu-inner a:hover,
+.mobile-menu-inner a:focus-visible {
+    border-color: #dcebe5;
+
+    background: #eef8f3;
+
+    color: #086044;
+
+    transform: translateX(2px);
+}
+
+.mobile-menu-location {
+    margin-bottom: 7px;
+
+    padding: 11px 12px;
+
+    border: 1px solid #dcebe5;
+    border-radius: 15px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f7fcf9 0%,
+            #eef8f3 100%
+        );
+}
+
+.mobile-menu-location .location-icon {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 12px;
+
+    background: #dcf3e8;
+    color: #0b7a55;
+
+    box-shadow:
+        0 5px 12px rgba(8, 78, 55, 0.05);
+}
+
+
+/* =========================================================
+   MOBILE INSTALL BUTTON
+   ========================================================= */
+
+.mobile-install-btn {
+    min-height: 46px;
+
+    margin-top: 4px;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #11a36f 0%,
+            #087650 100%
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 9px 18px rgba(8, 118, 80, 0.14);
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.mobile-install-btn:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 12px 22px rgba(8, 118, 80, 0.18);
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .bottom-nav {
+        left: 9px;
+        right: 9px;
+
+        bottom:
+            calc(
+                9px +
+                env(safe-area-inset-bottom)
+            );
+
+        min-height: 63px;
+
+        padding: 5px;
+
+        border:
+            1px solid
+            rgba(216, 231, 223, 0.96);
+
+        border-radius: 20px;
+
+        background:
+            rgba(255, 255, 255, 0.96);
+
+        box-shadow:
+            0 14px 34px rgba(6, 58, 44, 0.13),
+            0 3px 8px rgba(6, 58, 44, 0.05);
+
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
+
+    .bottom-nav-item {
+        min-height: 51px;
+
+        border-radius: 15px;
+
+        color: #7a8d84;
+
+        transition:
+            background 180ms ease,
+            color 180ms ease,
+            transform 180ms ease;
+    }
+
+    .bottom-nav-item > span {
+        line-height: 1;
+    }
+
+    .bottom-nav-item small {
+        margin-top: 1px;
+
+        color: inherit;
+
+        font-size: 8px;
+        font-weight: 900;
+    }
+
+    .bottom-nav-item.active {
+        background: #eaf7f1;
+
+        color: #087650;
+    }
+
+    .bottom-nav-item.active::before {
+        top: 4px;
+
+        width: 20px;
+        height: 2px;
+
+        border-radius: 999px;
+
+        background: #11a36f;
+    }
+
+    .bottom-nav-item:active {
+        transform: scale(0.96);
+    }
+
+
+    /* Central emergency button */
+
+    .bottom-nav-emergency {
+        width: 53px;
+        height: 53px;
+
+        min-height: 53px;
+
+        margin-top: -20px;
+
+        border:
+            4px solid
+            var(--background);
+
+        border-radius: 50%;
+
+        background:
+            linear-gradient(
+                145deg,
+                #ef5660 0%,
+                #d73e49 100%
+            );
+
+        box-shadow:
+            0 10px 22px rgba(215, 62, 73, 0.24),
+            0 3px 7px rgba(215, 62, 73, 0.12);
+
+        transition:
+            transform 180ms ease,
+            box-shadow 180ms ease;
+    }
+
+    .bottom-nav-emergency:hover {
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 13px 25px rgba(215, 62, 73, 0.28);
+    }
+
+    .bottom-nav-emergency:active {
+        transform:
+            translateY(0)
+            scale(0.96);
+    }
+
+    .bottom-nav-emergency > span {
+        color: #ffffff;
+
+        font-size: 21px;
+        font-weight: 950;
+    }
+
+    .bottom-nav-emergency small {
+        top: 53px;
+
+        color: #d73e49;
+
+        font-size: 7px;
+        font-weight: 950;
+    }
+
+
+    /* Keep page content above fixed nav */
+
+    body {
+        padding-bottom:
+            calc(
+                84px +
+                env(safe-area-inset-bottom)
+            );
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .bottom-nav {
+        left: 7px;
+        right: 7px;
+
+        bottom:
+            calc(
+                7px +
+                env(safe-area-inset-bottom)
+            );
+
+        min-height: 61px;
+
+        border-radius: 19px;
+    }
+
+    .bottom-nav-item {
+        min-height: 50px;
+        border-radius: 14px;
+    }
+
+    .bottom-nav-item small {
+        font-size: 7px;
+    }
+
+    .bottom-nav-emergency {
+        width: 50px;
+        height: 50px;
+
+        min-height: 50px;
+
+        margin-top: -20px;
+    }
+
+    .bottom-nav-emergency > span {
+        font-size: 20px;
+    }
+
+    .bottom-nav-emergency small {
+        top: 50px;
+        font-size: 6.5px;
+    }
+
+    body {
+        padding-bottom:
+            calc(
+                81px +
+                env(safe-area-inset-bottom)
+            );
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .header-install-btn,
+    .header-emergency,
+    .mobile-menu-inner a,
+    .mobile-install-btn,
+    .bottom-nav-item,
+    .bottom-nav-emergency {
+        transition: none !important;
+    }
+}
