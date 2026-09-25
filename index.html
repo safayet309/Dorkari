@@ -1353,119 +1353,186 @@
         <!-- =================================================
              LOCATION
              ================================================= -->
+        <!-- =================================================
+     LOCATION + EMERGENCY DISCOVERY
+     ================================================= -->
         <section aria-label="লোকেশন ও জরুরি তথ্য" class="discovery-section">
             <div class="container discovery-grid">
+
+                <!-- =================================================
+             LOCATION
+             ================================================= -->
                 <section aria-labelledby="locationTitle" class="location-section" id="location">
-                    <div class="container">
-                        <article class="location-card">
-                            <div class="location-card-copy">
-                                <span class="section-label">
-                                    ব্যক্তিগত করুন
-                                </span>
-                                <h2 id="locationTitle">
-                                    আপনার এলাকার তথ্য দেখুন
-                                </h2>
-                                <p>
-                                    আপনার এলাকা বেছে নিলে
-                                    সেই এলাকার প্রয়োজনীয় সেবা
-                                    আরও দ্রুত খুঁজে পাওয়া যাবে।
-                                </p>
-                            </div>
-                            <div aria-hidden="true" class="location-badge">
+                    <article class="location-card">
+
+                        <!-- LOCATION CONTENT -->
+                        <div class="location-card-copy">
+
+                            <span class="section-label">
+                                ব্যক্তিগত করুন
+                            </span>
+
+                            <h2 id="locationTitle">
+                                আপনার এলাকার তথ্য দেখুন
+                            </h2>
+
+                            <p>
+                                আপনার এলাকা বেছে নিলে
+                                সেই এলাকার প্রয়োজনীয় সেবা
+                                আরও দ্রুত খুঁজে পাওয়া যাবে।
+                            </p>
+
+                        </div>
+
+
+                        <!-- LOCATION ICON -->
+                        <div aria-hidden="true" class="location-badge">
+                            <span>
+                                &target;
+                            </span>
+
+                            <small>
+                                লোকেশন
+                            </small>
+                        </div>
+
+
+                        <!-- LOCATION SELECTORS -->
+                        <div class="location-form">
+
+                            <!-- DIVISION -->
+                            <label>
                                 <span>
-                                    &target;
+                                    বিভাগ
                                 </span>
-                                <small>
-                                    লোকেশন
-                                </small>
-                            </div>
-                            <div class="location-form">
-                                <label>
-                                    <span>
-                                        বিভাগ
-                                    </span>
-                                    <select aria-label="বিভাগ নির্বাচন করুন" id="homeDivision">
-                                        <option value="">
-                                            বিভাগ নির্বাচন করুন
-                                        </option>
-                                    </select>
-                                </label>
-                                <label>
-                                    <span>
-                                        জেলা
-                                    </span>
-                                    <select aria-label="জেলা নির্বাচন করুন" disabled="" id="homeDistrict">
-                                        <option value="">
-                                            জেলা নির্বাচন করুন
-                                        </option>
-                                    </select>
-                                </label>
-                                <label>
-                                    <span>
-                                        উপজেলা
-                                    </span>
-                                    <select aria-label="উপজেলা নির্বাচন করুন" disabled="" id="homeUpazila">
-                                        <option value="">
-                                            উপজেলা নির্বাচন করুন
-                                        </option>
-                                    </select>
-                                </label>
-                            </div>
-                            <div class="location-card-footer">
-                                <span aria-live="polite" class="location-saved" id="locationSavedState">
-                                    আপনার নির্বাচন এই ডিভাইসে মনে রাখা হবে।
+
+                                <select aria-label="বিভাগ নির্বাচন করুন" id="homeDivision">
+                                    <option value="">
+                                        বিভাগ নির্বাচন করুন
+                                    </option>
+                                </select>
+                            </label>
+
+
+                            <!-- DISTRICT -->
+                            <label>
+                                <span>
+                                    জেলা
                                 </span>
-                                <button class="location-action" id="locationSearchButton" type="button">
-                                    এলাকার তথ্য দেখুন
-                                    <span aria-hidden="true">
-                                        &rarr;
-                                    </span>
-                                </button>
-                            </div>
-                        </article>
-                    </div>
+
+                                <select aria-label="জেলা নির্বাচন করুন" disabled id="homeDistrict">
+                                    <option value="">
+                                        জেলা নির্বাচন করুন
+                                    </option>
+                                </select>
+                            </label>
+
+
+                            <!-- UPAZILA -->
+                            <label>
+                                <span>
+                                    উপজেলা
+                                </span>
+
+                                <select aria-label="উপজেলা নির্বাচন করুন" disabled id="homeUpazila">
+                                    <option value="">
+                                        উপজেলা নির্বাচন করুন
+                                    </option>
+                                </select>
+                            </label>
+
+                        </div>
+
+
+                        <!-- LOCATION FOOTER -->
+                        <div class="location-card-footer">
+
+                            <span aria-live="polite" class="location-saved" id="locationSavedState">
+                                আপনার নির্বাচন এই ডিভাইসে মনে রাখা হবে।
+                            </span>
+
+
+                            <button class="location-action" id="locationSearchButton" type="button">
+                                এলাকার তথ্য দেখুন
+
+                                <span aria-hidden="true">
+                                    &rarr;
+                                </span>
+                            </button>
+
+                        </div>
+
+                    </article>
                 </section>
+
+
                 <!-- =================================================
              EMERGENCY PREVIEW
              ================================================= -->
                 <section aria-labelledby="emergencyTitle" class="emergency-preview" id="emergency">
-                    <div class="container">
-                        <div class="section-heading">
-                            <div>
-                                <span class="section-label emergency-label">
-                                    জরুরি প্রয়োজনে
-                                </span>
-                                <h2 id="emergencyTitle">
-                                    গুরুত্বপূর্ণ নম্বর
-                                </h2>
-                                <p>
-                                    প্রয়োজনীয় জরুরি যোগাযোগ
-                                    দ্রুত কল বা কপি করুন।
-                                </p>
-                            </div>
-                            <button class="view-all interface-shortcut" data-interface-open="emergency" type="button">
-                                সব দেখুন &rarr;
-                            </button>
+
+                    <!-- EMERGENCY HEADING -->
+                    <div class="section-heading">
+
+                        <div>
+
+                            <span class="section-label emergency-label">
+                                জরুরি প্রয়োজনে
+                            </span>
+
+                            <h2 id="emergencyTitle">
+                                গুরুত্বপূর্ণ নম্বর
+                            </h2>
+
+                            <p>
+                                প্রয়োজনীয় জরুরি যোগাযোগ
+                                দ্রুত কল বা কপি করুন।
+                            </p>
+
                         </div>
-                        <div aria-live="polite" class="emergency-list" id="emergencyPreviewList">
-                            <article class="emergency-item emergency-item-loading">
-                                <div aria-hidden="true" class="emergency-item-icon">
-                                    !
-                                </div>
-                                <div class="emergency-item-content">
-                                    <h3>
-                                        জরুরি তথ্য লোড হচ্ছে...
-                                    </h3>
-                                    <p>
-                                        একটু অপেক্ষা করুন।
-                                    </p>
-                                </div>
-                            </article>
-                        </div>
+
+
+                        <!-- EXISTING VIEW ALL BUTTON -->
+                        <button class="view-all interface-shortcut" data-interface-open="emergency" type="button">
+                            সব দেখুন &rarr;
+                        </button>
+
                     </div>
+
+
+                    <!-- EXISTING JS TARGET -->
+                    <div aria-live="polite" class="emergency-list" id="emergencyPreviewList">
+
+                        <!-- LOADING STATE -->
+                        <article class="emergency-item emergency-item-loading">
+
+                            <div aria-hidden="true" class="emergency-item-icon">
+                                !
+                            </div>
+
+
+                            <div class="emergency-item-content">
+
+                                <h3>
+                                    জরুরি তথ্য লোড হচ্ছে...
+                                </h3>
+
+                                <p>
+                                    একটু অপেক্ষা করুন।
+                                </p>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
                 </section>
+
             </div>
         </section>
+
+
         <!-- =================================================
              TRUST
              ================================================= -->
