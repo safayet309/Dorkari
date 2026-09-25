@@ -687,16 +687,14 @@ function initializeSearch() {
 
 function initializeBottomSearch() {
 
-    $("#bottomSearchNav")
-        ?.addEventListener(
-            "click",
-            (event) => {
-
-                event.preventDefault();
-
-                focusSearch();
-            }
-        );
+    /*
+     * Bottom Search এখন
+     * initializeBottomNavigation()
+     * দ্বারা সম্পূর্ণভাবে handle করা হয়।
+     *
+     * এখানে আলাদা click listener রাখা হয়নি,
+     * যাতে একই button-এ duplicate action না হয়।
+     */
 }
 
 
