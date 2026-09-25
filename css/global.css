@@ -5099,3 +5099,900 @@ input:focus-visible {
         transition: none !important;
     }
 }
+/* =========================================================
+   DORKARI — SERVICE INTERFACE PREMIUM UI
+   Hospital / Doctor / Ambulance / Government /
+   Blood / Tests / Emergency / Services
+   ========================================================= */
+
+
+/* =========================================================
+   INTERFACE BACKDROP
+   ========================================================= */
+
+.service-interface-layer {
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(16, 163, 111, 0.055),
+            transparent 34%
+        ),
+        #f6faf8 !important;
+}
+
+.service-interface-layer > .container {
+    width:
+        min(
+            1180px,
+            calc(100% - 36px)
+        );
+
+    padding-top: 18px;
+    padding-bottom: 45px;
+}
+
+
+/* =========================================================
+   INTERFACE CARD
+   ========================================================= */
+
+.service-interface {
+    border:
+        1px solid
+        #dce9e2 !important;
+
+    border-radius:
+        24px !important;
+
+    background:
+        rgba(255, 255, 255, 0.97) !important;
+
+    box-shadow:
+        0 20px 55px
+        rgba(4, 61, 45, 0.085) !important;
+
+    overflow:
+        hidden !important;
+}
+
+
+/* =========================================================
+   INTERFACE HEADER
+   ========================================================= */
+
+.service-interface-header {
+    position: relative;
+
+    min-height:
+        100px;
+
+    padding:
+        20px 22px;
+
+    border-bottom:
+        1px solid
+        #e3eee9;
+
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff 0%,
+            #f4faf7 100%
+        ) !important;
+}
+
+.service-interface-header::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    right: -90px;
+    top: -100px;
+
+    border-radius: 50%;
+
+    background:
+        rgba(16, 163, 111, 0.065);
+
+    pointer-events: none;
+}
+
+
+/* Back button */
+
+.service-interface-back {
+    min-height:
+        38px !important;
+
+    padding:
+        0 11px !important;
+
+    border:
+        1px solid
+        #dfeae4 !important;
+
+    border-radius:
+        12px !important;
+
+    background:
+        #ffffff !important;
+
+    color:
+        #657970 !important;
+
+    font-family:
+        inherit !important;
+
+    font-size:
+        10px !important;
+
+    font-weight:
+        900 !important;
+
+    box-shadow:
+        0 4px 10px
+        rgba(4, 61, 45, 0.035);
+
+    transition:
+        transform 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease;
+}
+
+.service-interface-back:hover {
+    transform:
+        translateX(-2px);
+
+    background:
+        #edf8f3 !important;
+
+    border-color:
+        #cfe2d8 !important;
+
+    color:
+        #07553d !important;
+}
+
+
+/* Interface icon */
+
+.service-interface-icon {
+    width:
+        56px !important;
+
+    height:
+        56px !important;
+
+    flex:
+        0 0 auto;
+
+    border-radius:
+        17px !important;
+
+    box-shadow:
+        0 7px 15px
+        rgba(4, 61, 45, 0.065);
+}
+
+.service-interface-icon.is-red {
+    background:
+        linear-gradient(
+            145deg,
+            #fff5f6,
+            #ffe8eb
+        ) !important;
+
+    color:
+        #df4652 !important;
+}
+
+.service-interface-icon.is-emergency {
+    background:
+        linear-gradient(
+            145deg,
+            #fff5f6,
+            #ffe8eb
+        ) !important;
+
+    color:
+        #df4652 !important;
+}
+
+.service-interface-icon.is-amber {
+    background:
+        linear-gradient(
+            145deg,
+            #fff9ef,
+            #fff0d9
+        ) !important;
+
+    color:
+        #d59018 !important;
+}
+
+.service-interface-icon.is-purple {
+    background:
+        linear-gradient(
+            145deg,
+            #faf7fd,
+            #eee8f9
+        ) !important;
+
+    color:
+        #8457bb !important;
+}
+
+.service-interface-icon.is-cyan {
+    background:
+        linear-gradient(
+            145deg,
+            #f1fbfc,
+            #e3f5f6
+        ) !important;
+
+    color:
+        #26899b !important;
+}
+
+
+/* Header text */
+
+.service-interface-header h2 {
+    margin-top:
+        4px;
+
+    color:
+        #162b22 !important;
+
+    font-size:
+        clamp(
+            23px,
+            3vw,
+            31px
+        ) !important;
+
+    line-height:
+        1.2 !important;
+
+    letter-spacing:
+        -0.035em;
+}
+
+.service-interface-header p {
+    max-width:
+        650px;
+
+    margin-top:
+        6px;
+
+    color:
+        #6b7e75 !important;
+
+    font-size:
+        10px !important;
+
+    line-height:
+        1.75 !important;
+}
+
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.interface-toolbar {
+    margin:
+        17px
+        18px
+        0 !important;
+
+    padding:
+        11px !important;
+
+    border:
+        1px solid
+        #e0ebe5 !important;
+
+    border-radius:
+        17px !important;
+
+    background:
+        #f8fbf9 !important;
+
+    box-shadow:
+        0 5px 13px
+        rgba(4, 61, 45, 0.035);
+}
+
+.interface-toolbar input,
+.interface-toolbar select {
+    min-height:
+        43px;
+
+    border:
+        1px solid
+        #d9e7df !important;
+
+    border-radius:
+        11px !important;
+
+    background:
+        #ffffff !important;
+
+    color:
+        #32493e !important;
+
+    font-family:
+        inherit !important;
+
+    font-size:
+        10px !important;
+
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.interface-toolbar input:focus,
+.interface-toolbar select:focus {
+    border-color:
+        #9fcfb8 !important;
+
+    box-shadow:
+        0 0 0 4px
+        rgba(16, 163, 111, 0.055);
+}
+
+.interface-toolbar input::placeholder {
+    color:
+        #9aa9a2 !important;
+}
+
+.interface-toolbar button {
+    min-height:
+        43px;
+
+    border-radius:
+        11px !important;
+
+    font-family:
+        inherit;
+
+    font-size:
+        9px;
+
+    font-weight:
+        900;
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.interface-toolbar button:hover {
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   RESULT HEADER
+   ========================================================= */
+
+.interface-results-head,
+.hospital-interface-results-head,
+.doctor-interface-results-head,
+.ambulance-interface-results-head,
+.government-interface-results-head {
+    margin:
+        18px 18px 11px !important;
+
+    padding:
+        0 2px !important;
+}
+
+.interface-results-head strong,
+.hospital-interface-results-head strong,
+.doctor-interface-results-head strong,
+.ambulance-interface-results-head strong,
+.government-interface-results-head strong {
+    color:
+        #243a30 !important;
+
+    font-size:
+        11px !important;
+
+    font-weight:
+        950 !important;
+}
+
+
+/* =========================================================
+   RESULT LIST
+   ========================================================= */
+
+.interface-results,
+.hospital-interface-list,
+.doctor-interface-list,
+.ambulance-interface-list,
+.blood-interface-list,
+.tests-interface-list,
+.government-interface-results {
+    padding:
+        0 18px
+        20px;
+}
+
+
+/* =========================================================
+   RESULT CARDS
+   ========================================================= */
+
+.hospital-interface-card,
+.doctor-interface-card,
+.ambulance-interface-card,
+.government-interface-card,
+.blood-interface-card,
+.tests-interface-card {
+    border:
+        1px solid
+        #e0ebe5 !important;
+
+    border-radius:
+        18px !important;
+
+    background:
+        #ffffff !important;
+
+    box-shadow:
+        0 7px 18px
+        rgba(4, 61, 45, 0.045) !important;
+
+    transition:
+        transform 200ms ease,
+        border-color 200ms ease,
+        box-shadow 200ms ease;
+}
+
+.hospital-interface-card:hover,
+.doctor-interface-card:hover,
+.ambulance-interface-card:hover,
+.government-interface-card:hover,
+.blood-interface-card:hover,
+.tests-interface-card:hover {
+    transform:
+        translateY(-2px);
+
+    border-color:
+        #cfe0d7 !important;
+
+    box-shadow:
+        0 12px 25px
+        rgba(4, 61, 45, 0.075) !important;
+}
+
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+
+.hospital-interface-badge,
+.doctor-interface-badge,
+.ambulance-interface-badge,
+.government-interface-badge,
+.blood-interface-badge,
+.tests-interface-badge {
+    border-radius:
+        999px !important;
+
+    font-size:
+        7px !important;
+
+    font-weight:
+        950 !important;
+}
+
+
+/* Verified */
+
+.hospital-interface-badge.is-verified,
+.doctor-interface-badge.is-verified,
+.ambulance-interface-badge.is-verified,
+.government-interface-badge.is-verified,
+.blood-interface-badge.is-verified,
+.tests-interface-badge.is-verified {
+    background:
+        #e7f7ef !important;
+
+    border-color:
+        #cfeadd !important;
+
+    color:
+        #087650 !important;
+}
+
+
+/* =========================================================
+   RESULT ACTION BUTTONS
+   ========================================================= */
+
+.hospital-interface-action,
+.doctor-interface-action,
+.ambulance-interface-action,
+.government-interface-action,
+.blood-interface-action,
+.tests-interface-action {
+    min-height:
+        39px !important;
+
+    border-radius:
+        11px !important;
+
+    font-family:
+        inherit !important;
+
+    font-size:
+        8px !important;
+
+    font-weight:
+        900 !important;
+
+    transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+}
+
+.hospital-interface-action:hover,
+.doctor-interface-action:hover,
+.ambulance-interface-action:hover,
+.government-interface-action:hover,
+.blood-interface-action:hover,
+.tests-interface-action:hover {
+    transform:
+        translateY(-1px);
+}
+
+.hospital-interface-action.is-primary,
+.doctor-interface-action.is-primary,
+.ambulance-interface-action.is-primary,
+.government-interface-action.is-primary,
+.blood-interface-action.is-primary,
+.tests-interface-action.is-primary {
+    background:
+        linear-gradient(
+            145deg,
+            #11a570,
+            #087650
+        ) !important;
+
+    color:
+        #ffffff !important;
+
+    border-color:
+        transparent !important;
+
+    box-shadow:
+        0 7px 15px
+        rgba(8, 118, 80, 0.13);
+}
+
+
+/* =========================================================
+   EMERGENCY INTERFACE
+   ========================================================= */
+
+.service-interface[data-interface="emergency"] {
+    border-color:
+        #efd6d9 !important;
+}
+
+.service-interface[data-interface="emergency"]
+.service-interface-header {
+    background:
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #fff7f7
+        ) !important;
+}
+
+.service-interface[data-interface="emergency"]
+.interface-primary-action.is-red {
+    min-height:
+        52px !important;
+
+    border-radius:
+        14px !important;
+
+    background:
+        linear-gradient(
+            145deg,
+            #ec626c,
+            #d93e4b
+        ) !important;
+
+    box-shadow:
+        0 10px 22px
+        rgba(217, 62, 75, 0.16) !important;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+
+.interface-empty {
+    margin:
+        20px 18px !important;
+
+    padding:
+        35px 18px !important;
+
+    border:
+        1px dashed
+        #d5e3dc !important;
+
+    border-radius:
+        18px !important;
+
+    background:
+        #f8fbf9 !important;
+
+    color:
+        #788a82 !important;
+
+    text-align:
+        center;
+}
+
+.interface-empty strong {
+    color:
+        #385046 !important;
+
+    font-size:
+        13px !important;
+}
+
+.interface-empty span {
+    color:
+        #8b9a94 !important;
+
+    font-size:
+        9px !important;
+}
+
+
+/* =========================================================
+   DETAILS / EXPAND
+   ========================================================= */
+
+.hospital-interface-details,
+.doctor-interface-details,
+.ambulance-interface-details,
+.government-interface-details,
+.blood-interface-details,
+.tests-interface-details {
+    border-top:
+        1px solid
+        #e6eee9 !important;
+}
+
+.hospital-interface-details summary,
+.doctor-interface-details summary,
+.ambulance-interface-details summary,
+.government-interface-details summary,
+.blood-interface-details summary,
+.tests-interface-details summary {
+    min-height:
+        42px;
+
+    display:
+        flex;
+
+    align-items:
+        center;
+
+    color:
+        #5f7469 !important;
+
+    font-size:
+        9px !important;
+
+    font-weight:
+        900 !important;
+}
+
+.hospital-interface-details-body,
+.doctor-interface-details-body,
+.ambulance-interface-details-body,
+.government-interface-details-content,
+.blood-interface-details-body,
+.tests-interface-details-body {
+    border-top:
+        1px solid
+        #edf2ef !important;
+
+    background:
+        #fafcfb !important;
+
+    color:
+        #687b72 !important;
+
+    font-size:
+        9px !important;
+
+    line-height:
+        1.75 !important;
+}
+
+
+/* =========================================================
+   MOBILE INTERFACE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    .service-interface-layer > .container {
+        width:
+            calc(100% - 20px);
+
+        padding-top:
+            10px;
+
+        padding-bottom:
+            30px;
+    }
+
+    .service-interface {
+        border-radius:
+            20px !important;
+    }
+
+    .service-interface-header {
+        min-height:
+            92px;
+
+        padding:
+            15px;
+        }
+
+    .service-interface-back {
+        min-height:
+            36px !important;
+
+        font-size:
+            9px !important;
+    }
+
+    .service-interface-icon {
+        width:
+            49px !important;
+
+        height:
+            49px !important;
+
+        border-radius:
+            15px !important;
+    }
+
+    .service-interface-header h2 {
+        font-size:
+            21px !important;
+    }
+
+    .service-interface-header p {
+        font-size:
+            9px !important;
+
+        line-height:
+            1.65 !important;
+    }
+
+    .interface-toolbar {
+        margin:
+            12px 12px 0 !important;
+
+        padding:
+            9px !important;
+
+        border-radius:
+            15px !important;
+    }
+
+    .interface-results,
+    .hospital-interface-list,
+    .doctor-interface-list,
+    .ambulance-interface-list,
+    .blood-interface-list,
+    .tests-interface-list,
+    .government-interface-results {
+        padding:
+            0 12px
+            14px;
+    }
+
+    .interface-results-head,
+    .hospital-interface-results-head,
+    .doctor-interface-results-head,
+    .ambulance-interface-results-head,
+    .government-interface-results-head {
+        margin:
+            14px 12px 10px !important;
+    }
+
+    .hospital-interface-card,
+    .doctor-interface-card,
+    .ambulance-interface-card,
+    .government-interface-card,
+    .blood-interface-card,
+    .tests-interface-card {
+        border-radius:
+            16px !important;
+    }
+
+    .hospital-interface-action,
+    .doctor-interface-action,
+    .ambulance-interface-action,
+    .government-interface-action,
+    .blood-interface-action,
+    .tests-interface-action {
+        min-height:
+            37px !important;
+    }
+
+    .interface-empty {
+        margin:
+            14px 12px !important;
+
+        padding:
+            30px 14px !important;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    .service-interface-layer > .container {
+        width:
+            calc(100% - 14px);
+    }
+
+    .service-interface-header {
+        padding:
+            13px;
+    }
+
+    .service-interface-header h2 {
+        font-size:
+            19px !important;
+    }
+
+    .service-interface-header p {
+        font-size:
+            8px !important;
+    }
+
+    .interface-toolbar input,
+    .interface-toolbar select,
+    .interface-toolbar button {
+        min-height:
+            40px;
+    }
+
+    .hospital-interface-action,
+    .doctor-interface-action,
+    .ambulance-interface-action,
+    .government-interface-action,
+    .blood-interface-action,
+    .tests-interface-action {
+        font-size:
+            7.5px !important;
+    }
+}
