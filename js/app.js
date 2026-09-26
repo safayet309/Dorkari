@@ -687,14 +687,16 @@ function initializeSearch() {
 
 function initializeBottomSearch() {
 
-    /*
-     * Bottom Search এখন
-     * initializeBottomNavigation()
-     * দ্বারা সম্পূর্ণভাবে handle করা হয়।
-     *
-     * এখানে আলাদা click listener রাখা হয়নি,
-     * যাতে একই button-এ duplicate action না হয়।
-     */
+    $("#bottomSearchNav")
+        ?.addEventListener(
+            "click",
+            (event) => {
+
+                event.preventDefault();
+
+                focusSearch();
+            }
+        );
 }
 
 
@@ -8843,13 +8845,20 @@ function renderEmergencyErrorState() {
 
 
 function renderEmergencyRecords(
-    records
+    records,
+    containerSelector = "#emergencyPreviewList"
 ) {
 
     const container =
-        $("#emergencyPreviewList");
+        $(containerSelector);
 
     if (!container) {
+        return;
+    }
+
+
+    if (!Array.isArray(records) || !records.length) {
+        container.innerHTML = "";
         return;
     }
 
@@ -8910,12 +8919,12 @@ function renderEmergencyRecords(
 
                                 <a
                                     href="tel:${escapeHTML(
-                            safePhone
-                        )}"
+                                        safePhone
+                                    )}"
                                     class="call-btn"
                                     aria-label="${escapeHTML(
-                            `${name} - কল করুন`
-                        )}"
+                                        `${name} - কল করুন`
+                                    )}"
                                 >
                                     📞 কল
                                 </a>
@@ -8924,11 +8933,11 @@ function renderEmergencyRecords(
                                     type="button"
                                     class="copy-btn"
                                     data-copy="${escapeHTML(
-                            phone
-                        )}"
+                                        phone
+                                    )}"
                                     aria-label="${escapeHTML(
-                            `${name} - নম্বর কপি করুন`
-                        )}"
+                                        `${name} - নম্বর কপি করুন`
+                                    )}"
                                 >
                                     ⧉ কপি
                                 </button>
@@ -8960,9 +8969,7 @@ function renderEmergencyRecords(
                             >
 
                                 <h3>
-                                    ${escapeHTML(
-                    name
-                )}
+                                    ${escapeHTML(name)}
                                 </h3>
 
                                 ${verifiedBadge}
@@ -8971,9 +8978,7 @@ function renderEmergencyRecords(
 
 
                             <p>
-                                ${escapeHTML(
-                    description
-                )}
+                                ${escapeHTML(description)}
                             </p>
 
 
@@ -8988,6 +8993,31 @@ function renderEmergencyRecords(
                 `;
             })
             .join("");
+
+
+    $$(".copy-btn", container)
+        .forEach((button) => {
+
+            button.addEventListener(
+                "click",
+                async () => {
+
+                    const value =
+                        cleanText(
+                            button.dataset.copy
+                        );
+
+                    if (!value) {
+                        return;
+                    }
+
+                    await copyText(
+                        value,
+                        "✓ নম্বর কপি হয়েছে"
+                    );
+                }
+            );
+        });
 }
 
 
@@ -9027,8 +9057,13 @@ async function loadEmergencyPreview() {
                     name_bn,
                     phone,
                     description,
+                    division_id,
+                    district_id,
+                    upazila_id,
+                    is_national,
                     is_verified,
                     is_active,
+                    last_updated,
                     created_at
                     `
                 )
@@ -9077,6 +9112,1092 @@ async function loadEmergencyPreview() {
 
         renderEmergencyErrorState();
     }
+}
+
+
+// =========================================================
+// EMERGENCY FINDER
+// =========================================================
+
+const emergencyFinderState = {
+
+    contacts: [],
+
+    loaded: false,
+
+    loading: false,
+
+    initialized: false,
+
+    selectedDivisionId: "",
+
+    selectedDistrictId: "",
+
+    selectedUpazilaId: "",
+
+    search: ""
+};
+
+
+function getEmergencyFinderElements() {
+
+    return {
+
+        interface:
+            $("#emergencyInterface"),
+
+        savedLocation:
+            $("#emergencySavedLocation"),
+
+        useSavedLocation:
+            $("#emergencyUseSavedLocation"),
+
+        division:
+            $("#emergencyFilterDivision"),
+
+        district:
+            $("#emergencyFilterDistrict"),
+
+        upazila:
+            $("#emergencyFilterUpazila"),
+
+        search:
+            $("#emergencySearchInput"),
+
+        reset:
+            $("#emergencyFilterReset"),
+
+        resultsCount:
+            $("#emergencyResultsCount"),
+
+        results:
+            $("#emergencyInterfaceResults")
+    };
+}
+
+
+function getEmergencySelectedLocation() {
+
+    const {
+        division,
+        district,
+        upazila
+    } =
+        getEmergencyFinderElements();
+
+
+    return {
+
+        divisionId:
+            cleanText(
+                division?.value
+            ),
+
+        divisionName:
+            cleanText(
+                division?.selectedOptions
+                    ?.item(0)
+                    ?.textContent
+            ),
+
+        districtId:
+            cleanText(
+                district?.value
+            ),
+
+        districtName:
+            cleanText(
+                district?.selectedOptions
+                    ?.item(0)
+                    ?.textContent
+            ),
+
+        upazilaId:
+            cleanText(
+                upazila?.value
+            ),
+
+        upazilaName:
+            cleanText(
+                upazila?.selectedOptions
+                    ?.item(0)
+                    ?.textContent
+            )
+    };
+}
+
+
+function updateEmergencySavedLocationText(
+    location
+) {
+
+    const {
+        savedLocation
+    } =
+        getEmergencyFinderElements();
+
+
+    if (!savedLocation) {
+        return;
+    }
+
+
+    const label =
+        getLocationLabel(
+            location?.divisionName,
+            location?.districtName,
+            location?.upazilaName
+        );
+
+
+    savedLocation.textContent =
+        label ||
+        "লোকেশন নির্বাচন করুন";
+}
+
+
+function updateEmergencyResultsCount(
+    count
+) {
+
+    const {
+        resultsCount
+    } =
+        getEmergencyFinderElements();
+
+
+    if (!resultsCount) {
+        return;
+    }
+
+
+    resultsCount.textContent =
+        `${Number(count) || 0}টি`;
+}
+
+
+function getEmergencyScopeLevel(
+    record
+) {
+
+    if (cleanText(record?.upazila_id)) {
+        return 3;
+    }
+
+    if (cleanText(record?.district_id)) {
+        return 2;
+    }
+
+    if (cleanText(record?.division_id)) {
+        return 1;
+    }
+
+    return 0;
+}
+
+
+function emergencySameId(
+    first,
+    second
+) {
+
+    const a =
+        cleanText(first);
+
+    const b =
+        cleanText(second);
+
+
+    return Boolean(
+        a &&
+        b &&
+        a === b
+    );
+}
+
+
+function emergencyMatchesSelectedLocation(
+    record,
+    location
+) {
+
+    if (!record || record.is_national) {
+        return false;
+    }
+
+
+    if (!location?.divisionId) {
+        return false;
+    }
+
+
+    if (!emergencySameId(
+        record.division_id,
+        location.divisionId
+    )) {
+        return false;
+    }
+
+
+    const hasDistrict =
+        Boolean(
+            location.districtId
+        );
+
+    const hasUpazila =
+        Boolean(
+            location.upazilaId
+        );
+
+
+    if (!hasDistrict) {
+
+        return (
+            !cleanText(record.district_id) &&
+            !cleanText(record.upazila_id)
+        );
+    }
+
+
+    if (!hasUpazila) {
+
+        return (
+            !cleanText(record.upazila_id) &&
+            (
+                emergencySameId(
+                    record.district_id,
+                    location.districtId
+                ) ||
+                (
+                    !cleanText(record.district_id) &&
+                    !cleanText(record.upazila_id)
+                )
+            )
+        );
+    }
+
+
+    return (
+        emergencySameId(
+            record.upazila_id,
+            location.upazilaId
+        ) ||
+        (
+            emergencySameId(
+                record.district_id,
+                location.districtId
+            ) &&
+            !cleanText(record.upazila_id)
+        ) ||
+        (
+            !cleanText(record.district_id) &&
+            !cleanText(record.upazila_id)
+        )
+    );
+}
+
+
+function getEmergencySearchText(
+    record
+) {
+
+    return [
+        getDisplayName(record),
+        cleanText(record?.name),
+        cleanText(record?.name_bn),
+        getPhone(record),
+        cleanText(record?.description)
+    ]
+        .join(" ")
+        .toLocaleLowerCase("bn-BD");
+}
+
+
+function emergencySearchMatches(
+    record,
+    query
+) {
+
+    const search =
+        cleanText(query)
+            .toLocaleLowerCase("bn-BD");
+
+
+    if (!search) {
+        return true;
+    }
+
+
+    const textMatch =
+        getEmergencySearchText(
+            record
+        ).includes(search);
+
+
+    if (textMatch) {
+        return true;
+    }
+
+
+    const normalizedQuery =
+        normalizePhone(search);
+
+
+    return Boolean(
+        normalizedQuery &&
+        normalizePhone(
+            getPhone(record)
+        ).includes(
+            normalizedQuery
+        )
+    );
+}
+
+
+function sortEmergencyFinderRecords(
+    records
+) {
+
+    return [...records].sort(
+        (a, b) => {
+
+            const scopeDifference =
+                getEmergencyScopeLevel(b) -
+                getEmergencyScopeLevel(a);
+
+
+            if (scopeDifference !== 0) {
+                return scopeDifference;
+            }
+
+
+            const verifiedDifference =
+                Number(Boolean(b?.is_verified)) -
+                Number(Boolean(a?.is_verified));
+
+
+            if (verifiedDifference !== 0) {
+                return verifiedDifference;
+            }
+
+
+            const aName =
+                getDisplayName(a);
+
+            const bName =
+                getDisplayName(b);
+
+
+            return aName.localeCompare(
+                bName,
+                "bn"
+            );
+        }
+    );
+}
+
+
+function renderEmergencyFinderMessage(
+    title,
+    description
+) {
+
+    const {
+        results
+    } =
+        getEmergencyFinderElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    results.innerHTML = `
+        <div class="interface-empty">
+
+            <strong>
+                ${escapeHTML(title)}
+            </strong>
+
+            <span>
+                ${escapeHTML(description)}
+            </span>
+
+        </div>
+    `;
+
+    updateEmergencyResultsCount(0);
+}
+
+
+function renderEmergencyFinderResults() {
+
+    const {
+        results
+    } =
+        getEmergencyFinderElements();
+
+
+    if (!results) {
+        return;
+    }
+
+
+    const location =
+        getEmergencySelectedLocation();
+
+
+    emergencyFinderState.selectedDivisionId =
+        location.divisionId;
+
+    emergencyFinderState.selectedDistrictId =
+        location.districtId;
+
+    emergencyFinderState.selectedUpazilaId =
+        location.upazilaId;
+
+
+    updateEmergencySavedLocationText(
+        location
+    );
+
+
+    if (!location.divisionId) {
+
+        renderEmergencyFinderMessage(
+            "এলাকা নির্বাচন করুন",
+            "বিভাগ নির্বাচন করলে আপনার এলাকার জরুরি নম্বর এখানে দেখাবে।"
+        );
+
+        return;
+    }
+
+
+    const filtered =
+        emergencyFinderState.contacts
+            .filter((record) =>
+                emergencyMatchesSelectedLocation(
+                    record,
+                    location
+                )
+            )
+            .filter((record) =>
+                emergencySearchMatches(
+                    record,
+                    emergencyFinderState.search
+                )
+            );
+
+
+    const sorted =
+        sortEmergencyFinderRecords(
+            filtered
+        );
+
+
+    updateEmergencyResultsCount(
+        sorted.length
+    );
+
+
+    if (!sorted.length) {
+
+        renderEmergencyFinderMessage(
+            "এই এলাকায় নম্বর পাওয়া যায়নি",
+            emergencyFinderState.search
+                ? "অন্য নাম বা নম্বর দিয়ে খুঁজে দেখুন।"
+                : "অন্য একটি এলাকা নির্বাচন করুন।"
+        );
+
+        return;
+    }
+
+
+    renderEmergencyRecords(
+        sorted,
+        "#emergencyInterfaceResults"
+    );
+}
+
+
+function populateEmergencyDistricts(
+    divisionId,
+    selectedDistrictId = ""
+) {
+
+    const {
+        district,
+        upazila
+    } =
+        getEmergencyFinderElements();
+
+
+    if (!district || !upazila) {
+        return;
+    }
+
+
+    const districts =
+        homeLocationState.districts
+            .filter((item) =>
+                emergencySameId(
+                    item.division_id,
+                    divisionId
+                )
+            );
+
+
+    fillLocationSelect(
+        district,
+        districts,
+        "সব জেলা"
+    );
+
+
+    district.disabled =
+        !divisionId ||
+        districts.length === 0;
+
+
+    resetLocationSelect(
+        upazila,
+        "সব উপজেলা"
+    );
+
+
+    if (selectedDistrictId && districts.some((item) =>
+        emergencySameId(
+            item.id,
+            selectedDistrictId
+        )
+    )) {
+
+        district.value =
+            selectedDistrictId;
+
+        populateEmergencyUpazilas(
+            selectedDistrictId
+        );
+    }
+}
+
+
+function populateEmergencyUpazilas(
+    districtId,
+    selectedUpazilaId = ""
+) {
+
+    const {
+        upazila
+    } =
+        getEmergencyFinderElements();
+
+
+    if (!upazila) {
+        return;
+    }
+
+
+    const upazilas =
+        homeLocationState.upazilas
+            .filter((item) =>
+                emergencySameId(
+                    item.district_id,
+                    districtId
+                )
+            );
+
+
+    fillLocationSelect(
+        upazila,
+        upazilas,
+        "সব উপজেলা"
+    );
+
+
+    upazila.disabled =
+        !districtId ||
+        upazilas.length === 0;
+
+
+    if (selectedUpazilaId && upazilas.some((item) =>
+        emergencySameId(
+            item.id,
+            selectedUpazilaId
+        )
+    )) {
+
+        upazila.value =
+            selectedUpazilaId;
+    }
+}
+
+
+function populateEmergencyLocationFilters() {
+
+    const {
+        division
+    } =
+        getEmergencyFinderElements();
+
+
+    if (!division) {
+        return;
+    }
+
+
+    fillLocationSelect(
+        division,
+        homeLocationState.divisions,
+        "সব বিভাগ"
+    );
+
+
+    division.disabled =
+        homeLocationState.divisions.length === 0;
+
+
+    const saved =
+        getSavedHomeLocation();
+
+
+    if (
+        saved?.divisionId &&
+        homeLocationState.divisions.some((item) =>
+            emergencySameId(
+                item.id,
+                saved.divisionId
+            )
+        )
+    ) {
+
+        division.value =
+            saved.divisionId;
+
+        populateEmergencyDistricts(
+            saved.divisionId,
+            saved.districtId
+        );
+
+        const {
+            district
+        } =
+            getEmergencyFinderElements();
+
+        const districtId =
+            district?.value || "";
+
+        populateEmergencyUpazilas(
+            districtId,
+            saved.upazilaId
+        );
+
+        const {
+            upazila
+        } =
+            getEmergencyFinderElements();
+
+        if (
+            districtId &&
+            upazila &&
+            saved.upazilaId &&
+            homeLocationState.upazilas.some((item) =>
+                emergencySameId(
+                    item.id,
+                    saved.upazilaId
+                ) &&
+                emergencySameId(
+                    item.district_id,
+                    districtId
+                )
+            )
+        ) {
+            upazila.value =
+                saved.upazilaId;
+        }
+
+    } else {
+
+        const {
+            district,
+            upazila
+        } =
+            getEmergencyFinderElements();
+
+        resetLocationSelect(
+            district,
+            "সব জেলা"
+        );
+
+        resetLocationSelect(
+            upazila,
+            "সব উপজেলা"
+        );
+    }
+
+
+    updateEmergencySavedLocationText(
+        getEmergencySelectedLocation()
+    );
+
+    renderEmergencyFinderResults();
+}
+
+
+function applySavedEmergencyLocation(
+    showMessage = true
+) {
+
+    const saved =
+        getSavedHomeLocation();
+
+
+    if (!saved?.divisionId) {
+
+        if (showMessage) {
+
+            showToast(
+                "আগে হোম থেকে আপনার লোকেশন সংরক্ষণ করুন"
+            );
+        }
+
+        return;
+    }
+
+
+    const {
+        division,
+        district,
+        upazila
+    } =
+        getEmergencyFinderElements();
+
+
+    if (!division || !district || !upazila) {
+        return;
+    }
+
+
+    division.value =
+        saved.divisionId;
+
+
+    populateEmergencyDistricts(
+        saved.divisionId,
+        saved.districtId
+    );
+
+
+    const activeDistrictId =
+        district.value ||
+        saved.districtId ||
+        "";
+
+
+    populateEmergencyUpazilas(
+        activeDistrictId,
+        saved.upazilaId
+    );
+
+
+    updateEmergencySavedLocationText(
+        getEmergencySelectedLocation()
+    );
+
+    renderEmergencyFinderResults();
+}
+
+
+async function loadEmergencyFinderData() {
+
+    if (emergencyFinderState.loaded || emergencyFinderState.loading) {
+        return;
+    }
+
+
+    if (!dorkariSupabase) {
+
+        renderEmergencyFinderMessage(
+            "তথ্য লোড করা যায়নি",
+            "জরুরি সেবার তথ্য পেতে Supabase সংযোগ প্রয়োজন।"
+        );
+
+        return;
+    }
+
+
+    emergencyFinderState.loading =
+        true;
+
+
+    const {
+        results
+    } =
+        getEmergencyFinderElements();
+
+
+    if (results) {
+        results.innerHTML = `
+            <div class="interface-loading">
+                জরুরি নম্বর লোড হচ্ছে…
+            </div>
+        `;
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await dorkariSupabase
+                .from(
+                    "emergency_contacts"
+                )
+                .select(
+                    `
+                    id,
+                    category_id,
+                    name,
+                    name_bn,
+                    phone,
+                    description,
+                    division_id,
+                    district_id,
+                    upazila_id,
+                    is_national,
+                    is_verified,
+                    is_active,
+                    last_updated,
+                    created_at
+                    `
+                )
+                .eq(
+                    "is_active",
+                    true
+                )
+                .order(
+                    "created_at",
+                    {
+                        ascending: true
+                    }
+                );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        emergencyFinderState.contacts =
+            Array.isArray(data)
+                ? data.filter((record) =>
+                    !record.is_national
+                )
+                : [];
+
+        emergencyFinderState.loaded =
+            true;
+
+        renderEmergencyFinderResults();
+
+    } catch (error) {
+
+        console.error(
+            "Emergency finder load failed:",
+            error
+        );
+
+        renderEmergencyFinderMessage(
+            "তথ্য লোড করা যায়নি",
+            "জরুরি সেবার তথ্য সাময়িকভাবে পাওয়া যাচ্ছে না।"
+        );
+
+    } finally {
+
+        emergencyFinderState.loading =
+            false;
+    }
+}
+
+
+function initializeEmergencyFinder() {
+
+    const elements =
+        getEmergencyFinderElements();
+
+
+    if (
+        !elements.interface ||
+        emergencyFinderState.initialized
+    ) {
+        return;
+    }
+
+
+    emergencyFinderState.initialized =
+        true;
+
+
+    elements.division?.addEventListener(
+        "change",
+        () => {
+
+            populateEmergencyDistricts(
+                elements.division.value
+            );
+
+            emergencyFinderState.search =
+                cleanText(
+                    elements.search?.value
+                );
+
+            renderEmergencyFinderResults();
+        }
+    );
+
+
+    elements.district?.addEventListener(
+        "change",
+        () => {
+
+            populateEmergencyUpazilas(
+                elements.district.value
+            );
+
+            renderEmergencyFinderResults();
+        }
+    );
+
+
+    elements.upazila?.addEventListener(
+        "change",
+        () => {
+
+            renderEmergencyFinderResults();
+        }
+    );
+
+
+    elements.search?.addEventListener(
+        "input",
+        () => {
+
+            emergencyFinderState.search =
+                cleanText(
+                    elements.search.value
+                );
+
+            renderEmergencyFinderResults();
+        }
+    );
+
+
+    elements.reset?.addEventListener(
+        "click",
+        () => {
+
+            emergencyFinderState.search =
+                "";
+
+            if (elements.search) {
+                elements.search.value = "";
+            }
+
+            if (elements.division) {
+                elements.division.value = "";
+            }
+
+            if (elements.district) {
+                resetLocationSelect(
+                    elements.district,
+                    "সব জেলা"
+                );
+            }
+
+            if (elements.upazila) {
+                resetLocationSelect(
+                    elements.upazila,
+                    "সব উপজেলা"
+                );
+            }
+
+            updateEmergencySavedLocationText({});
+            renderEmergencyFinderResults();
+        }
+    );
+
+
+    elements.useSavedLocation?.addEventListener(
+        "click",
+        () => {
+
+            applySavedEmergencyLocation(
+                true
+            );
+        }
+    );
+
+
+    /*
+     * Emergency interface খোলার সময়
+     * আগে সংরক্ষিত Home Location থাকলে
+     * সেটি নীরবে এখানে প্রয়োগ করি।
+     */
+    document.addEventListener(
+        "click",
+        (event) => {
+
+            const target =
+                event.target;
+
+            if (
+                !(target instanceof Element)
+            ) {
+                return;
+            }
+
+
+            const trigger =
+                target.closest(
+                    '[data-interface-open="emergency"], a[href="#emergency"], [data-section-target="emergency"]'
+                );
+
+            if (!trigger) {
+                return;
+            }
+
+
+            window.setTimeout(
+                () => {
+
+                    applySavedEmergencyLocation(
+                        false
+                    );
+
+                },
+                0
+            );
+        }
+    );
+
+
+    document.addEventListener(
+        "dorkari:locations-loaded",
+        () => {
+
+            populateEmergencyLocationFilters();
+        },
+        {
+            once: true
+        }
+    );
+
+
+    populateEmergencyLocationFilters();
+    loadEmergencyFinderData();
 }
 
 
@@ -9748,6 +10869,7 @@ document.addEventListener(
         initializeGovernmentInterface();
         initializeDoctorInterface();
         initializeAmbulanceInterface();
+        initializeEmergencyFinder();
 
         initializeHomeLocationEvents();
 
