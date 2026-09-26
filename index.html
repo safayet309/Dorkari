@@ -28,190 +28,117 @@
     <link href="css/dorkari-redesign.css" rel="stylesheet" />
     <style id="dorkari-hero-background">
     /* =========================================================
-       DORKARI — FINAL HERO
-       Full image visible / no crop / no blur
-       Headline stays over the image
+       DORKARI — RESPONSIVE HERO BANNER ONLY
+       Existing hero content/functionality is preserved.
+       The banner image itself is 16:9.
        ========================================================= */
 
     .hero-section {
-        position: relative;
-        overflow: hidden;
-        isolation: isolate;
-
-        padding: 38px 0 28px !important;
-
-        min-height: 0 !important;
-
+        position: relative !important;
+        overflow: hidden !important;
+        isolation: isolate !important;
         background: #eef8f3 !important;
     }
 
-
-    /* ---------------------------------------------------------
-       FULL IMAGE
-       The image box itself uses the original 4:3 ratio,
-       so the source image is shown 100% without cropping.
-       --------------------------------------------------------- */
-
-    .hero-section::before {
-        content: "" !important;
-
+    /* One banner only — no pseudo-image, no duplicate background. */
+    .hero-section .hero-banner {
         position: absolute !important;
-
-        top: 8px !important;
+        top: 0 !important;
         left: 50% !important;
-
-        width: min(94vw, 960px) !important;
-        aspect-ratio: 1448 / 1086 !important;
-
-        height: auto !important;
-
+        width: min(100%, 1200px) !important;
+        aspect-ratio: 16 / 9 !important;
         transform: translateX(-50%) !important;
-
         z-index: 0 !important;
-
-        border-radius: 0 !important;
-
-        background-image: url("assets/images/dorkari-hero-bg.png") !important;
-        background-size: 100% 100% !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important;
-
-        filter: none !important;
-
+        overflow: hidden !important;
         pointer-events: none !important;
     }
 
+    .hero-section .hero-banner img {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: center center !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        filter: none !important;
+    }
 
-    /* ---------------------------------------------------------
-       SOFT READABILITY LAYER
-       No blur — only a gentle white/mint overlay.
-       --------------------------------------------------------- */
-
-    .hero-section::after {
+    /* Gentle readability layer only; never blur the banner. */
+    .hero-section .hero-banner::after {
         content: "" !important;
-
         position: absolute !important;
-
-        top: 8px !important;
-        left: 50% !important;
-
-        width: min(94vw, 960px) !important;
-        aspect-ratio: 1448 / 1086 !important;
-
-        height: auto !important;
-
-        transform: translateX(-50%) !important;
-
-        z-index: 1 !important;
-
-        border-radius: 0 !important;
-
-        background:
-            linear-gradient(
-                90deg,
-                rgba(246, 251, 248, 0.72) 0%,
-                rgba(246, 251, 248, 0.38) 40%,
-                rgba(246, 251, 248, 0.08) 74%,
-                rgba(246, 251, 248, 0.00) 100%
-            ) !important;
-
-        filter: none !important;
-
+        inset: 0 !important;
+        background: linear-gradient(
+            90deg,
+            rgba(246, 251, 248, .72) 0%,
+            rgba(246, 251, 248, .40) 40%,
+            rgba(246, 251, 248, .10) 74%,
+            rgba(246, 251, 248, 0) 100%
+        ) !important;
         pointer-events: none !important;
     }
 
-
-    /* ---------------------------------------------------------
-       CONTENT
-       --------------------------------------------------------- */
+    /* Disable the previous pseudo-element image layers. */
+    .hero-section::before,
+    .hero-section::after {
+        content: none !important;
+        display: none !important;
+    }
 
     .hero-section .hero-grid {
         position: relative !important;
-
         z-index: 2 !important;
-
         min-height: 0 !important;
-
-        display: grid !important;
-
         grid-template-columns: minmax(0, 1fr) !important;
-
-        align-items: start !important;
     }
-
 
     .hero-section .hero-content {
         position: relative !important;
-
         z-index: 3 !important;
-
         width: 100% !important;
-
         max-width: 820px !important;
-
-        padding-top: 18px !important;
     }
 
-
-    .hero-section .hero-content h1 {
-        position: relative !important;
-
-        z-index: 4 !important;
-
-        max-width: 820px !important;
-
-        margin-top: 18px;
-
-        text-shadow:
-            0 2px 0 rgba(255, 255, 255, 0.88),
-            0 6px 18px rgba(255, 255, 255, 0.16);
-    }
-
-
-    .hero-section .hero-description {
-        position: relative !important;
-
-        z-index: 4 !important;
-
-        max-width: 700px !important;
-    }
-
-
+    .hero-section .hero-content h1,
+    .hero-section .hero-description,
     .hero-section .search-box,
     .hero-section .search-suggestions,
     .hero-section .hero-meta-row {
         position: relative !important;
-
-        z-index: 5 !important;
+        z-index: 4 !important;
     }
 
+    .hero-section .hero-content h1 {
+        text-shadow:
+            0 2px 0 rgba(255,255,255,.88),
+            0 6px 18px rgba(255,255,255,.16);
+    }
+
+    .hero-section .hero-description {
+        max-width: 700px !important;
+    }
 
     .hero-section .search-box {
+        z-index: 6 !important;
         box-shadow:
-            0 14px 34px rgba(4, 61, 45, 0.09),
-            0 2px 0 rgba(255, 255, 255, 0.80);
+            0 18px 42px rgba(4,61,45,.10),
+            0 2px 0 rgba(255,255,255,.78);
     }
 
-
-    /* পুরোনো CSS-এর গোল/blur decoration পুরোপুরি বন্ধ */
+    /* Keep the old decorative phone visual out of the way; no functionality uses it. */
     .hero-section .hero-visual {
         display: none !important;
     }
 
-
-    /* ---------------------------------------------------------
-       DESKTOP
-       --------------------------------------------------------- */
-
+    /* Desktop: banner stays compact instead of making the whole hero excessively tall. */
     @media (min-width: 901px) {
-
         .hero-section {
             padding: 44px 0 30px !important;
         }
 
-        .hero-section::before,
-        .hero-section::after {
-            width: min(94vw, 960px) !important;
+        .hero-section .hero-banner {
+            width: min(100%, 1120px) !important;
         }
 
         .hero-section .hero-content {
@@ -222,32 +149,16 @@
             font-size: clamp(48px, 4.8vw, 64px) !important;
             line-height: 1.08 !important;
         }
-
-        .hero-section .hero-description {
-            font-size: 16px !important;
-            line-height: 1.7 !important;
-        }
     }
 
-
-    /* ---------------------------------------------------------
-       TABLET
-       --------------------------------------------------------- */
-
+    /* Tablet */
     @media (max-width: 900px) {
-
         .hero-section {
             padding: 30px 0 26px !important;
         }
 
-        .hero-section::before,
-        .hero-section::after {
-            width: 94vw !important;
-        }
-
-        .hero-section .hero-content {
-            max-width: 760px !important;
-            padding-top: 12px !important;
+        .hero-section .hero-banner {
+            width: 100% !important;
         }
 
         .hero-section .hero-content h1 {
@@ -256,134 +167,68 @@
         }
     }
 
-
-    /* ---------------------------------------------------------
-       MOBILE
-       --------------------------------------------------------- */
-
+    /* Mobile: same 16:9 banner, same image, with a controlled focal point. */
     @media (max-width: 760px) {
-
         .hero-section {
             padding: 22px 0 20px !important;
-
-            min-height: 0 !important;
-
-            background: #eef8f3 !important;
         }
 
-
-        .hero-section::before,
-        .hero-section::after {
-            top: 4px !important;
-
-            left: 50% !important;
-
-            width: 96vw !important;
-
-            aspect-ratio: 1448 / 1086 !important;
-
-            height: auto !important;
-
-            transform: translateX(-50%) !important;
+        .hero-section .hero-banner {
+            width: 100% !important;
+            aspect-ratio: 16 / 9 !important;
         }
 
-
-        .hero-section .hero-grid {
-            min-height: 0 !important;
-
-            grid-template-columns: 1fr !important;
+        .hero-section .hero-banner img {
+            object-position: 62% center !important;
         }
-
 
         .hero-section .hero-content {
-            width: 100% !important;
-
             max-width: 100% !important;
-
             padding-top: 14px !important;
         }
 
-
-        /* Mobile headline smaller, so the image remains visually dominant. */
         .hero-section .hero-content h1 {
             max-width: 100% !important;
-
             margin-top: 14px !important;
-
             font-size: clamp(30px, 8.6vw, 36px) !important;
-
             line-height: 1.16 !important;
-
-            letter-spacing: -0.025em !important;
-
-            text-shadow:
-                0 2px 0 rgba(255, 255, 255, 0.92),
-                0 4px 12px rgba(255, 255, 255, 0.18);
+            letter-spacing: -.025em !important;
         }
-
 
         .hero-section .hero-description {
             max-width: 94% !important;
-
             font-size: 13px !important;
-
             line-height: 1.72 !important;
         }
 
-
-        .hero-section .search-box {
-            width: 100% !important;
-        }
-
-
+        .hero-section .search-box,
         .hero-section .search-suggestions,
         .hero-section .hero-meta-row {
             width: 100% !important;
         }
     }
 
-
-    /* ---------------------------------------------------------
-       SMALL MOBILE
-       --------------------------------------------------------- */
-
     @media (max-width: 430px) {
-
         .hero-section {
             padding: 18px 0 18px !important;
         }
 
-
-        .hero-section::before,
-        .hero-section::after {
-            width: 96vw !important;
+        .hero-section .hero-banner {
+            width: 100% !important;
+            aspect-ratio: 16 / 9 !important;
         }
-
-
-        .hero-section .hero-content {
-            padding-top: 12px !important;
-        }
-
 
         .hero-section .hero-content h1 {
             font-size: clamp(29px, 8.3vw, 34px) !important;
-
             line-height: 1.17 !important;
         }
-
 
         .hero-section .hero-description {
             font-size: 12.5px !important;
         }
     }
 
-
-    /* ---------------------------------------------------------
-       VERY SMALL PHONES
-       --------------------------------------------------------- */
-
     @media (max-width: 360px) {
-
         .hero-section .hero-content h1 {
             font-size: 28px !important;
         }
@@ -392,7 +237,6 @@
             font-size: 12px !important;
         }
     }
-
 </style>
     <style>
         html,
@@ -1470,322 +1314,6 @@
         }
     </style>
 
-
-    <style id="dorkari-emergency-interface">
-        /* =========================================================
-           DORKARI — EMERGENCY FINDER
-           UI mapping only. Data/logic handled by app.js.
-           Existing card language and sizing are preserved.
-           ========================================================= */
-
-        .emergency-national-card,
-        .emergency-location-card,
-        .emergency-results-shell {
-            width: 100%;
-            margin-top: 18px;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            background: var(--surface);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .emergency-national-card {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 18px;
-            align-items: center;
-            padding: 16px;
-            border-color: #f1d9dc;
-            background:
-                linear-gradient(
-                    135deg,
-                    #fffafa 0%,
-                    #ffffff 70%
-                );
-        }
-
-        .emergency-national-card-main {
-            min-width: 0;
-            display: grid;
-            gap: 4px;
-        }
-
-        .emergency-national-badge {
-            width: fit-content;
-            min-height: 24px;
-            display: inline-flex;
-            align-items: center;
-            padding: 4px 8px;
-            border: 1px solid #f0d7da;
-            border-radius: var(--radius-pill);
-            background: var(--accent-light);
-            color: var(--accent-dark);
-            font-size: 9px;
-            font-weight: 900;
-        }
-
-        .emergency-national-number {
-            color: var(--accent-dark);
-            font-size: 28px;
-            font-weight: 950;
-            line-height: 1.1;
-        }
-
-        .emergency-national-copy {
-            color: var(--text-soft);
-            font-size: 11px;
-            line-height: 1.5;
-        }
-
-        .emergency-national-actions {
-            margin-top: 0;
-        }
-
-        .emergency-national-actions .interface-primary-action {
-            min-width: 154px;
-        }
-
-        .emergency-location-card {
-            padding: 16px;
-        }
-
-        .emergency-location-card-heading,
-        .emergency-results-heading {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-        }
-
-        .emergency-location-card-heading h3,
-        .emergency-results-heading h3 {
-            margin: 3px 0 0;
-            color: var(--text);
-            font-size: 17px;
-            font-weight: 950;
-            line-height: 1.35;
-        }
-
-        .emergency-location-card-heading p {
-            margin: 4px 0 0;
-            color: var(--text-soft);
-            font-size: 10px;
-            line-height: 1.5;
-        }
-
-        .emergency-location-sync,
-        .emergency-filter-reset {
-            min-height: 36px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            flex: 0 0 auto;
-            padding: 0 10px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            background: var(--surface-soft);
-            color: var(--primary);
-            font-family: inherit;
-            font-size: 9px;
-            font-weight: 900;
-            cursor: pointer;
-        }
-
-        .emergency-location-filter {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 9px;
-            margin-top: 14px;
-        }
-
-        .emergency-filter-field {
-            display: grid;
-            gap: 5px;
-        }
-
-        .emergency-filter-field > span {
-            color: var(--text-soft);
-            font-size: 9px;
-            font-weight: 900;
-        }
-
-        .emergency-filter-field select {
-            width: 100%;
-            min-height: 40px;
-            padding: 0 10px;
-            border: 1px solid var(--border);
-            border-radius: 11px;
-            outline: none;
-            background: #ffffff;
-            color: var(--text);
-            font: inherit;
-            font-size: 10px;
-            font-weight: 800;
-        }
-
-        .emergency-filter-field select:focus-visible {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(11, 122, 85, 0.09);
-        }
-
-        .emergency-search-row {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .emergency-search-box {
-            min-height: 42px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 12px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            background: #ffffff;
-        }
-
-        .emergency-search-icon {
-            display: grid;
-            place-items: center;
-            color: var(--text-muted);
-            flex: 0 0 auto;
-        }
-
-        .emergency-search-box input {
-            width: 100%;
-            min-width: 0;
-            border: 0;
-            outline: 0;
-            background: transparent;
-            color: var(--text);
-            font: inherit;
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .emergency-search-box:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(11, 122, 85, 0.08);
-        }
-
-        .emergency-results-shell {
-            padding: 16px;
-        }
-
-        .emergency-results-count {
-            min-height: 28px;
-            min-width: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 8px;
-            border: 1px solid #d5e9df;
-            border-radius: var(--radius-pill);
-            background: var(--primary-light);
-            color: var(--primary);
-            font-size: 9px;
-            font-weight: 950;
-            white-space: nowrap;
-        }
-
-        .emergency-interface-empty {
-            margin-top: 14px;
-        }
-
-        @media (max-width: 760px) {
-            .emergency-national-card {
-                grid-template-columns: 1fr;
-                gap: 12px;
-                padding: 13px;
-                border-radius: 16px;
-            }
-
-            .emergency-national-number {
-                font-size: 24px;
-            }
-
-            .emergency-national-actions .interface-primary-action {
-                width: 100%;
-                min-width: 0;
-            }
-
-            .emergency-location-card,
-            .emergency-results-shell {
-                padding: 13px;
-                border-radius: 16px;
-            }
-
-            .emergency-location-card-heading,
-            .emergency-results-heading {
-                align-items: flex-start;
-            }
-
-            .emergency-location-sync {
-                min-height: 34px;
-                padding: 0 8px;
-                font-size: 8px;
-            }
-
-            .emergency-location-filter {
-                grid-template-columns: 1fr;
-                gap: 8px;
-            }
-
-            .emergency-filter-field select {
-                min-height: 38px;
-            }
-
-            .emergency-search-row {
-                grid-template-columns: 1fr;
-            }
-
-            .emergency-filter-reset {
-                width: 100%;
-            }
-
-            .emergency-location-card-heading h3,
-            .emergency-results-heading h3 {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 430px) {
-            .emergency-national-card,
-            .emergency-location-card,
-            .emergency-results-shell {
-                border-radius: 15px;
-            }
-
-            .emergency-national-badge {
-                font-size: 8px;
-            }
-
-            .emergency-national-number {
-                font-size: 22px;
-            }
-
-            .emergency-national-copy {
-                font-size: 9px;
-            }
-
-            .emergency-location-sync {
-                min-height: 32px;
-                font-size: 7.5px;
-            }
-
-            .emergency-filter-field > span {
-                font-size: 8px;
-            }
-
-            .emergency-filter-field select,
-            .emergency-search-box input,
-            .emergency-filter-reset {
-                font-size: 9px;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -1922,6 +1450,10 @@
              HOME
              ================================================= -->
         <section class="hero-section" id="home">
+            <!-- Single responsive 16:9 banner. Existing hero content remains unchanged. -->
+            <div class="hero-banner" aria-hidden="true">
+                <img src="assets/images/dorkari-hero-bg.png" alt="" loading="eager" decoding="async" />
+            </div>
             <div class="container">
                 <div class="hero-grid">
 
@@ -1935,16 +1467,16 @@
                             আপনার দৈনন্দিন জীবনের প্রয়োজনীয় সব সেবা, এখন এক জায়গায়।
                         </div>
 
-                        <h1>
+                        <h2>
                             প্রয়োজনের মুহূর্তে
                             <br />
                             <span>
                                 তথ্য থাকুক হাতের কাছে।
                             </span>
-                        </h1>
+                        </h2>
 
                         <p class="hero-description">
-                            হাসপাতাল, ডাক্তার, অ্যাম্বুলেন্স, জরুরি নম্বর, সরকারি সেবা—
+                            হাসপাতাল, ডাক্তার, অ্যাম্বুলেন্স, জরুরি নম্বর, সরকারি সেবা <br>
                             আপনার প্রয়োজনের তথ্য এক জায়গা থেকেই সহজে খুঁজে নিন।
                         </p>
 
@@ -2728,114 +2260,7 @@
                 <!-- =================================================
              LOCATION
              ================================================= -->
-                <section aria-labelledby="locationTitle" class="location-section" id="location">
-                    <article class="location-card">
-
-                        <!-- LOCATION CONTENT -->
-                        <div class="location-card-copy">
-
-                            <span class="section-label">
-                                ব্যক্তিগত করুন
-                            </span>
-
-                            <h2 id="locationTitle">
-                                আপনার এলাকার তথ্য দেখুন
-                            </h2>
-
-                            <p>
-                                আপনার এলাকা বেছে নিলে
-                                সেই এলাকার প্রয়োজনীয় সেবা
-                                আরও দ্রুত খুঁজে পাওয়া যাবে।
-                            </p>
-
-                        </div>
-
-
-                        <!-- LOCATION ICON -->
-                        <div aria-hidden="true" class="location-badge">
-                            <span>
-                                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-                                        stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
-                                    <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
-                                </svg>
-                            </span>
-
-                            <small>
-                                লোকেশন
-                            </small>
-                        </div>
-
-
-                        <!-- LOCATION SELECTORS -->
-                        <div class="location-form">
-
-                            <!-- DIVISION -->
-                            <label>
-                                <span>
-                                    বিভাগ
-                                </span>
-
-                                <select aria-label="বিভাগ নির্বাচন করুন" id="homeDivision">
-                                    <option value="">
-                                        বিভাগ নির্বাচন করুন
-                                    </option>
-                                </select>
-                            </label>
-
-
-                            <!-- DISTRICT -->
-                            <label>
-                                <span>
-                                    জেলা
-                                </span>
-
-                                <select aria-label="জেলা নির্বাচন করুন" disabled id="homeDistrict">
-                                    <option value="">
-                                        জেলা নির্বাচন করুন
-                                    </option>
-                                </select>
-                            </label>
-
-
-                            <!-- UPAZILA -->
-                            <label>
-                                <span>
-                                    উপজেলা
-                                </span>
-
-                                <select aria-label="উপজেলা নির্বাচন করুন" disabled id="homeUpazila">
-                                    <option value="">
-                                        উপজেলা নির্বাচন করুন
-                                    </option>
-                                </select>
-                            </label>
-
-                        </div>
-
-
-                        <!-- LOCATION FOOTER -->
-                        <div class="location-card-footer">
-
-                            <span aria-live="polite" class="location-saved" id="locationSavedState">
-                                আপনার নির্বাচন এই ডিভাইসে মনে রাখা হবে।
-                            </span>
-
-
-                            <button class="location-action" id="locationSearchButton" type="button">
-                                এলাকার তথ্য দেখুন
-
-                                <span aria-hidden="true">
-                                    &rarr;
-                                </span>
-                            </button>
-
-                        </div>
-
-                    </article>
-                </section>
+                
 
 
                 <!-- =================================================
@@ -3988,291 +3413,38 @@
                 <!-- =================================================
                      EMERGENCY INTERFACE
                      ================================================= -->
-                <section
-                    aria-labelledby="emergencyInterfaceTitle"
-                    class="service-interface"
-                    data-interface="emergency"
-                    hidden=""
-                    id="emergencyInterface"
-                >
-
-                    <!-- =================================================
-                         HEADER
-                         ================================================= -->
+                <section aria-labelledby="emergencyInterfaceTitle" class="service-interface" data-interface="emergency"
+                    hidden="" id="emergencyInterface">
                     <div class="service-interface-header">
-
-                        <button
-                            class="service-interface-back"
-                            data-interface-back=""
-                            type="button"
-                        >
+                        <button class="service-interface-back" data-interface-back="" type="button">
                             &larr;
                             <span>
                                 হোমে ফিরুন
                             </span>
                         </button>
-
-                        <span class="service-interface-icon is-emergency" aria-hidden="true">
+                        <span class="service-interface-icon is-emergency">
                             !
                         </span>
-
                         <div>
                             <span class="section-label emergency-label">
                                 জরুরি সেবা
                             </span>
-
                             <h2 id="emergencyInterfaceTitle">
-                                আপনার এলাকার জরুরি নম্বর
+                                দ্রুত সহায়তা নিন
                             </h2>
-
                             <p>
-                                জাতীয় জরুরি সেবার পাশাপাশি
-                                বিভাগ, জেলা ও উপজেলা অনুযায়ী
-                                প্রয়োজনীয় যোগাযোগ খুঁজে নিন।
+                                জরুরি নম্বর ও প্রয়োজনীয়
+                                যোগাযোগ এক জায়গায়।
                             </p>
                         </div>
-
                     </div>
-
-
-                    <!-- =================================================
-                         NATIONAL EMERGENCY
-                         Existing 999 action preserved
-                         ================================================= -->
-                    <article class="emergency-national-card">
-
-                        <div class="emergency-national-card-main">
-
-                            <span class="emergency-national-badge">
-                                🇧🇩 জাতীয় জরুরি সেবা
-                            </span>
-
-                            <strong class="emergency-national-number">
-                                ৯৯৯
-                            </strong>
-
-                            <span class="emergency-national-copy">
-                                পুলিশ, ফায়ার সার্ভিস ও অ্যাম্বুলেন্স
-                            </span>
-
-                        </div>
-
-                        <div class="service-interface-actions emergency-national-actions">
-
-                            <a
-                                class="interface-primary-action is-red"
-                                href="tel:999"
-                                aria-label="৯৯৯ জাতীয় জরুরি সেবায় কল করুন"
-                            >
-                                📞 ৯৯৯ কল করুন
-                            </a>
-
-                        </div>
-
-                    </article>
-
-
-                    <!-- =================================================
-                         SAVED LOCATION SUMMARY
-                         app.js will sync this from the existing
-                         home location state.
-                         ================================================= -->
-                    <section
-                        aria-labelledby="emergencyLocationTitle"
-                        class="emergency-location-card"
-                    >
-
-                        <div class="emergency-location-card-heading">
-
-                            <div>
-                                <span class="section-label">
-                                    আপনার এলাকা
-                                </span>
-
-                                <h3 id="emergencyLocationTitle">
-                                    লোকেশন অনুযায়ী নম্বর
-                                </h3>
-
-                                <p id="emergencySavedLocation">
-                                    লোকেশন নির্বাচন করুন
-                                </p>
-                            </div>
-
-                            <button
-                                class="emergency-location-sync"
-                                id="emergencyUseSavedLocation"
-                                type="button"
-                            >
-                                আমার লোকেশন ব্যবহার
-                            </button>
-
-                        </div>
-
-
-                        <!-- =================================================
-                             LOCATION FILTERS
-                             ================================================= -->
-                        <div
-                            aria-label="জরুরি নম্বরের এলাকা নির্বাচন"
-                            class="emergency-location-filter"
-                        >
-
-                            <label class="emergency-filter-field">
-                                <span>
-                                    বিভাগ
-                                </span>
-
-                                <select
-                                    aria-label="জরুরি নম্বরের বিভাগ নির্বাচন করুন"
-                                    data-emergency-filter="division"
-                                    id="emergencyFilterDivision"
-                                >
-                                    <option value="">
-                                        সব বিভাগ
-                                    </option>
-                                </select>
-                            </label>
-
-
-                            <label class="emergency-filter-field">
-                                <span>
-                                    জেলা
-                                </span>
-
-                                <select
-                                    aria-label="জরুরি নম্বরের জেলা নির্বাচন করুন"
-                                    data-emergency-filter="district"
-                                    disabled
-                                    id="emergencyFilterDistrict"
-                                >
-                                    <option value="">
-                                        সব জেলা
-                                    </option>
-                                </select>
-                            </label>
-
-
-                            <label class="emergency-filter-field">
-                                <span>
-                                    উপজেলা
-                                </span>
-
-                                <select
-                                    aria-label="জরুরি নম্বরের উপজেলা নির্বাচন করুন"
-                                    data-emergency-filter="upazila"
-                                    disabled
-                                    id="emergencyFilterUpazila"
-                                >
-                                    <option value="">
-                                        সব উপজেলা
-                                    </option>
-                                </select>
-                            </label>
-
-                        </div>
-
-
-                        <!-- =================================================
-                             SEARCH
-                             ================================================= -->
-                        <div class="emergency-search-row">
-
-                            <label
-                                class="emergency-search-box"
-                                for="emergencySearchInput"
-                            >
-                                <span aria-hidden="true" class="emergency-search-icon">
-                                    <svg
-                                        aria-hidden="true"
-                                        fill="none"
-                                        height="18"
-                                        viewBox="0 0 24 24"
-                                        width="18"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <circle
-                                            cx="11"
-                                            cy="11"
-                                            r="6.8"
-                                            stroke="currentColor"
-                                            stroke-width="1.7"
-                                        ></circle>
-
-                                        <path
-                                            d="M16.2 16.2L21 21"
-                                            stroke="currentColor"
-                                            stroke-linecap="round"
-                                            stroke-width="1.7"
-                                        ></path>
-                                    </svg>
-                                </span>
-
-                                <input
-                                    autocomplete="off"
-                                    id="emergencySearchInput"
-                                    inputmode="search"
-                                    placeholder="জরুরি সেবার নাম বা নম্বর খুঁজুন..."
-                                    type="search"
-                                />
-                            </label>
-
-                            <button
-                                class="emergency-filter-reset"
-                                id="emergencyFilterReset"
-                                type="button"
-                            >
-                                ফিল্টার রিসেট
-                            </button>
-
-                        </div>
-
-                    </section>
-
-
-                    <!-- =================================================
-                         RESULTS
-                         ================================================= -->
-                    <section
-                        aria-live="polite"
-                        aria-labelledby="emergencyResultsTitle"
-                        class="emergency-results-shell"
-                    >
-
-                        <div class="emergency-results-heading">
-
-                            <div>
-                                <span class="section-label emergency-label">
-                                    জরুরি যোগাযোগ
-                                </span>
-
-                                <h3 id="emergencyResultsTitle">
-                                    আপনার নির্বাচিত এলাকার নম্বর
-                                </h3>
-                            </div>
-
-                            <span
-                                class="emergency-results-count"
-                                id="emergencyResultsCount"
-                            >
-                                ০টি
-                            </span>
-
-                        </div>
-
-
-                        <div
-                            class="interface-results"
-                            data-interface-results="emergency"
-                            id="emergencyInterfaceResults"
-                        >
-                            <div class="interface-empty emergency-interface-empty">
-                                বিভাগ নির্বাচন করলে আপনার এলাকার
-                                জরুরি যোগাযোগ এখানে দেখাবে।
-                            </div>
-                        </div>
-
-                    </section>
-
+                    <div class="service-interface-actions">
+                        <a class="interface-primary-action is-red" href="tel:999">
+                            📞 ৯৯৯ কল করুন
+                        </a>
+                    </div>
+                    <div class="interface-results" data-interface-results="emergency">
+                    </div>
                 </section>
                 <!-- =================================================
                      HOSPITAL INTERFACE
