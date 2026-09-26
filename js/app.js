@@ -9563,24 +9563,15 @@ function renderEmergencyFinderResults() {
     );
 
 
-    if (!location.divisionId) {
-
-        renderEmergencyFinderMessage(
-            "এলাকা নির্বাচন করুন",
-            "বিভাগ নির্বাচন করলে আপনার এলাকার জরুরি নম্বর এখানে দেখাবে।"
-        );
-
-        return;
-    }
-
-
     const filtered =
         emergencyFinderState.contacts
             .filter((record) =>
-                emergencyMatchesSelectedLocation(
-                    record,
-                    location
-                )
+                !location.divisionId
+                    ? true
+                    : emergencyMatchesSelectedLocation(
+                        record,
+                        location
+                    )
             )
             .filter((record) =>
                 emergencySearchMatches(
@@ -9604,10 +9595,14 @@ function renderEmergencyFinderResults() {
     if (!sorted.length) {
 
         renderEmergencyFinderMessage(
-            "এই এলাকায় নম্বর পাওয়া যায়নি",
+            location.divisionId
+                ? "এই এলাকায় নম্বর পাওয়া যায়নি"
+                : "কোনো সক্রিয় জরুরি নম্বর পাওয়া যায়নি",
             emergencyFinderState.search
                 ? "অন্য নাম বা নম্বর দিয়ে খুঁজে দেখুন।"
-                : "অন্য একটি এলাকা নির্বাচন করুন।"
+                : location.divisionId
+                    ? "অন্য একটি এলাকা নির্বাচন করুন।"
+                    : "জরুরি সেবার তথ্য পরে আবার চেষ্টা করুন।"
         );
 
         return;
