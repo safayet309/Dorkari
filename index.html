@@ -3,9 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta
-        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-        name="viewport" />
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
     <meta content="#0b6b4f" name="theme-color" />
     <meta
         content="Dorkari &mdash; বাংলাদেশের প্রয়োজনীয় তথ্য এক জায়গায়। হাসপাতাল, ডাক্তার, অ্যাম্বুলেন্স, জরুরি সেবা, সরকারি তথ্য ও আরও দরকারি সেবা।"
@@ -28,6 +26,245 @@
     <link href="css/global.css" rel="stylesheet" />
     <link href="css/components.css" rel="stylesheet" />
     <link href="css/dorkari-redesign.css" rel="stylesheet" />
+        <style id="dorkari-hero-background">
+        /* =========================================================
+           DORKARI — HERO BACKGROUND
+           Single merged layer: original background + tuning overrides.
+           ========================================================= */
+
+        .hero-section {
+            position: relative;
+            overflow: hidden;
+
+            background-color: #eef8f3;
+
+            background-image:
+                linear-gradient(90deg,
+                    rgba(246, 251, 248, 0.94) 0%,
+                    rgba(246, 251, 248, 0.84) 27%,
+                    rgba(246, 251, 248, 0.55) 48%,
+                    rgba(246, 251, 248, 0.18) 72%,
+                    rgba(246, 251, 248, 0.02) 100%),
+                url("assets/images/dorkari-hero-bg.png");
+
+            background-size: cover;
+            background-position: 74% center;
+            background-repeat: no-repeat;
+        }
+
+
+        /* HERO CONTENT */
+        .hero-section .hero-grid {
+            position: relative;
+            z-index: 2;
+            grid-template-columns: minmax(0, 1fr) !important;
+        }
+
+
+        .hero-section .hero-content {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            max-width: 820px;
+        }
+
+
+        /* নতুন background-ই hero visual; পুরোনো phone illustration রাখা হয়েছে,
+           শুধু visual layer-এ দেখানো হচ্ছে না। */
+        .hero-section .hero-visual {
+            display: none !important;
+        }
+
+
+        /* Headline */
+        .hero-section .hero-content h1 {
+            position: relative;
+            z-index: 2;
+            max-width: 780px;
+            text-shadow:
+                0 2px 0 rgba(255, 255, 255, 0.72),
+                0 5px 18px rgba(255, 255, 255, 0.22);
+        }
+
+
+        .hero-section .hero-description {
+            position: relative;
+            z-index: 4;
+            max-width: 680px;
+        }
+
+
+        .hero-section .search-box,
+        .hero-section .search-suggestions,
+        .hero-section .hero-meta-row {
+            position: relative;
+            z-index: 4;
+        }
+
+
+        /* Search box tuning */
+        .hero-section .search-box {
+            z-index: 6;
+            box-shadow:
+                0 18px 42px rgba(4, 61, 45, 0.10),
+                0 2px 0 rgba(255, 255, 255, 0.78);
+        }
+
+
+        /* Soft text backdrop */
+        .hero-section .hero-content::before {
+            content: "";
+            position: absolute;
+            top: 54px;
+            left: -24px;
+            width: min(760px, 92%);
+            height: 300px;
+            background:
+                radial-gradient(ellipse at center,
+                    rgba(255, 255, 255, 0.50) 0%,
+                    rgba(255, 255, 255, 0.22) 48%,
+                    rgba(255, 255, 255, 0) 78%);
+            filter: blur(4px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+
+        /* =========================================================
+           DESKTOP
+           ========================================================= */
+        @media (min-width: 901px) {
+            .hero-section {
+                min-height: 650px;
+                background-size: cover;
+                background-position: 76% center;
+            }
+
+            .hero-section .hero-content {
+                max-width: 820px;
+            }
+        }
+
+
+        /* =========================================================
+           TABLET
+           ========================================================= */
+        @media (max-width: 900px) {
+            .hero-section {
+                background-position: 72% center;
+            }
+
+            .hero-section::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    linear-gradient(180deg,
+                        rgba(246, 251, 248, 0.10) 0%,
+                        rgba(246, 251, 248, 0.06) 48%,
+                        rgba(246, 251, 248, 0.24) 100%);
+                pointer-events: none;
+                z-index: 1;
+            }
+
+            .hero-section .hero-content {
+                max-width: 760px;
+            }
+
+            .hero-section .hero-content::before {
+                top: 42px;
+                left: -18px;
+                width: 92%;
+                height: 280px;
+            }
+        }
+
+
+        /* =========================================================
+           MOBILE
+           ========================================================= */
+        @media (max-width: 760px) {
+            .hero-section {
+                min-height: 750px;
+                background-size: cover;
+                background-position: 78% center;
+                background-image:
+                    linear-gradient(90deg,
+                        rgba(246, 251, 248, 0.96) 0%,
+                        rgba(246, 251, 248, 0.90) 30%,
+                        rgba(246, 251, 248, 0.64) 52%,
+                        rgba(246, 251, 248, 0.20) 76%,
+                        rgba(246, 251, 248, 0.02) 100%),
+                    url("assets/images/dorkari-hero-bg.png");
+            }
+
+            .hero-section .hero-grid {
+                min-height: 730px;
+                align-items: flex-start;
+            }
+
+            .hero-section .hero-content {
+                max-width: 100%;
+                padding-top: 8px;
+            }
+
+            .hero-section .hero-content h1 {
+                max-width: 100%;
+                text-shadow:
+                    0 2px 0 rgba(255, 255, 255, 0.82),
+                    0 6px 20px rgba(255, 255, 255, 0.28);
+            }
+
+            .hero-section .hero-description {
+                max-width: 94%;
+            }
+
+            .hero-section .search-box {
+                width: 100%;
+            }
+
+            .hero-section .search-suggestions,
+            .hero-section .hero-meta-row {
+                max-width: 100%;
+            }
+
+            .hero-section .hero-content::before {
+                top: 30px;
+                left: -12%;
+                width: 115%;
+                height: 285px;
+                background:
+                    radial-gradient(ellipse at 38% 42%,
+                        rgba(255, 255, 255, 0.58) 0%,
+                        rgba(255, 255, 255, 0.26) 50%,
+                        rgba(255, 255, 255, 0) 78%);
+            }
+        }
+
+
+        /* =========================================================
+           SMALL MOBILE
+           ========================================================= */
+        @media (max-width: 430px) {
+            .hero-section {
+                min-height: 720px;
+                background-position: 80% center;
+            }
+
+            .hero-section .hero-grid {
+                min-height: 690px;
+            }
+
+            .hero-section .hero-content {
+                padding-top: 4px;
+            }
+
+            .hero-section .hero-content::before {
+                top: 22px;
+                height: 265px;
+            }
+        }
+    </style>
     <style>
         html,
         body {
@@ -1194,28 +1431,13 @@
             <div class="container mobile-menu-inner">
                 <div aria-live="polite" class="mobile-menu-location">
                     <span aria-hidden="true" class="location-icon">
-                        <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg>
+                        <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                            <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                        </svg>
                     </span>
                     <span>
                         <small>
@@ -2087,28 +2309,13 @@
                         <!-- LOCATION ICON -->
                         <div aria-hidden="true" class="location-badge">
                             <span>
-                                <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg>
+                                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                        stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                    <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                                </svg>
                             </span>
 
                             <small>
@@ -2440,28 +2647,13 @@
                         <input aria-label="ব্লাড ব্যাংক খুঁজুন" data-interface-search="blood"
                             placeholder="ব্লাড ব্যাংক বা এলাকা লিখুন..." type="search" />
                         <button aria-pressed="false" data-interface-location="blood" type="button">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg> আমার এলাকা
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                    stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                            </svg> আমার এলাকা
                         </button>
                     </div>
                     <!-- =================================================
@@ -3416,28 +3608,13 @@
                         <input autocomplete="off" data-interface-search="hospital" placeholder="হাসপাতাল খুঁজুন..."
                             type="search" />
                         <button data-interface-location="hospital" type="button">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg> এলাকা
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                    stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                            </svg> এলাকা
                         </button>
                     </div>
                     <div aria-label="হাসপাতালের এলাকা নির্বাচন" class="hospital-location-filter">
@@ -3510,28 +3687,13 @@
                         <input aria-label="ডাক্তার খুঁজুন" autocomplete="off" data-interface-search="doctor"
                             placeholder="ডাক্তারের নাম, বিশেষজ্ঞতা বা হাসপাতাল খুঁজুন..." type="search" />
                         <button data-interface-location="doctor" type="button">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg> এলাকা
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                    stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                            </svg> এলাকা
                         </button>
                     </div>
                     <div aria-label="ডাক্তার ফিল্টার" class="doctor-filter-grid">
@@ -3604,28 +3766,13 @@
                         <input aria-label="অ্যাম্বুলেন্স খুঁজুন" data-interface-search="ambulance"
                             placeholder="অ্যাম্বুলেন্সের নাম, এলাকা বা সার্ভিস খুঁজুন..." type="search" />
                         <button data-interface-location="ambulance" type="button">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg> এলাকা
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                    stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                            </svg> এলাকা
                         </button>
                     </div>
                     <div class="ambulance-filter-grid">
@@ -3725,28 +3872,13 @@
                         <input aria-label="সরকারি অফিস ও সেবা খুঁজুন" data-interface-search="government"
                             placeholder="অফিস/সেবার নাম, এলাকা বা কীওয়ার্ড দিয়ে খুঁজুন..." type="search" />
                         <button data-interface-location="government" type="button">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg> আমার এলাকা
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                    stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                            </svg> আমার এলাকা
                         </button>
                     </div>
                     <!-- =================================================
@@ -3870,28 +4002,13 @@
                         <input aria-label="টেস্ট খুঁজুন" data-interface-search="tests"
                             placeholder="টেস্টের নাম বা হাসপাতালের নাম লিখুন..." type="search" />
                         <button aria-pressed="false" data-interface-location="tests" type="button">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg> আমার এলাকা
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                    stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                            </svg> আমার এলাকা
                         </button>
                     </div>
                     <!-- =================================================
@@ -3997,28 +4114,13 @@
                         <input aria-label="ফার্মেসি খুঁজুন" data-interface-search="pharmacy"
                             placeholder="ফার্মেসির নাম বা এলাকা..." type="search" />
                         <button data-interface-location="pharmacy" type="button">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg> এলাকা
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                    stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                            </svg> এলাকা
                         </button>
                     </div>
                     <div class="interface-results" data-interface-results="pharmacy">
@@ -4040,28 +4142,13 @@
                             </span>
                         </button>
                         <span class="service-interface-icon">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <path
-        d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
-        stroke="currentColor"
-        stroke-linejoin="round"
-        stroke-width="1.7"
-    />
-    <circle
-        cx="12"
-        cy="10"
-        r="2.7"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-</svg>
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.2 10.2C20.2 15.2 12 21 12 21S3.8 15.2 3.8 10.2C3.8 5.9 7.5 3 12 3s8.2 2.9 8.2 7.2Z"
+                                    stroke="currentColor" stroke-linejoin="round" stroke-width="1.7" />
+                                <circle cx="12" cy="10" r="2.7" stroke="currentColor" stroke-width="1.7" />
+                            </svg>
                         </span>
                         <div>
                             <span class="section-label">
@@ -4130,28 +4217,12 @@
                             </span>
                         </button>
                         <span class="service-interface-icon">
-                            <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <circle
-        cx="11"
-        cy="11"
-        r="6.8"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-    <path
-        d="M16.2 16.2L21 21"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-width="1.7"
-    />
-</svg>
+                            <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="11" cy="11" r="6.8" stroke="currentColor" stroke-width="1.7" />
+                                <path d="M16.2 16.2L21 21" stroke="currentColor" stroke-linecap="round"
+                                    stroke-width="1.7" />
+                            </svg>
                         </span>
                         <div>
                             <span class="section-label">
@@ -4169,28 +4240,12 @@
                     <form class="nav-search-panel" id="navSearchForm">
                         <div class="nav-search-input-wrap">
                             <span aria-hidden="true">
-                                <svg
-    aria-hidden="true"
-    fill="none"
-    height="18"
-    viewBox="0 0 24 24"
-    width="18"
-    xmlns="http://www.w3.org/2000/svg"
->
-    <circle
-        cx="11"
-        cy="11"
-        r="6.8"
-        stroke="currentColor"
-        stroke-width="1.7"
-    />
-    <path
-        d="M16.2 16.2L21 21"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-width="1.7"
-    />
-</svg>
+                                <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 24 24" width="18"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="11" cy="11" r="6.8" stroke="currentColor" stroke-width="1.7" />
+                                    <path d="M16.2 16.2L21 21" stroke="currentColor" stroke-linecap="round"
+                                        stroke-width="1.7" />
+                                </svg>
                             </span>
                             <input aria-label="Dorkari-তে অনুসন্ধান করুন" autocomplete="off" enterkeyhint="search"
                                 id="navSearchInput" placeholder="যেমন: খুলনা হাসপাতাল..." type="search" />
