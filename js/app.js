@@ -9749,8 +9749,12 @@ function populateEmergencyLocationFilters() {
     );
 
 
+    /*
+     * Emergency finder-এর Division select সবসময় usable থাকবে।
+     * Location master data পরে এলে options populate হবে।
+     */
     division.disabled =
-        homeLocationState.divisions.length === 0;
+        false;
 
 
     const saved =
@@ -9837,6 +9841,97 @@ function populateEmergencyLocationFilters() {
     );
 
     renderEmergencyFinderResults();
+}
+
+
+async function ensureEmergencyLocationData() {
+
+    if (!dorkariSupabase) {
+        return;
+    }
+
+
+    if (
+        homeLocationState.divisions.length &&
+        homeLocationState.districts.length &&
+        homeLocationState.upazilas.length
+    ) {
+        populateEmergencyLocationFilters();
+        return;
+    }
+
+
+    try {
+
+        const [
+            divisionsResult,
+            districtsResult,
+            upazilasResult
+        ] =
+            await Promise.all([
+
+                dorkariSupabase
+                    .from("divisions")
+                    .select("id,name,name_bn")
+                    .eq("is_active", true)
+                    .order("name_bn", { ascending: true }),
+
+                dorkariSupabase
+                    .from("districts")
+                    .select("id,name,name_bn,division_id")
+                    .eq("is_active", true)
+                    .order("name_bn", { ascending: true }),
+
+                dorkariSupabase
+                    .from("upazilas")
+                    .select("id,name,name_bn,district_id")
+                    .eq("is_active", true)
+                    .order("name_bn", { ascending: true })
+            ]);
+
+
+        if (divisionsResult.error) {
+            throw divisionsResult.error;
+        }
+
+        if (districtsResult.error) {
+            throw districtsResult.error;
+        }
+
+        if (upazilasResult.error) {
+            throw upazilasResult.error;
+        }
+
+
+        /*
+         * Home location module data already থাকলে সেটাকে overwrite করি না।
+         * শুধু Emergency finder-এর প্রয়োজন হলে fallback data বসাই।
+         */
+        if (!homeLocationState.divisions.length) {
+            homeLocationState.divisions =
+                divisionsResult.data || [];
+        }
+
+        if (!homeLocationState.districts.length) {
+            homeLocationState.districts =
+                districtsResult.data || [];
+        }
+
+        if (!homeLocationState.upazilas.length) {
+            homeLocationState.upazilas =
+                upazilasResult.data || [];
+        }
+
+
+        populateEmergencyLocationFilters();
+
+    } catch (error) {
+
+        console.warn(
+            "Emergency location data load failed:",
+            error
+        );
+    }
 }
 
 
@@ -10192,6 +10287,13 @@ function initializeEmergencyFinder() {
 
 
     populateEmergencyLocationFilters();
+
+    /*
+     * Home location data এখনও ready না থাকলেও
+     * Emergency finder নিজে location master data load করবে।
+     */
+    ensureEmergencyLocationData();
+
     loadEmergencyFinderData();
 }
 
