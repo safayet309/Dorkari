@@ -27,217 +27,218 @@
     <link href="css/components.css" rel="stylesheet" />
     <link href="css/dorkari-redesign.css" rel="stylesheet" />
     <style id="dorkari-hero-background">
-    /* =========================================================
-       DORKARI — HERO IMAGE
-       Full image visible, smaller on mobile,
-       headline stays above the image.
-       ========================================================= */
+        /* =========================================================
+           DORKARI — HERO FINAL FIX
+           - Large, normal rectangular image
+           - No artificial blur layer
+           - No circular/radial image shape
+           - No oversized empty space below content
+           - Existing HTML / JS hooks preserved
+           ========================================================= */
 
-    .hero-section {
-        position: relative;
-        overflow: hidden;
-        isolation: isolate;
-        min-height: 650px;
-        background: #eef8f3;
-    }
-
-    /* Full image layer — no crop */
-    .hero-section::before {
-        content: "";
-        position: absolute;
-        top: 18px;
-        left: 50%;
-        width: min(94vw, 860px);
-        aspect-ratio: 1448 / 1086;
-        transform: translateX(-50%);
-        z-index: 0;
-
-        background-image:
-            linear-gradient(
-                90deg,
-                rgba(246, 251, 248, 0.90) 0%,
-                rgba(246, 251, 248, 0.62) 42%,
-                rgba(246, 251, 248, 0.16) 76%,
-                rgba(246, 251, 248, 0.02) 100%
-            ),
-            url("assets/images/dorkari-hero-bg.png");
-
-        background-size: 100% 100%;
-        background-position: center;
-        background-repeat: no-repeat;
-        pointer-events: none;
-    }
-
-    .hero-section .hero-grid {
-        position: relative;
-        z-index: 2;
-        min-height: 650px;
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) !important;
-        align-items: start;
-    }
-
-    .hero-section .hero-content {
-        position: relative;
-        z-index: 5;
-        width: 100%;
-        max-width: 820px;
-        padding-top: 54px;
-    }
-
-    .hero-section .hero-content h1 {
-        position: relative;
-        z-index: 6;
-        max-width: 800px;
-        text-shadow:
-            0 2px 0 rgba(255, 255, 255, 0.90),
-            0 5px 18px rgba(255, 255, 255, 0.22);
-    }
-
-    .hero-section .hero-description {
-        position: relative;
-        z-index: 6;
-        max-width: 700px;
-    }
-
-    .hero-section .search-box,
-    .hero-section .search-suggestions,
-    .hero-section .hero-meta-row {
-        position: relative;
-        z-index: 7;
-    }
-
-    .hero-section .search-box {
-        box-shadow:
-            0 18px 42px rgba(4, 61, 45, 0.10),
-            0 2px 0 rgba(255, 255, 255, 0.78);
-    }
-
-    /* Old phone mockup hidden */
-    .hero-section .hero-visual {
-        display: none !important;
-    }
-
-    @media (min-width: 901px) {
         .hero-section {
-            min-height: 650px;
-        }
+            position: relative !important;
+            overflow: hidden !important;
+            isolation: isolate;
 
-        .hero-section::before {
-            width: min(94vw, 860px);
-        }
-    }
+            min-height: 0 !important;
+            height: auto !important;
+            padding: 0 !important;
 
-    @media (max-width: 900px) {
-        .hero-section {
-            min-height: 620px;
-        }
+            background-color: #eef8f3 !important;
 
-        .hero-section::before {
-            width: 94vw;
-            top: 12px;
-        }
-
-        .hero-section .hero-grid {
-            min-height: 620px;
-        }
-
-        .hero-section .hero-content {
-            max-width: 760px;
-            padding-top: 42px;
-        }
-    }
-
-    @media (max-width: 760px) {
-        .hero-section {
-            min-height: 590px;
-            background: #eef8f3;
-        }
-
-        .hero-section::before {
-            top: 8px;
-            width: 96vw;
-            aspect-ratio: 1448 / 1086;
-
+            /* Keep the actual image sharp and natural; only a light
+               readability gradient sits above it on the left. */
             background-image:
                 linear-gradient(
                     90deg,
-                    rgba(246, 251, 248, 0.90) 0%,
-                    rgba(246, 251, 248, 0.66) 44%,
-                    rgba(246, 251, 248, 0.20) 78%,
-                    rgba(246, 251, 248, 0.03) 100%
+                    rgba(246, 251, 248, 0.94) 0%,
+                    rgba(246, 251, 248, 0.84) 28%,
+                    rgba(246, 251, 248, 0.54) 50%,
+                    rgba(246, 251, 248, 0.16) 74%,
+                    rgba(246, 251, 248, 0.00) 100%
                 ),
-                url("assets/images/dorkari-hero-bg.png");
+                url("assets/images/dorkari-hero-bg.png") !important;
 
-            background-size: 100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
+            background-size: cover !important;
+            background-position: 72% center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: initial !important;
         }
+
+
+        /* Disable any older pseudo-element image / glow layer. */
+        .hero-section::before,
+        .hero-section::after {
+            content: none !important;
+            display: none !important;
+        }
+
 
         .hero-section .hero-grid {
-            min-height: 590px;
-            grid-template-columns: 1fr !important;
+            position: relative !important;
+            z-index: 2 !important;
+
+            min-height: 0 !important;
+            height: auto !important;
+
+            display: grid !important;
+            grid-template-columns: minmax(0, 1fr) !important;
+            align-items: start !important;
         }
 
+
         .hero-section .hero-content {
-            max-width: 100%;
-            padding-top: 28px;
+            position: relative !important;
+            z-index: 5 !important;
+
+            width: 100%;
+            max-width: 820px;
+
+            padding-top: 54px !important;
+            padding-bottom: 52px !important;
         }
+
 
         .hero-section .hero-content h1 {
-            max-width: 100%;
+            position: relative;
+            z-index: 6;
+
+            max-width: 800px;
+
             text-shadow:
-                0 2px 0 rgba(255, 255, 255, 0.94),
-                0 6px 18px rgba(255, 255, 255, 0.24);
+                0 2px 0 rgba(255, 255, 255, 0.88),
+                0 5px 18px rgba(255, 255, 255, 0.16);
         }
+
 
         .hero-section .hero-description {
-            max-width: 94%;
+            position: relative;
+            z-index: 6;
+
+            max-width: 700px;
         }
 
-        .hero-section .search-box {
-            width: 100%;
-        }
 
+        .hero-section .search-box,
         .hero-section .search-suggestions,
         .hero-section .hero-meta-row {
-            width: 100%;
-        }
-    }
-
-    @media (max-width: 430px) {
-        .hero-section {
-            min-height: 570px;
+            position: relative;
+            z-index: 7;
         }
 
-        .hero-section::before {
-            width: 96vw;
+
+        .hero-section .search-box {
+            box-shadow:
+                0 18px 42px rgba(4, 61, 45, 0.10),
+                0 2px 0 rgba(255, 255, 255, 0.78);
         }
 
-        .hero-section .hero-grid {
-            min-height: 570px;
+
+        /* Old phone mockup remains in the HTML but is presentation-only. */
+        .hero-section .hero-visual {
+            display: none !important;
         }
 
-        .hero-section .hero-content {
-            padding-top: 24px;
-        }
-    }
-</style>
-    <style>
-        html,
-        body {
-            width: 100%;
-            max-width: 100%;
-            overflow-x: hidden;
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-        }
 
-        @media (max-width: 760px) {
-            body {
-                min-width: 0;
+        /* =========================================================
+           TABLET
+           ========================================================= */
+        @media (max-width: 900px) {
+
+            .hero-section {
+                min-height: 0 !important;
+                background-position: 70% center !important;
+            }
+
+            .hero-section .hero-grid {
+                min-height: 0 !important;
+            }
+
+            .hero-section .hero-content {
+                max-width: 760px;
+                padding-top: 42px !important;
+                padding-bottom: 42px !important;
             }
         }
+
+
+        /* =========================================================
+           MOBILE
+           ========================================================= */
+        @media (max-width: 760px) {
+
+            .hero-section {
+                min-height: 0 !important;
+                background-position: 70% center !important;
+                background-size: cover !important;
+            }
+
+            .hero-section .hero-grid {
+                min-height: 0 !important;
+                height: auto !important;
+            }
+
+            .hero-section .hero-content {
+                max-width: 100%;
+                padding-top: 28px !important;
+                padding-bottom: 34px !important;
+            }
+
+            .hero-section .hero-content h1 {
+                max-width: 100%;
+                text-shadow:
+                    0 2px 0 rgba(255, 255, 255, 0.94),
+                    0 5px 18px rgba(255, 255, 255, 0.16);
+            }
+
+            .hero-section .hero-description {
+                max-width: 96%;
+            }
+
+            .hero-section .search-box {
+                width: 100%;
+            }
+
+            .hero-section .search-suggestions,
+            .hero-section .hero-meta-row {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+
+
+        /* =========================================================
+           SMALL MOBILE
+           ========================================================= */
+        @media (max-width: 430px) {
+
+            .hero-section {
+                min-height: 0 !important;
+                background-position: 72% center !important;
+            }
+
+            .hero-section .hero-content {
+                padding-top: 24px !important;
+                padding-bottom: 28px !important;
+            }
+        }
+    </style>
+        <style>
+            html,
+            body {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+                -webkit-text-size-adjust: 100%;
+                text-size-adjust: 100%;
+            }
+
+            @media (max-width: 760px) {
+                body {
+                    min-width: 0;
+                }
+            }
     </style>
 
     <style id="dorkari-all-services-layout">
