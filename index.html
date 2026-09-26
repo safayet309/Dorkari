@@ -27,222 +27,373 @@
     <link href="css/components.css" rel="stylesheet" />
     <link href="css/dorkari-redesign.css" rel="stylesheet" />
     <style id="dorkari-hero-background">
-        /* =========================================================
-           DORKARI — HERO IMAGE BACKGROUND
-           Full image visible / no crop / no blur
-           Headline and search stay above the image
-           ========================================================= */
+    /* =========================================================
+       DORKARI — FINAL HERO
+       Full image visible / no crop / no blur
+       Headline stays over the image
+       ========================================================= */
+
+    .hero-section {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+
+        padding: 38px 0 28px !important;
+
+        min-height: 0 !important;
+
+        background: #eef8f3 !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       FULL IMAGE
+       The image box itself uses the original 4:3 ratio,
+       so the source image is shown 100% without cropping.
+       --------------------------------------------------------- */
+
+    .hero-section::before {
+        content: "" !important;
+
+        position: absolute !important;
+
+        top: 8px !important;
+        left: 50% !important;
+
+        width: min(94vw, 960px) !important;
+        aspect-ratio: 1448 / 1086 !important;
+
+        height: auto !important;
+
+        transform: translateX(-50%) !important;
+
+        z-index: 0 !important;
+
+        border-radius: 0 !important;
+
+        background-image: url("assets/images/dorkari-hero-bg.png") !important;
+        background-size: 100% 100% !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important;
+
+        filter: none !important;
+
+        pointer-events: none !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       SOFT READABILITY LAYER
+       No blur — only a gentle white/mint overlay.
+       --------------------------------------------------------- */
+
+    .hero-section::after {
+        content: "" !important;
+
+        position: absolute !important;
+
+        top: 8px !important;
+        left: 50% !important;
+
+        width: min(94vw, 960px) !important;
+        aspect-ratio: 1448 / 1086 !important;
+
+        height: auto !important;
+
+        transform: translateX(-50%) !important;
+
+        z-index: 1 !important;
+
+        border-radius: 0 !important;
+
+        background:
+            linear-gradient(
+                90deg,
+                rgba(246, 251, 248, 0.72) 0%,
+                rgba(246, 251, 248, 0.38) 40%,
+                rgba(246, 251, 248, 0.08) 74%,
+                rgba(246, 251, 248, 0.00) 100%
+            ) !important;
+
+        filter: none !important;
+
+        pointer-events: none !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       CONTENT
+       --------------------------------------------------------- */
+
+    .hero-section .hero-grid {
+        position: relative !important;
+
+        z-index: 2 !important;
+
+        min-height: 0 !important;
+
+        display: grid !important;
+
+        grid-template-columns: minmax(0, 1fr) !important;
+
+        align-items: start !important;
+    }
+
+
+    .hero-section .hero-content {
+        position: relative !important;
+
+        z-index: 3 !important;
+
+        width: 100% !important;
+
+        max-width: 820px !important;
+
+        padding-top: 18px !important;
+    }
+
+
+    .hero-section .hero-content h1 {
+        position: relative !important;
+
+        z-index: 4 !important;
+
+        max-width: 820px !important;
+
+        margin-top: 18px;
+
+        text-shadow:
+            0 2px 0 rgba(255, 255, 255, 0.88),
+            0 6px 18px rgba(255, 255, 255, 0.16);
+    }
+
+
+    .hero-section .hero-description {
+        position: relative !important;
+
+        z-index: 4 !important;
+
+        max-width: 700px !important;
+    }
+
+
+    .hero-section .search-box,
+    .hero-section .search-suggestions,
+    .hero-section .hero-meta-row {
+        position: relative !important;
+
+        z-index: 5 !important;
+    }
+
+
+    .hero-section .search-box {
+        box-shadow:
+            0 14px 34px rgba(4, 61, 45, 0.09),
+            0 2px 0 rgba(255, 255, 255, 0.80);
+    }
+
+
+    /* পুরোনো CSS-এর গোল/blur decoration পুরোপুরি বন্ধ */
+    .hero-section .hero-visual {
+        display: none !important;
+    }
+
+
+    /* ---------------------------------------------------------
+       DESKTOP
+       --------------------------------------------------------- */
+
+    @media (min-width: 901px) {
 
         .hero-section {
-            position: relative;
-            overflow: hidden;
-            isolation: isolate;
-
-            /* Let the content define the section height. */
-            min-height: 0 !important;
-            padding: 30px 0 28px !important;
-
-            background-color: #eef8f3 !important;
-
-            /* Light readability layer + the full image. */
-            background-image:
-                linear-gradient(
-                    90deg,
-                    rgba(246, 251, 248, 0.90) 0%,
-                    rgba(246, 251, 248, 0.67) 42%,
-                    rgba(246, 251, 248, 0.20) 76%,
-                    rgba(246, 251, 248, 0.03) 100%
-                ),
-                url("assets/images/dorkari-hero-bg.png");
-
-            /* The image keeps its natural 1448:1086 ratio. */
-            background-size: cover, 100% auto;
-            background-position: center, center top;
-            background-repeat: no-repeat, no-repeat;
-            background-attachment: scroll;
+            padding: 44px 0 30px !important;
         }
 
-
-        /* Remove the old decorative blurred circles from global.css. */
         .hero-section::before,
         .hero-section::after {
-            content: none !important;
-            display: none !important;
-            filter: none !important;
+            width: min(94vw, 960px) !important;
         }
 
+        .hero-section .hero-content {
+            padding-top: 14px !important;
+        }
 
-        /* Keep the existing content and JS hooks intact. */
-        .hero-section .hero-grid {
-            position: relative;
-            z-index: 2;
+        .hero-section .hero-content h1 {
+            font-size: clamp(48px, 4.8vw, 64px) !important;
+            line-height: 1.08 !important;
+        }
+
+        .hero-section .hero-description {
+            font-size: 16px !important;
+            line-height: 1.7 !important;
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       TABLET
+       --------------------------------------------------------- */
+
+    @media (max-width: 900px) {
+
+        .hero-section {
+            padding: 30px 0 26px !important;
+        }
+
+        .hero-section::before,
+        .hero-section::after {
+            width: 94vw !important;
+        }
+
+        .hero-section .hero-content {
+            max-width: 760px !important;
+            padding-top: 12px !important;
+        }
+
+        .hero-section .hero-content h1 {
+            font-size: clamp(40px, 6.6vw, 54px) !important;
+            line-height: 1.10 !important;
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       MOBILE
+       --------------------------------------------------------- */
+
+    @media (max-width: 760px) {
+
+        .hero-section {
+            padding: 22px 0 20px !important;
 
             min-height: 0 !important;
 
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) !important;
-            align-items: start;
+            background: #eef8f3 !important;
+        }
+
+
+        .hero-section::before,
+        .hero-section::after {
+            top: 4px !important;
+
+            left: 50% !important;
+
+            width: 96vw !important;
+
+            aspect-ratio: 1448 / 1086 !important;
+
+            height: auto !important;
+
+            transform: translateX(-50%) !important;
+        }
+
+
+        .hero-section .hero-grid {
+            min-height: 0 !important;
+
+            grid-template-columns: 1fr !important;
         }
 
 
         .hero-section .hero-content {
-            position: relative;
-            z-index: 5;
+            width: 100% !important;
 
-            width: 100%;
-            max-width: 820px;
-            padding-top: 22px;
+            max-width: 100% !important;
+
+            padding-top: 14px !important;
         }
 
 
-        /* Headline sits directly on the image. */
+        /* Mobile headline smaller, so the image remains visually dominant. */
         .hero-section .hero-content h1 {
-            position: relative;
-            z-index: 6;
-            max-width: 800px;
+            max-width: 100% !important;
+
+            margin-top: 14px !important;
+
+            font-size: clamp(30px, 8.6vw, 36px) !important;
+
+            line-height: 1.16 !important;
+
+            letter-spacing: -0.025em !important;
 
             text-shadow:
-                0 2px 0 rgba(255, 255, 255, 0.88),
-                0 4px 14px rgba(255, 255, 255, 0.16);
+                0 2px 0 rgba(255, 255, 255, 0.92),
+                0 4px 12px rgba(255, 255, 255, 0.18);
         }
 
 
         .hero-section .hero-description {
-            position: relative;
-            z-index: 6;
-            max-width: 700px;
-        }
+            max-width: 94% !important;
 
+            font-size: 13px !important;
 
-        .hero-section .search-box,
-        .hero-section .search-suggestions,
-        .hero-section .hero-meta-row {
-            position: relative;
-            z-index: 7;
+            line-height: 1.72 !important;
         }
 
 
         .hero-section .search-box {
-            box-shadow:
-                0 16px 34px rgba(4, 61, 45, 0.10),
-                0 2px 0 rgba(255, 255, 255, 0.82);
+            width: 100% !important;
         }
 
 
-        /* The old CSS phone illustration is no longer needed. */
-        .hero-section .hero-visual {
-            display: none !important;
+        .hero-section .search-suggestions,
+        .hero-section .hero-meta-row {
+            width: 100% !important;
+        }
+    }
+
+
+    /* ---------------------------------------------------------
+       SMALL MOBILE
+       --------------------------------------------------------- */
+
+    @media (max-width: 430px) {
+
+        .hero-section {
+            padding: 18px 0 18px !important;
         }
 
 
-        /* =========================================================
-           DESKTOP
-           ========================================================= */
-
-        @media (min-width: 901px) {
-            .hero-section {
-                padding: 48px 0 38px !important;
-
-                background-size: cover, min(96vw, 1080px) auto;
-                background-position: center, center top;
-            }
-
-            .hero-section .hero-content {
-                padding-top: 8px;
-            }
+        .hero-section::before,
+        .hero-section::after {
+            width: 96vw !important;
         }
 
 
-        /* =========================================================
-           TABLET
-           ========================================================= */
-
-        @media (max-width: 900px) {
-            .hero-section {
-                padding: 30px 0 26px !important;
-
-                background-size: cover, 100% auto;
-                background-position: center, center top;
-            }
-
-            .hero-section .hero-content {
-                max-width: 760px;
-                padding-top: 14px;
-            }
+        .hero-section .hero-content {
+            padding-top: 12px !important;
         }
 
 
-        /* =========================================================
-           MOBILE
-           ========================================================= */
+        .hero-section .hero-content h1 {
+            font-size: clamp(29px, 8.3vw, 34px) !important;
 
-        @media (max-width: 760px) {
-            .hero-section {
-                min-height: 0 !important;
-                padding: 20px 0 20px !important;
-
-                background-color: #eef8f3 !important;
-                background-image:
-                    linear-gradient(
-                        90deg,
-                        rgba(246, 251, 248, 0.91) 0%,
-                        rgba(246, 251, 248, 0.68) 40%,
-                        rgba(246, 251, 248, 0.18) 76%,
-                        rgba(246, 251, 248, 0.03) 100%
-                    ),
-                    url("assets/images/dorkari-hero-bg.png");
-
-                /* Full image, preserved ratio, no crop. */
-                background-size: cover, 100% auto;
-                background-position: center, center top;
-                background-repeat: no-repeat, no-repeat;
-            }
-
-            .hero-section .hero-grid {
-                min-height: 0 !important;
-                grid-template-columns: 1fr !important;
-            }
-
-            .hero-section .hero-content {
-                width: 100%;
-                max-width: 100%;
-                padding-top: 14px;
-            }
-
-            .hero-section .hero-content h1 {
-                max-width: 100%;
-                text-shadow:
-                    0 2px 0 rgba(255, 255, 255, 0.92),
-                    0 4px 14px rgba(255, 255, 255, 0.18);
-            }
-
-            .hero-section .hero-description {
-                max-width: 94%;
-            }
-
-            .hero-section .search-box,
-            .hero-section .search-suggestions,
-            .hero-section .hero-meta-row {
-                width: 100%;
-            }
+            line-height: 1.17 !important;
         }
 
 
-        /* =========================================================
-           SMALL MOBILE
-           ========================================================= */
-
-        @media (max-width: 430px) {
-            .hero-section {
-                padding: 18px 0 18px !important;
-                background-size: cover, 100% auto;
-            }
-
-            .hero-section .hero-content {
-                padding-top: 12px;
-            }
+        .hero-section .hero-description {
+            font-size: 12.5px !important;
         }
-    </style>
+    }
+
+
+    /* ---------------------------------------------------------
+       VERY SMALL PHONES
+       --------------------------------------------------------- */
+
+    @media (max-width: 360px) {
+
+        .hero-section .hero-content h1 {
+            font-size: 28px !important;
+        }
+
+        .hero-section .hero-description {
+            font-size: 12px !important;
+        }
+    }
+
+</style>
     <style>
         html,
         body {
@@ -1465,14 +1616,14 @@
 
                         <div class="eyebrow">
                             <span aria-hidden="true" class="eyebrow-dot"></span>
-                            আপনার দৈনন্দিন জীবনের সব দরকারি সেবা
+                            আপনার দৈনন্দিন জীবনের প্রয়োজনীয় সব সেবা, এখন এক জায়গায়।
                         </div>
 
                         <h1>
-                            দরকারি সেবা এখন
+                            প্রয়োজনের মুহূর্তে
                             <br />
                             <span>
-                                আপনার হাতের মুঠোয়।
+                                তথ্য থাকুক হাতের কাছে।
                             </span>
                         </h1>
 
