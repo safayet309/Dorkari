@@ -2088,134 +2088,263 @@
             }
 
         }
-
         /* =========================================================
    EMERGENCY RESULT ACTIONS — FIX
    Call + Copy কখনো card-এর বাইরে যাবে না
    ========================================================= */
 
-        #emergencyInterface .emergency-item {
-            width: 100%;
-            max-width: 100%;
-            min-width: 0;
+#emergencyInterface .emergency-item {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 
-            box-sizing: border-box;
+    box-sizing: border-box;
 
-            overflow: hidden;
+    overflow: hidden;
 
-            display: grid;
-            grid-template-columns: 40px minmax(0, 1fr);
-            align-items: start;
-            gap: 10px;
-        }
-
-
-        #emergencyInterface .emergency-item-content {
-            min-width: 0;
-            max-width: 100%;
-            overflow: hidden;
-        }
+    display: grid;
+    grid-template-columns: 40px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px;
+}
 
 
-        #emergencyInterface .emergency-actions {
-            grid-column: 2;
-            width: 100%;
-            max-width: 100%;
-            min-width: 0;
-
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-
-            gap: 6px;
-
-            margin-top: 8px;
-        }
+#emergencyInterface .emergency-item-content {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
 
 
-        #emergencyInterface .call-btn,
-        #emergencyInterface .copy-btn {
-            width: 100%;
-            min-width: 0;
-            max-width: 100%;
+#emergencyInterface .emergency-actions {
+    grid-column: 2;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
 
-            box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 
-            min-height: 34px;
+    gap: 6px;
 
-            padding: 0 8px;
-
-            overflow: hidden;
-
-            white-space: nowrap;
-            text-overflow: ellipsis;
-        }
+    margin-top: 8px;
+}
 
 
-        /* =========================================================
+#emergencyInterface .call-btn,
+#emergencyInterface .copy-btn {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+    min-height: 34px;
+
+    padding: 0 8px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
    MOBILE
    ========================================================= */
 
-        @media (max-width: 760px) {
+@media (max-width: 760px) {
 
-            #emergencyInterface .emergency-item {
-                grid-template-columns: 40px minmax(0, 1fr);
+    #emergencyInterface .emergency-item {
+        grid-template-columns: 40px minmax(0, 1fr);
 
-                padding: 10px;
-                gap: 9px;
-            }
-
-
-            #emergencyInterface .emergency-actions {
-                grid-column: 2;
-
-                width: 100%;
-                max-width: 100%;
-
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-
-                gap: 6px;
-            }
+        padding: 10px;
+        gap: 9px;
+    }
 
 
-            #emergencyInterface .call-btn,
-            #emergencyInterface .copy-btn {
-                width: 100%;
-                min-width: 0;
+    #emergencyInterface .emergency-actions {
+        grid-column: 2;
 
-                font-size: 9px;
-            }
-        }
+        width: 100%;
+        max-width: 100%;
+
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 6px;
+    }
 
 
-        /* =========================================================
+    #emergencyInterface .call-btn,
+    #emergencyInterface .copy-btn {
+        width: 100%;
+        min-width: 0;
+
+        font-size: 9px;
+    }
+}
+
+
+/* =========================================================
    VERY SMALL MOBILE
    ========================================================= */
 
-        @media (max-width: 430px) {
+@media (max-width: 430px) {
 
-            #emergencyInterface .emergency-item {
-                grid-template-columns: 40px minmax(0, 1fr);
-            }
-
-
-            #emergencyInterface .emergency-actions {
-                grid-column: 2;
-
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-
-                gap: 5px;
-            }
+    #emergencyInterface .emergency-item {
+        grid-template-columns: 40px minmax(0, 1fr);
+    }
 
 
-            #emergencyInterface .call-btn,
-            #emergencyInterface .copy-btn {
-                min-height: 32px;
+    #emergencyInterface .emergency-actions {
+        grid-column: 2;
 
-                padding: 0 6px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
 
-                font-size: 8px;
-            }
-        }
+        gap: 5px;
+    }
+
+
+    #emergencyInterface .call-btn,
+    #emergencyInterface .copy-btn {
+        min-height: 32px;
+
+        padding: 0 6px;
+
+        font-size: 8px;
+    }
+}
+/* =========================================================
+   EMERGENCY RESULT CARD — FINAL ALIGNMENT FIX
+   Call + Copy একই card-এর ভিতরে থাকবে
+   ========================================================= */
+
+#emergencyInterface .emergency-item {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    box-sizing: border-box;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+
+    align-items: start;
+    gap: 10px;
+
+    padding: 12px;
+}
+
+
+/* Content */
+#emergencyInterface .emergency-item-content {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+
+/* Call + Copy row */
+#emergencyInterface .emergency-actions {
+    grid-column: 1 / -1 !important;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 6px;
+
+    margin-top: 8px;
+    box-sizing: border-box;
+}
+
+
+/* Buttons */
+#emergencyInterface .call-btn,
+#emergencyInterface .copy-btn {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    min-height: 34px;
+
+    box-sizing: border-box;
+
+    padding: 0 8px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+
+    #emergencyInterface .emergency-item {
+        grid-template-columns: 40px minmax(0, 1fr);
+
+        padding: 10px;
+        gap: 9px;
+    }
+
+
+    #emergencyInterface .emergency-actions {
+        grid-column: 1 / -1 !important;
+
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        width: 100%;
+        max-width: 100%;
+
+        gap: 6px;
+    }
+
+
+    #emergencyInterface .call-btn,
+    #emergencyInterface .copy-btn {
+        width: 100%;
+        min-width: 0;
+
+        font-size: 9px;
+    }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 430px) {
+
+    #emergencyInterface .emergency-actions {
+        grid-column: 1 / -1 !important;
+
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 5px;
+    }
+
+
+    #emergencyInterface .call-btn,
+    #emergencyInterface .copy-btn {
+        min-height: 32px;
+
+        padding: 0 6px;
+
+        font-size: 8px;
+    }
+}
     </style>
 </head>
 
