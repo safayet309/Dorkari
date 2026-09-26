@@ -1311,7 +1311,781 @@
             }
         }
     </style>
+    <style id="dorkari-emergency-ui">
+        /* =========================================================
+       DORKARI — EMERGENCY UI
+       শুধুমাত্র Emergency Interface-এর জন্য
+       ========================================================= */
 
+        #emergencyInterface {
+            width: 100%;
+        }
+
+
+        /* =========================================================
+       NATIONAL 999 CARD
+       ========================================================= */
+
+        #emergencyInterface .emergency-national-card {
+            width: 100%;
+            margin-top: 16px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 18px;
+
+            border: 1px solid #f0d7da;
+            border-radius: 18px;
+
+            background:
+                linear-gradient(135deg,
+                    #fff8f8 0%,
+                    #ffffff 72%);
+
+            box-shadow:
+                0 8px 24px rgba(20, 30, 25, 0.06);
+        }
+
+
+        #emergencyInterface .emergency-national-copy {
+            min-width: 0;
+
+            display: grid;
+            gap: 4px;
+        }
+
+
+        #emergencyInterface .emergency-national-badge {
+            width: fit-content;
+
+            display: inline-flex;
+            align-items: center;
+
+            min-height: 24px;
+            padding: 4px 9px;
+
+            border: 1px solid #efd8db;
+            border-radius: 999px;
+
+            background: #fff0f1;
+            color: #a51d2d;
+
+            font-size: 9px;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+
+        #emergencyInterface .emergency-national-number {
+            display: block;
+
+            color: #a51d2d;
+
+            font-size: 29px;
+            font-weight: 950;
+            line-height: 1.1;
+        }
+
+
+        #emergencyInterface .emergency-national-description {
+            display: block;
+
+            color: var(--text-soft, #6b756f);
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+
+        #emergencyInterface .emergency-national-actions {
+            margin-top: 0;
+
+            display: flex;
+            align-items: center;
+        }
+
+
+        #emergencyInterface .emergency-national-actions .interface-primary-action {
+            min-width: 150px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 42px;
+            padding: 0 14px;
+
+            border-radius: 11px;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            text-decoration: none;
+        }
+
+
+        /* =========================================================
+       LOCATION PANEL
+       ========================================================= */
+
+        #emergencyInterface .emergency-location-panel {
+            width: 100%;
+            margin-top: 16px;
+            padding: 16px;
+
+            border: 1px solid var(--border, #e4ebe7);
+            border-radius: 18px;
+
+            background: var(--surface, #ffffff);
+
+            box-shadow:
+                0 8px 24px rgba(20, 30, 25, 0.05);
+        }
+
+
+        #emergencyInterface .emergency-location-panel-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+        }
+
+
+        #emergencyInterface .emergency-location-panel-heading h3 {
+            margin: 3px 0 0;
+
+            color: var(--text, #17221d);
+
+            font-size: 16px;
+            font-weight: 950;
+            line-height: 1.35;
+        }
+
+
+        #emergencyInterface .emergency-location-panel-heading p {
+            margin: 4px 0 0;
+
+            color: var(--text-soft, #6b756f);
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+       USE SAVED LOCATION BUTTON
+       ========================================================= */
+
+        #emergencyInterface .emergency-location-use,
+        #emergencyInterface .emergency-location-reset {
+            min-height: 38px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 11px;
+
+            border: 1px solid var(--border, #dfe8e3);
+            border-radius: 10px;
+
+            background: var(--surface-soft, #f6faf8);
+            color: var(--primary, #0b7a55);
+
+            font-family: inherit;
+            font-size: 9px;
+            font-weight: 900;
+
+            cursor: pointer;
+
+            transition:
+                background-color 160ms ease,
+                border-color 160ms ease,
+                transform 160ms ease;
+        }
+
+
+        #emergencyInterface .emergency-location-use:hover,
+        #emergencyInterface .emergency-location-reset:hover {
+            background: #edf8f3;
+            border-color: #bcded0;
+        }
+
+
+        #emergencyInterface .emergency-location-use:active,
+        #emergencyInterface .emergency-location-reset:active {
+            transform: translateY(1px);
+        }
+
+
+        /* =========================================================
+       LOCATION FILTERS
+       ========================================================= */
+
+        #emergencyInterface .emergency-location-filters {
+            width: 100%;
+
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 10px;
+
+            margin-top: 14px;
+        }
+
+
+        #emergencyInterface .emergency-location-field {
+            display: grid;
+            gap: 5px;
+            min-width: 0;
+        }
+
+
+        #emergencyInterface .emergency-location-field>span {
+            color: var(--text-soft, #6b756f);
+
+            font-size: 9px;
+            font-weight: 900;
+        }
+
+
+        #emergencyInterface .emergency-location-field select {
+            width: 100%;
+            min-width: 0;
+            min-height: 42px;
+
+            padding: 0 11px;
+
+            border: 1px solid var(--border, #dfe8e3);
+            border-radius: 11px;
+
+            outline: none;
+
+            background: #ffffff;
+            color: var(--text, #17221d);
+
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                border-color 160ms ease,
+                box-shadow 160ms ease,
+                background-color 160ms ease;
+        }
+
+
+        #emergencyInterface .emergency-location-field select:hover {
+            background: #fbfdfc;
+        }
+
+
+        #emergencyInterface .emergency-location-field select:focus {
+            border-color: var(--primary, #0b7a55);
+
+            box-shadow:
+                0 0 0 3px rgba(11, 122, 85, 0.08);
+        }
+
+
+        #emergencyInterface .emergency-location-field select:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            background: #f5f8f6;
+        }
+
+
+        /* =========================================================
+       SEARCH ROW
+       ========================================================= */
+
+        #emergencyInterface .emergency-location-search-row {
+            width: 100%;
+
+            display: grid;
+            grid-template-columns:
+                minmax(0, 1fr) auto;
+
+            gap: 9px;
+
+            margin-top: 10px;
+        }
+
+
+        #emergencyInterface .emergency-location-search {
+            min-width: 0;
+            min-height: 42px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 0 12px;
+
+            border: 1px solid var(--border, #dfe8e3);
+            border-radius: 11px;
+
+            background: #ffffff;
+
+            transition:
+                border-color 160ms ease,
+                box-shadow 160ms ease;
+        }
+
+
+        #emergencyInterface .emergency-location-search>span {
+            flex: 0 0 auto;
+
+            display: grid;
+            place-items: center;
+
+            color: var(--text-muted, #8b9891);
+        }
+
+
+        #emergencyInterface .emergency-location-search input {
+            width: 100%;
+            min-width: 0;
+
+            border: 0;
+            outline: 0;
+
+            background: transparent;
+
+            color: var(--text, #17221d);
+
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+
+        #emergencyInterface .emergency-location-search input::placeholder {
+            color: #9aa49f;
+            opacity: 1;
+        }
+
+
+        #emergencyInterface .emergency-location-search:focus-within {
+            border-color: var(--primary, #0b7a55);
+
+            box-shadow:
+                0 0 0 3px rgba(11, 122, 85, 0.08);
+        }
+
+
+        /* =========================================================
+       RESULTS PANEL
+       ========================================================= */
+
+        #emergencyInterface .emergency-location-results {
+            width: 100%;
+            margin-top: 16px;
+            padding: 16px;
+
+            border: 1px solid var(--border, #dfe8e3);
+            border-radius: 18px;
+
+            background: var(--surface, #ffffff);
+
+            box-shadow:
+                0 8px 24px rgba(20, 30, 25, 0.05);
+        }
+
+
+        #emergencyInterface .emergency-results-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+
+        #emergencyInterface .emergency-results-heading h3 {
+            margin: 3px 0 0;
+
+            color: var(--text, #17221d);
+
+            font-size: 16px;
+            font-weight: 950;
+            line-height: 1.35;
+        }
+
+
+        #emergencyInterface .emergency-results-count {
+            min-width: 44px;
+            min-height: 28px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 8px;
+
+            border: 1px solid #d5e9df;
+            border-radius: 999px;
+
+            background: #eff9f4;
+            color: var(--primary, #0b7a55);
+
+            font-size: 9px;
+            font-weight: 950;
+
+            white-space: nowrap;
+        }
+
+
+        #emergencyInterface .emergency-interface-results {
+            width: 100%;
+            margin-top: 12px;
+        }
+
+
+        /* =========================================================
+       EMPTY RESULT MESSAGE
+       ========================================================= */
+
+        #emergencyInterface .interface-empty {
+            padding: 18px;
+
+            border: 1px dashed #dbe5e0;
+            border-radius: 13px;
+
+            background: #f9fbfa;
+
+            color: var(--text-soft, #6b756f);
+
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.6;
+
+            text-align: center;
+        }
+
+
+        /* =========================================================
+       EXISTING EMERGENCY RESULT CARD
+       JS যে .emergency-item তৈরি করবে
+       ========================================================= */
+
+        #emergencyInterface .emergency-item {
+            width: 100%;
+
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+
+            gap: 11px;
+
+            margin-top: 9px;
+            padding: 12px;
+
+            border: 1px solid var(--border, #e4ebe7);
+            border-radius: 14px;
+
+            background: #ffffff;
+
+            box-shadow:
+                0 4px 14px rgba(20, 30, 25, 0.04);
+        }
+
+
+        #emergencyInterface .emergency-item:first-child {
+            margin-top: 0;
+        }
+
+
+        #emergencyInterface .emergency-item-icon {
+            width: 44px;
+            height: 44px;
+
+            flex: 0 0 44px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 13px;
+
+            background: #fff0f1;
+            color: #b42335;
+
+            font-size: 17px;
+            font-weight: 950;
+        }
+
+
+        #emergencyInterface .emergency-item-content {
+            min-width: 0;
+        }
+
+
+        #emergencyInterface .emergency-title-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+
+            gap: 6px;
+        }
+
+
+        #emergencyInterface .emergency-item-content h3 {
+            margin: 0;
+
+            color: var(--text, #17221d);
+
+            font-size: 13px;
+            font-weight: 900;
+            line-height: 1.4;
+        }
+
+
+        #emergencyInterface .emergency-item-content p {
+            margin: 3px 0 0;
+
+            color: var(--text-soft, #6b756f);
+
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+
+        #emergencyInterface .emergency-number {
+            display: block;
+
+            margin-top: 4px;
+
+            color: var(--accent-dark, #a51d2d);
+
+            font-size: 15px;
+            font-weight: 950;
+        }
+
+
+        #emergencyInterface .emergency-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+
+        #emergencyInterface .call-btn,
+        #emergencyInterface .copy-btn {
+            min-height: 34px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0 10px;
+
+            border-radius: 9px;
+
+            font-family: inherit;
+            font-size: 9px;
+            font-weight: 900;
+
+            text-decoration: none;
+
+            cursor: pointer;
+        }
+
+
+        #emergencyInterface .call-btn {
+            border: 1px solid #bfe5d4;
+
+            background: #edf9f3;
+            color: #08724f;
+        }
+
+
+        #emergencyInterface .copy-btn {
+            border: 1px solid #dfe7e3;
+
+            background: #f7faf8;
+            color: #53615a;
+        }
+
+
+        #emergencyInterface .verified-badge {
+            display: inline-flex;
+            align-items: center;
+
+            min-height: 19px;
+            padding: 2px 6px;
+
+            border: 1px solid #cfe8dc;
+            border-radius: 999px;
+
+            background: #eff9f4;
+            color: #137553;
+
+            font-size: 8px;
+            font-weight: 900;
+        }
+
+
+        /* =========================================================
+       TABLET / MOBILE
+       ========================================================= */
+
+        @media (max-width: 760px) {
+
+            #emergencyInterface .emergency-national-card {
+                grid-template-columns: 1fr;
+                gap: 11px;
+                padding: 13px;
+                border-radius: 16px;
+            }
+
+
+            #emergencyInterface .emergency-national-number {
+                font-size: 25px;
+            }
+
+
+            #emergencyInterface .emergency-national-actions {
+                width: 100%;
+            }
+
+
+            #emergencyInterface .emergency-national-actions .interface-primary-action {
+                width: 100%;
+                min-width: 0;
+            }
+
+
+            #emergencyInterface .emergency-location-panel,
+            #emergencyInterface .emergency-location-results {
+                padding: 13px;
+                border-radius: 16px;
+            }
+
+
+            #emergencyInterface .emergency-location-panel-heading {
+                align-items: flex-start;
+            }
+
+
+            #emergencyInterface .emergency-location-panel-heading h3,
+            #emergencyInterface .emergency-results-heading h3 {
+                font-size: 14px;
+            }
+
+
+            #emergencyInterface .emergency-location-use {
+                min-height: 34px;
+                padding: 0 9px;
+                font-size: 8px;
+            }
+
+
+            #emergencyInterface .emergency-location-filters {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+
+            #emergencyInterface .emergency-location-field select {
+                min-height: 40px;
+            }
+
+
+            #emergencyInterface .emergency-location-search-row {
+                grid-template-columns: 1fr;
+            }
+
+
+            #emergencyInterface .emergency-location-reset {
+                width: 100%;
+            }
+
+
+            #emergencyInterface .emergency-item {
+                grid-template-columns: auto minmax(0, 1fr);
+            }
+
+
+            #emergencyInterface .emergency-actions {
+                grid-column: 1 / -1;
+                width: 100%;
+            }
+
+
+            #emergencyInterface .call-btn,
+            #emergencyInterface .copy-btn {
+                flex: 1 1 0;
+            }
+
+        }
+
+
+        /* =========================================================
+       SMALL PHONE
+       ========================================================= */
+
+        @media (max-width: 430px) {
+
+            #emergencyInterface .emergency-national-card,
+            #emergencyInterface .emergency-location-panel,
+            #emergencyInterface .emergency-location-results {
+                border-radius: 15px;
+            }
+
+
+            #emergencyInterface .emergency-national-number {
+                font-size: 23px;
+            }
+
+
+            #emergencyInterface .emergency-national-description {
+                font-size: 9px;
+            }
+
+
+            #emergencyInterface .emergency-location-field>span {
+                font-size: 8px;
+            }
+
+
+            #emergencyInterface .emergency-location-field select,
+            #emergencyInterface .emergency-location-search input,
+            #emergencyInterface .emergency-location-reset {
+                font-size: 9px;
+            }
+
+
+            #emergencyInterface .emergency-item {
+                padding: 10px;
+                gap: 9px;
+            }
+
+
+            #emergencyInterface .emergency-item-icon {
+                width: 40px;
+                height: 40px;
+                flex-basis: 40px;
+
+                border-radius: 12px;
+            }
+
+
+            #emergencyInterface .emergency-item-content h3 {
+                font-size: 12px;
+            }
+
+
+            #emergencyInterface .emergency-number {
+                font-size: 14px;
+            }
+
+        }
+    </style>
 </head>
 
 <body>
